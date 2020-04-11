@@ -4,6 +4,8 @@
 #include <stack>
 
 #define NEWLINE std::cout << "\n"
+#define log(x) std::cout << x
+#define logn(x) std::cout << x << "\n"
 
 typedef unsigned int uint;
 typedef unsigned char byte;
@@ -14,8 +16,13 @@ enum Type {BOOL, INT, UINT, CHAR, UCHAR, FLOAT, DOUBLE};
 struct VAR {
 	Type type;
 	union{
-		bool a;
-		int b;
+		bool b;
+		int i;
+        unsigned int ui;
+        char c;
+        unsigned char uc;
+        float f;
+        double d;
 	};
 };
 
@@ -27,12 +34,16 @@ private:
     uint& m_size;
     uint m_memptr;
     VAR* m_variableTable;
+    std::stack<unsigned int> m_tempVarStorage;
 
     byte* convertToByteArray(char*);
     void printStack();
+    void printTempStack();
+    void printVariableTable();
     inline byte* getNextByte();
     inline void nextInstruction();
     inline void executeInstruction();
+    void store(Type type, uint val, byte index);
 
 public:
     VM(char* data, uint size);
