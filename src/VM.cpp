@@ -73,50 +73,51 @@ void VM::executeInstruction(){
 		}
 		case 0x01:
 		{
-			MNEMONIC("NULL");
-			break;
-		}
-		case 0xbb:
-		{
-			MNEMONIC("PUSH_NEXT_BYTE");
-			m_tempVarStorage.push((uint)*getNextByte());
-			DEBUG(std::hex << (int)m_tempVarStorage.top());
+			MNEMONIC("NCONST_PUSH");
 			break;
 		}
 		case 0xaa:
 		{
+			MNEMONIC("ADD_TWO_BYTES");    // BEFORE: [byte], [byte]
 			uint result = m_tempVarStorage.top();
 			m_tempVarStorage.pop();
 			result += m_tempVarStorage.top();
 			m_tempVarStorage.pop();
-			MNEMONIC("ADD_TWO_BYTES");    // BEFORE: [byte], [byte]
 			DEBUG(std::dec << result);
 			m_tempVarStorage.push(result);
 			break;
 		}
 		case 0xab:
 		{
+			MNEMONIC("STORE_SUM_TWO_BYTES_SIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
 			uint result = m_tempVarStorage.top();
 			m_tempVarStorage.pop();
 			result += m_tempVarStorage.top();
 			m_tempVarStorage.pop();
-			MNEMONIC("STORE_SUM_TWO_BYTES_SIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
 			DEBUG(std::dec << result);
 			byte index = *getNextByte();
 			store(Type(CHAR), result, index);
-			DEBUG(std::hex << (int)m_variableTable[index].c);					
+			//DEBUG(std::hex << (int)m_variableTable[index].c);
+			DEBUG(std::hex << (int)m_variableTable[index].c);
 			break;
 		}
 		case 0xac:
 		{
+			MNEMONIC("STORE_SUM_TWO_BYTES_UNSIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
 			uint result = m_tempVarStorage.top();
 			m_tempVarStorage.pop();
 			result += m_tempVarStorage.top();
 			m_tempVarStorage.pop();
-			MNEMONIC("STORE_SUM_TWO_BYTES_UNSIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
 			DEBUG(std::dec << result);
 			store(Type(UCHAR), result, *getNextByte());
 			log(m_variableTable[0].uc);
+			break;
+		}
+		case 0xbb:
+		{
+			MNEMONIC("BCONST_PUSH");
+			m_tempVarStorage.push((uint)*getNextByte());
+			DEBUG(std::hex << (int)m_tempVarStorage.top());
 			break;
 		}
 		// case 0x00:
