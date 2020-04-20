@@ -40,9 +40,10 @@ private:
     void printStack();
     void printTempStack();
     void printVariableTable();
-    inline byte* getNextByte();
-    inline void nextInstruction();
-    inline void executeInstruction();
+    byte getNextByte();
+    uint getNextFourBytes();
+    void nextInstruction();
+    void executeInstruction();
     void store(Type type, uint val, byte index);
 
 public:
