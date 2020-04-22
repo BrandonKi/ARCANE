@@ -40,17 +40,21 @@ void VM::run(){
 	// store(Type(CHAR), 0x07, 3);
 	// printProgram(m_data);
 
-	while(!EXIT){
-		POINTER(m_memptr);
-		executeInstruction();
-		nextInstruction();
-	}
+	// while(!EXIT){
+	// 	POINTER(m_memptr);
+	// 	executeInstruction();
+	// 	nextInstruction();
+	// }
 
+	unsigned char temp[] = {0x11, 0x00, 0x00, 0x00};
+	logn((uint)temp[0]);
+	uint* tempptr = reinterpret_cast<uint*>(temp);
+	logn((uint)*tempptr);
+	NEWLINE;
 	// logn(std::hex << (int)m_data[0] << " " << (int)m_data[1] << " " << (int)m_data[2] << " " << (int)m_data[3]);
 	// logn(std::dec << (int)m_data[0] << " " << (int)m_data[1] << " " << (int)m_data[2] << " " << (int)m_data[3]);
 	// int data = reinterpret_cast<int>(getNextFourBytes());
 	// logn(std::dec << data);
-
 	// NEWLINE;
 	// printStack();
 	// NEWLINE;
@@ -99,11 +103,12 @@ void VM::executeInstruction(){
 		}
 		case 0x11:
 		{
+			int* tempptr = reinterpret_cast<int*>(&m_data[m_memptr]);
+			DEBUG(*tempptr);
 			MNEMONIC("ICONST_PUSH");
 			m_tempVarStorage.push(getNextFourBytes());
 			int temp = *reinterpret_cast<int*>(&m_tempVarStorage.top());
-			log(std::dec);
-			DEBUG(temp);
+			DEBUG(std::dec << temp);
 			break;
 		}
 		case 0x12:
@@ -111,8 +116,7 @@ void VM::executeInstruction(){
 			MNEMONIC("UICONST_PUSH");
 			m_tempVarStorage.push(getNextFourBytes());
 			uint temp = *reinterpret_cast<uint*>(&m_tempVarStorage.top());
-			log(std::dec);
-			DEBUG(temp);
+			DEBUG(std::dec << temp);
 			break;
 		}
 		case 0xa0:
@@ -137,7 +141,29 @@ void VM::executeInstruction(){
 			m_tempVarStorage.push(result);
 			break;
 		}
-		case 0xab:
+		case 0xa2:
+		{
+			MNEMONIC("SI_ADD");    // BEFORE: [byte], [byte]
+			int result = m_tempVarStorage.top();
+			m_tempVarStorage.pop();
+			result += m_tempVarStorage.top();
+			m_tempVarStorage.pop();
+			DEBUG(std::dec << result);
+			m_tempVarStorage.push(result);
+			break;
+		}
+		case 0xa3:
+		{
+			MNEMONIC("UI_ADD");    // BEFORE: [byte], [byte]
+			uint result = m_tempVarStorage.top();
+			m_tempVarStorage.pop();
+			result += m_tempVarStorage.top();
+			m_tempVarStorage.pop();
+			DEBUG(std::dec << result);
+			m_tempVarStorage.push(result);
+			break;
+		}
+		case 0xc0:
 		{
 			MNEMONIC("STORE_SUM_TWO_BYTES_SIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
 			uint result = m_tempVarStorage.top();
@@ -151,7 +177,7 @@ void VM::executeInstruction(){
 			DEBUG(std::hex << (int)m_variableTable[index].c);
 			break;
 		}
-		case 0xac:
+		case 0xc1:
 		{
 			MNEMONIC("STORE_SUM_TWO_BYTES_UNSIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
 			uint result = m_tempVarStorage.top();

@@ -15,10 +15,16 @@ int main(){
      unsigned char data[] = 
     {
         0x11,
-        0x80,
-        0x00,
-        0x00,
-        0x01
+        0xff,
+        0xfc,
+        0xff,
+        0xff,
+        0x11,
+        0xff,
+        0xff,
+        0xff,
+        0xff,
+        0xa2
     };
 
     std::ofstream file("C:\\Users\\Kirin\\Desktop\\VM\\src\\example.dat", std::ios::out|std::ios::binary|std::ios::trunc);
