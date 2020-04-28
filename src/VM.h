@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <bitset>
 #include <algorithm>
 #include <stack>
@@ -11,10 +12,10 @@ typedef unsigned int uint;
 typedef unsigned char byte;
 typedef std::bitset<8> rawByte;
 
-enum Type {BOOL, INT, UINT, CHAR, UCHAR, FLOAT, DOUBLE};
+enum Type {UNDEFINED, BOOL, INT, UINT, CHAR, UCHAR, FLOAT, DOUBLE};
 
 struct VAR {
-	Type type;
+	uint type;
 	union{
 		bool b;
 		int i;
@@ -23,6 +24,7 @@ struct VAR {
         unsigned char uc;
         float f;
         double d;
+        int u;
 	};
 };
 
@@ -40,7 +42,7 @@ private:
     void printStack();
     void printTempStack();
     void printVariableTable();
-    byte getNextByte();
+    byte* getNextByte();
     uint getNextFourBytes();
     void nextInstruction();
     void executeInstruction();
