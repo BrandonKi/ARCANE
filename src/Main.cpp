@@ -40,7 +40,7 @@ inline bool checkFileType(char* data){
 }
 
 inline char* appendExtension(const char* filename){
-  char* result = new char[sizeof(filename)+3];
+  char* result = (char*) malloc(sizeof(filename)+4);
   memcpy(result, filename, sizeof(filename));
   memcpy(&result[sizeof(filename)-1], ".dat", 4);
   return result;
