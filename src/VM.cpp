@@ -44,7 +44,7 @@ void VM::run(){
 	// store(Type(CHAR), 0x07, 3);
 	// printProgram(m_data);
 
-	while(!EXIT){
+	while(!EXIT_ON_NEXT_INTSRUCTION){
 		// std::cin.get();
 		POINTER(std::dec << m_memptr);
 		executeInstruction();
@@ -103,141 +103,73 @@ void VM::executeInstruction(){
 		}
 		case 0x02:
 		{
-			NCONST_PUSH();
+			NCONST_PUSH();   // This has no implementation
 			break;
 		}
 		case 0x10:
 		{
-			MNEMONIC("SBCONST_PUSH");
-			m_tempVarStorage.push(*getNextByte());
-			DEBUG(std::dec << (int)m_tempVarStorage.top());
+			SBCONST_PUSH();
 			break;
 		}
 		case 0x11:
 		{
-			MNEMONIC("UBCONST_PUSH");
-			m_tempVarStorage.push((uint)*getNextByte());
-			DEBUG(std::dec << (uint)m_tempVarStorage.top());
+			UBCONST_PUSH();
 			break;
 		}
 		case 0x12:
 		{
-			MNEMONIC("SICONST_PUSH");
-			int* tempptr = reinterpret_cast<int*>(&m_data[m_memptr]);
-			DEBUG(*tempptr);
-			m_tempVarStorage.push(getNextFourBytes());
-			int temp = *reinterpret_cast<int*>(&m_tempVarStorage.top());
-			DEBUG(std::dec << temp);
+			SICONST_PUSH();
 			break;
 		}
 		case 0x13:
 		{
-			MNEMONIC("UICONST_PUSH");
-			m_tempVarStorage.push(getNextFourBytes());
-			uint temp = *reinterpret_cast<uint*>(&m_tempVarStorage.top());
-			DEBUG(std::dec << temp);
+			UICONST_PUSH();
 			break;
 		}
 		case 0xa0:
 		{
-			MNEMONIC("SB_ADD");    // BEFORE: [byte], [byte]
-			uint result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			DEBUG(std::dec << result);
-			m_tempVarStorage.push(result);
+			SB_ADD();
 			break;
 		}
 		case 0xa1:
 		{
-			MNEMONIC("UB_ADD");    // BEFORE: [byte], [byte]
-			uint result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			DEBUG(std::dec << result);
-			m_tempVarStorage.push(result);
+			UB_ADD();
 			break;
 		}
 		case 0xa2:
 		{
-			MNEMONIC("SI_ADD");    // BEFORE: [int], [int]
-			int result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			DEBUG(std::dec << result);
-			m_tempVarStorage.push(result);
+			SI_ADD();
 			break;
 		}
 		case 0xa3:
 		{
-			MNEMONIC("UI_ADD");    // BEFORE: [int], [int]
-			uint result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			DEBUG(std::dec << result);
-			m_tempVarStorage.push(result);
+			UI_ADD();
 			break;
 		}
 		case 0xa4:
 		{
-			MNEMONIC("F_ADD");    // BEFORE: [float], [float]
-			float result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			DEBUG(std::dec << result);
-			m_tempVarStorage.push(result);
+			F_ADD();
 			break;
 		}
 		case 0xa5:
 		{
-			MNEMONIC("D_ADD");    // BEFORE: [double], [double]
-			double result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			DEBUG(std::dec << result);
-			m_tempVarStorage.push(result);
+			D_ADD();
 			break;
 		}
 		case 0xc0:
 		{
-			MNEMONIC("STORE_SUM_TWO_BYTES_SIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
-			uint result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			byte index = *getNextByte();
-			DEBUG(std::dec << "Index " << (int)index);
-			DEBUG(std::dec << m_variableTable[(int)index].type);
-			store(Type(CHAR), result, index);
-			DEBUG(std::hex << (int)m_variableTable[index].c);
+			STORE_SUM_TWO_BYTES_SIGNED();
 			break;
 		}
 		case 0xc1:
 		{
-			MNEMONIC("STORE_SUM_TWO_BYTES_UNSIGNED");    // BEFORE: [byte], [byte]    AFTER: [slot number] 
-			uint result = m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			result += m_tempVarStorage.top();
-			m_tempVarStorage.pop();
-			DEBUG(std::dec << result);
-			store(Type(UCHAR), result, *getNextByte());
-			log(m_variableTable[0].uc);
+			STORE_SUM_TWO_BYTES_UNSIGNED();
 			break;
 		}
 		
 		case 0xee:
 		{
-			m_data[m_memptr] = 0x00;
-			m_data[m_memptr+1] = 0x00;
-			byte address = *getNextByte();
-			MNEMONIC("GOTO" << address);
-			m_memptr = address;
+			GOTO();
 			break;
 		}
 
@@ -257,7 +189,7 @@ void VM::executeInstruction(){
 }
 
 void VM::printTempStack(){
-	std::stack<uint> temp = m_tempVarStorage;
+	std::stack<uint> temp = m_stack;
 	std::stack<uint> result;
 	while(!temp.empty()){
 		result.push(temp.top());

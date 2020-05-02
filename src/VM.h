@@ -39,12 +39,11 @@ struct VAR {
 class VM {
 
 private:
-	std::stack<byte*> m_stack;
     byte* m_data;
     uint& m_size;
     uint m_memptr;
     VAR* m_variableTable;
-    std::stack<unsigned int> m_tempVarStorage;
+    std::stack<unsigned int> m_stack;
 
     bool EXIT_ON_NEXT_INTSRUCTION = false;
     uint EXIT_CODE;
@@ -77,6 +76,112 @@ private:
     }
     inline void NCONST_PUSH(){
         MNEMONIC("NCONST_PUSH");
-        m_stack.push(nullptr);
+    }
+    inline void SBCONST_PUSH(){
+        MNEMONIC("SBCONST_PUSH");
+        m_stack.push(*getNextByte());
+        DEBUG(std::dec << (int)m_stack.top());
+    }
+    inline void UBCONST_PUSH(){
+        MNEMONIC("UBCONST_PUSH");
+        m_stack.push((uint)*getNextByte());
+        DEBUG(std::dec << (uint)m_stack.top());
+    }
+    inline void SICONST_PUSH(){
+        MNEMONIC("SICONST_PUSH");
+        int* tempptr = reinterpret_cast<int*>(&m_data[m_memptr]);
+        DEBUG(*tempptr);
+        m_stack.push(getNextFourBytes());
+        int temp = *reinterpret_cast<int*>(&m_stack.top());
+        DEBUG(std::dec << temp);
+    }
+    inline void UICONST_PUSH(){
+        MNEMONIC("UICONST_PUSH");
+        m_stack.push(getNextFourBytes());
+        uint temp = *reinterpret_cast<uint*>(&m_stack.top());
+        DEBUG(std::dec << temp);
+    }
+    inline void SB_ADD(){
+        MNEMONIC("SB_ADD");
+        uint result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push(result);
+    }
+    inline void UB_ADD(){
+        MNEMONIC("UB_ADD");
+        uint result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push(result);
+    }
+    inline void SI_ADD(){
+        MNEMONIC("SI_ADD");
+        int result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push(result);
+    }
+    inline void UI_ADD(){
+        MNEMONIC("UI_ADD");
+        uint result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push(result);
+    }
+    inline void F_ADD(){
+        MNEMONIC("F_ADD");
+        float result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push(result);
+    }
+    inline void D_ADD(){
+        MNEMONIC("D_ADD");
+        double result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push(result);
+    }
+    inline void STORE_SUM_TWO_BYTES_SIGNED(){
+        MNEMONIC("STORE_SUM_TWO_BYTES_SIGNED");
+        uint result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        byte index = *getNextByte();
+        DEBUG(std::dec << "Index " << (int)index);
+        DEBUG(std::dec << m_variableTable[(int)index].type);
+        store(Type(CHAR), result, index);
+        DEBUG(std::hex << (int)m_variableTable[index].c);
+    }
+    inline void STORE_SUM_TWO_BYTES_UNSIGNED(){
+        MNEMONIC("STORE_SUM_TWO_BYTES_UNSIGNED");
+        uint result = m_stack.top();
+        m_stack.pop();
+        result += m_stack.top();
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        store(Type(UCHAR), result, *getNextByte());
+        log(m_variableTable[0].uc);
+    }
+    inline void GOTO(){
+        m_data[m_memptr] = 0x00;
+        m_data[m_memptr+1] = 0x00;
+        byte address = *getNextByte();
+        MNEMONIC("GOTO" << address);
+        m_memptr = address;
     }
 };
