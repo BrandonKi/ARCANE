@@ -1,22 +1,10 @@
 #include "VM.h"
 
-#define POINTER(x) std::cout << "    POINTER: " << x << "\n";
-#define INSTRUCTION(x) std::cout << "INSTRUCTION: " << x << "\n";
-#define MNEMONIC(x) std::cout << "   MNEMONIC: " << x << "\n"
-#define DEBUG(x) std::cout <<  " DEBUG INFO: " << x << "\n"
-#define EXIT(x) std::cout << "EXITED WITH CODE: " << x << "\n";
-
-bool EXIT = false;
-uint EXIT_CODE;
-
 VM::VM(char* data, uint size)
 	:m_size(size), m_memptr(0)
 {
-	std::cout << data << "\n"; 
-	// m_data = reinterpret_cast<byte*>(data);
-	m_data = convertToByteArray(data);
-	std::cout << m_data << " byte" << "\n"; 
-
+	m_data = reinterpret_cast<byte*>(data);
+	// m_data = convertToByteArray(data);
 
 	// VAR m_variableTable[10];
 	// std::cout << m_variableTable[0].type;
@@ -57,12 +45,13 @@ void VM::run(){
 	// printProgram(m_data);
 
 	while(!EXIT){
-		std::cin.get();
+		// std::cin.get();
 		POINTER(std::dec << m_memptr);
 		executeInstruction();
 		nextInstruction();
 		
 	}
+
 
 	// int x = Type::UNDEFINED;
 	// logn(x);
@@ -104,20 +93,17 @@ void VM::executeInstruction(){
 	switch(value){
 		case 0x00:
 		{
-			MNEMONIC("NOP");
+			NOP();
 			break;
 		}
 		case 0x01:
 		{
-			MNEMONIC("EXIT");
-			EXIT = true;
-			EXIT_CODE = *getNextByte();
+			EXIT();
 			break;
 		}
 		case 0x02:
 		{
-			MNEMONIC("NCONST_PUSH");
-			m_stack.push(nullptr);
+			NCONST_PUSH();
 			break;
 		}
 		case 0x10:
@@ -265,21 +251,8 @@ void VM::executeInstruction(){
 	NEWLINE;
 	NEWLINE;
 	if(m_memptr >= m_size){
-		EXIT = true;
+		EXIT_ON_NEXT_INTSRUCTION = true;
 		EXIT_CODE = 1;
-	}
-}
-
-void VM::printStack(){
-	std::stack<byte*> temp = m_stack;
-	std::stack<byte> result;
-	while(!temp.empty()){
-		result.push(*temp.top());
-		temp.pop();
-	}
-	while(!result.empty()){
-		std::cout << std::hex << (int)result.top() << "\n";
-		result.pop();
 	}
 }
 
