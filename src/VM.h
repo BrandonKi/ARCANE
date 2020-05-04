@@ -1,48 +1,40 @@
 #include <iostream>
 #include <cstring>
-#include <bitset>
-#include <algorithm>
 #include <stack>
 
+#define DEBUG_BUILD
 
 #define NEWLINE std::cout << "\n"
 #define log(x) std::cout << x
 #define logn(x) std::cout << x << "\n"
 #define ERR(x) std::cout << x << "\n"; return -1
 
-#define POINTER(x) std::cout << "    POINTER: " << x << "\n"
-#define INSTRUCTION(x) std::cout << "INSTRUCTION: " << x << "\n"
-#define MNEMONIC(x) std::cout << "   MNEMONIC: " << x << "\n"
-#define DEBUG(x) std::cout <<  " DEBUG INFO: " << x << "\n"
-#define EXIT_MSG(x) std::cout << "EXITED WITH CODE: " << x << "\n"
+#define INT_SIZE 4
+
+#ifdef DEBUG_BUILD
+    #define POINTER(x) std::cout << "    POINTER: " << x << "\n"
+    #define INSTRUCTION(x) std::cout << "INSTRUCTION: " << x << "\n"
+    #define MNEMONIC(x) std::cout << "   MNEMONIC: " << x << "\n"
+    #define DEBUG(x) std::cout <<  " DEBUG INFO: " << x << "\n"
+    #define EXIT_MSG(x) std::cout << "EXITED WITH CODE: " << x << "\n"
+#else
+    #define POINTER(x)
+    #define INSTRUCTION(x)
+    #define MNEMONIC(x)
+    #define DEBUG(x)
+    #define EXIT_MSG(x)
+#endif
 
 typedef unsigned int uint;
 typedef unsigned char byte;
-typedef std::bitset<8> rawByte;
-
-enum Type {UNDEFINED, BOOL, INT, UINT, CHAR, UCHAR, FLOAT, DOUBLE};
-
-struct VAR {
-	uint type;
-	union{
-		bool b;
-		int i;
-        unsigned int ui;
-        char c;
-        unsigned char uc;
-        float f;
-        double d;
-        int u;
-	};
-};
 
 class VM {
 
 private:
     byte* m_data;
-    uint& m_size;
+    uint m_size;
     uint m_memptr;
-    VAR* m_variableTable;
+    uint* m_variableTable;
     std::stack<unsigned int> m_stack;
 
     bool EXIT_ON_NEXT_INTSRUCTION = false;
@@ -56,7 +48,6 @@ private:
     uint getNextFourBytes();
     void nextInstruction();
     void executeInstruction();
-    void store(Type type, uint val, byte index);
 
 public:
     VM(char* data, uint size);
@@ -89,17 +80,33 @@ private:
     }
     inline void SICONST_PUSH(){
         MNEMONIC("SICONST_PUSH");
-        int* tempptr = reinterpret_cast<int*>(&m_data[m_memptr]);
-        DEBUG(*tempptr);
-        m_stack.push(getNextFourBytes());
-        int temp = *reinterpret_cast<int*>(&m_stack.top());
-        DEBUG(std::dec << temp);
+        m_stack.push(*reinterpret_cast<uint*>(&m_data[++m_memptr]));
+        m_memptr += 3;
+        DEBUG(std::dec << (int)m_stack.top());
     }
     inline void UICONST_PUSH(){
         MNEMONIC("UICONST_PUSH");
-        m_stack.push(getNextFourBytes());
-        uint temp = *reinterpret_cast<uint*>(&m_stack.top());
-        DEBUG(std::dec << temp);
+        m_stack.push(*reinterpret_cast<uint*>(&m_data[++m_memptr]));
+        m_memptr += 3;
+        DEBUG(std::dec << (uint)m_stack.top());
+    }
+    inline void FCONST_PUSH(){
+        MNEMONIC("FCONST_PUSH");
+        m_stack.push(*reinterpret_cast<uint*>(&m_data[m_memptr]));
+        m_memptr += 4;
+        DEBUG(std::dec << (float)m_stack.top());
+    }
+    inline void DCONST_PUSH(){                                           // FIX THIS
+        MNEMONIC("DCONST_PUSH");
+        m_stack.push(*reinterpret_cast<uint*>(&m_data[m_memptr]));
+        m_memptr += 8;
+        DEBUG(std::dec << (double)m_stack.top());
+    }
+    inline void LCONST_PUSH(){                                           // FIX THIS
+        MNEMONIC("LCONST_PUSH");
+        m_stack.push(*reinterpret_cast<uint*>(&m_data[m_memptr]));
+        m_memptr += 8;
+        DEBUG(std::dec << (double)m_stack.top());
     }
     inline void SB_ADD(){
         MNEMONIC("SB_ADD");
@@ -146,7 +153,7 @@ private:
         DEBUG(std::dec << result);
         m_stack.push(result);
     }
-    inline void D_ADD(){
+    inline void D_ADD(){                      // FIX THIS
         MNEMONIC("D_ADD");
         double result = m_stack.top();
         m_stack.pop();
@@ -155,33 +162,32 @@ private:
         DEBUG(std::dec << result);
         m_stack.push(result);
     }
-    inline void STORE_SUM_TWO_BYTES_SIGNED(){
-        MNEMONIC("STORE_SUM_TWO_BYTES_SIGNED");
-        uint result = m_stack.top();
-        m_stack.pop();
-        result += m_stack.top();
-        m_stack.pop();
-        byte index = *getNextByte();
-        DEBUG(std::dec << "Index " << (int)index);
-        DEBUG(std::dec << m_variableTable[(int)index].type);
-        store(Type(CHAR), result, index);
-        DEBUG(std::hex << (int)m_variableTable[index].c);
-    }
-    inline void STORE_SUM_TWO_BYTES_UNSIGNED(){
-        MNEMONIC("STORE_SUM_TWO_BYTES_UNSIGNED");
-        uint result = m_stack.top();
+    inline void L_ADD(){                      // FIX THIS
+        MNEMONIC("L_ADD");
+        long long int result = m_stack.top();
         m_stack.pop();
         result += m_stack.top();
         m_stack.pop();
         DEBUG(std::dec << result);
-        store(Type(UCHAR), result, *getNextByte());
-        log(m_variableTable[0].uc);
+        m_stack.push(result);
+    }
+    inline void SB_STORE(){
+        MNEMONIC("SB-STORE");
+        int temp = *getNextByte();
+        m_variableTable[temp] = m_stack.top();
+        DEBUG("slot " << temp << " value " << m_stack.top());
+        m_stack.pop();
+    }
+    inline void UB_STORE(){
+        MNEMONIC("UB_STORE");
+        
     }
     inline void GOTO(){
-        m_data[m_memptr] = 0x00;
-        m_data[m_memptr+1] = 0x00;
         byte address = *getNextByte();
-        MNEMONIC("GOTO" << address);
-        m_memptr = address;
+        MNEMONIC("GOTO" << std::hex << (uint)address);
+        if(address == 0)
+            m_memptr = 0xffffffff;       // ugly workaround... haha get it workaround... like integer wraparound...
+        else
+            m_memptr = address-1;
     }
 };

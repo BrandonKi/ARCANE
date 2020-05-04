@@ -4,20 +4,11 @@ VM::VM(char* data, uint size)
 	:m_size(size), m_memptr(0)
 {
 	m_data = reinterpret_cast<byte*>(data);
-	// m_data = convertToByteArray(data);
+	m_variableTable = (uint*)malloc(10);  // 
 
-	// VAR m_variableTable[10];
-	// std::cout << m_variableTable[0].type;
-	// store(Type::UNDEFINED, 0, 0);
-	// store(Type::UNDEFINED, 0, 1);
-	// store(Type::UNDEFINED, 0, 2);
-	// store(Type::UNDEFINED, 0, 3);
-	// store(Type::UNDEFINED, 0, 4);
-	// store(Type::UNDEFINED, 0, 5);
-	// store(Type::UNDEFINED, 0, 6);
-	// store(Type::UNDEFINED, 0, 7);
-	// store(Type::UNDEFINED, 0, 8);
-	// store(Type::UNDEFINED, 0, 9);
+
+	// m_data = convertToByteArray(data);  // outdated
+
 	// printVariableTable();
 }
 
@@ -30,7 +21,7 @@ void VM::printProgram(byte* arr){
 	NEWLINE;
 }
 
-byte* VM::convertToByteArray(char* arr)
+byte* VM::convertToByteArray(char* arr)             // USELESS
 {
 	byte* newArr = new byte [m_size];
 	std::copy(arr, arr + ((m_size+1) * sizeof(char)), newArr);
@@ -45,11 +36,11 @@ void VM::run(){
 	// printProgram(m_data);
 
 	while(!EXIT_ON_NEXT_INTSRUCTION){
-		// std::cin.get();
+		std::cin.get();
 		POINTER(std::dec << m_memptr);
 		executeInstruction();
 		nextInstruction();
-		
+		printStack();
 	}
 
 
@@ -57,25 +48,21 @@ void VM::run(){
 	// logn(x);
 
 
-	// unsigned char temp[] = {0x11, 0x00, 0x00, 0x00};
-	// uint* tempptr = reinterpret_cast<uint*>(temp);
+	// unsigned char temp[] = {0xee, 0xee, 0xee, 0xee}; // Little Endian
+	// uint* tempptr = reinterpret_cast<uint*>(temp);						Example version
 	// logn((uint)*tempptr);
 
-	// logn(std::hex << (int)m_data[0] << " " << (int)m_data[1] << " " << (int)m_data[2] << " " << (int)m_data[3]);
-	// logn(std::dec << (int)m_data[0] << " " << (int)m_data[1] << " " << (int)m_data[2] << " " << (int)m_data[3]);
-	// int data = reinterpret_cast<int>(getNextFourBytes());
-	// logn(std::dec << data);
-	// NEWLINE;
-	// printStack();
-	// NEWLINE;
-	// printTempStack();
-	// NEWLINE;
-	//printVariableTable();
-	// EXIT(std::dec << EXIT_CODE);
+	// uint tempptr2 = *reinterpret_cast<uint*>(&m_data[0]);    			Usable version
+
+	EXIT_MSG(std::dec << EXIT_CODE);
 }
 
 void VM::nextInstruction(){
 	m_memptr++;
+	if(m_memptr > m_size){
+		EXIT_ON_NEXT_INTSRUCTION = true;
+		EXIT_CODE = 1;
+	}
 }
 
 byte* VM::getNextByte(){
@@ -126,6 +113,16 @@ void VM::executeInstruction(){
 			UICONST_PUSH();
 			break;
 		}
+		case 0x14:
+		{
+			FCONST_PUSH();
+			break;
+		}
+		case 0x15:
+		{
+			DCONST_PUSH();
+			break;
+		}
 		case 0xa0:
 		{
 			SB_ADD();
@@ -158,12 +155,12 @@ void VM::executeInstruction(){
 		}
 		case 0xc0:
 		{
-			STORE_SUM_TWO_BYTES_SIGNED();
+			SB_STORE();
 			break;
 		}
 		case 0xc1:
 		{
-			STORE_SUM_TWO_BYTES_UNSIGNED();
+			UB_STORE();
 			break;
 		}
 		
@@ -182,13 +179,9 @@ void VM::executeInstruction(){
 	}
 	NEWLINE;
 	NEWLINE;
-	if(m_memptr >= m_size){
-		EXIT_ON_NEXT_INTSRUCTION = true;
-		EXIT_CODE = 1;
-	}
 }
 
-void VM::printTempStack(){
+void VM::printStack(){
 	std::stack<uint> temp = m_stack;
 	std::stack<uint> result;
 	while(!temp.empty()){
@@ -196,98 +189,11 @@ void VM::printTempStack(){
 		temp.pop();
 	}
 	while(!result.empty()){
-		std::cout << std::dec << (int)result.top() << "\n";
+		std::cout << std::dec << (uint)result.top() << "\n";
 		result.pop();
 	}
 }
 
 void VM::printVariableTable(){
-	log(std::dec);
-	for(int i = 0; i < 10; i++){
-		logn(m_variableTable[i].type);
-		switch(m_variableTable[i].type){
-			case BOOL:
-			{
-				logn((int)m_variableTable[i].type << "|" << m_variableTable[i].b);
-				break;
-			}
-			case INT:
-			{
-				logn((int)m_variableTable[i].type << "|" << (int)m_variableTable[i].i);
-				break;
-			}
-			case UINT:
-			{
-				logn((int)m_variableTable[i].type << "|" << (uint)m_variableTable[i].ui);
-				break;
-			}
-			case CHAR:
-			{
-				logn((int)m_variableTable[i].type << "|" << (int)m_variableTable[i].c);
-				break;
-			}
-			case UCHAR:
-			{
-				logn((int)m_variableTable[i].type << "|" << (int)m_variableTable[i].uc);
-				break;
-			}
-			case FLOAT:
-			{
-				logn((int)m_variableTable[i].type << "|" << (float)m_variableTable[i].f);
-				break;
-			}	
-			case DOUBLE:
-			{
-				logn((int)m_variableTable[i].type << "|" << (double)m_variableTable[i].d);
-				break;
-			}
-		}
-	}
-}
-
-void VM::store(Type type, uint val, byte index){
-	m_variableTable[index].type = type;
-	switch(type){
-		case UNDEFINED:
-		{
-			m_variableTable[(int)index].u = val;
-			break;
-		}
-		case BOOL:
-		{
-			m_variableTable[(int)index].b = (bool)val;
-			break;
-		}
-		case INT:
-		{
-			m_variableTable[(int)index].i = (int)val;
-			break;
-		}
-		case UINT:
-		{
-			m_variableTable[(int)index].ui = (uint)val;
-			break;
-		}
-		case CHAR:
-		{
-			m_variableTable[(int)index].c = (char)val;
-			break;
-		}
-		case UCHAR:
-		{
-			m_variableTable[(int)index].uc = (unsigned char)val;
-			break;
-		}
-		case FLOAT:
-		{
-			m_variableTable[(int)index].f = (float)val;
-			break;
-		}	
-		case DOUBLE:
-		{
-			m_variableTable[(int)index].d = (double)val;
-			break;
-		}
-	}
 
 }
