@@ -1,3 +1,4 @@
 cd C:\Users\Kirin\Desktop\VM\debug; g++ -o filewriter filewriter.cpp; start filewriter.exe
+cd C:\Users\Kirin\Desktop\VM\debug; g++ -o ReadableBytecode ReadableBytecode.cpp; start ReadableBytecode.exe
 cd C:\Users\Kirin\Desktop\VM\src; g++ -o Main Main.cpp VM.cpp; start Main.exe
 g++ -S -masm=intel VM.cpp
