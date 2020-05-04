@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 
 int main(){
 
@@ -31,11 +30,19 @@ int main(){
         0x63,
         0x68, // end file signature
 
-        0x11,
+        0x13,
         0x02,
-        0x11,
+        0x03,
+        0x04,
         0x01,
-        0xa1,
+        0x13,
+        0x00,
+        0x00,
+        0x45,
+        0x11,
+        0xa3,
+        0xc0,
+        0x00,
 
         0x01, // exit
         0x00  // with code 0
