@@ -9,7 +9,7 @@
 #define logn(x) std::cout << x << "\n"
 #define ERR(x) std::cout << x << "\n"; return -1
 
-#define INT_SIZE 4
+#define INT_SIZE 4         // This macro doesn't do anything
 
 #ifdef DEBUG_BUILD
     #define POINTER(x) std::cout << "    POINTER: " << x << "\n"
@@ -172,7 +172,7 @@ private:
         m_stack.push(result);
     }
     inline void SB_STORE(){
-        MNEMONIC("SB-STORE");
+        MNEMONIC("SB_STORE");
         int temp = *getNextByte();
         m_variableTable[temp] = m_stack.top();
         DEBUG("slot " << temp << " value " << m_stack.top());
@@ -180,7 +180,10 @@ private:
     }
     inline void UB_STORE(){
         MNEMONIC("UB_STORE");
-        
+        int temp = *getNextByte();
+        m_variableTable[temp] = m_stack.top();
+        DEBUG("slot " << temp << " value " << m_stack.top());
+        m_stack.pop();
     }
     inline void GOTO(){
         byte address = *getNextByte();

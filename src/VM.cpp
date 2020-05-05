@@ -123,6 +123,11 @@ void VM::executeInstruction(){
 			DCONST_PUSH();
 			break;
 		}
+		case 0x16:
+		{
+			LCONST_PUSH();
+			break;
+		}
 		case 0xa0:
 		{
 			SB_ADD();
@@ -151,6 +156,11 @@ void VM::executeInstruction(){
 		case 0xa5:
 		{
 			D_ADD();
+			break;
+		}
+		case 0xa6:
+		{
+			L_ADD();
 			break;
 		}
 		case 0xc0:
