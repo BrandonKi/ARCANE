@@ -81,19 +81,19 @@ private:
     inline void SICONST_PUSH(){
         MNEMONIC("SICONST_PUSH");
         m_stack.push(*reinterpret_cast<uint*>(&m_data[++m_memptr]));
-        m_memptr += 3;
+        m_memptr += 3;                                                    // INT_SIZE - 1 bcuz I said so
         DEBUG(std::dec << (int)m_stack.top());
     }
     inline void UICONST_PUSH(){
         MNEMONIC("UICONST_PUSH");
         m_stack.push(*reinterpret_cast<uint*>(&m_data[++m_memptr]));
-        m_memptr += 3;
+        m_memptr += 3;                                                    // INT_SIZE - 1 bcuz I said so
         DEBUG(std::dec << (uint)m_stack.top());
     }
     inline void FCONST_PUSH(){
         MNEMONIC("FCONST_PUSH");
         m_stack.push(*reinterpret_cast<uint*>(&m_data[m_memptr]));
-        m_memptr += 4;
+        m_memptr += 3;
         DEBUG(std::dec << (float)m_stack.top());
     }
     inline void DCONST_PUSH(){                                           // FIX THIS
