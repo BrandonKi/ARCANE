@@ -14,6 +14,7 @@ Only checks for fatal errors at runtime.
 
 - bounds checks on variable table
 - make a function table
+- const table
 - specify amount of variables and functions needed in file
 - add all missing instructions for add, store
 - push instruction for 64 bit types
@@ -43,3 +44,10 @@ Only checks for fatal errors at runtime.
 - variable representation in bytecode
 - main execution loop
 - debug and release modes
+
+
+
+### RESOURCES FOR LATER
+
+- https://www.scadacore.com/tools/programming-calculators/online-hex-converter/
+- https://en.wikipedia.org/wiki/Java_class_file
