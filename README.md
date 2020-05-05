@@ -10,7 +10,7 @@ Type checking should/will be done at compile time.
 Only checks for fatal errors at runtime.
 
 
-### H3 TODO:
+### TODO:
 
 - bounds checks on variable table
 - make a function table
@@ -30,7 +30,7 @@ Only checks for fatal errors at runtime.
 - 64 bit type representation in bytecode
 - string support and representation in bytecode
 
-### H3 DONE:
+### DONE:
 
 - file signature
 - bytecode file writer
