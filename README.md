@@ -30,6 +30,9 @@ Only checks for fatal errors at runtime.
 - 64 bit type representation in bytecode
 - string support and representation in bytecode
 
+- UPDATE SPREADSHEET WITH NEW INSTRUCTIONS AND DESCRIPTIONS
+
+
 ### DONE:
 
 - file signature
