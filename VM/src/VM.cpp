@@ -29,11 +29,6 @@ byte* VM::convertToByteArray(char* arr)             // USELESS
 }
 
 void VM::run(){
-	// store(Type(CHAR), 0x13, 0);
-	// store(Type(CHAR), 0x55, 1);
-	// store(Type(CHAR), 0x21, 2);
-	// store(Type(CHAR), 0x07, 3);
-	// printProgram(m_data);
 
 	while(!EXIT_ON_NEXT_INTSRUCTION){
 		std::cin.get();

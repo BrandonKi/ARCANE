@@ -1,2 +1,2 @@
 @echo off
-%~dp0..\src\Main.exe %*
+%~dp0..\VM\src\Main.exe %*

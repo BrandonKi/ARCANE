@@ -44,6 +44,7 @@ Only checks for fatal errors at runtime.
 - variable representation in bytecode
 - main execution loop
 - debug and release modes
+- file extension for source, bytecode, and readable bytecode
 
 
 
