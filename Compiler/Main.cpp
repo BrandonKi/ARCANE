@@ -33,7 +33,6 @@ int main(int argc, const char* argv[]){
         ERR("NO_FILE_PROVIDED");
 }
 
-inline bool checkFileType(const char* data){
-    const char* temp = &data[strlen(data) - 4];
-    return memcmp("arcs", temp, 4) == 0;
+inline bool checkFileType(const char* data){   // Makes sure the extension is correct. There is no file signature because it is stored as plain text.
+    return memcmp("arcs", &data[strlen(data) - 4], 4) == 0;
 }
