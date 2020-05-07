@@ -34,7 +34,6 @@ int main(int argc, const char* argv[]){
 }
 
 inline bool checkFileType(const char* data){
-    int len = strlen(data) - 4;
-    const char* temp = &data[len];
+    const char* temp = &data[strlen(data) - 4];
     return memcmp("arcs", temp, 4) == 0;
 }
