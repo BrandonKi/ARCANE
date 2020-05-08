@@ -1,19 +1,19 @@
 # ARCANE
 ARCANE Runs, Compiles, And Never Explodes
 
- A basic programing language.
-Uses a bytecode VM to run.
-  
-Bytecode files store variables in Little Endian 
+A programming language and bytecode VM. (ARCVM)
 
-No type checking at runtime.
+There is no type checking at runtime.
 Type checking should/will be done at compile time.
 Only checks for fatal errors at runtime.
 
+# Personal notes
 
-# TODO:
+Bytecode files store variables in Little Endian 
 
-## VM
+## TODO:
+
+### VM
 - bounds checks on variable table
 - make a function table
 - const table
@@ -33,7 +33,7 @@ Only checks for fatal errors at runtime.
 - 64 bit type representation in bytecode
 - string support and representation in bytecode
 
-## Compiler
+### Compiler
 
 - lexical analysis
 - symbol table construction
@@ -46,7 +46,7 @@ Only checks for fatal errors at runtime.
 - UPDATE SPREADSHEET WITH NEW INSTRUCTIONS AND DESCRIPTIONS
 
 
-# DONE:
+## DONE:
 
 - file signature
 - bytecode file writer
@@ -68,16 +68,20 @@ Only checks for fatal errors at runtime.
 ### Symbol table construction
 - A table stores the names and addresses of all variables, constants and arrays.
 - Variables are checked to make sure they have been declared and to determine the data types used.
+
 ### Syntax analysis
 - Tokens are checked to see if they match the syntax of the programming language.
 - If syntax errors are found, error messages are produced.
+
 ### Semantic analysis
 - Variables are checked to make sure they have been correctly declared and contain the correct data type.
 - Operations are checked to ensure that they are appropriate for the type of variable being used.
+
 ### Bytecode generation
 - Bytecode code is generated in this stage.
+
 ### Optimization
-- Code optimization makes the program more efficient so it runs faster and uses fewer resources.
+- Code optimization makes the program run faster.
 
 ### RESOURCES FOR LATER
 
