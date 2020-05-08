@@ -11,7 +11,7 @@ Type checking should/will be done at compile time.
 Only checks for fatal errors at runtime.
 
 
-### TODO:
+# TODO:
 
 ## VM
 - bounds checks on variable table
@@ -46,7 +46,7 @@ Only checks for fatal errors at runtime.
 - UPDATE SPREADSHEET WITH NEW INSTRUCTIONS AND DESCRIPTIONS
 
 
-### DONE:
+# DONE:
 
 - file signature
 - bytecode file writer
@@ -59,24 +59,24 @@ Only checks for fatal errors at runtime.
 - file extension for source, bytecode, and readable bytecode
 
 
-### Compiler explanation
+## Compiler explanation
 
-# Lexical analysis/Tokeniztion
+### Lexical analysis/Tokeniztion
 - Comments and unnecessary spaces are removed.
 - Groups the characters/words into lexemes
 - 
-# Symbol table construction
+### Symbol table construction
 - A table stores the names and addresses of all variables, constants and arrays.
 - Variables are checked to make sure they have been declared and to determine the data types used.
-# Syntax analysis
+### Syntax analysis
 - Tokens are checked to see if they match the syntax of the programming language.
 - If syntax errors are found, error messages are produced.
-# Semantic analysis
+### Semantic analysis
 - Variables are checked to make sure they have been correctly declared and contain the correct data type.
 - Operations are checked to ensure that they are appropriate for the type of variable being used.
-# Bytecode generation
+### Bytecode generation
 - Bytecode code is generated in this stage.
-# Optimization
+### Optimization
 - Code optimization makes the program more efficient so it runs faster and uses fewer resources.
 
 ### RESOURCES FOR LATER
