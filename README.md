@@ -2,9 +2,9 @@
 ARCANE Runs, Compiles, And Never Explodes
 
  A basic programing language.
- Uses a bytecode VM to run.
+Uses a bytecode VM to run.
   
- Bytecode files store variables in Little Endian 
+Bytecode files store variables in Little Endian 
 
 No type checking at runtime.
 Type checking should/will be done at compile time.
