@@ -7,7 +7,7 @@ There is no type checking at runtime.
 Type checking should/will be done at compile time.
 Only checks for fatal errors at runtime.
 
-# Personal notes
+# Notes
 
 Bytecode files store variables in Little Endian 
 
