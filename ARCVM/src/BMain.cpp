@@ -29,6 +29,7 @@ int main (int argc, const char* argv[]) {
         VM vm(filedata, (uint)size-16);
         vm.run();
         TIMER_STOP;
+        std::cin.get();
         return 0;
       }else
         ERR("FILE_FORMAT_NOT_RECOGNIZED");
@@ -43,8 +44,8 @@ inline bool checkFileType(char* data){
 }
 
 inline char* appendExtension(const char* filename){
-  char* result = (char*) malloc(sizeof(filename)+4);
+  char* result = (char*) malloc(sizeof(filename)+5);
   memcpy(result, filename, sizeof(filename));
-  memcpy(&result[sizeof(filename)-1], ".dat", 4);
+  memcpy(&result[sizeof(filename)-1], ".arcb", 5);
   return result;
 }

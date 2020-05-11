@@ -63,8 +63,8 @@ Bytecode files store variables in Little Endian
 
 ### Lexical analysis/Tokeniztion
 - Comments and unnecessary spaces are removed.
-- Groups the characters/words into lexemes
-- 
+- Groups the characters/words into lexemes and tokens
+
 ### Symbol table construction
 - A table stores the names and addresses of all variables, constants and arrays.
 - Variables are checked to make sure they have been declared and to determine the data types used.
@@ -81,7 +81,7 @@ Bytecode files store variables in Little Endian
 - Bytecode code is generated in this stage.
 
 ### Optimization
-- Code optimization makes the program run faster.
+- Code optimization to make the program run faster.
 
 ### RESOURCES FOR LATER
 

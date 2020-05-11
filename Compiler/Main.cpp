@@ -23,7 +23,6 @@ int main(int argc, const char* argv[]){
             file.close();
             if(checkFileType(argv[1])){
                 std::cin.get();
-                filedata = filedata + (16 * sizeof(char));
                 return 0;
             }else
                 ERR("FILE_FORMAT_NOT_RECOGNIZED");

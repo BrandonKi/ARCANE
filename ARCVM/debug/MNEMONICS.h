@@ -1,0 +1,47 @@
+#define _NOP_ 0x00
+#define _EXIT_ 0x01
+#define _NCONST_PUSH_ 0x02
+#define _SBCONST_PUSH_ 0x10
+#define _UBCONST_PUSH_ 0x11
+#define _SICONST_PUSH_ 0x12
+#define _UICONST_PUSH_ 0x13
+#define _FCONST_PUSH_ 0x14
+#define _DCONST_PUSH_ 0x15
+#define _LCONST_PUSH_ 0x16
+#define _SCONST_PUSH_ 0x17
+#define _SB_ADD_ 0xa0
+#define _UB_ADD_ 0xa1
+#define _SI_ADD_ 0xa2
+#define _UI_ADD_ 0xa3
+#define _F_ADD_ 0xa4
+#define _D_ADD_ 0xa5
+#define _L_ADD_ 0xa6
+#define _SB_STORE_ 0xc0
+#define _UB_STORE_ 0xc1
+#define _SI_STORE_ 0xc2
+#define _UI_STORE_ 0xc3
+#define _F_STORE_ 0xc4
+#define _D_STORE_ 0xc5
+#define _L_STORE_ 0xc6
+#define _SB_LOAD_ 0xd0
+#define _UB_LOAD_ 0xd1
+#define _SI_LOAD_ 0xd2
+#define _UI_LOAD_ 0xd3
+#define _F_LOAD_ 0xd4
+#define _D_LOAD_ 0xd5
+#define _L_LOAD_ 0xd6
+#define _GOTO_ 0xee
+
+
+
+#define _NULL_ 0
+#define _SBYTE_ 1
+#define _UBYTE_ 2
+#define _SINT_ 3
+#define _UINT_ 4
+#define _FLOAT_ 5
+#define _DOUBLE_ 6
+#define _LONG_ 7
+#define _STRING_ 8
+#define _SPECIAL_ 9
+#define _UNDEFINED_ 10

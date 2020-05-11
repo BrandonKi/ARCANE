@@ -3,9 +3,9 @@
 VM::VM(char* data, uint size)
 	:m_size(size), m_memptr(0)
 {
+	
 	m_data = reinterpret_cast<byte*>(data);
-	m_variableTable = (uint*)malloc(10);  // 
-
+	m_variableTable = (container*)malloc(10);  
 
 	// m_data = convertToByteArray(data);  // outdated
 
@@ -38,12 +38,7 @@ void VM::run(){
 		printStack();
 	}
 
-
-	// int x = Type::UNDEFINED;
-	// logn(x);
-
-
-	// unsigned char temp[] = {0xee, 0xee, 0xee, 0xee}; // Little Endian
+	// unsigned char temp[] = {0xaa, 0xee, 0xee, 0xee}; // Little Endian
 	// uint* tempptr = reinterpret_cast<uint*>(temp);						Example version
 	// logn((uint)*tempptr);
 
@@ -168,6 +163,66 @@ void VM::executeInstruction(){
 			UB_STORE();
 			break;
 		}
+		case 0xc2:
+		{
+			SI_STORE();
+			break;
+		}
+		case 0xc3:
+		{
+			UI_STORE();
+			break;
+		}
+		case 0xc4:
+		{
+			F_STORE();
+			break;
+		}
+		case 0xc5:
+		{
+			D_STORE();
+			break;
+		}
+		case 0xc6:
+		{
+			L_STORE();
+			break;
+		}
+		case 0xd0:
+		{
+			SB_LOAD();
+			break;
+		}
+		case 0xd1:
+		{
+			UB_LOAD();
+			break;
+		}
+		case 0xd2:
+		{
+			SI_LOAD();
+			break;
+		}
+		case 0xd3:
+		{
+			UI_LOAD();
+			break;
+		}
+		case 0xd4:
+		{
+			F_LOAD();
+			break;
+		}
+		case 0xd5:
+		{
+			D_LOAD();
+			break;
+		}
+		case 0xd6:
+		{
+			L_LOAD();
+			break;
+		}
 		
 		case 0xee:
 		{
@@ -187,14 +242,14 @@ void VM::executeInstruction(){
 }
 
 void VM::printStack(){
-	std::stack<uint> temp = m_stack;
-	std::stack<uint> result;
+	std::stack<container> temp = m_stack;
+	std::stack<container> result;
 	while(!temp.empty()){
 		result.push(temp.top());
 		temp.pop();
 	}
 	while(!result.empty()){
-		std::cout << std::dec << (uint)result.top() << "\n";
+		std::cout << std::dec << (uint)result.top().data << "\n";
 		result.pop();
 	}
 }

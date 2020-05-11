@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include "MNEMONICS.h"
 
 #define COUT
 
@@ -21,7 +22,7 @@ inline void start(char* data, int size);                    //start the loop
 int main(int argc, const char* argv[]){
 
     std::streampos size;
-    std::ifstream file ("C:\\Users\\Kirin\\Desktop\\VM\\src\\example.dat", std::ios::in|std::ios::binary|std::ios::ate);
+    std::ifstream file ("C:\\Users\\Kirin\\Desktop\\ARCANE\\ARCVM\\src\\example.arcb", std::ios::in|std::ios::binary|std::ios::ate);
     char* filedata;
     if (file.is_open()){
         size = file.tellg();
@@ -48,49 +49,49 @@ inline bool checkFileType(char* data){
 }
 
 inline void start(char* data, int size){
-    std::ofstream file("C:\\Users\\Kirin\\Desktop\\VM\\src\\example.READ", std::ios::out);
+    std::ofstream file("C:\\Users\\Kirin\\Desktop\\ARCANE\\ARCVM\\src\\example.arcb.READ", std::ios::out);
     unsigned char* UCdata = reinterpret_cast<unsigned char*>(data);
     if(file.is_open()){
         for(int i = 0; i < (int)size-16; i++){
             logn("POINT " << i);
             switch(UCdata[i]){
-                case 0x00:
+                case _NOP_:
                 {
                     OUTPUT("NOP");
                     break;
                 }
-                case 0x01:
+                case _EXIT_:
                 {
                     OUTPUT("EXIT\t");
                     OUTPUT((unsigned int)UCdata[i++]);
                     break;
                 }
-                case 0x02:
+                case _NCONST_PUSH_:
                 {
                     OUTPUT("NCONST_PUSH");
                     break;
                 }
-                case 0x10:
+                case _SBCONST_PUSH_:
                 {
                     OUTPUT("SBCONST_PUSH\t");
                     OUTPUT((int)UCdata[++i]);
                     break;
                 }
-                case 0x11:
+                case _UBCONST_PUSH_:
                 {
                     OUTPUT("UBCONST_PUSH\t");
                     OUTPUT((unsigned int)UCdata[++i]);
                     break;
                 }
-                case 0x12:
+                case _SICONST_PUSH_:
                 {
                     OUTPUT("SICONST_PUSH\t");
                     int temp = UCdata[++i];
-                    i += 2;
+                    i += 3;
                     OUTPUT((int)temp);
                     break;
                 }
-                case 0x13:
+                case _UICONST_PUSH_:
                 {
                     OUTPUT("UICONST_PUSH\t");
                     unsigned int temp = *reinterpret_cast<unsigned int*>(&UCdata[++i]);
@@ -98,7 +99,7 @@ inline void start(char* data, int size){
                     OUTPUT((unsigned int)temp);
                     break;
                 }
-                case 0x14:
+                case _FCONST_PUSH_:
                 {
                     OUTPUT("FCONST_PUSH\t");
                     float temp = *reinterpret_cast<float*>(&UCdata[++i]);
@@ -106,70 +107,135 @@ inline void start(char* data, int size){
                     OUTPUT((float)temp);
                     break;
                 }
-                case 0x15:
+                case _DCONST_PUSH_:
                 {
                     OUTPUT("DCONST_PUSH");
                     break;
                 }
-                case 0xa0:
+                case _LCONST_PUSH_:
+                {
+                    OUTPUT("LCONST_PUSH");
+                    break;
+                }
+                case _SB_ADD_:
                 {
                     OUTPUT("SB_ADD");
                     break;
                 }
-                case 0xa1:
+                case _UB_ADD_:
                 {
                     OUTPUT("UB_ADD");
                     break;
                 }
-                case 0xa2:
+                case _SI_ADD_:
                 {
                     OUTPUT("SI_ADD");
                     break;
                 }
-                case 0xa3:
+                case _UI_ADD_:
                 {
                     OUTPUT("UI_ADD");
                     break;
                 }
-                case 0xa4:
+                case _F_ADD_:
                 {
                     OUTPUT("F_ADD");
                     break;
                 }
-                case 0xa5:
+                case _D_ADD_:
                 {
                     OUTPUT("D_ADD");
                     break;
                 }
-                case 0xc0:
+                case _L_ADD_:
+                {
+                    OUTPUT("L_ADD");
+                    break;
+                }
+                case _SB_STORE_:
                 {
                     OUTPUT("SB_STORE\t");
                     i++;
                     OUTPUT((int)UCdata[i]);
                     break;
                 }
-                case 0xc1:
+                case _UB_STORE_:
                 {
                     OUTPUT("UB_STORE\t");
                     i++;
                     OUTPUT((unsigned int)UCdata[i]);
                     break;
                 }
-                case 0xc2:
+                case _SI_STORE_:
                 {
                     OUTPUT("SI_STORE\t");
                     OUTPUT(*reinterpret_cast<int*>(&UCdata[++i]));
                     i += 3;
                     break;
                 }
-                case 0xc3:
+                case _UI_STORE_:
                 {
                     OUTPUT("UI_STORE\t");
                     OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
                     i += 3;
                     break;
                 }
-                
+                case _F_STORE_:
+                {
+                    OUTPUT("F_STORE\t");
+                    OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
+                    i += 3;
+                    break;
+                }
+                case _D_STORE_:
+                {
+                    OUTPUT("D_STORE\t");
+                    OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
+                    i += 3;
+                    break;
+                }
+                case _L_STORE_:
+                {
+                    OUTPUT("L_STORE\t");
+                    OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
+                    i += 3;
+                    break;
+                }
+                case _SB_LOAD_:
+                {
+                    OUTPUT("SB_LOAD\t");
+                    break;
+                }
+                case _UB_LOAD_:
+                {
+                    OUTPUT("UB_LOAD\t");
+                    break;
+                }
+                case _SI_LOAD_:
+                {
+                    OUTPUT("SI_LOAD\t");
+                    break;
+                }
+                case _UI_LOAD_:
+                {
+                    OUTPUT("UI_LOAD\t");
+                    break;
+                }
+                case _F_LOAD_:
+                {
+                    OUTPUT("F_LOAD\t");
+                    break;
+                }
+                case _D_LOAD_:
+                {
+                    OUTPUT("D_LOAD\t");
+                    break;
+                }
+                case _L_LOAD_:
+                {
+                    OUTPUT("L_LOAD\t");
+                    break;
+                }
                 case 0xee:
                 {
                     OUTPUT("GOTO");
