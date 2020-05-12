@@ -34,9 +34,10 @@ int main(){
         0x80,
         0x16,
         0x43,
-        _F_ADD_,
-        _F_STORE_,
+        _F_SUB_,
+        _UBCONST_PUSH_,
         0x00,
+        _F_STORE_,
                         // end program
 
         _EXIT_,         // exit
