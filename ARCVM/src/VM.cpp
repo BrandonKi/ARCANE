@@ -384,12 +384,43 @@ void VM::executeInstruction(){
 void VM::printStack(){
 	std::stack<container> temp = m_stack;
 	std::stack<container> result;
+	std::cout << std::dec;
 	while(!temp.empty()){
 		result.push(temp.top());
 		temp.pop();
 	}
 	while(!result.empty()){
-		std::cout << std::dec << (uint)result.top().data << "\n";
+		switch(result.top().type){
+			case 0:
+				std::cout <<"NULL\n";
+				break;
+			case 1:
+				std::cout << (sint)result.top().data << "\n";
+				break;
+			case 2:
+				std::cout << (uint)result.top().data << "\n";
+				break;
+			case 3:
+				std::cout << (sint)result.top().data << "\n";
+				break;
+			case 4:
+				std::cout << (uint)result.top().data << "\n";
+				break;
+			case 5:
+				std::cout <<  *reinterpret_cast<float*>(&result.top().data) << "\n";
+				break;
+			case 6:
+				std::cout << (double)result.top().data << "\n";
+				break;
+			case 7:
+				std::cout << (slong)result.top().data << "\n";
+				break;
+			case 8:
+				break;
+			case 9:
+				break;
+		}
+		
 		result.pop();
 	}
 }
