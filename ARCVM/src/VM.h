@@ -5,6 +5,7 @@
 #include "../debug/MNEMONICS.h"
 
 #define DEBUG_BUILD
+// #define RELEASE_BUILD
 
 #define NEWLINE std::cout << "\n"
 #define log(x) std::cout << x
@@ -18,16 +19,20 @@
     #define INSTRUCTION(x) std::cout << "INSTRUCTION: " << x << "\n"
     #define MNEMONIC(x) std::cout << "   MNEMONIC: " << x << "\n"
     #define DEBUG(x) std::cout <<  " DEBUG INFO: " << x << "\n"
+    #define WAIT_FOR_INPUT std::cin.get()
+    #define DEBUG_STACK printStack()
     #define EXIT_MSG(x) std::cout << "EXITED WITH CODE: " << x << "\n"
 #else
     #define POINTER(x)
     #define INSTRUCTION(x)
     #define MNEMONIC(x)
     #define DEBUG(x)
+    #define WAIT_FOR_INPUT
+    #define DEBUG_STACK
     #define EXIT_MSG(x)
 #endif
 
-typedef unsigned int uint;
+typedef uint_fast32_t uint;
 typedef unsigned char byte;
 
 struct container {
@@ -178,6 +183,90 @@ private:
         m_stack.pop();
         DEBUG(std::dec << result);
         m_stack.push({_LONG_, *reinterpret_cast<uint*>(&result)});
+    }
+    inline void SB_SUB(){
+
+    }
+    inline void UB_SUB(){
+        
+    }
+    inline void SI_SUB(){
+        
+    }
+    inline void UI_SUB(){
+        
+    }
+    inline void F_SUB(){
+        
+    }
+    inline void D_SUB(){
+        
+    }
+    inline void L_SUB(){
+        
+    }
+    inline void SB_MUL(){
+
+    }
+    inline void UB_MUL(){
+        
+    }
+    inline void SI_MUL(){
+        
+    }
+    inline void UI_MUL(){
+        
+    }
+    inline void F_MUL(){
+        
+    }
+    inline void D_MUL(){
+        
+    }
+    inline void L_MUL(){
+        
+    }
+    inline void SB_DIV(){
+
+    }
+    inline void UB_DIV(){
+        
+    }
+    inline void SI_DIV(){
+        
+    }
+    inline void UI_DIV(){
+        
+    }
+    inline void F_DIV(){
+        
+    }
+    inline void D_DIV(){
+        
+    }
+    inline void L_DIV(){
+        
+    }
+    inline void SB_REM(){
+
+    }
+    inline void UB_REM(){
+        
+    }
+    inline void SI_REM(){
+        
+    }
+    inline void UI_REM(){
+        
+    }
+    inline void F_REM(){
+        
+    }
+    inline void D_REM(){
+        
+    }
+    inline void L_REM(){
+        
     }
     inline void SB_STORE(){
         MNEMONIC("SB_STORE");
