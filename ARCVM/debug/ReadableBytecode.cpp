@@ -53,7 +53,7 @@ inline void start(char* data, int size){
     unsigned char* UCdata = reinterpret_cast<unsigned char*>(data);
     if(file.is_open()){
         for(int i = 0; i < (int)size-16; i++){
-            logn("POINT " << i);
+            // logn("POINT " << i);
             switch(UCdata[i]){
                 case _NOP_:
                 {
@@ -62,7 +62,7 @@ inline void start(char* data, int size){
                 }
                 case _EXIT_:
                 {
-                    OUTPUT("EXIT\t");
+                    OUTPUT("EXIT\t\t\t");
                     OUTPUT((unsigned int)UCdata[i++]);
                     break;
                 }
@@ -74,19 +74,21 @@ inline void start(char* data, int size){
                 case _SBCONST_PUSH_:
                 {
                     OUTPUT("SBCONST_PUSH\t");
-                    OUTPUT((int)UCdata[++i]);
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((int)temp);
                     break;
                 }
                 case _UBCONST_PUSH_:
                 {
                     OUTPUT("UBCONST_PUSH\t");
-                    OUTPUT((unsigned int)UCdata[++i]);
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _SICONST_PUSH_:
                 {
                     OUTPUT("SICONST_PUSH\t");
-                    int temp = UCdata[++i];
+                    int temp = *reinterpret_cast<int*>(&UCdata[++i]);
                     i += 3;
                     OUTPUT((int)temp);
                     break;
@@ -154,91 +156,107 @@ inline void start(char* data, int size){
                 }
                 case _SB_STORE_:
                 {
-                    OUTPUT("SB_STORE\t");
-                    i++;
-                    OUTPUT((int)UCdata[i]);
+                    OUTPUT("SB_STORE\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _UB_STORE_:
                 {
-                    OUTPUT("UB_STORE\t");
-                    i++;
-                    OUTPUT((unsigned int)UCdata[i]);
+                    OUTPUT("UB_STORE\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _SI_STORE_:
                 {
-                    OUTPUT("SI_STORE\t");
-                    OUTPUT(*reinterpret_cast<int*>(&UCdata[++i]));
-                    i += 3;
+                    OUTPUT("SI_STORE\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _UI_STORE_:
                 {
-                    OUTPUT("UI_STORE\t");
-                    OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
-                    i += 3;
+                    OUTPUT("UI_STORE\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _F_STORE_:
                 {
-                    OUTPUT("F_STORE\t");
-                    OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
-                    i += 3;
+                    OUTPUT("F_STORE\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _D_STORE_:
                 {
-                    OUTPUT("D_STORE\t");
-                    OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
-                    i += 3;
+                    OUTPUT("D_STORE\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _L_STORE_:
                 {
-                    OUTPUT("L_STORE\t");
-                    OUTPUT(*reinterpret_cast<unsigned int*>(&UCdata[++i]));
-                    i += 3;
+                    OUTPUT("L_STORE\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _SB_LOAD_:
                 {
-                    OUTPUT("SB_LOAD\t");
+                    OUTPUT("SB_LOAD\t\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _UB_LOAD_:
                 {
-                    OUTPUT("UB_LOAD\t");
+                    OUTPUT("UB_LOAD\t\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _SI_LOAD_:
                 {
-                    OUTPUT("SI_LOAD\t");
+                    OUTPUT("SI_LOAD\t\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _UI_LOAD_:
                 {
-                    OUTPUT("UI_LOAD\t");
+                    OUTPUT("UI_LOAD\t\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _F_LOAD_:
                 {
-                    OUTPUT("F_LOAD\t");
+                    OUTPUT("F_LOAD\t\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _D_LOAD_:
                 {
-                    OUTPUT("D_LOAD\t");
+                    OUTPUT("D_LOAD\t\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
                 case _L_LOAD_:
                 {
-                    OUTPUT("L_LOAD\t");
+                    OUTPUT("L_LOAD\t\t\t");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
-                case 0xee:
+                case _GOTO_:
                 {
                     OUTPUT("GOTO");
+                    unsigned char temp = UCdata[++i];
+                    OUTPUT((unsigned int)temp);
                     break;
                 }
             }
