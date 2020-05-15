@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <stack>
+#include <cmath>
 
 #include "../debug/MNEMONICS.h"
 
@@ -96,13 +97,13 @@ private:
     inline void SICONST_PUSH(){
         MNEMONIC("SICONST_PUSH");
         m_stack.push({_SINT_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
-        m_memptr += 3;                                                    // m_memptr += INT_SIZE - 1 bcuz I said so
+        m_memptr += 3;
         DEBUG(std::dec << (sint)m_stack.top().data);
     }
     inline void UICONST_PUSH(){
         MNEMONIC("UICONST_PUSH");
         m_stack.push({_UINT_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
-        m_memptr += 3;                                                    // m_memptr += INT_SIZE - 1 bcuz I said so
+        m_memptr += 3;
         DEBUG(std::dec << (uint)m_stack.top().data);
     }
     inline void FCONST_PUSH(){
@@ -111,11 +112,70 @@ private:
         m_memptr += 3;
         DEBUG(std::dec << *reinterpret_cast<float*>(&m_stack.top().data));
     }
-    inline void DCONST_PUSH(){                                                              // FIX THIS
+    inline void DCONST_PUSH(){                          // FIX THIS
         MNEMONIC("DCONST_PUSH");
     }
-    inline void LCONST_PUSH(){                                                              // FIX THIS
+    inline void LCONST_PUSH(){                          // FIX THIS
         MNEMONIC("LCONST_PUSH");
+    }
+    inline void SCONST_PUSH(){
+        MNEMONIC("SCONST_PUSH");                        // FIX THIS
+    }
+    inline void NEW_ARR(){
+        MNEMONIC("NEW_ARR");
+        if(m_stack.top().data < 0)
+            std::exit(-1);
+        uint length = m_stack.top().data;
+        m_stack.pop();
+        switch (*getNextByte())
+        {
+        case _NULL_:
+            // do nothing
+            break;
+        case _SBYTE_:
+            signed char* temp = (signed char*)malloc(length);
+            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});         // push 32 most significant bits to the stack
+            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});               // then push 32 least significant bits
+            break;                                                                  // references take up two slots on stack because
+        case _UBYTE_:                                                               // it holds a 64 bit pointer
+            unsigned char* temp = (unsigned char*)malloc(length);
+            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
+            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            break;
+        case _SINT_:
+            sint* temp = (sint*)malloc(4 * length);
+            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
+            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            break;
+        case _UINT_:
+            uint* temp = (uint*)malloc(4 * length);
+            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
+            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            break;
+        case _FLOAT_:
+            float* temp = (float*)malloc(4 * length);
+            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
+            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            break;
+        case _DOUBLE_:
+            
+            break;
+        case _LONG_:
+            
+            break;
+        case _STRING_:
+            
+            break;
+        case _REF_:
+            
+            break;
+        case _SPECIAL_:
+            
+            break;
+        
+        default:
+            break;
+        } 
     }
     inline void SB_ADD(){
         MNEMONIC("SB_ADD");
@@ -361,7 +421,7 @@ private:
         MNEMONIC("F_DIV");
         float result = *reinterpret_cast<float*>(&m_stack.top().data);
         m_stack.pop();
-        result = std::fmodf(*reinterpret_cast<float*>(&m_stack.top().data), result);
+        result = std::modf(*reinterpret_cast<float*>(&m_stack.top().data), &result);
         m_stack.pop();
         DEBUG(std::dec << result);
         m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});

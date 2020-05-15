@@ -24,20 +24,11 @@ int main(){
         0x68,           // end file signature
 
                         // start program
-        _FCONST_PUSH_,
-        0x00,
-        0x80,
-        0x16,
-        0x43,
-        _FCONST_PUSH_,
-        0x00,
-        0x80,
-        0x16,
-        0x43,
-        _F_SUB_,
-        _UBCONST_PUSH_,
-        0x00,
-        _F_STORE_,
+        _UICONST_PUSH_,
+        0x05,
+        _NEW_ARR_,
+        0x01,
+        
                         // end program
 
         _EXIT_,         // exit

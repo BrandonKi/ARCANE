@@ -98,6 +98,12 @@ void VM::executeInstruction(){
 		case _LCONST_PUSH_:
 			LCONST_PUSH();
 			break;
+		case _SCONST_PUSH_:
+			SCONST_PUSH();
+			break;
+		case _NEW_ARR_:
+			NEW_ARR();
+			break;
 		case _SB_ADD_:
 			SB_ADD();
 			break;
