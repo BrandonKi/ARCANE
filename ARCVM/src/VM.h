@@ -477,6 +477,12 @@ private:
         m_stack.push(m_stack.top());
         m_stack.push(m_stack.top());
     }
+    inline void SWAP(){
+        container a = m_stack.top();
+        m_stack.pop();
+        std::swap(a, m_stack.top());
+        m_stack.push(a);
+    }
     inline void GOTO(){
         byte address = *getNextByte();
         MNEMONIC("GOTO" << std::hex << (uint)address);
