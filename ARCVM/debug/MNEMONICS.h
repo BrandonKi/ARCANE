@@ -58,6 +58,11 @@
 #define _F_LOAD_ 0xd4
 #define _D_LOAD_ 0xd5
 #define _L_LOAD_ 0xd6
+#define _POP_ 0xe0
+#define _POP2_ 0xe1
+#define _DUP_ 0xe3
+#define _DUP2_ 0xe4
+#define _SWAP_ 0xe5
 #define _GOTO_ 0xee
 
 

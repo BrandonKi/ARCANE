@@ -214,73 +214,163 @@ private:
         m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_SUB(){
-        
+        MNEMONIC("D_SUB");                         // FIX THIS
     }
     inline void L_SUB(){
-        
+        MNEMONIC("L_SUB");                         // FIX THIS
     }
     inline void SB_MUL(){
-
+        MNEMONIC("SB_MUL");
+        sint result = (m_stack.top().data & 0xff);
+        m_stack.pop();
+        result = (m_stack.top().data & 0xff) * result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_SBYTE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void UB_MUL(){
-        
+        MNEMONIC("UB_MUL");
+        uint result = (m_stack.top().data & 0xff);
+        m_stack.pop();
+        result = (m_stack.top().data * result) & 0xff;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_UBYTE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void SI_MUL(){
-        
+        MNEMONIC("SI_MUL");
+        sint result = m_stack.top().data;
+        m_stack.pop();
+        result = m_stack.top().data * result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_SINT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void UI_MUL(){
-        
+        MNEMONIC("UI_MUL");
+        uint result = m_stack.top().data;
+        m_stack.pop();
+        result = m_stack.top().data * result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_UINT_, result});
     }
     inline void F_MUL(){
-        
+        MNEMONIC("F_SUB");
+        float result = *reinterpret_cast<float*>(&m_stack.top().data);
+        m_stack.pop();
+        result = *reinterpret_cast<float*>(&m_stack.top().data) * result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_MUL(){
-        
+        MNEMONIC("D_MUL");                  // FIX THIS
     }
     inline void L_MUL(){
-        
+        MNEMONIC("L_MUL");                  // FIX THIS
     }
     inline void SB_DIV(){
-
+        MNEMONIC("SB_DIV");
+        sint result = (m_stack.top().data & 0xff);
+        m_stack.pop();
+        result = (m_stack.top().data & 0xff) / result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_SBYTE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void UB_DIV(){
-        
+        MNEMONIC("UB_DIV");
+        uint result = (m_stack.top().data & 0xff);
+        m_stack.pop();
+        result = (m_stack.top().data / result) & 0xff;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_UBYTE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void SI_DIV(){
-        
+        MNEMONIC("SI_DIV");
+        sint result = m_stack.top().data;
+        m_stack.pop();
+        result = m_stack.top().data / result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_SINT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void UI_DIV(){
-        
+        MNEMONIC("UI_DIV");
+        uint result = m_stack.top().data;
+        m_stack.pop();
+        result = m_stack.top().data / result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_UINT_, result});
     }
     inline void F_DIV(){
-        
+        MNEMONIC("F_DIV");
+        float result = *reinterpret_cast<float*>(&m_stack.top().data);
+        m_stack.pop();
+        result = *reinterpret_cast<float*>(&m_stack.top().data) / result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_DIV(){
-        
+        MNEMONIC("D_DIV");              // FIX THIS
     }
     inline void L_DIV(){
-        
+        MNEMONIC("L_DIV");              // FIX THIS
     }
     inline void SB_REM(){
-
+        MNEMONIC("SB_DIV");
+        sint result = (m_stack.top().data & 0xff);
+        m_stack.pop();
+        result = (m_stack.top().data & 0xff) % result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_SBYTE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void UB_REM(){
-        
+        MNEMONIC("UB_DIV");
+        uint result = (m_stack.top().data & 0xff);
+        m_stack.pop();
+        result = (m_stack.top().data % result) & 0xff;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_UBYTE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void SI_REM(){
-        
+        MNEMONIC("SI_DIV");
+        sint result = m_stack.top().data;
+        m_stack.pop();
+        result = m_stack.top().data % result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_SINT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void UI_REM(){
-        
+        MNEMONIC("UI_DIV");
+        uint result = m_stack.top().data;
+        m_stack.pop();
+        result = m_stack.top().data % result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_UINT_, result});
     }
     inline void F_REM(){
-        
+        MNEMONIC("F_DIV");
+        float result = *reinterpret_cast<float*>(&m_stack.top().data);
+        m_stack.pop();
+        result = std::fmodf(*reinterpret_cast<float*>(&m_stack.top().data), result);
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_REM(){
-        
+        MNEMONIC("D_REM");              // FIX THIS
     }
     inline void L_REM(){
-        
+        MNEMONIC("L_REM");              // FIX THIS
     }
     inline void SB_STORE(){
         MNEMONIC("SB_STORE");
@@ -372,6 +462,20 @@ private:
         uint temp = m_stack.top().data;
         m_stack.push(m_variableTable[temp]);
         DEBUG(m_stack.top().data);
+    }
+    inline void POP(){
+        m_stack.pop();
+    }
+    inline void POP2(){
+        m_stack.pop();
+        m_stack.pop();
+    }
+    inline void DUP(){
+        m_stack.push(m_stack.top());
+    }
+    inline void DUP2(){
+        m_stack.push(m_stack.top());
+        m_stack.push(m_stack.top());
     }
     inline void GOTO(){
         byte address = *getNextByte();
