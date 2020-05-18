@@ -33,9 +33,9 @@
     #define EXIT_MSG(x)
 #endif
 
-typedef uint_fast32_t uint;
+typedef uint_fast64_t uint;
 typedef int_fast32_t sint;
-typedef int_fast64_t slong;
+typedef uint_fast64_t slong;
 typedef uint_fast8_t byte;
 
 struct container {
@@ -134,31 +134,26 @@ private:
             break;
         case _SBYTE_:
             signed char* temp = (signed char*)malloc(length);
-            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});         // push 32 most significant bits to the stack
-            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});               // then push 32 least significant bits
-            break;                                                                  // references take up two slots on stack because
-        case _UBYTE_:                                                               // it holds a 64 bit pointer
+            m_stack.push({_REF_, (uint)temp});
+            break;
+        case _UBYTE_:                                                               
             unsigned char* temp = (unsigned char*)malloc(length);
-            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
-            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            m_stack.push({_REF_, (uint)temp});
             break;
         case _SINT_:
             sint* temp = (sint*)malloc(4 * length);
-            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
-            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            m_stack.push({_REF_, (uint)temp});
             break;
         case _UINT_:
             uint* temp = (uint*)malloc(4 * length);
-            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
-            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            m_stack.push({_REF_, (uint)temp});
             break;
         case _FLOAT_:
             float* temp = (float*)malloc(4 * length);
-            m_stack.push({_REF_, ((uint)temp & 0xffffffff00000000) >> 32});
-            m_stack.push({_REF_, ((uint)temp & 0x00000000ffffffff)});
+            m_stack.push({_REF_, (uint)temp});
             break;
         case _DOUBLE_:
-            
+            m_stack.push({_REF_, (uint)temp});
             break;
         case _LONG_:
             
