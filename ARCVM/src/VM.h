@@ -337,7 +337,13 @@ private:
         m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_MUL(){
-        MNEMONIC("D_MUL");                  // FIX THIS
+        MNEMONIC("D_MUL");
+        double result = *reinterpret_cast<double*>(&m_stack.top().data);
+        m_stack.pop();
+        result = *reinterpret_cast<double*>(&m_stack.top().data) * result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void L_MUL(){
         MNEMONIC("L_MUL");                  // FIX THIS
@@ -388,7 +394,13 @@ private:
         m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_DIV(){
-        MNEMONIC("D_DIV");              // FIX THIS
+        MNEMONIC("D_DIV");
+        double result = *reinterpret_cast<double*>(&m_stack.top().data);
+        m_stack.pop();
+        result = *reinterpret_cast<double*>(&m_stack.top().data) / result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void L_DIV(){
         MNEMONIC("L_DIV");              // FIX THIS
@@ -431,15 +443,21 @@ private:
     }
     inline void F_REM(){
         MNEMONIC("F_DIV");
-        float result = *reinterpret_cast<float*>(&m_stack.top().data);
+        float temp = *reinterpret_cast<float*>(&m_stack.top().data);
         m_stack.pop();
-        result = std::modf(*reinterpret_cast<float*>(&m_stack.top().data), &result);
+        float result = std::modf(*reinterpret_cast<float*>(&m_stack.top().data), &temp);
         m_stack.pop();
-        DEBUG(std::dec << result);
+        DEBUG(std::dec << (float)result);
         m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_REM(){
-        MNEMONIC("D_REM");              // FIX THIS
+        MNEMONIC("D_REM");
+        double temp = *reinterpret_cast<double*>(&m_stack.top().data);
+        m_stack.pop();
+        double result = std::modf(*reinterpret_cast<double*>(&m_stack.top().data), &temp);
+        m_stack.pop();
+        DEBUG(std::dec << (double)result);
+        m_stack.push({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void L_REM(){
         MNEMONIC("L_REM");              // FIX THIS
