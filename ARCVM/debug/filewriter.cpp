@@ -24,10 +24,25 @@ int main(){
         0x68,           // end file signature
 
                         // start program
-        _UICONST_PUSH_,
+        _DCONST_PUSH_,
         0x05,
-        _NEW_ARR_,
-        0x01,
+        0x05,
+        0x05,
+        0x05,
+        0x05,
+        0x05,
+        0x05,
+        0x05,
+        _DCONST_PUSH_,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        0xaa,
+        _D_ADD_,
         
                         // end program
 

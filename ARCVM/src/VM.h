@@ -97,13 +97,13 @@ private:
     inline void SICONST_PUSH(){
         MNEMONIC("SICONST_PUSH");
         m_stack.push({_SINT_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
-        m_memptr += 3;
+        m_memptr += 7;
         DEBUG(std::dec << (sint)m_stack.top().data);
     }
     inline void UICONST_PUSH(){
         MNEMONIC("UICONST_PUSH");
         m_stack.push({_UINT_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
-        m_memptr += 3;
+        m_memptr += 7;
         DEBUG(std::dec << (uint)m_stack.top().data);
     }
     inline void FCONST_PUSH(){
@@ -112,8 +112,11 @@ private:
         m_memptr += 3;
         DEBUG(std::dec << *reinterpret_cast<float*>(&m_stack.top().data));
     }
-    inline void DCONST_PUSH(){                          // FIX THIS
+    inline void DCONST_PUSH(){                          
         MNEMONIC("DCONST_PUSH");
+        m_stack.push({_DOUBLE_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
+        m_memptr += 7;
+        DEBUG(std::dec << (double)m_stack.top().data);
     }
     inline void LCONST_PUSH(){                          // FIX THIS
         MNEMONIC("LCONST_PUSH");
@@ -127,33 +130,35 @@ private:
             std::exit(-1);
         uint length = m_stack.top().data;
         m_stack.pop();
+        void* temp;
         switch (*getNextByte())
         {
         case _NULL_:
             // do nothing
             break;
         case _SBYTE_:
-            signed char* temp = (signed char*)malloc(length);
-            m_stack.push({_REF_, (uint)temp});
+            temp = (signed char*)malloc(length);
+            m_stack.push({_REF_, (uint)(signed char*)temp});
             break;
         case _UBYTE_:                                                               
-            unsigned char* temp = (unsigned char*)malloc(length);
-            m_stack.push({_REF_, (uint)temp});
+            temp = (unsigned char*)malloc(length);
+            m_stack.push({_REF_, (uint)(unsigned char*)temp});
             break;
         case _SINT_:
-            sint* temp = (sint*)malloc(4 * length);
-            m_stack.push({_REF_, (uint)temp});
+            temp = (sint*)malloc(8 * length);
+            m_stack.push({_REF_, (uint)(sint*)temp});
             break;
         case _UINT_:
-            uint* temp = (uint*)malloc(4 * length);
-            m_stack.push({_REF_, (uint)temp});
+            temp = (uint*)malloc(8 * length);
+            m_stack.push({_REF_, (uint)(uint*)temp});
             break;
         case _FLOAT_:
-            float* temp = (float*)malloc(4 * length);
-            m_stack.push({_REF_, (uint)temp});
+            temp = (float*)malloc(4 * length);
+            m_stack.push({_REF_, (uint)(float*)temp});
             break;
         case _DOUBLE_:
-            m_stack.push({_REF_, (uint)temp});
+            temp = (double*)malloc(8 * length);
+            m_stack.push({_REF_, (uint)(double*)temp});
             break;
         case _LONG_:
             
@@ -217,8 +222,14 @@ private:
         DEBUG(std::dec << result);
         m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
-    inline void D_ADD(){                      // FIX THIS
+    inline void D_ADD(){
         MNEMONIC("D_ADD");
+        double result = m_stack.top().data;
+        m_stack.pop();
+        result += *reinterpret_cast<double*>(&m_stack.top().data);
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void L_ADD(){                      // FIX THIS
         MNEMONIC("L_ADD");
@@ -245,7 +256,7 @@ private:
         MNEMONIC("SI_SUB");
         sint result = m_stack.top().data;
         m_stack.pop();
-        result = m_stack.top().data - result;
+        result = *reinterpret_cast<sint*>(&m_stack.top().data) - result;
         m_stack.pop();
         DEBUG(std::dec << result);
         m_stack.push({_SINT_, *reinterpret_cast<uint*>(&result)});
@@ -269,7 +280,13 @@ private:
         m_stack.push({_FLOAT_, *reinterpret_cast<uint*>(&result)});
     }
     inline void D_SUB(){
-        MNEMONIC("D_SUB");                         // FIX THIS
+        MNEMONIC("D_SUB");
+        double result = m_stack.top().data;
+        m_stack.pop();
+        result = *reinterpret_cast<double*>(&m_stack.top().data) - result;
+        m_stack.pop();
+        DEBUG(std::dec << result);
+        m_stack.push({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
     inline void L_SUB(){
         MNEMONIC("L_SUB");                         // FIX THIS
