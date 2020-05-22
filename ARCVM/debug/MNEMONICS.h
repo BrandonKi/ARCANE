@@ -13,6 +13,8 @@
 #define _SCONST_PUSH_ 0x17
 
 #define _NEW_ARR_ 0x40
+#define _UBA_STORE_ 0x43
+#define _UBA_LOAD_ 0x44
 
 #define _SB_ADD_ 0xa0
 #define _UB_ADD_ 0xa1

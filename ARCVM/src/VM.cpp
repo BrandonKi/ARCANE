@@ -104,6 +104,12 @@ void VM::executeInstruction(){
 		case _NEW_ARR_:
 			NEW_ARR();
 			break;
+		case _UBA_STORE_:
+			UBA_STORE();
+			break;
+		case _UBA_LOAD_:
+			UBA_LOAD();
+			break;
 		case _SB_ADD_:
 			SB_ADD();
 			break;
@@ -308,14 +314,16 @@ void VM::printStack(){
 				std::cout <<  *reinterpret_cast<float*>(&result.top().data) << "\n";
 				break;
 			case 6:
-				std::cout << (double)result.top().data << "\n";
+				std::cout << *reinterpret_cast<double*>(&result.top().data) << "\n";
 				break;
 			case 7:
 				std::cout << (slong)result.top().data << "\n";
 				break;
 			case 8:
+				std::cout << (slong)result.top().data << "\n";
 				break;
 			case 9:
+				std::cout << (uint)result.top().data << "\n";
 				break;
 		}
 		

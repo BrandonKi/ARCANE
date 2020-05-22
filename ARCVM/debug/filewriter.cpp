@@ -26,16 +26,18 @@ int main(){
                         // start program
         _UBCONST_PUSH_,
         0x04,
-        _UBCONST_PUSH_,
-        0x05,
-        _UB_ADD_,
-        _UB_STORE_,
-        0x00,
-        _UB_LOAD_,
+        _NEW_ARR_,
+        0x02,
         _DUP_,
-        _UB_ADD_,
-        _UB_STORE_,
-        0x00,
+        _UBCONST_PUSH_,
+        0x08,
+        _UBCONST_PUSH_,
+        0x03,
+        _UBA_STORE_,
+        _UBCONST_PUSH_,
+        0x03,
+        _UBA_LOAD_,
+
                         // end program
 
         _EXIT_,         // exit
