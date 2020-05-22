@@ -24,26 +24,18 @@ int main(){
         0x68,           // end file signature
 
                         // start program
-        _DCONST_PUSH_,
-        0x00,
-        0x00,
-        0x00,
+        _UBCONST_PUSH_,
+        0x04,
+        _UBCONST_PUSH_,
         0x05,
-        0x05,
+        _UB_ADD_,
+        _UB_STORE_,
         0x00,
+        _UB_LOAD_,
+        _DUP_,
+        _UB_ADD_,
+        _UB_STORE_,
         0x00,
-        0x00,
-        _DCONST_PUSH_,
-        0x00,
-        0x00,
-        0x00,
-        0x01,
-        0x01,
-        0x00,
-        0x00,
-        0x00,
-        _D_REM_,
-        
                         // end program
 
         _EXIT_,         // exit
