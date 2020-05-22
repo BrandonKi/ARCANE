@@ -22,20 +22,12 @@ Bytecode files store variables in Little Endian
 - make a function table
 - const table
 - specify amount of variables and functions needed in file
-- add all missing instructions for add, store
 - branch intructions
 - array instructions
 - load from constant table
-- push instruction for 64 bit types
-- load instruction for 64 bit types
-- support for 64 bit types (double, long)
-- sub instruction for 64 bit types
-- mul instruction for 64 bit types
-- div instruction for 64 bit types
-- rem instruction for 64 bit types
-- pop instructions
-- dup instructions
-- 64 bit type representation in bytecode
+- support for long type
+- all intructions for long (128 bit)
+- 128 bit type representation in bytecode
 - string support and representation in bytecode
 
 ### Compiler
@@ -53,6 +45,10 @@ Bytecode files store variables in Little Endian
 
 ## DONE:
 
+- pop instructions
+- dup instructions
+- add all missing instructions for add, store
+- convert stack to 64 bit from 32 bit
 - file signature
 - bytecode file writer
 - option to output readable bytecode alongside actual bytecode
