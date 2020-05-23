@@ -186,20 +186,21 @@ private:
     }
     inline void UBA_STORE(){
         MNEMONIC("UBA_STORE");
-        uint value = m_stack.top().data & 0xff;
-        m_stack.pop();
         uint index = m_stack.top().data & 0xff;
+        m_stack.pop();
+        uint value = m_stack.top().data & 0xff;
         m_stack.pop();
         unsigned char* arr = reinterpret_cast<unsigned char*>(m_stack.top().data);
         m_stack.pop();
         logn(*reinterpret_cast<uint_fast32_t*>(arr));
+        logn(index);
         if(index > *reinterpret_cast<uint_fast32_t*>(arr)){
             EXIT_CODE = 1;
-            EXIT_ON_NEXT_INTSRUCTION - true;
+            EXIT_ON_NEXT_INTSRUCTION = true;
             logn("ARRAY_OUT_OF_BOUNDS");
         }else{
-            *(arr+32+index) = value;
-            DEBUG("index: " << index << " value: " << value << " " << (uint)arr[index]);
+            *(arr + 4 + index) = value;
+            DEBUG("index: " << index << " value: " << value << " " << (uint)*(arr + 4 + index));
         }
     }
     inline void UBA_LOAD(){
@@ -214,9 +215,8 @@ private:
             EXIT_ON_NEXT_INTSRUCTION - true;
             logn("ARRAY_OUT_OF_BOUNDS");
         }else{
-            m_stack.push({_UBYTE_, *(arr + 32 + index)});
-            DEBUG(sizeof(*arr));
-            DEBUG("index: " << index << " " << (uint)arr[index]);
+            m_stack.push({_UBYTE_, *(arr + 4 + index)});
+            DEBUG("index: " << index << " " << *(arr + 4 + index));
         }
     }
     inline void SB_ADD(){
