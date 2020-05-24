@@ -12,7 +12,7 @@ inline char* appendExtension(const char* filename);
 int main (int argc, const char* argv[]) {
   for(int i = 0; i < argc; i++)
     logn(argv[i]);
-  NEWLINE;
+    NEWLINE;
   if(argc > 1){
     TIMER_START;
     std::streampos size;
