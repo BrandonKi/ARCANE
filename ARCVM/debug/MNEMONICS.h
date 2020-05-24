@@ -63,6 +63,7 @@
 #define _F_STORE_ 0xcb
 #define _D_STORE_ 0xcc
 #define _L_STORE_ 0xcd
+#define _REF_STORE_ 0xce
 
 #define _SB_LOAD_ 0xd0
 #define _UB_LOAD_ 0xd1
@@ -71,6 +72,7 @@
 #define _F_LOAD_ 0xd4
 #define _D_LOAD_ 0xd5
 #define _L_LOAD_ 0xd6
+#define _REF_LOAD_ 0xd7
 
 #define _POP_ 0xe0
 #define _POP2_ 0xe1
@@ -81,6 +83,8 @@
 #define _SWAP_ 0xe5
 
 #define _GOTO_ 0xee
+
+
 
 
 
