@@ -236,6 +236,9 @@ void VM::executeInstruction(){
 		case _L_STORE_:
 			L_STORE();
 			break;
+		case _REF_STORE_:
+			REF_STORE();
+			break;
 		case _SB_LOAD_:
 			SB_LOAD();
 			break;
@@ -256,6 +259,9 @@ void VM::executeInstruction(){
 			break;
 		case _L_LOAD_:
 			L_LOAD();
+			break;
+		case _REF_LOAD_:
+			REF_LOAD();
 			break;
 		case _POP_:
 			POP();
@@ -295,35 +301,35 @@ void VM::printStack(){
 	}
 	while(!result.empty()){
 		switch(result.top().type){
-			case 0:
+			case _NULL_:
 				std::cout <<"NULL\n";
 				break;
-			case 1:
-				std::cout << (sint)result.top().data << "\n";
+			case _SBYTE_:
+				std::cout << (sint)(signed char)(result.top().data & 0xff) << "\n";
 				break;
-			case 2:
-				std::cout << (uint)result.top().data << "\n";
+			case _UBYTE_:
+				std::cout << (result.top().data & 0xff) << "\n";
 				break;
-			case 3:
-				std::cout << (sint)result.top().data << "\n";
+			case _SINT_:
+				std::cout << *reinterpret_cast<sint*>(&result.top().data) << "\n";
 				break;
-			case 4:
-				std::cout << (uint)result.top().data << "\n";
+			case _UINT_:
+				std::cout << result.top().data << "\n";
 				break;
-			case 5:
+			case _FLOAT_:
 				std::cout <<  *reinterpret_cast<float*>(&result.top().data) << "\n";
 				break;
-			case 6:
+			case _DOUBLE_:
 				std::cout << *reinterpret_cast<double*>(&result.top().data) << "\n";
 				break;
-			case 7:
+			case _LONG_:
 				std::cout << (slong)result.top().data << "\n";
 				break;
-			case 8:
+			case _STRING_:
 				std::cout << (slong)result.top().data << "\n";
 				break;
-			case 9:
-				std::cout << (uint)result.top().data << "\n";
+			case _REF_:
+				std::cout << "0x" << std::hex << result.top().data << std::dec << "\n";
 				break;
 		}
 		
