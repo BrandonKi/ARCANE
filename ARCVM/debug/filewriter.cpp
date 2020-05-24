@@ -25,7 +25,7 @@ int main(){
 
                         // start program
         _UBCONST_PUSH_,
-        0x04,
+        0xff,
         _NEW_ARR_,
         0x02,
         _DUP_,
@@ -34,9 +34,11 @@ int main(){
         _UBCONST_PUSH_,
         0x03,
         _UBA_STORE_,
-        _UBCONST_PUSH_,
-        0x03,
-        _UBA_LOAD_,
+        _REF_STORE_,
+        0x00,
+        _REF_LOAD_,
+        0x00,
+        
 
                         // end program
 
