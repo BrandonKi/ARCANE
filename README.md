@@ -23,7 +23,7 @@ Bytecode files store variables in Little Endian
 - const table
 - specify amount of variables and functions needed in file
 - branch intructions
-- array instructions
+- add the rest of the array instructions
 - load from constant table
 - support for long type
 - all intructions for long (128 bit)
