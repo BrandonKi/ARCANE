@@ -1,5 +1,5 @@
 cd C:\Users\Kirin\Desktop\ARCANE\ARCVM\debug; g++ -o filewriter filewriter.cpp; start filewriter.exe
 cd C:\Users\Kirin\Desktop\ARCANE\ARCVM\debug; g++ -o ReadableBytecode ReadableBytecode.cpp; start ReadableBytecode.exe
 cd C:\Users\Kirin\Desktop\ARCANE\ARCVM\src; g++ -o BMain BMain.cpp VM.cpp; start BMain.exe example
-cd C:\Users\Kirin\Desktop\ARCANE\Compiler; g++ -o Main Main.cpp; start Main.exe C:\Users\Kirin\Desktop\ARCANE\VM\src\example.arcs
+cd C:\Users\Kirin\Desktop\ARCANE\Compiler; g++ -o Compiler Compiler.cpp Lexer.cpp; start Compiler.exe example.arcs
 g++ -S -masm=intel VM.cpp
