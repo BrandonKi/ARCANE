@@ -1,14 +1,13 @@
 #include "Lexer.h"
 
-#define ERR(x) std::cout << x << "\n"; return -1
+#define ERR(x) std::cout << x << "\n"; std::cin.get(); return -1
 
-inline bool checkFileType(const char* temp);
+inline bool checkFileType(const char* data, unsigned int length);
 
 int main(int argc, const char* argv[]){
     for(int i = 0; i < argc; i++)
         std::cout << argv[i] << "\n";
-    std::cout << sizeof(argv[1]) << "\n";
-    std::cout << strlen(argv[1]) << "\n";
+    unsigned int length = sizeof(argv[1]);
     if(argc > 1){
         std::streampos size;
         std::ifstream file (argv[1], std::ios::in|std::ios::ate);
@@ -19,8 +18,10 @@ int main(int argc, const char* argv[]){
             file.seekg (0, std::ios::beg);
             file.read (filedata, size);
             file.close();
-            if(checkFileType(argv[1], size)){
+            if(checkFileType(argv[1], length)){
                 Lexer lexer(filedata, size);
+                lexer.start();
+                std::cout << "DONE";
                 std::cin.get();
                 return 0;
             }else
@@ -32,5 +33,5 @@ int main(int argc, const char* argv[]){
 }
 
 inline bool checkFileType(const char* data, unsigned int length){   // Makes sure the extension is correct. There is no file signature because it is stored as plain text.
-    return memcmp("arcs", &data[length - 4], 4) == 0;
+    return memcmp("arcs", &data[length], 4) == 0;
 }
