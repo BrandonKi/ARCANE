@@ -65,7 +65,7 @@ private:
     void executeInstruction();
 
 public:
-    VM(char* data, uint size);
+    inline VM(char* data, uint size);
     inline ~VM(){delete[] m_data;};
     void printProgram(byte*);
     inline byte* getProgram(){return m_data;};
