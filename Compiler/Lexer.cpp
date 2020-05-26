@@ -72,7 +72,6 @@ void Lexer::start(){
                 break;
             case '^':
                 break;
-            
             case '`':
                 break;
             case '{':

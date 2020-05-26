@@ -35,7 +35,7 @@
 
 typedef uint_fast64_t uint;
 typedef int_fast64_t sint;
-typedef uint_fast64_t slong;  // wrong
+typedef uint_fast64_t slong;  // wrong, incorrect, fix asap
 typedef uint_fast8_t byte;
 
 struct container {
