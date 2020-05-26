@@ -5,10 +5,9 @@
 
 #include "../debug/MNEMONICS.h"
 
-#define DEBUG_BUILD
+// #define DEBUG_BUILD
 // #define RELEASE_BUILD
 
-#define NEWLINE std::cout << "\n"
 #define log(x) std::cout << x
 #define logn(x) std::cout << x << "\n"
 #define ERR(x) std::cout << x << "\n"; std::cin.get(); return -1
@@ -16,6 +15,7 @@
 #define INT_SIZE 4         // This macro doesn't do anything
 
 #ifdef DEBUG_BUILD
+    #define NEWLINE std::cout << "\n"
     #define POINTER(x) std::cout << "    POINTER: " << x << "\n"
     #define INSTRUCTION(x) std::cout << "INSTRUCTION: " << x << "\n"
     #define MNEMONIC(x) std::cout << "   MNEMONIC: " << x << "\n"
@@ -24,6 +24,7 @@
     #define DEBUG_STACK printStack()
     #define EXIT_MSG(x) std::cout << "EXITED WITH CODE: " << x << "\n"
 #else
+    #define NEWLINE
     #define POINTER(x)
     #define INSTRUCTION(x)
     #define MNEMONIC(x)
@@ -65,8 +66,8 @@ private:
     void executeInstruction();
 
 public:
-    inline VM(char* data, uint size);
-    inline ~VM(){delete[] m_data;};
+    VM(char* data, uint size);
+    ~VM(){delete[] m_data;};
     void printProgram(byte*);
     inline byte* getProgram(){return m_data;};
     void run();
@@ -196,8 +197,6 @@ private:
         m_stack.pop();
         unsigned char* arr = reinterpret_cast<unsigned char*>(m_stack.top().data);
         m_stack.pop();
-        logn(*reinterpret_cast<uint_fast32_t*>(arr));
-        logn(index);
         if(index > *reinterpret_cast<uint_fast32_t*>(arr)){
             EXIT_CODE = 1;
             EXIT_ON_NEXT_INTSRUCTION = true;
@@ -213,10 +212,9 @@ private:
         m_stack.pop();
         unsigned char* arr = reinterpret_cast<unsigned char*>(m_stack.top().data);
         m_stack.pop();
-        logn(*reinterpret_cast<uint_fast32_t*>(arr));
         if(index > *reinterpret_cast<uint_fast32_t*>(arr)){
             EXIT_CODE = 1;
-            EXIT_ON_NEXT_INTSRUCTION - true;
+            EXIT_ON_NEXT_INTSRUCTION = true;
             logn("ARRAY_OUT_OF_BOUNDS");
         }else{
             m_stack.push({_UBYTE_, *(arr + 4 + index)});

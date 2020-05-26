@@ -4,15 +4,17 @@
 
 clock_t start, end; 
 #define TIMER_START start = clock()
-#define TIMER_STOP std::cout << "Time taken by program is : " << (double(clock() - start) / double(CLOCKS_PER_SEC)) * 1000 << " milliseconds " << std::endl; 
+#define TIMER_STOP std::cout << "Time taken by program is : " << ((double(clock() - start) / double(CLOCKS_PER_SEC)) * 1000) << " milliseconds " << std::endl; 
 
 inline bool checkFileType(char* data);
 inline char* appendExtension(const char* filename);
 
 int main (int argc, const char* argv[]) {
-  for(int i = 0; i < argc; i++)
-    logn(argv[i]);
-    NEWLINE;
+  #ifdef DEBUG_BUILD
+    for(int i = 0; i < argc; i++)
+      logn(argv[i]);
+      NEWLINE;
+  #endif
   if(argc > 1){
     TIMER_START;
     std::streampos size;
