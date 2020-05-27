@@ -5,6 +5,8 @@ A programming language and bytecode VM. (ARCVM)
 
 
 
+
+
 # Notes
 
 
@@ -15,56 +17,8 @@ Only checks for fatal errors at runtime.
 
 Bytecode files store variables in Little Endian 
 
-## TODO:
 
-### VM
-- bounds checks on variable table
-- make a function table
-- const table
-- specify amount of variables and functions needed in file
-- branch intructions
-- add the rest of the array instructions
-- load from constant table
-- support for long type
-- all intructions for long (128 bit)
-- 128 bit type representation in bytecode
-- string support and representation in bytecode
-
-### Compiler
-
-- lexical analysis
-- symbol table construction
-- syntax analysis
-- semantic analysis
-- code generation
-- optimization
-
-
-- UPDATE SPREADSHEET WITH NEW INSTRUCTIONS AND DESCRIPTIONS
-
-
-## DONE:
-
-- pop instructions
-- dup instructions
-- add all missing instructions for add, store
-- convert stack to 64 bit from 32 bit
-- file signature
-- bytecode file writer
-- option to output readable bytecode alongside actual bytecode
-- start spreadsheet for all instructions
-- push instruction
-- variable representation in bytecode
-- main execution loop
-- debug and release modes
-- file extension for source, bytecode, and readable bytecode
-- sub instruction
-- mul instruction
-- div instruction
-- rem instruction
-
-
-## Compiler explanation
+## Simple Compiler explanation
 
 ### Lexical analysis/Tokeniztion
 - Comments and unnecessary spaces are removed.
