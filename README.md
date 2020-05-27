@@ -9,6 +9,7 @@ A programming language and bytecode VM. (ARCVM)
 
 # Notes
 
+https://trello.com/b/tZJWGk7b/arcane
 
 Type checking only occurs when using strings.
 Otherwise all type checking should/will be done at compile time.
