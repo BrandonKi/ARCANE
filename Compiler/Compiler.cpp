@@ -1,4 +1,4 @@
-#include "Lexer.h"
+#include "AST.h"
 
 #define ERR(x) std::cout << x << "\n"; std::cin.get(); return -1
 
@@ -9,18 +9,23 @@ int main(int argc, const char* argv[]){
         std::cout << argv[i] << "\n";
     unsigned int length = sizeof(argv[1]);
     if(argc > 1){
-        std::streampos size;
-        std::ifstream file (argv[1], std::ios::in|std::ios::ate);
+        std::ifstream file(argv[1]);
         char* filedata;
         if (file.is_open()){
-            size = file.tellg();
-            filedata = new char [size];
-            file.seekg (0, std::ios::beg);
-            file.read (filedata, size);
+            std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            unsigned int size = contents.length();
+            filedata = strdup(contents.c_str());
             file.close();
             if(checkFileType(argv[1], length)){
                 Lexer lexer(filedata, size);
                 lexer.start();
+                std::vector<Token> tokens = lexer.getTokens();
+                std::cout << tokens.size() << "\n";
+                for (auto& t : tokens) 
+                    std:: cout << " {" << t.type << ", " << t.data << "} ";
+                std::cout << '\n';
+                AST ast;
+                ast.start();
                 std::cout << "DONE";
                 std::cin.get();
                 return 0;
