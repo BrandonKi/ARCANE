@@ -6,7 +6,7 @@ precedence:
     expr_four: + -
     expr_three: == != <= >= > < >
     expr_two: && ||
-    expr_one: = += -= *= /= >>= <<= &= |= ^=
+    expr_one: += -= *= /= >>= <<= &= |= ^=
     expr: ?:
 
 
