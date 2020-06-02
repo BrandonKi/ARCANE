@@ -1,7 +1,8 @@
-#include "ast.h"
+#include "AST.h"
 
 AST::AST(){
     init();
+    runTests();
 }
 
 void AST::init(){
@@ -10,10 +11,15 @@ void AST::init(){
     m_memory_ptr = m_memory;
 }
 
-void AST::start(){
+void AST::runTests(){
     print(newBinaryExpr(newIntegerExpr(892), newIntegerExpr(120), '/'));
+    std::cout << "\n";
     print(newUnaryExpr(newIntegerExpr(120), '-'));
+    std::cout << "\n";
     print(newBinaryExpr(newStringExpr("Brandon"), newStringExpr("Kirincich"), '+'));
+    std::cout << "\n";
+    print(newTernaryExpr(newBinaryExpr(newIntegerExpr(1), newIntegerExpr(5), '>'), newStringExpr("true"), newStringExpr("false")));
+    std::cout << "\n";
 }
 
 Expr* AST::alloc_expr(){
@@ -40,6 +46,15 @@ Expr* AST::newBinaryExpr(Expr* left, Expr* right, char op){
     return expr;
 }
 
+Expr* AST::newTernaryExpr(Expr* eval, Expr* left, Expr* right){
+    Expr* expr = alloc_expr();
+    expr->type = E_TERNARY;
+    expr->e_ternary.eval = eval;
+    expr->e_ternary.left = left;
+    expr->e_ternary.right = right;
+    return expr;
+}
+
 Expr* AST::newIntegerExpr(uint val){
     Expr* expr = alloc_expr();
     expr->type = E_INTEGER;
@@ -63,7 +78,7 @@ void AST::print(Expr* expr){
             print(expr->e_unary.expr);
             std::cout << ", ";
             std::cout << expr->e_unary.op;
-            std::cout << "}\n";
+            std::cout << "}";
             break;
         case E_BINARY:
             std::cout << "{";
@@ -72,10 +87,17 @@ void AST::print(Expr* expr){
             print(expr->e_binary.right);
             std::cout << ", ";
             std::cout << expr->e_binary.op;
-            std::cout << "}\n";
+            std::cout << "}";
             break;
         case E_TERNARY:
-        break;
+            std::cout << "{";
+            print(expr->e_ternary.eval);
+            std::cout << " ? ";
+            print(expr->e_ternary.left);
+            std::cout << " : ";
+            print(expr->e_ternary.right);
+            std::cout << "}";
+            break;
         case E_INTEGER:
             std::cout << "{" << expr->e_integer.val << "}";
             break;
