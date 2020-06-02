@@ -18,14 +18,10 @@ int main(int argc, const char* argv[]){
             file.close();
             if(checkFileType(argv[1], length)){
                 Lexer lexer(filedata, size);
-                lexer.start();
-                std::vector<Token> tokens = lexer.getTokens();
-                std::cout << tokens.size() << "\n";
-                for (auto& t : tokens) 
+                for (auto& t : lexer.getTokens()) 
                     std:: cout << " {" << t.type << ", " << t.data << "} ";
                 std::cout << '\n';
                 AST ast;
-                ast.start();
                 std::cout << "DONE";
                 std::cin.get();
                 return 0;
