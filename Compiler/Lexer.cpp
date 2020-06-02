@@ -14,6 +14,7 @@ void Lexer::start(){
                 i = handleDigit(i);
                 break;
             case '!': 
+                tokens.emplace_back(Token{TokenType(NOT), "!"});
                 break;
             case '\"':
                 i = handleString(i);
@@ -27,6 +28,7 @@ void Lexer::start(){
             case '&': 
                 break;
             case '\'': 
+                tokens.emplace_back(Token{TokenType(CHAR), (char*)(m_buf+i+1)});
                 break;
             case '(':
                 tokens.emplace_back(Token{TokenType(PAREN), "("});
@@ -47,6 +49,7 @@ void Lexer::start(){
                 tokens.emplace_back(Token{TokenType(OPERATOR), "-"});
                 break;
             case '.':
+                tokens.emplace_back(Token{TokenType(DOT), "."});
                 break;
             case '/':
                 i = handleComment(i);
@@ -92,10 +95,10 @@ void Lexer::start(){
 
 unsigned int Lexer::handleDigit(unsigned int i){
     while(i < m_length && isdigit(m_buf[i])){
-        currentToken.push_back(m_buf[i]);
+        currentToken.emplace_back(m_buf[i]);
         i++;
     }
-    currentToken.push_back('\0');
+    currentToken.emplace_back('\0');
     i--;
     tokens.emplace_back(Token{TokenType(NUMBER), currentToken.data()});
     currentToken.clear();
@@ -106,13 +109,13 @@ unsigned int Lexer::handleString(unsigned int i){
     i++;
     while(i < m_length && m_buf[i] != '\"'){
         if(m_buf[i] == '\\'){
-            currentToken.push_back(m_buf[i]);
+            currentToken.emplace_back(m_buf[i]);
             i++;
         }
-        currentToken.push_back(m_buf[i]);
+        currentToken.emplace_back(m_buf[i]);
         i++;
     }
-    currentToken.push_back('\0');
+    currentToken.emplace_back('\0');
     tokens.emplace_back(Token{TokenType(STRING), currentToken.data()});
     currentToken.clear();
     return i;
@@ -120,10 +123,10 @@ unsigned int Lexer::handleString(unsigned int i){
 
 unsigned int Lexer::handleName(unsigned int i){
     while(i < m_length && (isalnum(m_buf[i]) || m_buf[i] == '_')){
-        currentToken.push_back(m_buf[i]);
+        currentToken.emplace_back(m_buf[i]);
         i++;
     }
-    currentToken.push_back('\0');
+    currentToken.emplace_back('\0');
     i--;
     tokens.emplace_back(Token{TokenType(NAME), currentToken.data()});
     currentToken.clear();
