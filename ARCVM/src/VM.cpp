@@ -275,7 +275,28 @@ void VM::executeInstruction(){
 		case _DUP2_:
 			DUP2();
 			break;
-		case _GOTO_:
+		case _DUP2X_:
+			DUP2X();
+			break;
+		case _JMP_:
+			GOTO();
+			break;
+		case _JIFNE_:
+			GOTO();
+			break;
+		case _JIFE_:
+			GOTO();
+			break;
+		case _JIFLS_:
+			GOTO();
+			break;
+		case _JIFGT_:
+			GOTO();
+			break;
+		case _JIFZ_:
+			GOTO();
+			break;
+		case _JIFNZ_:
 			GOTO();
 			break;
 		
