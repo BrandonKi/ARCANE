@@ -625,6 +625,15 @@ private:
     }
     inline void DUP2(){
         MNEMONIC("DUP2");
+        container temp = m_stack.top();
+        m_stack.pop();
+        container temp2 = m_stack.top();
+        m_stack.push(temp);
+        m_stack.push(temp2);
+        m_stack.push(temp);
+    }
+    inline void DUP2X(){
+        MNEMONIC("DUP2X");
         m_stack.push(m_stack.top());
         m_stack.push(m_stack.top());
     }
