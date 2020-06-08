@@ -1,11 +1,10 @@
 #include "Lexer.h"
 
 void Lexer::start(){
-    std::cin.get();
     // for(int i = 0; i < m_length; i++)
-        // std::cout << m_buf[i];
-    for(unsigned int i = 0; i < m_length; i++){
-        DEBUG_PRINT_TOKENS;
+    //     std::cout << m_buf[i];
+    std::string temp;
+    for(unsigned int i = 0; i < m_length; i++){        
         switch(m_buf[i]){
             CASE_VALID_NAME_CHARACTERS
                 i = handleName(i);
@@ -13,11 +12,12 @@ void Lexer::start(){
             CASE_DIGITS
                 i = handleDigit(i);
                 break;
-            case '!': 
-                tokens.emplace_back(Token{TokenType(NOT), "!"});
+            case '!':
+                temp = "!";
+                tokens.emplace_back(Token{TokenType(NOT), temp});
                 break;
             case '\"':
-                i = handleString(i);
+                i = handleDoubleQuoteString(i);
                 break;
             case '#': 
                 break;
@@ -28,28 +28,35 @@ void Lexer::start(){
             case '&': 
                 break;
             case '\'': 
-                tokens.emplace_back(Token{TokenType(CHAR), (char*)(m_buf+i+1)});
+                i = handleSingleQuoteString(i);
                 break;
             case '(':
-                tokens.emplace_back(Token{TokenType(PAREN), "("});
+                temp = "(";
+                tokens.emplace_back(Token{TokenType(LPAREN), temp});
                 break;
             case ')':
-                tokens.emplace_back(Token{TokenType(PAREN), ")"});
+                temp = ")";
+                tokens.emplace_back(Token{TokenType(RPAREN), temp});
                 break;
             case '*':
-                tokens.emplace_back(Token{TokenType(OPERATOR), "*"});
+                temp = "*";
+                tokens.emplace_back(Token{TokenType(OPERATOR), temp});
                 break;
             case '+':
-                tokens.emplace_back(Token{TokenType(OPERATOR), "+"});
+                temp = "+";
+                tokens.emplace_back(Token{TokenType(OPERATOR), temp});
                 break;
             case ',':
-                tokens.emplace_back(Token{TokenType(COMMA), ","});
+                temp = ",";
+                tokens.emplace_back(Token{TokenType(COMMA), temp});
                 break;
             case '-':
-                tokens.emplace_back(Token{TokenType(OPERATOR), "-"});
+                temp = "-";
+                tokens.emplace_back(Token{TokenType(OPERATOR), temp});
                 break;
             case '.':
-                tokens.emplace_back(Token{TokenType(DOT), "."});
+                temp = ".";
+                tokens.emplace_back(Token{TokenType(DOT), temp});
                 break;
             case '/':
                 i = handleComment(i);
@@ -59,13 +66,15 @@ void Lexer::start(){
             case ';':
                 break;
             case '<':
-                tokens.emplace_back(Token{TokenType(COMPARISON), "<"});
+                temp = "<";
+                tokens.emplace_back(Token{TokenType(COMPARISON), temp});
                 break;
             case '=':
                 i = handleEquals(i);
                 break;
             case '>':
-                tokens.emplace_back(Token{TokenType(COMPARISON), ">"});
+                temp = ">";
+                tokens.emplace_back(Token{TokenType(COMPARISON), temp});
                 break;
             case '?':
                 break;
@@ -89,6 +98,8 @@ void Lexer::start(){
                 break;
             case '~':
                 break;
+            default:
+                break;
         }
     }
 }
@@ -100,12 +111,13 @@ unsigned int Lexer::handleDigit(unsigned int i){
     }
     currentToken.emplace_back('\0');
     i--;
-    tokens.emplace_back(Token{TokenType(NUMBER), currentToken.data()});
+    std::string temp = currentToken.data();
+    tokens.emplace_back(Token{TokenType(NUMBER), temp});
     currentToken.clear();
     return i;
 }
 
-unsigned int Lexer::handleString(unsigned int i){
+unsigned int Lexer::handleDoubleQuoteString(unsigned int i){
     i++;
     while(i < m_length && m_buf[i] != '\"'){
         if(m_buf[i] == '\\'){
@@ -116,7 +128,25 @@ unsigned int Lexer::handleString(unsigned int i){
         i++;
     }
     currentToken.emplace_back('\0');
-    tokens.emplace_back(Token{TokenType(STRING), currentToken.data()});
+    std::string temp = currentToken.data();
+    tokens.emplace_back(Token{TokenType(STRING), temp});
+    currentToken.clear();
+    return i;
+}
+
+unsigned int Lexer::handleSingleQuoteString(unsigned int i){
+    i++;
+    while(i < m_length && m_buf[i] != '\''){
+        if(m_buf[i] == '\\'){
+            currentToken.emplace_back(m_buf[i]);
+            i++;
+        }
+        currentToken.emplace_back(m_buf[i]);
+        i++;
+    }
+    currentToken.emplace_back('\0');
+    std::string temp = currentToken.data();
+    tokens.emplace_back(Token{TokenType(STRING), temp});
     currentToken.clear();
     return i;
 }
@@ -128,23 +158,29 @@ unsigned int Lexer::handleName(unsigned int i){
     }
     currentToken.emplace_back('\0');
     i--;
-    tokens.emplace_back(Token{TokenType(NAME), currentToken.data()});
+    std::string temp = currentToken.data();
+    tokens.emplace_back(Token{TokenType(NAME), temp});
     currentToken.clear();
     return i;
 }
 
 unsigned int Lexer::handleEquals(unsigned int i){
+    std::string temp;
     if(i+1 < m_length && m_buf[i+1] == '='){
-        tokens.emplace_back(Token{TokenType(COMPARISON), "=="});
+        temp = "==";
+        tokens.emplace_back(Token{TokenType(COMPARISON), temp});
         i++;
-    }else
-        tokens.emplace_back(Token{TokenType(OPERATOR), "="});
+    }else{
+        temp = "=";
+        tokens.emplace_back(Token{TokenType(OPERATOR), temp});
+    }
     return i;
 }                
 
 unsigned int Lexer::handleComment(unsigned int i){
     if(i+1 < m_length && m_buf[i+1] != '/'){
-        tokens.emplace_back(Token{TokenType(OPERATOR), "/"});
+        std::string temp = "/";
+        tokens.emplace_back(Token{TokenType(OPERATOR), temp});
     }
     else
         for(; i < m_length && m_buf[i] != '\n'; i++){}

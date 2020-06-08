@@ -5,6 +5,8 @@
 #include <vector>
 #include <unordered_map>
 
+#define DEBUG_BUILD
+
 #define CASE_VALID_NAME_CHARACTERS case 'A':case 'B':case 'C':case 'D':case 'E':case 'F':case 'G':case 'H':case 'I': \
                                    case 'J':case 'K':case 'L':case 'M':case 'N':case 'O':case 'P':case 'Q':case 'R': \
                                    case 'S':case 'T':case 'U':case 'V':case 'W':case 'X':case 'Y':case 'Z':case 'a': \
@@ -19,11 +21,11 @@
     #define DEBUG_PRINT_TOKENS
 #endif
 
-enum ExprType{E_UNARY, E_BINARY, E_TERNARY, E_INTEGER, E_FLOAT, E_STRING, E_INDEX, E_FIELD};
+enum ExprType{E_UNARY, E_BINARY, E_TERNARY, E_INTEGER, E_FLOAT, E_STRING, E_INDEX, E_NAME, E_LPAREN, E_RPAREN, E_FIELD};
 enum Type{T_INT, T_FLOAT, T_STR, T_ARR};
+enum DeclType{D_CHAR, D_UCHAR, D_INT, D_UINT, D_FLOAT, D_DOUBLE, D_STRING, D_ARRAY};
 
-
-enum TokenType{OPERATOR, NUMBER, FLOAT, STRING, PAREN, COMMA, NAME, COMPARISON, NOT, OP_EQUAL, DOT};
+enum TokenType{OPERATOR, NUMBER, FLOAT, STRING, LPAREN, RPAREN, COMMA, NAME, COMPARISON, NOT, OP_EQUAL, DOT};
     
 struct Token{
     TokenType type;
@@ -31,27 +33,16 @@ struct Token{
 };
 
 struct Decl{
-    Type type;
+    DeclType type;
     std::string name;
-    struct {
-
-    } d_int;
-    struct {
-
-    } d_float;
-    struct {
-
-    } d_string;
-    struct {
-
-    } d_array;
+    Expr* val;
 };
 
 struct Expr {
     ExprType type;
     union{
         struct {
-            unsigned long long int val;
+            uint64_t val;
         } e_integer;
         struct {
             double val;
@@ -63,6 +54,10 @@ struct Expr {
             Type type;
             Expr* index;
         } e_index;
+        struct {
+            Type type;
+            std::string name;
+        } e_name;
         struct {
             Expr* expr;
             char op;
@@ -77,6 +72,9 @@ struct Expr {
             Expr* left;
             Expr* right;
         } e_ternary;
+        struct {
+            Expr* expr;
+        } e_paren;
     };
 };
 

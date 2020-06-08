@@ -1,4 +1,4 @@
-#include "commonInclude.h"
+#include "CommonInclude.h"
 
 // #define DEBUG_BUILD
 #define RELEASE_BUILD
@@ -19,7 +19,8 @@ class Lexer{
     private:
         void start();
         unsigned int handleDigit(unsigned int);
-        unsigned int handleString(unsigned int);
+        unsigned int handleSingleQuoteString(unsigned int);
+        unsigned int handleDoubleQuoteString(unsigned int);
         unsigned int handleName(unsigned int);
         unsigned int handleEquals(unsigned int);
         unsigned int handleComment(unsigned int);

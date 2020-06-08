@@ -1,4 +1,4 @@
-#include "AST.h"
+#include "Parser.h"
 
 #define ERR(x) std::cout << x << "\n"; std::cin.get(); return -1
 
@@ -18,10 +18,11 @@ int main(int argc, const char* argv[]){
             file.close();
             if(checkFileType(argv[1], length)){
                 Lexer lexer(filedata, size);
-                for (auto& t : lexer.getTokens()) 
+                std::vector<Token> tokens = lexer.getTokens();
+                for (auto& t : tokens) 
                     std:: cout << " {" << t.type << ", " << t.data << "} ";
                 std::cout << '\n';
-                AST ast;
+                Parser parser(tokens);
                 std::cout << "DONE";
                 std::cin.get();
                 return 0;
