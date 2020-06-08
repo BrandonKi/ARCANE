@@ -79,11 +79,17 @@
 
 #define _DUP_ 0xe3
 #define _DUP2_ 0xe4
+#define _DUP2X_ 0xe5
 
 #define _SWAP_ 0xe5
 
-#define _GOTO_ 0xee
-
+#define _JMP_ 0xf0
+#define _JIFNE_ 0xf1
+#define _JIFE_ 0xf2
+#define _JIFLS_ 0xf4
+#define _JIFGT_ 0xf5
+#define _JIFZ_ 0xf6
+#define _JIFNZ_ 0xf7
 
 
 
