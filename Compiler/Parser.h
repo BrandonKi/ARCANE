@@ -1,22 +1,25 @@
-#include "Lexer.h"
+#include "AST.h"
 
 class Parser{
 
     private:
-        std::unordered_map<std::string, Type> symbol_table;
         std::vector<Token> tokens;
         uint currentTokenPointer;
-
+        AST ast;
 
     public:
-        Parser(std::vector<Token>*, std::unordered_map<std::string, Type>);
+        Parser(std::vector<Token>);
 
 
     private:
 
         void parseExpr();
-        void nextToken();
+        void parseDecl();
+
+        Token* nextToken();
         Token* currentToken();
+        void expectToken(TokenType);
+
 
         Expr* parseExpr_10();
         Expr* parseExpr_9();

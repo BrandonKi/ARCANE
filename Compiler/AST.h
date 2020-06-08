@@ -1,4 +1,4 @@
-#include "Parser.h"
+#include "Lexer.h"
 
 class AST{
 
@@ -11,14 +11,21 @@ class AST{
         AST();
         void init();
         void runTests();
-
-    private:
-        
         void print(Expr*);
-        Expr* alloc_expr();
+
         Expr* newIntegerExpr(uint);
+        Expr* newFloatExpr(double);
         Expr* newStringExpr(std::string);
+        Expr* newNameExpr(std::string);
         Expr* newUnaryExpr(Expr*, char);
         Expr* newBinaryExpr(Expr*, Expr*, char);
         Expr* newTernaryExpr(Expr*, Expr*, Expr*);
+        Expr* newParenExpr(Expr*);
+
+        Decl* newDecl(DeclType, std::string, Expr*);
+
+    private:
+        
+        Expr* alloc_expr();
+        Decl* alloc_decl();
 };

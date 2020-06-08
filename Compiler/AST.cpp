@@ -2,7 +2,7 @@
 
 AST::AST(){
     init();
-    runTests();
+    // runTests();
 }
 
 void AST::init(){
@@ -27,6 +27,13 @@ Expr* AST::alloc_expr(){
     Expr* expr = (Expr*)m_memory_ptr;
     m_memory_ptr = (void*)((uintptr_t)m_memory_ptr + sizeof(Expr));
     return expr;
+}
+
+Decl* AST::alloc_decl(){
+    memset(m_memory_ptr, 0, sizeof(Decl));
+    Decl* decl = (Decl*)m_memory_ptr;
+    m_memory_ptr = (void*)((uintptr_t)m_memory_ptr + sizeof(Decl));
+    return decl;
 }
 
 Expr* AST::newUnaryExpr(Expr* u_expr, char op){
@@ -55,10 +62,24 @@ Expr* AST::newTernaryExpr(Expr* eval, Expr* left, Expr* right){
     return expr;
 }
 
+Expr* AST::newParenExpr(Expr* e){
+    Expr* expr = alloc_expr();
+    expr->type = E_TERNARY;
+    expr->e_paren.expr = e;
+    return expr;
+}
+
 Expr* AST::newIntegerExpr(uint val){
     Expr* expr = alloc_expr();
     expr->type = E_INTEGER;
     expr->e_integer.val = val;
+    return expr;
+}
+
+Expr* AST::newFloatExpr(double val){
+    Expr* expr = alloc_expr();
+    expr->type = E_FLOAT;
+    expr->e_float.val = val;
     return expr;
 }
 
@@ -67,6 +88,21 @@ Expr* AST::newStringExpr(std::string val){
     expr->type = E_STRING;
     expr->e_string.val = val;
     return expr;
+}
+
+Expr* AST::newNameExpr(std::string val){
+    Expr* expr = alloc_expr();
+    expr->type = E_NAME;
+    expr->e_name.name = val;
+    return expr;
+}
+
+Decl* AST::newDecl(DeclType type, std::string name, Expr* expr){
+    Decl* decl = alloc_decl();
+    decl->type = type;
+    decl->name = name;
+    decl->val = expr;
+    return decl;
 }
 
 void AST::print(Expr* expr){
@@ -106,6 +142,9 @@ void AST::print(Expr* expr){
         break;
         case E_STRING:
             std::cout << "{\"" << expr->e_string.val << "\"}";
+            break;
+        case E_NAME:
+            std::cout << "{" << expr->e_name.name << "}";
             break;
         case E_INDEX:
         break;
