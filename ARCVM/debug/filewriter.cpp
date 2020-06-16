@@ -4,6 +4,23 @@
 
 int main(){
 
+        //                     // start program
+        // _UBCONST_PUSH_,
+        // 0xff,
+        // _NEW_ARR_,
+        // 0x02,
+        // _DUP_,
+        // _UBCONST_PUSH_,
+        // 0x08,
+        // _UBCONST_PUSH_,
+        // 0x03,
+        // _UBA_STORE_,
+        // _REF_STORE_,
+        // 0x00,
+        // _REF_LOAD_,
+        // 0x00,
+        //                 // end program
+
      unsigned char data[] = 
     {
         0x42,           // start file signature
@@ -25,21 +42,11 @@ int main(){
 
                         // start program
         _UBCONST_PUSH_,
-        0xff,
-        _NEW_ARR_,
-        0x02,
-        _DUP_,
-        _UBCONST_PUSH_,
         0x08,
         _UBCONST_PUSH_,
         0x03,
-        _UBA_STORE_,
-        _REF_STORE_,
+        _JIFNE_,
         0x00,
-        _REF_LOAD_,
-        0x00,
-        
-
                         // end program
 
         _EXIT_,         // exit
