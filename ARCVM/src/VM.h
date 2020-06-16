@@ -5,7 +5,7 @@
 
 #include "../debug/MNEMONICS.h"
 
-// #define DEBUG_BUILD
+#define DEBUG_BUILD
 // #define RELEASE_BUILD
 
 #define log(x) std::cout << x
@@ -645,9 +645,8 @@ private:
         m_stack.push(a);
     }
     inline void JMP_HELPER(byte address){
-        byte address = *getNextByte();
         if(address == 0)
-            m_memptr = 0xffffffff;
+            m_memptr = 0xffffffffffffffff;
         else
             m_memptr = address-1;       // ugly workaround... haha get it workaround... like integer wraparound...
     }
@@ -662,53 +661,55 @@ private:
         byte address = *getNextByte();
         m_stack.pop();
         MNEMONIC("JIFNE");
-        DEBUG(temp << " != " << m_stack.top() << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " != " << m_stack.top().data << " " << std::hex << (uint)address << std::dec);
         if(temp != m_stack.top().data)
             JMP_HELPER(address);
+        m_stack.pop();
     }
     inline void JIFE(){
         uint temp = m_stack.top().data;
         byte address = *getNextByte();
         m_stack.pop();
         MNEMONIC("JIFE");
-        DEBUG(temp << " == " << m_stack.top() << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " == " << m_stack.top().data << " " << std::hex << (uint)address << std::dec);
         if(temp == m_stack.top().data)
             JMP_HELPER(address);
+        m_stack.pop();
     }
     inline void JIFLS(){
         uint temp = m_stack.top().data;
         byte address = *getNextByte();
         m_stack.pop();
         MNEMONIC("JIFLS");
-        DEBUG(temp << " < " << m_stack.top() << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " < " << m_stack.top().data << " " << std::hex << (uint)address << std::dec);
         if(temp < m_stack.top().data)
             JMP_HELPER(address);
+        m_stack.pop();
     }
     inline void JIFGT(){
         uint temp = m_stack.top().data;
         byte address = *getNextByte();
         m_stack.pop();
         MNEMONIC("JIFGT");
-        DEBUG(temp << " > " << m_stack.top() << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " > " << m_stack.top().data << " " << std::hex << (uint)address << std::dec);
         if(temp > m_stack.top().data)
             JMP_HELPER(address);
+        m_stack.pop();
     }
     inline void JIFZ(){
-        uint temp = m_stack.top().data;
         byte address = *getNextByte();
-        m_stack.pop();
         MNEMONIC("JIFZ");
-        DEBUG(temp << " != " << m_stack.top() << " " << std::hex << (uint)address << std::dec);
-        if(temp - m_stack.top().data == 0)
+        DEBUG(m_stack.top().data << " == 0 " << std::hex << (uint)address << std::dec);
+        if(m_stack.top().data == 0)
             JMP_HELPER(address);
+        m_stack.pop();
     }
     inline void JIFNZ(){
-        uint temp = m_stack.top().data;
         byte address = *getNextByte();
-        m_stack.pop();
-        MNEMONIC("JIFNE");
-        DEBUG(temp << " != " << m_stack.top() << " " << std::hex << (uint)address << std::dec);
-        if(temp != m_stack.top().data)
+        MNEMONIC("JIFNZ");
+        DEBUG(m_stack.top().data << " != 0 " << std::hex << (uint)address << std::dec);
+        if(m_stack.top().data != 0)
             JMP_HELPER(address);
+        m_stack.pop();
     }
 };
