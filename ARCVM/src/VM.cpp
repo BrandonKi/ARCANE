@@ -101,6 +101,9 @@ void VM::executeInstruction(){
 		case _SCONST_PUSH_:
 			SCONST_PUSH();
 			break;
+		case _ARR_LEN_:
+			ARR_LEN();
+			break;
 		case _NEW_ARR_:
 			NEW_ARR();
 			break;

@@ -12,7 +12,8 @@
 #define _LCONST_PUSH_ 0x16
 #define _SCONST_PUSH_ 0x17
 
-#define _NEW_ARR_ 0x40
+#define _ARR_LEN_ 0x40
+#define _NEW_ARR_ 0x41
 #define _UBA_STORE_ 0x43
 #define _UBA_LOAD_ 0x44
 

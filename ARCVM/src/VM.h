@@ -125,49 +125,57 @@ private:
     inline void SCONST_PUSH(){
         MNEMONIC("SCONST_PUSH");                        // FIX THIS
     }
+    inline void ARR_LEN(){
+        MNEMONIC("ARR_LEN");
+        uint len = *reinterpret_cast<uint*>(m_stack.top().data);
+        DEBUG(len);
+        m_stack.pop();
+        m_stack.push({_UINT_,len});
+    }
     inline void NEW_ARR(){
         MNEMONIC("NEW_ARR");
-        if((m_stack.top().type == _NULL_ || m_stack.top().type >= 8)  ||                     // check for invalid type
-            (m_stack.top().type == _SBYTE_ && (sint)(signed char)m_stack.top().data < 0) ||  // check for negative SBYTE
-                (m_stack.top().type == _SINT_ && (sint)m_stack.top().data < 0)){             // check for negative SINT
+        container top = m_stack.top();
+        m_stack.pop();
+        if((top.type == _NULL_ || top.type >= 8)  ||                     // check for invalid type
+            (top.type == _SBYTE_ && (sint)(signed char)top.data < 0) ||  // check for negative SBYTE
+                (top.type == _SINT_ && (sint)top.data < 0)){             // check for negative SINT
             logn("INVALID_ARRAY_LENGTH");
             std::exit(-1);
         }
-        uint_fast32_t length = m_stack.top().data;
-        m_stack.pop();
+        uint length = top.data;
         void* temp;
         switch (*getNextByte()){
             case _NULL_:
                 // do nothing
                 break;
             case _SBYTE_:
-                temp = (signed char*)malloc(length + 4);            // leave the first 32 bits for the length
-                *(uint_fast32_t*)temp = length;                     // set first 32 bits equal to length
+                temp = (signed char*)malloc(length + 8);            // leave the first 64 bits for the length
+                *(uint*)temp = length;                              // set first 64 bits equal to length
                 m_stack.push({_REF_, (uint)(signed char*)temp});
                 break;
             case _UBYTE_:                                                               
-                temp = (unsigned char*)malloc(length + 4);
-                *(uint_fast32_t*)temp = length;
+                temp = (unsigned char*)malloc(length + 8);
+                *(uint*)temp = length;
                 m_stack.push({_REF_, reinterpret_cast<uint>(temp)});
                 break;
             case _SINT_:
-                temp = (sint*)malloc(8 * length + 4);
-                *(uint_fast32_t*)temp = length;
+                temp = (sint*)malloc(8 * length + 8);
+                *(uint*)temp = length;
                 m_stack.push({_REF_, (uint)(sint*)temp});
                 break;
             case _UINT_:
-                temp = (uint*)malloc(8 * length + 4);
-                *(uint_fast32_t*)temp = length;
+                temp = (uint*)malloc(8 * length + 8);
+                *(uint*)temp = length;
                 m_stack.push({_REF_, (uint)(uint*)temp});
                 break;
             case _FLOAT_:
-                temp = (float*)malloc(4 * length + 4);
-                *(uint_fast32_t*)temp = length;
+                temp = (float*)malloc(4 * length + 8);
+                *(uint*)temp = length;
                 m_stack.push({_REF_, (uint)(float*)temp});
                 break;
             case _DOUBLE_:
-                temp = (double*)malloc(8 * length + 4);
-                *(uint_fast32_t*)temp = length;
+                temp = (double*)malloc(8 * length + 8);
+                *(uint*)temp = length;
                 m_stack.push({_REF_, (uint)(double*)temp});
                 break;
             case _LONG_:
@@ -186,7 +194,7 @@ private:
             default:
                 break;
         }
-        DEBUG("length: " << *reinterpret_cast<uint_fast32_t*>(temp) << " ref: 0x" << std::hex << m_stack.top().data << std::dec);
+        DEBUG("length: " << *reinterpret_cast<uint*>(temp) << " ref: 0x" << std::hex << m_stack.top().data << std::dec);
     }
     inline void UBA_STORE(){
         MNEMONIC("UBA_STORE");
