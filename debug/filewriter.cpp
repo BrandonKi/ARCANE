@@ -45,23 +45,14 @@ int main(){
         0xff,
         _NEW_ARR_,
         0x02,
-        _DUP_,
-        _UBCONST_PUSH_,
-        0x08,
-        _UBCONST_PUSH_,
-        0x03,
-        _UBA_STORE_,
-        _REF_STORE_,
-        0x00,
-        _REF_LOAD_,
-        0x00,
+        _ARR_LEN_,
                         // end program
 
         _EXIT_,         // exit
         0x00 
     };
 
-    std::ofstream file("C:\\Users\\Kirin\\Desktop\\ARCANE\\tests\\example.arcb", std::ios::out|std::ios::binary|std::ios::trunc);
+    std::ofstream file("C:\\Users\\Kirin\\Desktop\\ARCANE\\tests\\arraytest2.arcb", std::ios::out|std::ios::binary|std::ios::trunc);
     if(file.is_open())
         file.write((char *)data, sizeof(data));  
     file.close();
