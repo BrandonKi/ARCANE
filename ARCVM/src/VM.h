@@ -3,7 +3,7 @@
 #include <stack>
 #include <cmath>
 
-#include "../debug/MNEMONICS.h"
+#include "../MNEMONICS.h"
 
 #define DEBUG_BUILD
 // #define RELEASE_BUILD
@@ -61,7 +61,7 @@ private:
     void printTempStack();
     void printVariableTable();
     byte* getNextByte();
-    uint getNextFourBytes();
+    // uint getNextFourBytes();
     void nextInstruction();
     void executeInstruction();
 
@@ -136,56 +136,55 @@ private:
         uint_fast32_t length = m_stack.top().data;
         m_stack.pop();
         void* temp;
-        switch (*getNextByte())
-        {
-        case _NULL_:
-            // do nothing
-            break;
-        case _SBYTE_:
-            temp = (signed char*)malloc(length + 4);            // leave the first 32 bits for the length
-            *(uint_fast32_t*)temp = length;                     // set first 32 bits equal to length
-            m_stack.push({_REF_, (uint)(signed char*)temp});
-            break;
-        case _UBYTE_:                                                               
-            temp = (unsigned char*)malloc(length + 4);
-            *(uint_fast32_t*)temp = length;
-            m_stack.push({_REF_, reinterpret_cast<uint>(temp)});
-            break;
-        case _SINT_:
-            temp = (sint*)malloc(8 * length + 4);
-            *(uint_fast32_t*)temp = length;
-            m_stack.push({_REF_, (uint)(sint*)temp});
-            break;
-        case _UINT_:
-            temp = (uint*)malloc(8 * length + 4);
-            *(uint_fast32_t*)temp = length;
-            m_stack.push({_REF_, (uint)(uint*)temp});
-            break;
-        case _FLOAT_:
-            temp = (float*)malloc(4 * length + 4);
-            *(uint_fast32_t*)temp = length;
-            m_stack.push({_REF_, (uint)(float*)temp});
-            break;
-        case _DOUBLE_:
-            temp = (double*)malloc(8 * length + 4);
-            *(uint_fast32_t*)temp = length;
-            m_stack.push({_REF_, (uint)(double*)temp});
-            break;
-        case _LONG_:
+        switch (*getNextByte()){
+            case _NULL_:
+                // do nothing
+                break;
+            case _SBYTE_:
+                temp = (signed char*)malloc(length + 4);            // leave the first 32 bits for the length
+                *(uint_fast32_t*)temp = length;                     // set first 32 bits equal to length
+                m_stack.push({_REF_, (uint)(signed char*)temp});
+                break;
+            case _UBYTE_:                                                               
+                temp = (unsigned char*)malloc(length + 4);
+                *(uint_fast32_t*)temp = length;
+                m_stack.push({_REF_, reinterpret_cast<uint>(temp)});
+                break;
+            case _SINT_:
+                temp = (sint*)malloc(8 * length + 4);
+                *(uint_fast32_t*)temp = length;
+                m_stack.push({_REF_, (uint)(sint*)temp});
+                break;
+            case _UINT_:
+                temp = (uint*)malloc(8 * length + 4);
+                *(uint_fast32_t*)temp = length;
+                m_stack.push({_REF_, (uint)(uint*)temp});
+                break;
+            case _FLOAT_:
+                temp = (float*)malloc(4 * length + 4);
+                *(uint_fast32_t*)temp = length;
+                m_stack.push({_REF_, (uint)(float*)temp});
+                break;
+            case _DOUBLE_:
+                temp = (double*)malloc(8 * length + 4);
+                *(uint_fast32_t*)temp = length;
+                m_stack.push({_REF_, (uint)(double*)temp});
+                break;
+            case _LONG_:
+                
+                break;
+            case _STRING_:
+                
+                break;
+            case _REF_:
+                
+                break;
+            case _SPECIAL_:
+                
+                break;
             
-            break;
-        case _STRING_:
-            
-            break;
-        case _REF_:
-            
-            break;
-        case _SPECIAL_:
-            
-            break;
-        
-        default:
-            break;
+            default:
+                break;
         }
         DEBUG("length: " << *reinterpret_cast<uint_fast32_t*>(temp) << " ref: 0x" << std::hex << m_stack.top().data << std::dec);
     }

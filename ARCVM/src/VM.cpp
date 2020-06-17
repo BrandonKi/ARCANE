@@ -59,9 +59,9 @@ byte* VM::getNextByte(){
 	return &m_data[++m_memptr];
 }
 
-uint VM::getNextFourBytes(){
-	return reinterpret_cast<uint>(((uint)m_data[++m_memptr]<<24) | ((uint)m_data[++m_memptr]<<16) | ((uint)m_data[++m_memptr]<<8) | (uint)m_data[++m_memptr]);
-}
+// uint VM::getNextFourBytes(){
+// 	return reinterpret_cast<uint>(((uint)m_data[++m_memptr]<<24) | ((uint)m_data[++m_memptr]<<16) | ((uint)m_data[++m_memptr]<<8) | (uint)m_data[++m_memptr]);
+// }
 
 void VM::executeInstruction(){
 	byte value = m_data[m_memptr];
