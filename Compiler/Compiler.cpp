@@ -4,7 +4,7 @@
 int main(int argc, const char* argv[]){
     for(int i = 0; i < argc; i++)
         std::cout << argv[i] << "\n";
-    unsigned int length = sizeof(argv[1]);
+    // unsigned int length = sizeof(argv[1]);
     if(argc > 1){
         std::ifstream file(argv[1]);
         if (file.is_open()){

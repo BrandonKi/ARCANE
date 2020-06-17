@@ -81,7 +81,7 @@
 #define _DUP2_ 0xe4
 #define _DUP2X_ 0xe5
 
-#define _SWAP_ 0xe5
+#define _SWAP_ 0xea
 
 #define _JMP_ 0xf0
 #define _JIFNE_ 0xf1
