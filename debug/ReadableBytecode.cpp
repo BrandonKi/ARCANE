@@ -126,42 +126,47 @@ inline void start(char* data, int size, std::string path){
                     OUTPUT("LCONST_PUSH");
                     break;
                 }
+                case _ARR_LEN_:
+                {
+                    OUTPUT("ARR_LEN");
+                    break;
+                }
                 case _NEW_ARR_:
                 {
                     OUTPUT("NEW_ARR\t\t\t");
                     switch(UCdata[++i]){
                         case _NULL_:
-                            OUTPUT(_NULL_);
+                            OUTPUT("$NULL");
                             break;
                         case _SBYTE_:
-                            OUTPUT(_SBYTE_);
+                            OUTPUT("$SBYTE");
                             break;
                         case _UBYTE_:                                                               
-                            OUTPUT(_UBYTE_);
+                            OUTPUT("$UBYTE");
                             break;
                         case _SINT_:
-                            OUTPUT(_SINT_);
+                            OUTPUT("$SINT");
                             break;
                         case _UINT_:
-                            OUTPUT(_UINT_);
+                            OUTPUT("$UINT");
                             break;
                         case _FLOAT_:
-                            OUTPUT(_FLOAT_);
+                            OUTPUT("$FLOAT");
                             break;
                         case _DOUBLE_:
-                            OUTPUT(_DOUBLE_);
+                            OUTPUT("$DOUBLE");
                             break;
                         case _LONG_:
-                            OUTPUT(_LONG_);
+                            OUTPUT("$LONG");
                             break;
                         case _STRING_:
-                            OUTPUT(_STRING_);
+                            OUTPUT("$STRING");
                             break;
                         case _REF_:
-                            OUTPUT(_REF_);
+                            OUTPUT("$REF");
                             break;
                         case _SPECIAL_:
-                            OUTPUT(_SPECIAL_);
+                            OUTPUT("$SPECIAL");
                             break;
                         default:
                             break;
