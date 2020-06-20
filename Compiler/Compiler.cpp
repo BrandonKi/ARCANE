@@ -1,4 +1,4 @@
-#include "Lexer.h"
+#include "Parser.h"
 
 
 int main(int argc, const char* argv[]){
@@ -13,6 +13,11 @@ int main(int argc, const char* argv[]){
             const char* filedata = contents.c_str();
             Lexer lexer(filedata, (unsigned int)contents.length());
             std::vector<Token*> tokens = lexer.getTokens();
+            DEBUG_PRINT_TOKENS(
+                for (Token* t : tokens) 
+                    std:: cout << " {" << t->type << ", " << t->val << "} ";
+            );
+            Parser parser(tokens, lexer.getKeywords());
             std::cin.get();
             return 0;
         }else
