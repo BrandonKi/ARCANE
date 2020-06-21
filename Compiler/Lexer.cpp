@@ -33,7 +33,7 @@ void Lexer::start(){
                 m_tokens.emplace_back(new Token{TokenType(T_KEYWORD), std::string(1, m_filedata[i]), i}); // this should be changed in the future
                 break;                                                                                 // idk what I want to do here atm
             case '%':
-                m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+                i = handleMod(i);
                 break;
             case '&': 
                 break;
@@ -47,16 +47,16 @@ void Lexer::start(){
                 m_tokens.emplace_back(new Token{TokenType(T_RPAREN), std::string(1, m_filedata[i]), i});
                 break;
             case '*':
-                m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+                i = handleMul(i);
                 break;
             case '+':
-                m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+                i = handleAdd(i);
                 break;
             case ',':
                 m_tokens.emplace_back(new Token{TokenType(T_COMMA), std::string(1, m_filedata[i]), i});
                 break;
             case '-':
-                m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+                i = handleSub(i);
                 break;
             case '.':
                 m_tokens.emplace_back(new Token{TokenType(T_DOT), std::string(1, m_filedata[i]), i});
@@ -77,7 +77,7 @@ void Lexer::start(){
                 i = handleEquals(i);
                 break;
             case '>':
-                m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+                i = handleGreaterThan(i);
                 break;
             case '?':
                 m_tokens.emplace_back(new Token{TokenType(T_TERNARY), std::string(1, m_filedata[i]), i});
@@ -177,6 +177,7 @@ unsigned int Lexer::handleEquals(unsigned int i){
     if(i+1 < m_length && m_filedata[i+1] == '='){
         val = "==";
         m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_EQUAL;
         i++;
     }else{
         val = "=";
@@ -185,26 +186,160 @@ unsigned int Lexer::handleEquals(unsigned int i){
     return i;
 }
 
+unsigned int Lexer::handleSub(unsigned int i){
+    std::string val;
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        val = "-=";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_SUB_EQUAL;
+        i++;
+    }else if(i+1 < m_length && m_filedata[i+1] == '-'){
+        val = "--";
+        Token* token =  new Token{TokenType(T_OPERATOR), val, i};
+        if(m_tokens.back()->type = T_ID)
+            token->op_info = OP_UNARY_POST_DEC;
+        else
+            token->op_info = OP_UNARY_PRE_DEC;
+        m_tokens.emplace_back(token);
+        i++;
+    }
+    else{                                                                                   // unary sub needs some work
+        Token* token = new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i};
+        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER)
+            token->op_info = OP_UNARY_SUB;
+        else
+            token->op_info = OP_SUB;
+        m_tokens.emplace_back(token);
+    }
+    return i;
+}
+
+unsigned int Lexer::handleAdd(unsigned int i){
+    std::string val;
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        val = "+=";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_ADD_EQUAL;
+        i++;
+    }else if(i+1 < m_length && m_filedata[i+1] == '+'){
+        val = "++";
+        Token* token =  new Token{TokenType(T_OPERATOR), val, i};
+        if(m_tokens.back()->type = T_ID)
+            token->op_info = OP_UNARY_POST_INC;
+        else
+            token->op_info = OP_UNARY_PRE_INC;
+        m_tokens.emplace_back(token);
+        i++;
+    }
+    else{                                                                                   // unary plus needs some work
+        Token* token = new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i};
+        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER)
+            token->op_info = OP_UNARY_PLUS;
+        else
+            token->op_info = OP_ADD;
+        m_tokens.emplace_back(token);
+    }
+    return i;
+}
+
+unsigned int Lexer::handleDiv(unsigned int i){
+    std::string val;
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        val = "/=";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_DIV_EQUAL;
+        i++;
+    }
+    else{                                                                                
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+        m_tokens.back()->op_info = OP_DIV;
+    }
+    return i;
+}
+
+unsigned int Lexer::handleMul(unsigned int i){
+    std::string val;
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        val = "*=";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_MUL_EQUAL;
+        i++;
+    }
+    else{                                                                                
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+        m_tokens.back()->op_info = OP_MUL;
+        std::cout << m_tokens.back()->val << " " << m_tokens.back()->op_info;
+    }
+    return i;
+}
+
+unsigned int Lexer::handleMod(unsigned int i){
+    std::string val;
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        val = "%=";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_MOD_EQUAL;
+        i++;
+    }
+    else{                                                                                
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+        m_tokens.back()->op_info = OP_MOD;
+    }
+    return i;
+}
+
 unsigned int Lexer::handleLessThan(unsigned int i){
     std::string val;
-    Token token;
     if(i+1 < m_length && m_filedata[i+1] == '='){
-        val = "==";
+        val = "<=";
         m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_LESS_EQUAL;
         i++;
-    }else{
-        val = "<";
+    }else if(i+1 < m_length && m_filedata[i+1] == '<'){
+        val = "<<";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_LSHIFT;
+        i++;
+    }
+    else{
         m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+        m_tokens.back()->op_info = OP_LESS;
+    }
+    return i;
+}
+
+unsigned int Lexer::handleGreaterThan(unsigned int i){
+    std::string val;
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        val = ">=";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_GREAT_EQUAL;
+        i++;
+    }else if(i+1 < m_length && m_filedata[i+1] == '>'){
+        val = ">>";
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), val, i});
+        m_tokens.back()->op_info = OP_RSHIFT;
+        i++;
+    }
+    else{
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+        m_tokens.back()->op_info = OP_GREAT;
     }
     return i;
 }
 
 unsigned int Lexer::handleComment(unsigned int i){
-    if(i+1 < m_length && m_filedata[i+1] != '/'){
+    std::string val;
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string("/="), i});
+        m_tokens.back()->op_info = OP_DIV_EQUAL;
+        
+    }else if(i+1 < m_length && m_filedata[i+1] != '/'){
         m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), i});
+        m_tokens.back()->op_info = OP_DIV;
     }
     else
-        for(; i < m_length && m_filedata[i] != '\n'; i++){}
+        for(; i < m_length && m_filedata[i] != '\n'; i++){}             // eat the rest of the line
     return i;
 }
 

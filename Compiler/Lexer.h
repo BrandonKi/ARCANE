@@ -27,8 +27,15 @@ class Lexer{
         unsigned int handleDigit(unsigned int);
         unsigned int handleDoubleQuoteString(unsigned int);
         unsigned int handleSingleQuoteString(unsigned int);
+
         unsigned int handleEquals(unsigned int);
         unsigned int handleLessThan(unsigned int);
+        unsigned int handleGreaterThan(unsigned int);
+        unsigned int handleSub(unsigned int);
+        unsigned int handleAdd(unsigned int);
+        unsigned int handleDiv(unsigned int);
+        unsigned int handleMul(unsigned int);
+        unsigned int handleMod(unsigned int);
         unsigned int handleComment(unsigned int);
 
         void printTokens();
