@@ -25,7 +25,7 @@ class Parser{
         void parseKeyword();
         void parseExpr();
 
-        unsigned int precedence(std::string&);
+        unsigned int precedence(OperatorDescriptor);
 
         Token* nextToken();
         Token* currentToken();

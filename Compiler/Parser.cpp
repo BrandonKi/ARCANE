@@ -65,7 +65,8 @@ void Parser::parseExpr(){
     std::vector<Token*> expr;
     expr.reserve(30);
     while(true){
-        DEBUG_PRINT_INFIX(std::cout << currentToken()->val << " ");
+        // DEBUG_PRINT_INFIX(std::cout << currentToken()->type << " " << currentToken()->val << " ");
+        std::cin.get();
         if(currentToken()->type == T_SEMICOLON){
             while(!m_stack.empty()){
                 expr.push_back(m_stack.top());
@@ -74,26 +75,33 @@ void Parser::parseExpr(){
             break;
         }
         else if(currentToken()->type == T_LPAREN || currentToken()->type == T_RPAREN){
-            if(currentToken()->type == T_LPAREN)
+            if(currentToken()->type == T_LPAREN){
                 m_stack.push(currentToken());
+            }
             else{
                 while(m_stack.top()->type != T_LPAREN){
                     expr.push_back(m_stack.top());
                     m_stack.pop();
+                    if(m_stack.empty()){
+                        ERR("Extra closing parenthesis at " << currentToken()->pos);
+                    }
                 }
-                m_stack.pop();
+                if(!m_stack.empty())
+                    m_stack.pop();
+                    
             }
         }
         else if(currentToken()->type == T_OPERATOR){
-            if(m_stack.empty() || precedence(currentToken()->val) > precedence(m_stack.top()->val))
+            if(m_stack.empty() || precedence(currentToken()->op_info) > precedence(m_stack.top()->op_info)){
                 m_stack.push(currentToken());
-            else if(precedence(currentToken()->val) == precedence(m_stack.top()->val)){  // needs to change. right now only works with left to right
+            }
+            else if(precedence(currentToken()->op_info) == precedence(m_stack.top()->op_info)){  // needs to change. right now only works with left to right
                 expr.push_back(m_stack.top());
                 m_stack.pop();
                 m_stack.push(currentToken());
             }
             else{
-                while(!m_stack.empty() && m_stack.top()->type != T_LPAREN && precedence(currentToken()->val) < precedence(m_stack.top()->val)){
+                while(!m_stack.empty() && m_stack.top()->type != T_LPAREN && precedence(currentToken()->op_info) < precedence(m_stack.top()->op_info)){
                     expr.push_back(m_stack.top());
                     m_stack.pop();
                 }
@@ -102,6 +110,8 @@ void Parser::parseExpr(){
         }
         else if(currentToken()->type == T_FLOAT || currentToken()->type == T_NUMBER)
             expr.push_back(currentToken());
+        for(Token* t:expr)
+            std::cout << "{" << t->val << "}\n";
         nextToken();
     }
 
@@ -112,26 +122,56 @@ void Parser::parseExpr(){
     );
 }
 
-unsigned int Parser::precedence(std::string& op){       // this is not the real precedence table
-    if(op.size() == 1){
-        switch(op[0]){
-            case '+':
-            case '-':
-                return 4;
-            case '*':
-            case '/':
-            case '%':
-                return 5;
-            case '|':
-            case '&':
-                return 6;
-            default:
-                return 0;
-        };
-    }
-    else{
-        return 0;
-    }
+unsigned int Parser::precedence(OperatorDescriptor op){       // this is not the real precedence table
+    switch(op){
+        case OP_LOG_NOT:
+        case OP_UNARY_PRE_DEC:
+        case OP_UNARY_PRE_INC:
+            return 7;
+
+        case OP_BIN_OR:
+        case OP_BIN_AND:
+        case OP_LSHIFT:
+        case OP_RSHIFT:
+            return 6;
+    
+        case OP_MUL:
+        case OP_DIV:
+        case OP_MOD:
+            return 5;
+        
+        case OP_ADD:
+        case OP_SUB:
+            return 4;
+
+        case OP_EQUAL:
+        case OP_NOT_EQUAL:
+        case OP_LESS_EQUAL:
+        case OP_GREAT_EQUAL:
+        case OP_GREAT:
+        case OP_LESS:
+            return 3;
+
+        case OP_LOG_AND:
+        case OP_LOG_OR:
+            return 2;
+        
+        case OP_ADD_EQUAL:
+        case OP_SUB_EQUAL:
+        case OP_MUL_EQUAL:
+        case OP_DIV_EQUAL:
+        case OP_MOD_EQUAL:
+        case OP_LSHIFT_EQUAL:
+        case OP_RSHIFT_EQUAL:
+        case OP_AND_EQUAL:
+        case OP_OR_EQUAL:
+        case OP_XOR_EQUAL:
+            return 1;
+        
+        default:
+            return 0;
+    };
+    return 0;
 }
 
 
