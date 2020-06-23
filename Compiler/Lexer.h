@@ -10,6 +10,8 @@
 
 class Lexer{        
     private:
+        unsigned int m_line;
+        unsigned int m_char;
         const char* m_filedata;
         unsigned int m_length;
         std::unordered_map<std::string, int> m_keywords;
@@ -36,11 +38,13 @@ class Lexer{
         unsigned int handleDiv(unsigned int);
         unsigned int handleMul(unsigned int);
         unsigned int handleMod(unsigned int);
+        unsigned int handleBinAnd(unsigned int);
+        unsigned int handleBinOr(unsigned int);
         unsigned int handleComment(unsigned int);
 
         void printTokens();
 
         void initKeywords();
         bool isKeyword(std::string&);
-        int getVal(std::string&);
+        Keyword getVal(std::string&);
 }; 
