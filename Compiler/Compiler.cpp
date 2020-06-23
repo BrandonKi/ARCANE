@@ -21,7 +21,7 @@ int main(int argc, const char* argv[]){
             std::cin.get();
             return 0;
         }else
-            ERR("UNABLE_TO_OPEN_FILE");
+            REPORT_ERROR("UNABLE_TO_OPEN_FILE");
     }else
-        ERR("NO_FILE_PROVIDED");
+        REPORT_ERROR("NO_FILE_PROVIDED");
 }
