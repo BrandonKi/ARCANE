@@ -1,1 +1,4 @@
-int test = 3 + 4 * 2 + 5) * 7;
+int test = (3 + 4 * (2 + 5)) * 7;
+int test1 = test = 5 | 5 % 4 - 5;
+long test1 = 3 + 5
+                * 7 + 6 % 6;
