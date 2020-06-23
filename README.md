@@ -11,7 +11,7 @@ A programming language and bytecode VM. (ARCVM)
 
 https://trello.com/b/tZJWGk7b/arcane
 
-Type checking only occurs when using strings.
+Minimal type checking is done at runtime.
 Otherwise all type checking should/will be done at compile time.
 Only checks for fatal errors at runtime.
 
