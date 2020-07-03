@@ -22,7 +22,7 @@ Bytecode files store variables in Little Endian
 
 - https://www.scadacore.com/tools/programming-calculators/online-hex-converter/
 - https://en.wikipedia.org/wiki/Java_class_file
-
+- https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/lectures
 
 Windows     RCX/XMM0, RDX/XMM1, R8/XMM2, R9/XMM3	
 Stack aligned on 16 bytes. 32 bytes shadow space on stack. The specified 8 registers can only be used for parameters 1 through 4. For C++ classes, the hidden "this" parameter is the first parameter, and is passed in RCX.
