@@ -30,8 +30,7 @@ void Lexer::start(){
             case '#': 
                 break;
             case '$': 
-                m_tokens.emplace_back(new Token{TokenType(T_KEYWORD), std::string(1, m_filedata[i]), m_line, m_char}); // this should be changed in the future
-                break;                                                                                 // idk what I want to do here atm
+                break;
             case '%':
                 i = handleMod(i);
                 break;
@@ -66,7 +65,7 @@ void Lexer::start(){
                 i = handleComment(i);
                 break;
             case ':':
-                m_tokens.emplace_back(new Token{TokenType(T_COLON), std::string(1, m_filedata[i]), m_line, m_char});
+                i = handleColon(i);
                 break;
             case ';':
                 m_tokens.emplace_back(new Token{TokenType(T_SEMICOLON), std::string(1, m_filedata[i]), m_line, m_char});   
@@ -118,13 +117,25 @@ void Lexer::start(){
 }
 
 unsigned int Lexer::handleDigit(unsigned int i){
+    bool floating = false;
     while(i < m_length && isdigit(m_filedata[i])){
         m_ctoken.emplace_back(m_filedata[i]);
         i++;
+        if(i < m_length && m_filedata[i] == '.'){
+            floating = true;
+            m_ctoken.emplace_back(m_filedata[i]);
+            i++;
+        }
     }
     m_ctoken.emplace_back('\0');
     i--;
-    m_tokens.emplace_back(new Token{TokenType(T_NUMBER), m_ctoken.data(), m_line, m_char});
+    if(floating)
+        m_tokens.emplace_back(new Token{TokenType(T_FLOAT_LIT), m_ctoken.data(), m_line, m_char});
+    else if (std::stoll(m_ctoken.data()) > 0x7FFFFFFFFFFFFFFF){     // 64 bit int max
+        m_tokens.emplace_back(new Token{TokenType(T_LONG_LIT), m_ctoken.data(), m_line, m_char});
+    }
+    else
+        m_tokens.emplace_back(new Token{TokenType(T_NUMBER_LIT), m_ctoken.data(), m_line, m_char});
     m_ctoken.clear();
     return i;
 }
@@ -140,7 +151,10 @@ unsigned int Lexer::handleDoubleQuoteString(unsigned int i){
         i++;
     }
     m_ctoken.emplace_back('\0');
-    m_tokens.emplace_back(new Token{TokenType(T_STR), std::string(m_ctoken.data()), m_line, m_char});
+    if(m_ctoken.size() == 2)
+        m_tokens.emplace_back(new Token{TokenType(T_CHAR_LIT), std::string(m_ctoken.data()), m_line, m_char});
+    else
+        m_tokens.emplace_back(new Token{TokenType(T_STR_LIT), std::string(m_ctoken.data()), m_line, m_char});
     m_ctoken.clear();
     return i;
 }
@@ -156,7 +170,10 @@ unsigned int Lexer::handleSingleQuoteString(unsigned int i){
         i++;
     }
     m_ctoken.emplace_back('\0');
-    m_tokens.emplace_back(new Token{TokenType(T_STR), m_ctoken.data(), m_line, m_char});
+    if(m_ctoken.size() == 2)
+        m_tokens.emplace_back(new Token{TokenType(T_CHAR_LIT), std::string(m_ctoken.data()), m_line, m_char});
+    else
+        m_tokens.emplace_back(new Token{TokenType(T_STR_LIT), std::string(m_ctoken.data()), m_line, m_char});
     m_ctoken.clear();
     return i;
 }
@@ -170,12 +187,20 @@ unsigned int Lexer::handleID(unsigned int i){
     i--;
     std::string id = std::string(m_ctoken.data());
     if(isKeyword(id)){
-        m_tokens.emplace_back(new Token{TokenType(T_KEYWORD), id, m_line, m_char});
-        m_tokens.back()->key = getVal(id);
+        createKeywordToken(id);
     }
     else
         m_tokens.emplace_back(new Token{TokenType(T_ID), id, m_line, m_char});
     m_ctoken.clear();
+    return i;
+}
+
+unsigned int Lexer::handleColon(unsigned int i){
+    if(i+1 < m_length && m_filedata[i+1] == '='){
+        m_tokens.emplace_back(new Token{TokenType(T_INFER), std::string(":="), m_line, m_char});
+        return ++i;
+    }
+    m_tokens.emplace_back(new Token{TokenType(T_COLON), std::string(1, m_filedata[i]), m_line, m_char});
     return i;
 }
 
@@ -212,10 +237,12 @@ unsigned int Lexer::handleSub(unsigned int i){
         m_tokens.emplace_back(token);
         i++;
     }
-    else{                                                                                   // unary sub needs some work
+    else{                                                                      // unary sub needs some work
         Token* token = new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), m_line, m_char};
-        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER)
+        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER_LIT && m_tokens.back()->type != T_FLOAT_LIT){
             token->op_info = OP_UNARY_SUB;
+            token->val = "-u";
+        }
         else
             token->op_info = OP_SUB;
         m_tokens.emplace_back(token);
@@ -242,8 +269,10 @@ unsigned int Lexer::handleAdd(unsigned int i){
     }
     else{                                                                                   // unary plus needs some work
         Token* token = new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), m_line, m_char};
-        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER)
+        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER_LIT && m_tokens.back()->type != T_FLOAT_LIT && m_tokens.back()->type != T_LONG_LIT){
             token->op_info = OP_UNARY_PLUS;
+            token->val = "+u";
+        }
         else
             token->op_info = OP_ADD;
         m_tokens.emplace_back(token);
@@ -377,6 +406,9 @@ unsigned int Lexer::handleComment(unsigned int i){
         m_tokens.emplace_back(new Token{TokenType(T_OPERATOR), std::string(1, m_filedata[i]), m_line, m_char});
         m_tokens.back()->op_info = OP_DIV;
     }
+    else if(i+1 < m_length && m_filedata[i+1] == '*'){
+        for(; i < m_length && m_filedata[i] != '*' && m_filedata[i] != '/'; i++){}
+    }
     else
         for(; i < m_length && m_filedata[i] != '\n'; i++){}             // eat the rest of the line
     return i;
@@ -392,10 +424,10 @@ void Lexer::printTokens(){
 
 void Lexer::initKeywords(){
     std::unordered_map<std::string, int> temp({
-        {"$", K_AUTO}, {"char", K_CHAR}, {"uchar", K_UCHAR}, {"byte", K_BYTE}, {"ubyte", K_UBYTE}, {"int", K_INT}, 
-        {"uint", K_UINT}, {"float", K_FLOAT}, {"double", K_DOUBLE}, {"long", K_LONG}, {"string", K_STRING}, 
-        {"for", K_FOR}, {"while", K_WHILE}, {"return", K_RETURN}, {"if", K_IF}, {"elif", K_ELIF}, {"else", K_ELSE}, 
-        {"switch", K_SWITCH}, {"case", K_CASE}, {"break", K_BREAK}
+        {"$", T_AUTO}, {"char", T_CHAR}, {"uchar", T_UCHAR}, {"byte", T_BYTE}, {"ubyte", T_UBYTE}, {"int", T_INT}, 
+        {"uint", T_UINT}, {"float", T_FLOAT}, {"double", T_DOUBLE}, {"long", T_LONG}, {"string", T_STRING}, 
+        {"for", T_FOR}, {"while", T_WHILE}, {"return", T_RETURN}, {"if", T_IF}, {"elif", T_ELIF}, {"else", T_ELSE}, 
+        {"switch", T_SWITCH}, {"case", T_CASE}, {"break", T_BREAK}, {"include", T_INCLUDE}, {"import", T_IMPORT}
 
     });
     m_keywords = std::move(temp);
@@ -410,6 +442,10 @@ bool Lexer::isKeyword(std::string& key){
     return m_keywords.find(key) != m_keywords.end();
 }
 
-Keyword Lexer::getVal(std::string& key){
-    return static_cast<Keyword>(m_keywords.find(key)->second);
+TokenType Lexer::getVal(std::string& key){
+    return static_cast<TokenType>(m_keywords.find(key)->second);
+}
+
+void Lexer::createKeywordToken(std::string& id){
+    m_tokens.emplace_back(new Token{getVal(id), id, m_line, m_char});
 }

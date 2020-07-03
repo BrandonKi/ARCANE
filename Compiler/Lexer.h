@@ -30,6 +30,7 @@ class Lexer{
         unsigned int handleDoubleQuoteString(unsigned int);
         unsigned int handleSingleQuoteString(unsigned int);
 
+        unsigned int handleColon(unsigned int);
         unsigned int handleEquals(unsigned int);
         unsigned int handleLessThan(unsigned int);
         unsigned int handleGreaterThan(unsigned int);
@@ -46,5 +47,6 @@ class Lexer{
 
         void initKeywords();
         bool isKeyword(std::string&);
-        Keyword getVal(std::string&);
+        TokenType getVal(std::string&);
+        void createKeywordToken(std::string&);
 }; 
