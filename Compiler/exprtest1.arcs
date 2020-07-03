@@ -1,4 +1,4 @@
-int test = (3 + 4 * (2 + 5)) * 7;
-int test1 = test = 5 | 5 % 4 - 5;
-long test1 = 3 + 5
-                * 7 + 6 % 6;
+
+c_test : char = 't';
+i_test : int = 68 + 45 * 78 / (35 % 7);
+str_test : string = "test string";
