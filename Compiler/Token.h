@@ -5,6 +5,9 @@
 #include <stack>
 #include <unordered_map>
 #include <future>
+#include <cstring>
+
+#include "OS.h"
 
 // #define DP_KEYWORDS
 // #define DP_TOKEN_STEP
@@ -50,10 +53,10 @@
 #define WAIT_AND_EXIT(x) std::cin.get(); std::exit(x)
 
 enum ErrorType{ 
-                ERR_REDECL, ERR_UNDEFINED_ID
+                ERR_REDECL, ERR_UNDEFINED_ID, ERR_CLOSE_EXTRA_PAREN, ERR_OPEN_EXTRA_PAREN
               };
 
-enum TokenType{ 
+enum T_Type{ 
                 T_CHAR_LIT, T_NUMBER_LIT, T_LONG_LIT, T_FLOAT_LIT, T_STR_LIT, T_ID, T_INFER,
                 T_OPERATOR, T_COMMA, T_DOT, T_LPAREN, T_RPAREN, T_NOT, 
                 T_LBRACKET, T_RBRACKET, T_TERNARY, T_COLON, T_SEMICOLON,
@@ -75,10 +78,11 @@ enum OperatorDescriptor{
                         };
 
 struct Token{
-    TokenType type;
+    T_Type type;
     std::string val;
     unsigned int l_pos;
     unsigned int c_pos;
+    unsigned int F_c_pos;
     union{
         OperatorDescriptor op_info;
     };
