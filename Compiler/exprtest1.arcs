@@ -1,4 +1,4 @@
 
-c_test : char = 't';
-i_test : int = 68 + 45 * 78 / (35 % 7);
-str_test : string = "test string";
+char_test : char = 't';
+char_test : int = 68 + 45 * 78 / (35 % 7);
+str_test : string = "work pls";
