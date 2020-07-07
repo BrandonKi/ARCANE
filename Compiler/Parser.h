@@ -22,7 +22,7 @@ class Parser{
         void parseForStatement();
         void parseWhileStatement();
 
-        std::vector<Token*> parseExpr(TokenType);
+        std::vector<Token*> parseExpr(T_Type);
 
         unsigned int precedence(OperatorDescriptor);
 
@@ -30,6 +30,4 @@ class Parser{
         Token* peekNextToken();
         Token* peekTwoTokens();
         Token* currentToken();
-
-        void printError(ErrorType);
 };

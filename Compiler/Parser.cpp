@@ -43,7 +43,7 @@ void Parser::parseStatement(){
 void Parser::parseInferDecl(){
     nextToken();
     if(symbol_table.contains(currentToken()->val)){    // Check for redeclaration
-        printError(ERR_REDECL);
+        ErrorHandler::printError(ERR_REDECL, m_tokens, pos_ptr);
         WAIT_AND_EXIT(-1);
     }
     nextToken();
@@ -54,12 +54,12 @@ void Parser::parseExplicitDecl(){
     //if(m_symbol_table.contains(currentToken()->val))
 
     if(symbol_table.contains(currentToken()->val)){    // Check for redeclaration
-        printError(ERR_REDECL);
+        ErrorHandler::printError(ERR_REDECL, m_tokens, pos_ptr);
         WAIT_AND_EXIT(-1);
     }
     Token* name = currentToken();
     pos_ptr += 2;  // go forward two tokens
-    TokenType type = currentToken()->type;
+    T_Type type = currentToken()->type;
     switch(type){
         case T_CHAR:
         case T_BYTE:
@@ -86,7 +86,7 @@ void Parser::parseExplicitDecl(){
     }
 }
 
-std::vector<Token*> Parser::parseExpr(TokenType T_type){
+std::vector<Token*> Parser::parseExpr(T_Type T_type){
     std::vector<Token*> expr;
     expr.reserve(30);
     while(true){
@@ -95,6 +95,10 @@ std::vector<Token*> Parser::parseExpr(TokenType T_type){
             while(!m_stack.empty()){
                 expr.push_back(m_stack.top());
                 m_stack.pop();
+                if(expr.back()->type == T_LPAREN){
+                    ErrorHandler::printError(ERR_OPEN_EXTRA_PAREN, m_tokens, pos_ptr);
+                    WAIT_AND_EXIT(-1);
+                }
             }
             break;
         }
@@ -107,7 +111,8 @@ std::vector<Token*> Parser::parseExpr(TokenType T_type){
                     expr.push_back(m_stack.top());
                     m_stack.pop();
                     if(m_stack.empty()){
-                        REPORT_ERROR("Extra closing parenthesis at " << currentToken()->l_pos << ":" << currentToken()->c_pos);
+                        ErrorHandler::printError(ERR_CLOSE_EXTRA_PAREN, m_tokens, pos_ptr);
+                        WAIT_AND_EXIT(-1);
                     }
                 }
                 if(!m_stack.empty())
@@ -137,8 +142,9 @@ std::vector<Token*> Parser::parseExpr(TokenType T_type){
         else if(currentToken()->type == T_FLOAT_LIT || currentToken()->type == T_NUMBER_LIT || currentToken()->type == T_CHAR_LIT || currentToken()->type == T_STR_LIT)
             expr.push_back(currentToken());
         else if(currentToken()->type == T_ID ){
-            if(symbol_table.contains(currentToken()->val)){
-                printError(ERR_UNDEFINED_ID);
+            std::cout << "\n" << currentToken()->val << "\n";
+            if(!symbol_table.contains(currentToken()->val)){
+                ErrorHandler::printError(ERR_UNDEFINED_ID, m_tokens, pos_ptr);
                 WAIT_AND_EXIT(-1);
             }
         }
@@ -228,21 +234,4 @@ Token* Parser::peekTwoTokens(){
 
 Token* Parser::currentToken(){
     return m_tokens[pos_ptr];
-}
-
-void Parser::printError(ErrorType type){
-    Token* token = currentToken();
-    log('\n');
-    switch(type){
-        case ERR_REDECL:
-            std::cout << "[" << token->l_pos << ", " << token->c_pos << "] ERROR: Redeclaration of '" 
-            << token->val << "'\n\t" << token->l_pos << " | " << token->val << " " << nextToken()->val 
-            << " " << nextToken()->val <<  " " << peekNextToken()->val << " ...";
-            break;
-        case ERR_UNDEFINED_ID:
-            std::cout << "[" << token->l_pos << ", " << token->c_pos << "] ERROR: Undefined identifier '" 
-            << token->val << "'\n\t" << token->l_pos << " | " << token->val << " " << nextToken()->val 
-            << " " << nextToken()->val <<  " " << peekNextToken()->val << " ...";
-            break;
-    }
 }
