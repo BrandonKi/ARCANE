@@ -64,7 +64,7 @@ std::string ErrorHandler::F_YELLOW(std::string str){
     return "\033[1;33m" + str + "\033[0m";
 }
 
-std::string ErrorHandler::F_YELLOW(std::string str){
+std::string ErrorHandler::F_DULL_YELLOW(std::string str){
     return "\033[33m" + str + "\033[0m";
 }
 
@@ -72,6 +72,6 @@ std::string ErrorHandler::F_BLUE(std::string str){
     return "\033[1;36m" + str + "\033[0m";
 }
 
-std::string ErrorHandler::F_BLUE(std::string str){
+std::string ErrorHandler::F_DULL_BLUE(std::string str){
     return "\033[36m" + str + "\033[0m";
 }
