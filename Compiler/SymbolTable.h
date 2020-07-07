@@ -10,9 +10,9 @@ struct ST_entry{
     unsigned int c_pos;
     bool declared;
     std::vector<Token*> pf_expr;
-    std::vector<ST_entry*> subtable;       // @FIX this doesn't work.
-};
-
+    //std::vector<ST_entry*> subtable;       // @FIX this doesn't work. 
+};                                           // Planning on having two tables. 
+                                             // One for the file scope and one for the function scope
 class SymbolTable{
 
     private:
@@ -20,9 +20,9 @@ class SymbolTable{
 
     public:
         SymbolTable(){};
-        void addSymbol(Token*, TokenType, std::vector<Token*>);
-        void addSymbol(Token*, TokenType, std::vector<ST_entry*>);
-        void addSymbol(Token*, TokenType);
+        void addSymbol(Token*, T_Type, std::vector<Token*>);
+        void addSymbol(Token*, T_Type, std::vector<ST_entry*>);
+        void addSymbol(Token*, T_Type);
 
         bool contains(std::string);
 
@@ -31,6 +31,6 @@ class SymbolTable{
     private:
         std::string token_vec_to_string(std::vector<Token*>);
         std::string ST_type_to_string(ST_TYPE);
-        ST_TYPE T_type_to_ST_type(TokenType);
+        ST_TYPE T_type_to_ST_type(T_Type);
 
 };

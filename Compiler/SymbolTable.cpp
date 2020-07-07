@@ -1,19 +1,21 @@
 #include "SymbolTable.h"
 
 
-void SymbolTable::addSymbol(Token* token, TokenType type, std::vector<Token*> pf_expr){
+void SymbolTable::addSymbol(Token* token, T_Type type, std::vector<Token*> pf_expr){
     m_symbol_table[token->val] = new ST_entry{token->val, T_type_to_ST_type(type), token->l_pos, token->c_pos, true};
     logn(token->type << " ::: " << T_type_to_ST_type(token->type));
     m_symbol_table[token->val]->pf_expr = pf_expr;
 }
 
-void SymbolTable::addSymbol(Token* token, TokenType type, std::vector<ST_entry*> subtable){
-    m_symbol_table[token->val] = new ST_entry{token->val, T_type_to_ST_type(type), token->l_pos, token->c_pos, true};
-    logn(token->type << " ::: " << T_type_to_ST_type(token->type));
-    m_symbol_table[token->val]->subtable = subtable; // if symbol is a function. Does not currently work.
-}
+/* This is just a placeholder to remind me to add this feature in. It has never worked and shouldn't be in this file */
 
-void SymbolTable::addSymbol(Token* token, TokenType type){
+// void SymbolTable::addSymbol(Token* token, T_Type type, std::vector<ST_entry*> subtable){
+//     m_symbol_table[token->val] = new ST_entry{token->val, T_type_to_ST_type(type), token->l_pos, token->c_pos, true};
+//     logn(token->type << " ::: " << T_type_to_ST_type(token->type));
+//     m_symbol_table[token->val]->subtable = subtable; // if symbol is a function.
+// }
+
+void SymbolTable::addSymbol(Token* token, T_Type type){
     m_symbol_table[token->val] = new ST_entry{token->val, T_type_to_ST_type(type), token->l_pos, token->c_pos, true};
     logn(token->type << " ::: " << T_type_to_ST_type(token->type));
     m_symbol_table[token->val]->declared = false;    // if a variable is defined but not given a value 
@@ -65,7 +67,7 @@ std::string SymbolTable::ST_type_to_string(ST_TYPE type){
     }
 }
 
-ST_TYPE SymbolTable::T_type_to_ST_type(TokenType type){
+ST_TYPE SymbolTable::T_type_to_ST_type(T_Type type){
     switch(type){
         case T_INT:
             return ST_INT;
