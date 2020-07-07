@@ -1,4 +1,4 @@
-#include "Token.h"
+#include "ErrorHandler.h"
 
 #define CASE_VALID_ID   case 'A':case 'B':case 'C':case 'D':case 'E':case 'F':case 'G':case 'H':case 'I': \
                         case 'J':case 'K':case 'L':case 'M':case 'N':case 'O':case 'P':case 'Q':case 'R': \
@@ -12,6 +12,7 @@ class Lexer{
     private:
         unsigned int m_line;
         unsigned int m_char;
+        unsigned int m_F_char;
         const char* m_filedata;
         unsigned int m_length;
         std::unordered_map<std::string, int> m_keywords;
@@ -47,6 +48,6 @@ class Lexer{
 
         void initKeywords();
         bool isKeyword(std::string&);
-        TokenType getVal(std::string&);
+        T_Type getVal(std::string&);
         void createKeywordToken(std::string&);
 }; 
