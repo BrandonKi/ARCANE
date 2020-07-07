@@ -2,6 +2,7 @@
 
 
 int main(int argc, const char* argv[]){
+    OS::init();
     for(int i = 0; i < argc; i++)
         std::cout << argv[i] << "\n";
     // unsigned int length = sizeof(argv[1]);
@@ -11,6 +12,7 @@ int main(int argc, const char* argv[]){
             std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
             file.close();
             const char* filedata = contents.c_str();
+            ErrorHandler::init(filedata);
             Lexer lexer(filedata, (unsigned int)contents.length());
             std::vector<Token*> tokens = lexer.getTokens();
             DEBUG_PRINT_TOKENS(
