@@ -13,7 +13,7 @@ void ErrorHandler::printError(ErrorType type, std::vector<Token*>& tokens, unsig
 
     NEWLINE;
     NEWLINE;
-    std::cout << "[" << err_token->l_pos << ", " << err_token->c_pos << "] " << F_DULL_RED(std::string("ERROR: "));
+    std::cout << "[" << err_token->l_pos << ", " << err_token->c_pos << "] " << F_RED(std::move(std::string("ERROR: ")));
     switch(type){
         case ERR_REDECL:
             std::cout << "Redeclaration of identifier '" << err_token->val << "'";
@@ -49,29 +49,69 @@ void ErrorHandler::printError(ErrorType type, std::vector<Token*>& tokens, unsig
     NEWLINE;
     log("    " << std::string(std::to_string(err_token->l_pos).length(), ' ') << " |    "); // that mess in the middle is to print the correct amount of spaces
     std::string indent(err_token->c_pos-1, ' ');
-    std::cout << indent << "^" << std::string(err_token->val.length()-1, '~') << '\n';
+    std::cout << indent << F_DULL_CYAN(std::string("^")) << F_DULL_CYAN(std::string(err_token->val.length()-1, '~')) << '\n';
+}
+
+std::string ErrorHandler::F_BLACK(std::string str){
+    return std::move("\033[1;30m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_DULL_BLACK(std::string str){
+    return std::move("\033[30m" + str + "\033[0m");
 }
 
 std::string ErrorHandler::F_RED(std::string str){
-    return "\033[1;31m" + str + "\033[0m";
+    return std::move("\033[1;31m" + str + "\033[0m");
 }
 
 std::string ErrorHandler::F_DULL_RED(std::string str){
-    return "\033[31m" + str + "\033[0m";
+    return std::move("\033[31m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_GREEN(std::string str){
+    return std::move("\033[1;32m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_DULL_GREEN(std::string str){
+    return std::move("\033[32m" + str + "\033[0m");
 }
 
 std::string ErrorHandler::F_YELLOW(std::string str){
-    return "\033[1;33m" + str + "\033[0m";
+    return std::move("\033[1;33m" + str + "\033[0m");
 }
 
 std::string ErrorHandler::F_DULL_YELLOW(std::string str){
-    return "\033[33m" + str + "\033[0m";
+    return std::move("\033[33m" + str + "\033[0m");
 }
 
 std::string ErrorHandler::F_BLUE(std::string str){
-    return "\033[1;36m" + str + "\033[0m";
+    return std::move("\033[1;34m" + str + "\033[0m");
 }
 
 std::string ErrorHandler::F_DULL_BLUE(std::string str){
-    return "\033[36m" + str + "\033[0m";
+    return std::move("\033[34m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_PINK(std::string str){
+    return std::move("\033[1;35m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_DULL_PINK(std::string str){
+    return std::move("\033[35m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_CYAN(std::string str){
+    return std::move("\033[1;36m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_DULL_CYAN(std::string str){
+    return std::move("\033[36m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_WHITE(std::string str){
+    return std::move("\033[1;37m" + str + "\033[0m");
+}
+
+std::string ErrorHandler::F_DULL_WHITE(std::string str){
+    return std::move("\033[37m" + str + "\033[0m");
 }
