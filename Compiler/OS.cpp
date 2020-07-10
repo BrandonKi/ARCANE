@@ -2,7 +2,8 @@
 
 void OS::init(){
     #ifdef _WIN32
-        EnableVTMode();
+        if(!EnableVTMode())
+            std::exit(-1);
     #endif
 }
 
