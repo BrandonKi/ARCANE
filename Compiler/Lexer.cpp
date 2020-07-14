@@ -231,12 +231,11 @@ unsigned int Lexer::handleID(unsigned int i){
         m_ctoken.emplace_back(m_filedata[i]);
         i++;
     }
-    m_ctoken.emplace_back('\0');
     i--;
+    m_ctoken.emplace_back('\0');
     std::string id = std::string(m_ctoken.data());
-    if(isKeyword(id)){
+    if(isKeyword(id))
         createKeywordToken(id);
-    }
     else
         m_tokens.emplace_back(new Token{T_Type(T_ID), id, m_line, m_char, m_F_char});
     m_ctoken.clear();
@@ -474,8 +473,9 @@ void Lexer::initKeywords(){
     std::unordered_map<std::string, int> temp({
         {"$", T_AUTO}, {"char", T_CHAR}, {"uchar", T_UCHAR}, {"byte", T_BYTE}, {"ubyte", T_UBYTE}, {"int", T_INT}, 
         {"uint", T_UINT}, {"float", T_FLOAT}, {"double", T_DOUBLE}, {"long", T_LONG}, {"string", T_STRING}, 
-        {"for", T_FOR}, {"while", T_WHILE}, {"return", T_RETURN}, {"if", T_IF}, {"elif", T_ELIF}, {"else", T_ELSE}, 
-        {"switch", T_SWITCH}, {"case", T_CASE}, {"break", T_BREAK}, {"include", T_INCLUDE}, {"import", T_IMPORT}
+        {"for", T_FOR}, {"while", T_WHILE}, {"ret", T_RET}, {"if", T_IF}, {"elif", T_ELIF}, {"else", T_ELSE}, 
+        {"switch", T_SWITCH}, {"case", T_CASE}, {"break", T_BREAK}, {"fn", T_FN}, {"include", T_INCLUDE}, 
+        {"import", T_IMPORT}
 
     });
     m_keywords = std::move(temp);
