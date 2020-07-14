@@ -2,7 +2,18 @@
 
 #define _EXIT_ 0x01
 
-#define _NCONST_PUSH_ 0x02
+#define _SB_RET_ 0x02
+#define _UB_RET_ 0x03
+#define _SI_RET_ 0x04
+#define _UI_RET_ 0x05
+#define _F_RET_ 0x06
+#define _D_RET_ 0x07
+#define _L_RET_ 0x08
+#define _S_RET_ 0x07
+#define _REF_RET_ 0x08
+#define _RET_ 0x09
+
+#define _NCONST_PUSH_ 0x0f
 #define _SBCONST_PUSH_ 0x10
 #define _UBCONST_PUSH_ 0x11
 #define _SICONST_PUSH_ 0x12
@@ -11,6 +22,8 @@
 #define _DCONST_PUSH_ 0x15
 #define _LCONST_PUSH_ 0x16
 #define _SCONST_PUSH_ 0x17
+
+#define _CALL_LOCAL_ 0x30
 
 #define _ARR_LEN_ 0x40
 #define _NEW_ARR_ 0x41

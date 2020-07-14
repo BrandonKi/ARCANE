@@ -11,7 +11,7 @@
 
 // #define DP_KEYWORDS
 // #define DP_TOKEN_STEP
-// #define DP_TOKEN_RESULT
+#define DP_TOKEN_RESULT
 #define DP_INFIX_EXPR
 #define DP_POSTFIX_EXPR
 
@@ -62,8 +62,8 @@ enum T_Type{
                 T_LBRACKET, T_RBRACKET, T_TERNARY, T_COLON, T_SEMICOLON,
 
                 T_AUTO, T_CHAR, T_UCHAR, T_BYTE, T_UBYTE, T_INT, T_UINT, 
-                T_LONG, T_FLOAT, T_DOUBLE, T_STRING, T_FOR, T_WHILE, T_RETURN, 
-                T_IF, T_ELIF, T_ELSE, T_SWITCH, T_CASE, T_BREAK, T_ARRAY, T_FUNC,
+                T_LONG, T_FLOAT, T_DOUBLE, T_STRING, T_FOR, T_WHILE, T_RET, 
+                T_IF, T_ELIF, T_ELSE, T_SWITCH, T_CASE, T_BREAK, T_FN, T_ARRAY,
                 T_INCLUDE, T_IMPORT
               };
 

@@ -18,6 +18,7 @@ int main(int argc, const char* argv[]){
             DEBUG_PRINT_TOKENS(
                 for (Token* t : tokens) 
                     std:: cout << " {" << t->type << ", " << t->val << "} ";
+                std::cout << '\n';
             );
             Parser parser(tokens, lexer.getKeywords());
             std::cin.get();
