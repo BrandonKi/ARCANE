@@ -40,19 +40,82 @@ int main(){
         0x63,
         0x68,           // end file signature
 
-                        // start program
-        _UBCONST_PUSH_,
-        0xff,
-        _NEW_ARR_,
-        0x02,
-        _ARR_LEN_,
-                        // end program
+                        // start of function table
+        0x02,           // number of functions
+                        
+        'm',
+        'a',
+        'i',
+        'n',
+        0x00,
 
+        'a',
+        'd',
+        'd',
+        0x00,
+
+        _CALL_LOCAL_,   // bootstrap code
+        'm',
+        'a',
+        'i',
+        'n',
+        0x00,
+
+
+                        // start main
+        0xff,
+        0xff,
+        'f',
+        'n',
+        'm',
+        'a',
+        'i',
+        'n',
+        0x00,
+        
+        0x01,           // local variable count
+        0x01,           // arg count
+
+        0x02,           // arg types
+                    
+        _UBCONST_PUSH_,
+        0x05,
+        _UBCONST_PUSH_,
+        0x04,
+        _CALL_LOCAL_,
+        'a',
+        'd',
+        'd',
+        0x00,
+                        // end main
         _EXIT_,         // exit
-        0x00 
+        0x00, 
+
+                        // start add
+        0xff,
+        0xff,
+        'f',
+        'n',
+        'a',
+        'd',
+        'd',
+        0x00,
+
+        0x02,           // local variable count
+        0x02,           // arg count
+
+        0x02,           // arg types
+        0x02,
+
+        _UB_LOAD_,
+        0x00,
+        _UB_LOAD_,
+        0x01,
+        _UB_RET_,
+
     };
 
-    std::ofstream file("C:\\Users\\Kirin\\Desktop\\ARCANE\\tests\\arraytest2.arcb", std::ios::out|std::ios::binary|std::ios::trunc);
+    std::ofstream file("C:\\Users\\Kirin\\Desktop\\ARCANE\\ARCVM\\src\\example.arcb", std::ios::out|std::ios::binary|std::ios::trunc);
     if(file.is_open())
         file.write((char *)data, sizeof(data));  
     file.close();
