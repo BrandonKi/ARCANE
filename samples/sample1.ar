@@ -1,0 +1,8 @@
+i := 0;
+x : int = 5;
+
+result := add(i, x);
+
+fn add(a : int, b : int): int {
+    ret a + b;
+}
