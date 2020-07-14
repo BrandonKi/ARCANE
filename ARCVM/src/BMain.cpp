@@ -7,7 +7,7 @@ clock_t start, end;
 #define TIMER_STOP std::cout << "Time taken by program is : " << ((double(clock() - start) / double(CLOCKS_PER_SEC)) * 1000) << " milliseconds " << std::endl; 
 
 inline bool checkFileType(char* data);
-// inline char* appendExtension(const char* filename);
+inline char* appendExtension(const char* filename);
 
 int main (int argc, const char* argv[]) {
   #ifdef DEBUG_BUILD
@@ -18,7 +18,7 @@ int main (int argc, const char* argv[]) {
   if(argc > 1){
     TIMER_START;
     std::streampos size;
-    std::ifstream file (argv[1], std::ios::in|std::ios::binary|std::ios::ate);
+    std::ifstream file (appendExtension(argv[1]), std::ios::in|std::ios::binary|std::ios::ate);
     char* filedata;
     if (file.is_open()){
       size = file.tellg();
@@ -45,9 +45,9 @@ inline bool checkFileType(char* data){
   return memcmp("BrandonKirincich", data, 16) == 0;
 }
 
-// inline char* appendExtension(const char* filename){
-//   char* result = (char*) malloc(sizeof(filename)+5);
-//   memcpy(result, filename, sizeof(filename));
-//   memcpy(&result[sizeof(filename)-1], ".arcb", 5);
-//   return result;
-// }
+inline char* appendExtension(const char* filename){
+  char* result = (char*) malloc(sizeof(filename)+5);
+  memcpy(result, filename, sizeof(filename));
+  memcpy(&result[sizeof(filename)-1], ".arcb", 5);
+  return result;
+}
