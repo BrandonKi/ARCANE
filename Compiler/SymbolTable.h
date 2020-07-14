@@ -1,7 +1,7 @@
 #include "Lexer.h"
 
 
-enum ST_TYPE{ST_CHAR, ST_UCHAR, ST_INT, ST_UINT, ST_LONG, ST_FLOAT, ST_DOUBLE, ST_STRING, ST_ARRAY, ST_FUNC, ST_INVALID};
+enum ST_TYPE{ST_CHAR, ST_UCHAR, ST_INT, ST_UINT, ST_LONG, ST_FLOAT, ST_DOUBLE, ST_STRING, ST_ARRAY, ST_FN, ST_INVALID};
 
 struct ST_entry{
     std::string name;
@@ -9,10 +9,12 @@ struct ST_entry{
     unsigned int l_pos;
     unsigned int c_pos;
     bool declared;
-    std::vector<Token*> pf_expr;
-    //std::vector<ST_entry*> subtable;       // @FIX this doesn't work. 
-};                                           // Planning on having two tables. 
-                                             // One for the file scope and one for the function scope
+    bool param;
+    std::vector<Token*> data;
+    
+};
+
+
 class SymbolTable{
 
     private:
@@ -21,10 +23,13 @@ class SymbolTable{
     public:
         SymbolTable(){};
         void addSymbol(Token*, T_Type, std::vector<Token*>);
-        void addSymbol(Token*, T_Type, std::vector<ST_entry*>);
-        void addSymbol(Token*, T_Type);
+        void addSymbol(Token*, T_Type, bool);
 
         bool contains(std::string);
+
+        T_Type getReturnType(std::string);
+
+        void clear(){m_symbol_table.clear();}
 
         void printSymbolTable();
 

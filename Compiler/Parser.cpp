@@ -1,19 +1,24 @@
 #include "Parser.h"
 
 void Parser::start(){    
-    for(pos_ptr = 0; pos_ptr < m_tokens.size(); pos_ptr++){
-        parseStatement();
-    }
+    parseStatementBlock();
     std::cin.get();
     symbol_table.printSymbolTable();
 }
 
+void Parser::parseStatementBlock(){
+    for(pos_ptr = 0; pos_ptr < m_tokens.size(); pos_ptr++){
+        parseStatement();
+    }
+}
+
 void Parser::parseStatement(){
     if(currentToken()->type == T_ID){
-        if(peekNextToken()->type == T_INFER){
+        T_Type nextTokenType = peekNextToken()->type;
+        if(nextTokenType == T_INFER){
             parseInferDecl();
         }
-        else if(peekNextToken()->type == T_COLON){
+        else if(nextTokenType == T_COLON){
             parseExplicitDecl();
         }
     }
@@ -22,7 +27,7 @@ void Parser::parseStatement(){
             break;
         case T_WHILE:
             break;
-        case T_RETURN:
+        case T_RET:
             break;
         case T_IF:
             break;
@@ -36,13 +41,16 @@ void Parser::parseStatement(){
             break;
         case T_BREAK:
             break;
+        case T_FN:
+            parseFnDecl();
+            break;
     }
 
 }
 
 void Parser::parseInferDecl(){
     nextToken();
-    if(symbol_table.contains(currentToken()->val)){    // Check for redeclaration
+    if(sub_table.contains(currentToken()->val) || symbol_table.contains(currentToken()->val)){    // Check for redeclaration
         ErrorHandler::printError(ERR_REDECL, m_tokens, pos_ptr);
         WAIT_AND_EXIT(-1);
     }
@@ -53,7 +61,7 @@ void Parser::parseInferDecl(){
 void Parser::parseExplicitDecl(){
     //if(m_symbol_table.contains(currentToken()->val))
 
-    if(symbol_table.contains(currentToken()->val)){    // Check for redeclaration
+    if(sub_table.contains(currentToken()->val) || symbol_table.contains(currentToken()->val)){    // Check for redeclaration
         ErrorHandler::printError(ERR_REDECL, m_tokens, pos_ptr);
         WAIT_AND_EXIT(-1);
     }
@@ -75,15 +83,46 @@ void Parser::parseExplicitDecl(){
             if(currentToken()->type != T_SEMICOLON){
                 nextToken();
                 std::vector<Token*> expr = parseExpr(T_SEMICOLON);
-                symbol_table.addSymbol(name, type, expr);
+                if(inner_scope)
+                    sub_table.addSymbol(name, type, expr);
+                else
+                    symbol_table.addSymbol(name, type, expr);
             }
             else{
-                symbol_table.addSymbol(name, type);
+                if(inner_scope)
+                    sub_table.addSymbol(name, type, false);
+                else
+                    symbol_table.addSymbol(name, type, false);
             }
             break;
         default:
             log("ERROR");
     }
+}
+
+void Parser::parseFnDecl(){
+    Token* fn_name = nextToken();
+    std::vector<Token*> data;
+    data.push_back(0);
+    if(nextToken()->type == T_LPAREN && peekNextToken()->type != T_RPAREN){
+        do{
+            Token* temp = nextToken();        // identifier
+            nextToken();                      // colon
+            nextToken();                      // type
+            sub_table.addSymbol(temp, currentToken()->type, true);
+            sub_table.printSymbolTable();
+        }while(nextToken()->type == T_COMMA);
+    }
+    nextToken();        // colon
+    data[0] = nextToken();
+    symbol_table.addSymbol(fn_name, T_FN, data);
+    // parseFnBody();
+
+    sub_table.clear();              //  clear sub symbol table after parsing
+}
+
+void Parser::parseFnBody(){
+    parseStatementBlock();
 }
 
 std::vector<Token*> Parser::parseExpr(T_Type T_type){
