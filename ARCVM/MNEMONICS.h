@@ -2,16 +2,7 @@
 
 #define _EXIT_ 0x01
 
-#define _SB_RET_ 0x02
-#define _UB_RET_ 0x03
-#define _SI_RET_ 0x04
-#define _UI_RET_ 0x05
-#define _F_RET_ 0x06
-#define _D_RET_ 0x07
-#define _L_RET_ 0x08
-#define _S_RET_ 0x07
-#define _REF_RET_ 0x08
-#define _RET_ 0x09
+#define _RET_ 0x03
 
 #define _NCONST_PUSH_ 0x0f
 #define _SBCONST_PUSH_ 0x10
@@ -119,5 +110,6 @@
 #define _LONG_ 7
 #define _STRING_ 8
 #define _REF_ 9
-#define _SPECIAL_ 10
-#define _UNDEFINED_ 11
+#define _UNDEFINED_ 10
+#define _FRAME_ 11
+#define _FRAME_INFO_ 12
