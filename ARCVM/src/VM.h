@@ -50,17 +50,18 @@ class VM {
 
 private:
     std::vector<std::pair<std::string, int>> functionTable;
-    // unsigned int* functionTable;        // c arr
     unsigned int functionTable_len;
     byte* m_data; 
     uint m_size;
     uint m_memptr;
-    uint m_local;
+    unsigned int m_lclptr;
+    unsigned int m_frameptr;
     container* m_variableTable;         // c arr
+    unsigned int m_variableTable_len;
     std::vector<container> m_stack;
 
     bool EXIT_ON_NEXT_INTSRUCTION = false;
-    uint EXIT_CODE;
+    unsigned int EXIT_CODE;
 
 
     int findSymbol(std::string);
@@ -87,9 +88,15 @@ private:
         EXIT_ON_NEXT_INTSRUCTION = true;
         EXIT_CODE = *getNextByte();
     }
-    inline void UB_RET(){                       // IMPLEMENT ME
-        MNEMONIC("UB_RET"); 
-        
+    inline void RET(){                       // IMPLEMENT ME
+        MNEMONIC("RET");
+        container result = m_stack.back();
+        unsigned int end_frame = m_lclptr;
+        m_memptr = m_stack[m_frameptr+1].data;
+        m_lclptr = m_stack[m_frameptr+2].data;
+        m_frameptr = m_stack[m_frameptr+3].data;
+        m_stack.erase(m_stack.begin()+end_frame, m_stack.end());
+        m_stack.push_back(result);
     }
     inline void NCONST_PUSH(){
         MNEMONIC("NCONST_PUSH");
@@ -137,8 +144,25 @@ private:
     }
     inline void CALL_LOCAL(){                           // IMPLEMENT ME
         MNEMONIC("CALL_LOCAL");
-        
-
+        char* fn_name = (char*)getNextByte();
+        DEBUG(fn_name);
+        unsigned int old_memptr = m_memptr + strlen(fn_name);
+        unsigned int old_lclptr = m_lclptr;
+        unsigned int old_frameptr = m_frameptr;
+        for(std::pair<std::string, int> pair : functionTable)
+            if(pair.first == fn_name)
+                m_memptr = pair.second;
+        m_lclptr = m_stack.size() - (int)(m_data[m_memptr+1]);
+        for(unsigned int i = 0; i < (int)(m_data[m_memptr+1]) - (int)(m_data[m_memptr]); i++){
+            m_stack.push_back(container{_UNDEFINED_, 0});
+        }
+        m_memptr += (int)(m_data[m_memptr+1]) + 1;
+        m_frameptr = m_stack.size();
+        m_stack.push_back(container{_FRAME_, 0});
+        m_stack.push_back(container{_FRAME_INFO_, old_memptr});
+        m_stack.push_back(container{_FRAME_INFO_, old_lclptr});
+        m_stack.push_back(container{_FRAME_INFO_, old_frameptr});
+        m_stack.push_back(container{_FRAME_, 0});
     }
     inline void ARR_LEN(){
         MNEMONIC("ARR_LEN");
@@ -200,9 +224,6 @@ private:
                 
                 break;
             case _REF_:
-                
-                break;
-            case _SPECIAL_:
                 
                 break;
             
@@ -531,105 +552,105 @@ private:
     inline void SB_STORE(){
         MNEMONIC("SB_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = {_SBYTE_, (*reinterpret_cast<uint*>(&m_stack.back().data) & 0xff)};               // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
-        DEBUG("slot: " << index << " value: " << (sint)(int_fast8_t)(m_variableTable[index].data & 0xff));           // I could just do % BYTE_MAX_VALUE but no
+        m_stack[m_lclptr + index] = {_SBYTE_, (*reinterpret_cast<uint*>(&m_stack.back().data) & 0xff)};               // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
+        DEBUG("slot: " << index << " value: " << (sint)(int_fast8_t)(m_stack[m_lclptr + index].data & 0xff));           // I could just do % BYTE_MAX_VALUE but no
         m_stack.pop_back();
     }
     inline void UB_STORE(){
         MNEMONIC("UB_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = {_UBYTE_, (m_stack.back().data & 0xff)};                     // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
-        DEBUG("slot: " << index << " value: " << m_variableTable[index].data);              // I could just do % BYTE_MAX_VALUE but no
+        m_stack[m_lclptr + index] = {_UBYTE_, (m_stack.back().data & 0xff)};                     // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
+        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);              // I could just do % BYTE_MAX_VALUE but no
         m_stack.pop_back();
     }
     inline void SI_STORE(){
         MNEMONIC("SI_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << (sint)(m_variableTable[index].data));       
+        m_stack[m_lclptr + index] = m_stack.back();
+        DEBUG("slot: " << index << " value: " << (sint)(m_stack[m_lclptr + index].data));       
         m_stack.pop_back();
     }
     inline void UI_STORE(){
         MNEMONIC("UI_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << m_variableTable[index].data);       
+        m_stack[m_lclptr + index] = m_stack.back();
+        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);       
         m_stack.pop_back();
     }
     inline void F_STORE(){
         MNEMONIC("F_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << *reinterpret_cast<float*>(&m_variableTable[index].data));
+        m_stack[m_lclptr + index] = m_stack.back();
+        DEBUG("slot: " << index << " value: " << *reinterpret_cast<float*>(&m_stack[m_lclptr + index].data));
         m_stack.pop_back();
     }
     inline void D_STORE(){
         MNEMONIC("D_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << m_variableTable[index].data);       
+        m_stack[m_lclptr + index] = m_stack.back();
+        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);       
         m_stack.pop_back();
     }
     inline void L_STORE(){                                              // THIS REALLY DOESN'T WORK
         MNEMONIC("L_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << m_variableTable[index].data);       
+        m_stack[m_lclptr + index] = m_stack.back();
+        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);    
         m_stack.pop_back();
     }
     inline void REF_STORE(){
         MNEMONIC("REF_STORE");
         uint index = *getNextByte();
-        m_variableTable[index] = m_stack.back();
-        DEBUG("slot: " << index << " ref: 0x" << std::hex << m_variableTable[index].data << std::dec);
+        m_stack[m_lclptr + index] = m_stack.back();
+        DEBUG("slot: " << index << " ref: 0x" << std::hex << m_stack[m_lclptr + index].data << std::dec);
         m_stack.pop_back();
     }
     inline void SB_LOAD(){
         MNEMONIC("SB_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back({_SBYTE_, m_variableTable[index].data & 0xff});
+        m_stack.push_back({_SBYTE_, m_stack[m_lclptr + index].data & 0xff});
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void UB_LOAD(){
         MNEMONIC("UB_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back({_UBYTE_, m_variableTable[index].data & 0xff});
+        m_stack.push_back({_UBYTE_, m_stack[m_lclptr + index].data & 0xff});
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void SI_LOAD(){
         MNEMONIC("SI_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back(m_variableTable[index]);
+        m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void UI_LOAD(){
         MNEMONIC("UI_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back(m_variableTable[index]);
+        m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void F_LOAD(){
         MNEMONIC("F_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back(m_variableTable[index]);
+        m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void D_LOAD(){
         MNEMONIC("D_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back(m_variableTable[index]);
+        m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << *reinterpret_cast<double*>(&m_stack.back().data));
     }
     inline void L_LOAD(){                   // This does not work. Am I going to fix it. No.
         MNEMONIC("L_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back(m_variableTable[index]);
+        m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << m_stack.back().data);
     }
     inline void REF_LOAD(){
         MNEMONIC("REF_LOAD");
         uint index = *getNextByte();
-        m_stack.push_back(m_variableTable[index]);
+        m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " ref: 0x" << std::hex << m_stack.back().data << std::dec);
     }
     inline void POP(){
