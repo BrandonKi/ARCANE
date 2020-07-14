@@ -1,7 +1,7 @@
 #include "VM.h"
 
 VM::VM(char* data, uint size)
-	:m_size(size), m_memptr(0)
+	:m_size(size), m_memptr(0), m_lclptr(0), m_frameptr(0)
 {
 	m_data = reinterpret_cast<byte*>(data);
 
@@ -93,8 +93,8 @@ void VM::executeInstruction(){
 		case _EXIT_:
 			EXIT();
 			break;
-		case _UB_RET_:
-			UB_RET();
+		case _RET_:
+			RET();
 			break;
 		case _NCONST_PUSH_:
 			NCONST_PUSH();
@@ -379,6 +379,15 @@ void VM::printStack(){
 				break;
 			case _REF_:
 				std::cout << "0x" << std::hex << result.back().data << std::dec << "\n";
+				break;
+			case _UNDEFINED_:
+				std::cout << "UNDEF" << "\n";
+				break;
+			case _FRAME_:
+				std::cout << "------" << "\n";
+				break;
+			case _FRAME_INFO_:
+				std::cout << ": " << result.back().data << "\n";
 				break;
 		}
 		
