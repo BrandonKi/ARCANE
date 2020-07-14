@@ -3,11 +3,26 @@
 VM::VM(char* data, uint size)
 	:m_size(size), m_memptr(0)
 {
-	
 	m_data = reinterpret_cast<byte*>(data);
-	m_variableTable = (container*)malloc(10);  
 
-	// m_data = convertToByteArray(data);  // outdated
+	functionTable_len = m_data[0];
+	int last_len = 0;
+	m_data += 1;
+	for(int i = 0; i < functionTable_len; i++){
+		std::string name = (char*)(m_data);
+		functionTable.emplace_back(name, -1);
+		last_len = functionTable[i].first.length()+1;
+		m_data += last_len;
+		// logn("| " << data[0] << " |");
+	}
+	for(int i = 0; i < functionTable_len; i++){
+		functionTable[i].second = findSymbol(functionTable[i].first);
+	}
+	for(std::pair<std::string,int> s : functionTable)
+		logn(s.first + " : " + std::to_string(s.second));
+
+	m_variableTable = (container*)malloc(10);   			// temp
+
 
 	// printVariableTable();
 }
@@ -21,11 +36,15 @@ void VM::printProgram(byte* arr){
 	NEWLINE;
 }
 
-byte* VM::convertToByteArray(char* arr)             // USELESS
-{
-	byte* newArr = new byte [m_size];
-	std::copy(arr, arr + ((m_size+1) * sizeof(char)), newArr);
-	return newArr;
+int VM::findSymbol(std::string symbol){
+	symbol = std::string(2, 0xff) + std::string("fn") + symbol;
+	unsigned int len = symbol.length();
+	const char* c_str = symbol.c_str();
+	for(int i = 0; i < m_size; i++){
+		if(memcmp(c_str, m_data+i, len) == 0)
+			return i + len + 1;
+	}
+	return -1;
 }
 
 void VM::run(){
@@ -74,6 +93,9 @@ void VM::executeInstruction(){
 		case _EXIT_:
 			EXIT();
 			break;
+		case _UB_RET_:
+			UB_RET();
+			break;
 		case _NCONST_PUSH_:
 			NCONST_PUSH();
 			break;
@@ -100,6 +122,9 @@ void VM::executeInstruction(){
 			break;
 		case _SCONST_PUSH_:
 			SCONST_PUSH();
+			break;
+		case _CALL_LOCAL_:
+			CALL_LOCAL();
 			break;
 		case _ARR_LEN_:
 			ARR_LEN();
@@ -316,48 +341,48 @@ void VM::executeInstruction(){
 }
 
 void VM::printStack(){
-	std::stack<container> temp = m_stack;
-	std::stack<container> result;
+	std::vector<container> temp = m_stack;
+	std::vector<container> result;
 	std::cout << std::dec;
 	while(!temp.empty()){
-		result.push(temp.top());
-		temp.pop();
+		result.push_back(temp.back());
+		temp.pop_back();
 	}
 	while(!result.empty()){
-		switch(result.top().type){
+		switch(result.back().type){
 			case _NULL_:
 				std::cout <<"NULL\n";
 				break;
 			case _SBYTE_:
-				std::cout << (sint)(signed char)(result.top().data & 0xff) << "\n";
+				std::cout << (sint)(signed char)(result.back().data & 0xff) << "\n";
 				break;
 			case _UBYTE_:
-				std::cout << (result.top().data & 0xff) << "\n";
+				std::cout << (result.back().data & 0xff) << "\n";
 				break;
 			case _SINT_:
-				std::cout << *reinterpret_cast<sint*>(&result.top().data) << "\n";
+				std::cout << *reinterpret_cast<sint*>(&result.back().data) << "\n";
 				break;
 			case _UINT_:
-				std::cout << result.top().data << "\n";
+				std::cout << result.back().data << "\n";
 				break;
 			case _FLOAT_:
-				std::cout <<  *reinterpret_cast<float*>(&result.top().data) << "\n";
+				std::cout <<  *reinterpret_cast<float*>(&result.back().data) << "\n";
 				break;
 			case _DOUBLE_:
-				std::cout << *reinterpret_cast<double*>(&result.top().data) << "\n";
+				std::cout << *reinterpret_cast<double*>(&result.back().data) << "\n";
 				break;
 			case _LONG_:
-				std::cout << (slong)result.top().data << "\n";
+				std::cout << (slong)result.back().data << "\n";
 				break;
 			case _STRING_:
-				std::cout << (slong)result.top().data << "\n";
+				std::cout << (slong)result.back().data << "\n";
 				break;
 			case _REF_:
-				std::cout << "0x" << std::hex << result.top().data << std::dec << "\n";
+				std::cout << "0x" << std::hex << result.back().data << std::dec << "\n";
 				break;
 		}
 		
-		result.pop();
+		result.pop_back();
 	}
 }
 
