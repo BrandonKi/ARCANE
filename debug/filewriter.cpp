@@ -53,13 +53,18 @@ int main(){
         'd',
         'd',
         0x00,
-
-        _CALL_LOCAL_,   // bootstrap code
+        
+        _UBCONST_PUSH_,     // bootstrap code
+        0x05,
+        _CALL_LOCAL_,   
         'm',
         'a',
         'i',
         'n',
         0x00,
+
+        _EXIT_,         // exit
+        0x00, 
 
 
                         // start main
@@ -78,8 +83,8 @@ int main(){
 
         0x02,           // arg types
                     
-        _UBCONST_PUSH_,
-        0x05,
+        _UB_LOAD_,
+        0x00,
         _UBCONST_PUSH_,
         0x04,
         _CALL_LOCAL_,
@@ -87,9 +92,9 @@ int main(){
         'd',
         'd',
         0x00,
+        _RET_,
                         // end main
-        _EXIT_,         // exit
-        0x00, 
+        
 
                         // start add
         0xff,
@@ -111,7 +116,8 @@ int main(){
         0x00,
         _UB_LOAD_,
         0x01,
-        _UB_RET_,
+        _UB_ADD_,
+        _RET_,
 
     };
 
