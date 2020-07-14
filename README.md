@@ -18,6 +18,8 @@ Only checks for fatal errors at runtime.
 
 Bytecode files store variables in Little Endian 
 
+Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
+
 #Sample Code
 
     i := 0;
