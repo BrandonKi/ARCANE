@@ -11,7 +11,6 @@
 #define _UICONST_PUSH_ 0x13
 #define _FCONST_PUSH_ 0x14
 #define _DCONST_PUSH_ 0x15
-#define _LCONST_PUSH_ 0x16
 #define _SCONST_PUSH_ 0x17
 
 #define _CALL_LOCAL_ 0x30
@@ -27,7 +26,6 @@
 #define _UI_ADD_ 0xa3
 #define _F_ADD_ 0xa4
 #define _D_ADD_ 0xa5
-#define _L_ADD_ 0xa6
 
 #define _SB_SUB_ 0xa7
 #define _UB_SUB_ 0xa8
@@ -35,7 +33,6 @@
 #define _UI_SUB_ 0xaa
 #define _F_SUB_ 0xab
 #define _D_SUB_ 0xac
-#define _L_SUB_ 0xad
 
 #define _SB_MUL_ 0xb0
 #define _UB_MUL_ 0xb1
@@ -43,7 +40,6 @@
 #define _UI_MUL_ 0xb3
 #define _F_MUL_ 0xb4
 #define _D_MUL_ 0xb5
-#define _L_MUL_ 0xb6
 
 #define _SB_DIV_ 0xb7
 #define _UB_DIV_ 0xb8
@@ -51,7 +47,6 @@
 #define _UI_DIV_ 0xba
 #define _F_DIV_ 0xbb
 #define _D_DIV_ 0xbc
-#define _L_DIV_ 0xbd
 
 #define _SB_REM_ 0xc0
 #define _UB_REM_ 0xc1
@@ -59,7 +54,6 @@
 #define _UI_REM_ 0xc3
 #define _F_REM_ 0xc4
 #define _D_REM_ 0xc5
-#define _L_REM_ 0xc6
 
 #define _SB_STORE_ 0xc7
 #define _UB_STORE_ 0xc8
@@ -67,7 +61,6 @@
 #define _UI_STORE_ 0xca
 #define _F_STORE_ 0xcb
 #define _D_STORE_ 0xcc
-#define _L_STORE_ 0xcd
 #define _REF_STORE_ 0xce
 
 #define _SB_LOAD_ 0xd0
@@ -76,7 +69,6 @@
 #define _UI_LOAD_ 0xd3
 #define _F_LOAD_ 0xd4
 #define _D_LOAD_ 0xd5
-#define _L_LOAD_ 0xd6
 #define _REF_LOAD_ 0xd7
 
 #define _POP_ 0xe0
@@ -107,9 +99,8 @@
 #define _UINT_ 4
 #define _FLOAT_ 5
 #define _DOUBLE_ 6
-#define _LONG_ 7
-#define _STRING_ 8
-#define _REF_ 9
-#define _UNDEFINED_ 10
-#define _FRAME_ 11
-#define _FRAME_INFO_ 12
+#define _STRING_ 7
+#define _REF_ 8
+#define _UNDEFINED_ 9
+#define _FRAME_ 10
+#define _FRAME_INFO_ 11
