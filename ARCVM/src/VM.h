@@ -38,7 +38,6 @@
 
 typedef uint_fast64_t uint;
 typedef int_fast64_t sint;
-typedef uint_fast64_t slong;  // wrong, incorrect, fix asap
 typedef uint_fast8_t byte;
 
 struct container {
@@ -74,9 +73,9 @@ private:
 
 public:
     VM(char* data, uint size);
-    ~VM(){delete[] m_data;};
+    ~VM(){delete[] m_data;}
     void printProgram(byte*);
-    inline byte* getProgram(){return m_data;};
+    inline byte* getProgram(){return m_data;}
     void run();
 
 private:
@@ -135,9 +134,6 @@ private:
         m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
         m_memptr += 7;
         DEBUG(std::dec << (double)m_stack.back().data);
-    }
-    inline void LCONST_PUSH(){                          // FIX THIS
-        MNEMONIC("LCONST_PUSH");
     }
     inline void SCONST_PUSH(){
         MNEMONIC("SCONST_PUSH");                        // FIX THIS
@@ -216,9 +212,6 @@ private:
                 temp = (double*)malloc(8 * length + 8);
                 *(uint*)temp = length;
                 m_stack.push_back({_REF_, (uint)(double*)temp});
-                break;
-            case _LONG_:
-                
                 break;
             case _STRING_:
                 
@@ -318,9 +311,6 @@ private:
         DEBUG(std::dec << result);
         m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
-    inline void L_ADD(){                      // FIX THIS
-        MNEMONIC("L_ADD");
-    }
     inline void SB_SUB(){
         MNEMONIC("SB_SUB");
         sint result = (m_stack.back().data & 0xff);
@@ -374,9 +364,6 @@ private:
         m_stack.pop_back();
         DEBUG(std::dec << result);
         m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
-    }
-    inline void L_SUB(){
-        MNEMONIC("L_SUB");                         // FIX THIS
     }
     inline void SB_MUL(){
         MNEMONIC("SB_MUL");
@@ -432,9 +419,6 @@ private:
         DEBUG(std::dec << result);
         m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
-    inline void L_MUL(){
-        MNEMONIC("L_MUL");                  // FIX THIS
-    }
     inline void SB_DIV(){
         MNEMONIC("SB_DIV");
         sint result = (m_stack.back().data & 0xff);
@@ -488,9 +472,6 @@ private:
         m_stack.pop_back();
         DEBUG(std::dec << result);
         m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
-    }
-    inline void L_DIV(){
-        MNEMONIC("L_DIV");              // FIX THIS
     }
     inline void SB_REM(){
         MNEMONIC("SB_DIV");
@@ -546,9 +527,7 @@ private:
         DEBUG(std::dec << (double)result);
         m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
     }
-    inline void L_REM(){
-        MNEMONIC("L_REM");              // FIX THIS
-    }
+
     inline void SB_STORE(){
         MNEMONIC("SB_STORE");
         uint index = *getNextByte();
@@ -589,13 +568,6 @@ private:
         uint index = *getNextByte();
         m_stack[m_lclptr + index] = m_stack.back();
         DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);       
-        m_stack.pop_back();
-    }
-    inline void L_STORE(){                                              // THIS REALLY DOESN'T WORK
-        MNEMONIC("L_STORE");
-        uint index = *getNextByte();
-        m_stack[m_lclptr + index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);    
         m_stack.pop_back();
     }
     inline void REF_STORE(){
@@ -640,12 +612,6 @@ private:
         uint index = *getNextByte();
         m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << *reinterpret_cast<double*>(&m_stack.back().data));
-    }
-    inline void L_LOAD(){                   // This does not work. Am I going to fix it. No.
-        MNEMONIC("L_LOAD");
-        uint index = *getNextByte();
-        m_stack.push_back(m_stack[m_lclptr + index]);
-        DEBUG("slot: " << index << " value: " << m_stack.back().data);
     }
     inline void REF_LOAD(){
         MNEMONIC("REF_LOAD");

@@ -117,9 +117,6 @@ void VM::executeInstruction(){
 		case _DCONST_PUSH_:
 			DCONST_PUSH();
 			break;
-		case _LCONST_PUSH_:
-			LCONST_PUSH();
-			break;
 		case _SCONST_PUSH_:
 			SCONST_PUSH();
 			break;
@@ -156,9 +153,6 @@ void VM::executeInstruction(){
 		case _D_ADD_:
 			D_ADD();
 			break;
-		case _L_ADD_:
-			L_ADD();
-			break;
 		case _SB_SUB_:
 			SB_SUB();
 			break;
@@ -176,9 +170,6 @@ void VM::executeInstruction(){
 			break;
 		case _D_SUB_:
 			D_SUB();
-			break;
-		case _L_SUB_:
-			L_SUB();
 			break;
 		case _SB_MUL_:
 			SB_MUL();
@@ -198,9 +189,6 @@ void VM::executeInstruction(){
 		case _D_MUL_:
 			D_MUL();
 			break;
-		case _L_MUL_:
-			L_MUL();
-			break;
 		case _SB_DIV_:
 			SB_DIV();
 			break;
@@ -218,9 +206,6 @@ void VM::executeInstruction(){
 			break;
 		case _D_DIV_:
 			D_DIV();
-			break;
-		case _L_DIV_:
-			L_DIV();
 			break;
 		case _SB_REM_:
 			SB_REM();
@@ -240,9 +225,6 @@ void VM::executeInstruction(){
 		case _D_REM_:
 			D_REM();
 			break;
-		case _L_REM_:
-			L_REM();
-			break;
 		case _SB_STORE_:
 			SB_STORE();
 			break;
@@ -260,9 +242,6 @@ void VM::executeInstruction(){
 			break;
 		case _D_STORE_:
 			D_STORE();
-			break;
-		case _L_STORE_:
-			L_STORE();
 			break;
 		case _REF_STORE_:
 			REF_STORE();
@@ -284,9 +263,6 @@ void VM::executeInstruction(){
 			break;
 		case _D_LOAD_:
 			D_LOAD();
-			break;
-		case _L_LOAD_:
-			L_LOAD();
 			break;
 		case _REF_LOAD_:
 			REF_LOAD();
@@ -371,11 +347,8 @@ void VM::printStack(){
 			case _DOUBLE_:
 				std::cout << *reinterpret_cast<double*>(&result.back().data) << "\n";
 				break;
-			case _LONG_:
-				std::cout << (slong)result.back().data << "\n";
-				break;
 			case _STRING_:
-				std::cout << (slong)result.back().data << "\n";
+				std::cout << "0x" << std::hex << result.back().data << std::dec << "\n";
 				break;
 			case _REF_:
 				std::cout << "0x" << std::hex << result.back().data << std::dec << "\n";
