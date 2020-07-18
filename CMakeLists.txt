@@ -28,7 +28,7 @@ target_include_directories(Compiler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler
 
 ### ARCVM ###
 
-set(VM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/BMain.cpp ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/VM.cpp)
+set(VM_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/VMDriver.cpp ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/VM.cpp)
 
 add_executable(ARCVM ${VM_SOURCES})
 

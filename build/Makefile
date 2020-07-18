@@ -578,33 +578,6 @@ Disassembler/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler.dir/build.make CMakeFiles/Disassembler.dir/build
 .PHONY : Disassembler/fast
 
-ARCVM/src/BMain.obj: ARCVM/src/BMain.cpp.obj
-
-.PHONY : ARCVM/src/BMain.obj
-
-# target to build an object file
-ARCVM/src/BMain.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/BMain.cpp.obj
-.PHONY : ARCVM/src/BMain.cpp.obj
-
-ARCVM/src/BMain.i: ARCVM/src/BMain.cpp.i
-
-.PHONY : ARCVM/src/BMain.i
-
-# target to preprocess a source file
-ARCVM/src/BMain.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/BMain.cpp.i
-.PHONY : ARCVM/src/BMain.cpp.i
-
-ARCVM/src/BMain.s: ARCVM/src/BMain.cpp.s
-
-.PHONY : ARCVM/src/BMain.s
-
-# target to generate assembly for a file
-ARCVM/src/BMain.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/BMain.cpp.s
-.PHONY : ARCVM/src/BMain.cpp.s
-
 ARCVM/src/VM.obj: ARCVM/src/VM.cpp.obj
 
 .PHONY : ARCVM/src/VM.obj
@@ -631,6 +604,33 @@ ARCVM/src/VM.s: ARCVM/src/VM.cpp.s
 ARCVM/src/VM.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VM.cpp.s
 .PHONY : ARCVM/src/VM.cpp.s
+
+ARCVM/src/VMDriver.obj: ARCVM/src/VMDriver.cpp.obj
+
+.PHONY : ARCVM/src/VMDriver.obj
+
+# target to build an object file
+ARCVM/src/VMDriver.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VMDriver.cpp.obj
+.PHONY : ARCVM/src/VMDriver.cpp.obj
+
+ARCVM/src/VMDriver.i: ARCVM/src/VMDriver.cpp.i
+
+.PHONY : ARCVM/src/VMDriver.i
+
+# target to preprocess a source file
+ARCVM/src/VMDriver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VMDriver.cpp.i
+.PHONY : ARCVM/src/VMDriver.cpp.i
+
+ARCVM/src/VMDriver.s: ARCVM/src/VMDriver.cpp.s
+
+.PHONY : ARCVM/src/VMDriver.s
+
+# target to generate assembly for a file
+ARCVM/src/VMDriver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VMDriver.cpp.s
+.PHONY : ARCVM/src/VMDriver.cpp.s
 
 Compiler/src/Compiler.obj: Compiler/src/Compiler.cpp.obj
 
@@ -891,12 +891,12 @@ help:
 	@echo "... Compiler"
 	@echo "... Disassembler"
 	@echo "... filewriter"
-	@echo "... ARCVM/src/BMain.obj"
-	@echo "... ARCVM/src/BMain.i"
-	@echo "... ARCVM/src/BMain.s"
 	@echo "... ARCVM/src/VM.obj"
 	@echo "... ARCVM/src/VM.i"
 	@echo "... ARCVM/src/VM.s"
+	@echo "... ARCVM/src/VMDriver.obj"
+	@echo "... ARCVM/src/VMDriver.i"
+	@echo "... ARCVM/src/VMDriver.s"
 	@echo "... Compiler/src/Compiler.obj"
 	@echo "... Compiler/src/Compiler.i"
 	@echo "... Compiler/src/Compiler.s"
