@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
-#include "../ARCVM/MNEMONICS.h"
+#include "MNEMONICS.h"
 
 // #define COUT
 #define SILENT
@@ -121,11 +121,6 @@ inline void start(char* data, int size, std::string path){
                     OUTPUT((double)temp);
                     break;
                 }
-                case _LCONST_PUSH_:
-                {
-                    OUTPUT("LCONST_PUSH");
-                    break;
-                }
                 case _ARR_LEN_:
                 {
                     OUTPUT("ARR_LEN");
@@ -156,17 +151,11 @@ inline void start(char* data, int size, std::string path){
                         case _DOUBLE_:
                             OUTPUT("$DOUBLE");
                             break;
-                        case _LONG_:
-                            OUTPUT("$LONG");
-                            break;
                         case _STRING_:
                             OUTPUT("$STRING");
                             break;
                         case _REF_:
                             OUTPUT("$REF");
-                            break;
-                        case _SPECIAL_:
-                            OUTPUT("$SPECIAL");
                             break;
                         default:
                             break;
@@ -213,11 +202,6 @@ inline void start(char* data, int size, std::string path){
                     OUTPUT("D_ADD");
                     break;
                 }
-                case _L_ADD_:
-                {
-                    OUTPUT("L_ADD");
-                    break;
-                }
                 case _SB_SUB_:
                 {
                     OUTPUT("SB_ADD");
@@ -246,11 +230,6 @@ inline void start(char* data, int size, std::string path){
                 case _D_SUB_:
                 {
                     OUTPUT("D_ADD");
-                    break;
-                }
-                case _L_SUB_:
-                {
-                    OUTPUT("L_ADD");
                     break;
                 }
                 case _SB_MUL_:
@@ -283,11 +262,6 @@ inline void start(char* data, int size, std::string path){
                     OUTPUT("D_ADD");
                     break;
                 }
-                case _L_MUL_:
-                {
-                    OUTPUT("L_ADD");
-                    break;
-                }
                 case _SB_DIV_:
                 {
                     OUTPUT("SB_ADD");
@@ -318,11 +292,6 @@ inline void start(char* data, int size, std::string path){
                     OUTPUT("D_ADD");
                     break;
                 }
-                case _L_DIV_:
-                {
-                    OUTPUT("L_ADD");
-                    break;
-                }
                 case _SB_REM_:
                 {
                     OUTPUT("SB_ADD");
@@ -351,11 +320,6 @@ inline void start(char* data, int size, std::string path){
                 case _D_REM_:
                 {
                     OUTPUT("D_ADD");
-                    break;
-                }
-                case _L_REM_:
-                {
-                    OUTPUT("L_ADD");
                     break;
                 }
                 case _SB_STORE_:
@@ -396,13 +360,6 @@ inline void start(char* data, int size, std::string path){
                 case _D_STORE_:
                 {
                     OUTPUT("D_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
-                    break;
-                }
-                case _L_STORE_:
-                {
-                    OUTPUT("L_STORE\t\t");
                     uint temp = UCdata[++i];
                     OUTPUT((uint)temp);
                     break;
@@ -452,13 +409,6 @@ inline void start(char* data, int size, std::string path){
                 case _D_LOAD_:
                 {
                     OUTPUT("D_LOAD\t\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
-                    break;
-                }
-                case _L_LOAD_:
-                {
-                    OUTPUT("L_LOAD\t\t\t");
                     uint temp = UCdata[++i];
                     OUTPUT((uint)temp);
                     break;

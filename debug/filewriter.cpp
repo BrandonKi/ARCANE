@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include "../ARCVM/MNEMONICS.h"
+#include "MNEMONICS.h"
 
 int main(){
 
