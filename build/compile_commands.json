@@ -1,0 +1,52 @@
+[
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/Compiler.dir/Compiler/src/Compiler.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/Compiler/src/Compiler.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/Compiler/src/Compiler.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/Compiler.dir/Compiler/src/ErrorHandler.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/Compiler/src/ErrorHandler.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/Compiler/src/ErrorHandler.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/Compiler.dir/Compiler/src/Lexer.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/Compiler/src/Lexer.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/Compiler/src/Lexer.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/Compiler.dir/Compiler/src/OS.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/Compiler/src/OS.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/Compiler/src/OS.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/Compiler.dir/Compiler/src/Parser.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/Compiler/src/Parser.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/Compiler/src/Parser.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/Compiler.dir/Compiler/src/SymbolTable.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/Compiler/src/SymbolTable.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/Compiler/src/SymbolTable.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/ARCVM.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/ARCVM.dir/ARCVM/src/BMain.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/ARCVM/src/BMain.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/ARCVM/src/BMain.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/ARCVM.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/ARCVM.dir/ARCVM/src/VM.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/ARCVM/src/VM.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/ARCVM/src/VM.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/filewriter.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/filewriter.dir/debug/filewriter.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/debug/filewriter.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/debug/filewriter.cpp"
+},
+{
+  "directory": "C:/Users/Kirin/Desktop/ARCANE/build",
+  "command": "\"C:/Progra~1/mingw64/bin/g++.exe\"  @CMakeFiles/Disassembler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/Disassembler.dir/debug/Disassemble.cpp.obj -c C:/Users/Kirin/Desktop/ARCANE/debug/Disassemble.cpp",
+  "file": "C:/Users/Kirin/Desktop/ARCANE/debug/Disassemble.cpp"
+}
+]

@@ -18,7 +18,7 @@ int main (int argc, const char* argv[]) {
   if(argc > 1){
     TIMER_START;
     std::streampos size;
-    std::ifstream file (appendExtension(argv[1]), std::ios::in|std::ios::binary|std::ios::ate);
+    std::ifstream file (argv[1], std::ios::in|std::ios::binary|std::ios::ate);
     char* filedata;
     if (file.is_open()){
       size = file.tellg();
