@@ -14,7 +14,7 @@
 #define logn(x) std::cout << x << "\n"
 #define ERR(x) std::cout << x << "\n"; std::cin.get(); return -1
 
-#define INT_SIZE 4         // This macro doesn't do anything
+#define INT_SIZE 4         // This macro doesn't do anything 
 
 #ifdef DEBUG_BUILD
     #define NEWLINE std::cout << "\n"
