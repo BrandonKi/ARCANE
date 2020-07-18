@@ -204,122 +204,122 @@ inline void start(char* data, int size, std::string path){
                 }
                 case _SB_SUB_:
                 {
-                    OUTPUT("SB_ADD");
+                    OUTPUT("SB_SUB");
                     break;
                 }
                 case _UB_SUB_:
                 {
-                    OUTPUT("UB_ADD");
+                    OUTPUT("UB_SUB");
                     break;
                 }
                 case _SI_SUB_:
                 {
-                    OUTPUT("SI_ADD");
+                    OUTPUT("SI_SUB");
                     break;
                 }
                 case _UI_SUB_:
                 {
-                    OUTPUT("UI_ADD");
+                    OUTPUT("UI_SUB");
                     break;
                 }
                 case _F_SUB_:
                 {
-                    OUTPUT("F_ADD");
+                    OUTPUT("F_SUB");
                     break;
                 }
                 case _D_SUB_:
                 {
-                    OUTPUT("D_ADD");
+                    OUTPUT("D_SUB");
                     break;
                 }
                 case _SB_MUL_:
                 {
-                    OUTPUT("SB_ADD");
+                    OUTPUT("SB_MUL");
                     break;
                 }
                 case _UB_MUL_:
                 {
-                    OUTPUT("UB_ADD");
+                    OUTPUT("UB_MUL");
                     break;
                 }
                 case _SI_MUL_:
                 {
-                    OUTPUT("SI_ADD");
+                    OUTPUT("SI_MUL");
                     break;
                 }
                 case _UI_MUL_:
                 {
-                    OUTPUT("UI_ADD");
+                    OUTPUT("UI_MUL");
                     break;
                 }
                 case _F_MUL_:
                 {
-                    OUTPUT("F_ADD");
+                    OUTPUT("F_MUL");
                     break;
                 }
                 case _D_MUL_:
                 {
-                    OUTPUT("D_ADD");
+                    OUTPUT("D_MUL");
                     break;
                 }
                 case _SB_DIV_:
                 {
-                    OUTPUT("SB_ADD");
+                    OUTPUT("SB_DIV");
                     break;
                 }
                 case _UB_DIV_:
                 {
-                    OUTPUT("UB_ADD");
+                    OUTPUT("UB_DIV");
                     break;
                 }
                 case _SI_DIV_:
                 {
-                    OUTPUT("SI_ADD");
+                    OUTPUT("SI_DIV");
                     break;
                 }
                 case _UI_DIV_:
                 {
-                    OUTPUT("UI_ADD");
+                    OUTPUT("UI_DIV");
                     break;
                 }
                 case _F_DIV_:
                 {
-                    OUTPUT("F_ADD");
+                    OUTPUT("F_DIV");
                     break;
                 }
                 case _D_DIV_:
                 {
-                    OUTPUT("D_ADD");
+                    OUTPUT("D_DIV");
                     break;
                 }
                 case _SB_REM_:
                 {
-                    OUTPUT("SB_ADD");
+                    OUTPUT("SB_REM");
                     break;
                 }
                 case _UB_REM_:
                 {
-                    OUTPUT("UB_ADD");
+                    OUTPUT("UB_REM");
                     break;
                 }
                 case _SI_REM_:
                 {
-                    OUTPUT("SI_ADD");
+                    OUTPUT("SI_REM");
                     break;
                 }
                 case _UI_REM_:
                 {
-                    OUTPUT("UI_ADD");
+                    OUTPUT("UI_REM");
                     break;
                 }
                 case _F_REM_:
                 {
-                    OUTPUT("F_ADD");
+                    OUTPUT("F_REM");
                     break;
                 }
                 case _D_REM_:
                 {
-                    OUTPUT("D_ADD");
+                    OUTPUT("D_REM");
                     break;
                 }
                 case _SB_STORE_:
