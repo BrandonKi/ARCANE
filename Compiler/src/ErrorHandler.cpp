@@ -27,28 +27,30 @@ void ErrorHandler::printError(ErrorType type, std::vector<Token*>& tokens, unsig
         case ERR_OPEN_EXTRA_PAREN:
             std::cout << "Expected closing parenthesis";
             break;
+        case ERR_INVALID_FN_DECL:
+            std::cout << "Cannot declare function here";
+            break;
     }
-
     /* Gets the first token in the current line */
-    while(tokens[pos]->c_pos > 1){
+    unsigned int current_l_pos = tokens[pos]->l_pos;
+    while(tokens[pos]->l_pos == current_l_pos){
         pos--;
     }
+    pos++;
 
-    /* Prints the whole line that contains the error */
     NEWLINE;
     log("    " << err_token->l_pos << " |    ");
-    // while(pos < tokens.size() && tokens[pos]->l_pos == err_token->l_pos){
-    //     log(tokens[pos++]->val << " ");
-    // }
     unsigned int file_pos = tokens[pos]->F_c_pos-2;
+    /* Prints the whole line that contains the error */
     while(m_filedata[file_pos] != '\n' && m_filedata[file_pos] != '\r' && file_pos < strlen(m_filedata)){
         log(m_filedata[file_pos++]);
     }
 
     /* Outputs arrow pointing to error token */
     NEWLINE;
-    log("    " << std::string(std::to_string(err_token->l_pos).length(), ' ') << " |    "); // that mess in the middle is to print the correct amount of spaces
-    std::string indent(err_token->c_pos-1, ' ');
+    unsigned int whitespace_offset = tokens[pos]->c_pos;
+    log("    " << std::string(std::to_string(err_token->l_pos).length(), ' ') << " |    "); // that mess is to print the correct amount of spaces
+    std::string indent(err_token->c_pos - whitespace_offset, ' ');
     std::cout << indent << F_DULL_CYAN(std::string("^")) << F_DULL_CYAN(std::string(err_token->val.length()-1, '~')) << '\n';
 }
 
