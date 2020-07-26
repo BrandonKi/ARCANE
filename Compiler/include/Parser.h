@@ -8,7 +8,7 @@ class Parser{
         std::stack<Token*> m_stack;
         SymbolTable symbol_table;
         SymbolTable sub_table;
-
+ 
     public:
         Parser(std::vector<Token*> tokens, std::unordered_map<std::string, int> keywords): m_tokens(tokens), pos_ptr(0), inner_scope(false){start();}
 

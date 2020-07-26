@@ -1,5 +1,7 @@
 #include "Parser.h"
 
+bool inFunction = false;
+
 void Parser::start(){    
     parseStatementBlock();
     std::cin.get();
@@ -7,7 +9,7 @@ void Parser::start(){
 }
 
 void Parser::parseStatementBlock(){
-    for(pos_ptr = 0; pos_ptr < m_tokens.size(); pos_ptr++){
+    for(; pos_ptr < m_tokens.size(); pos_ptr++){
         parseStatement();
     }
 }
@@ -101,22 +103,33 @@ void Parser::parseExplicitDecl(){
 }
 
 void Parser::parseFnDecl(){
+    if(inFunction && currentToken()->type == T_FN){
+        ErrorHandler::printError(ERR_INVALID_FN_DECL, m_tokens, pos_ptr);
+        std::exit(-1);
+    }
     Token* fn_name = nextToken();
     std::vector<Token*> data;
     data.push_back(0);
     if(nextToken()->type == T_LPAREN && peekNextToken()->type != T_RPAREN){
-        do{
+        while(peekNextToken()->type == T_COMMA || peekNextToken()->type == T_ID){
+            nextToken();
             Token* temp = nextToken();        // identifier
             nextToken();                      // colon
             nextToken();                      // type
             sub_table.addSymbol(temp, currentToken()->type, true);
             sub_table.printSymbolTable();
-        }while(nextToken()->type == T_COMMA);
+        }
     }
+    else
+        nextToken();
     nextToken();        // colon
     data[0] = nextToken();
+    nextToken();        // RBRACE
     symbol_table.addSymbol(fn_name, T_FN, data);
-    // parseFnBody();
+
+    inFunction = true;
+    parseFnBody();
+    inFunction = false;
 
     sub_table.clear();              //  clear sub symbol table after parsing
 }
