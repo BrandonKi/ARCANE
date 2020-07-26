@@ -3,9 +3,10 @@
 bool inFunction = false;
 
 void Parser::start(){    
+    initSymbolTableList();
     parseStatementBlock();
     std::cin.get();
-    symbol_table.printSymbolTable();
+    STPrint();
 }
 
 void Parser::parseStatementBlock(){
@@ -52,7 +53,7 @@ void Parser::parseStatement(){
 
 void Parser::parseInferDecl(){
     nextToken();
-    if(sub_table.contains(currentToken()->val) || symbol_table.contains(currentToken()->val)){    // Check for redeclaration
+    if(ID_isDefined(currentToken()->val)){    // Check for redeclaration
         ErrorHandler::printError(ERR_REDECL, m_tokens, pos_ptr);
         WAIT_AND_EXIT(-1);
     }
@@ -63,7 +64,7 @@ void Parser::parseInferDecl(){
 void Parser::parseExplicitDecl(){
     //if(m_symbol_table.contains(currentToken()->val))
 
-    if(sub_table.contains(currentToken()->val) || symbol_table.contains(currentToken()->val)){    // Check for redeclaration
+    if(ID_isDefined(currentToken()->val)){    // Check for redeclaration
         ErrorHandler::printError(ERR_REDECL, m_tokens, pos_ptr);
         WAIT_AND_EXIT(-1);
     }
@@ -85,16 +86,11 @@ void Parser::parseExplicitDecl(){
             if(currentToken()->type != T_SEMICOLON){
                 nextToken();
                 std::vector<Token*> expr = parseExpr(T_SEMICOLON);
-                if(inner_scope)
-                    sub_table.addSymbol(name, type, expr);
-                else
-                    symbol_table.addSymbol(name, type, expr);
+                symbol_table_list.back().addSymbol(name, type, expr);
             }
             else{
-                if(inner_scope)
-                    sub_table.addSymbol(name, type, false);
-                else
-                    symbol_table.addSymbol(name, type, false);
+                symbol_table_list.back().addSymbol(name, type, false);
+
             }
             break;
         default:
@@ -103,6 +99,7 @@ void Parser::parseExplicitDecl(){
 }
 
 void Parser::parseFnDecl(){
+
     if(inFunction && currentToken()->type == T_FN){
         ErrorHandler::printError(ERR_INVALID_FN_DECL, m_tokens, pos_ptr);
         std::exit(-1);
@@ -116,8 +113,7 @@ void Parser::parseFnDecl(){
             Token* temp = nextToken();        // identifier
             nextToken();                      // colon
             nextToken();                      // type
-            sub_table.addSymbol(temp, currentToken()->type, true);
-            sub_table.printSymbolTable();
+            symbol_table_list.back().addSymbol(temp, currentToken()->type, true);
         }
     }
     else
@@ -125,13 +121,13 @@ void Parser::parseFnDecl(){
     nextToken();        // colon
     data[0] = nextToken();
     nextToken();        // RBRACE
-    symbol_table.addSymbol(fn_name, T_FN, data);
-
+    symbol_table_list.back().addSymbol(fn_name, T_FN, data);
+    newScope();                 // start of new scope. Appends a new symbol table to end
     inFunction = true;
     parseFnBody();
     inFunction = false;
-
-    sub_table.clear();              //  clear sub symbol table after parsing
+    STPrint();
+    symbol_table_list.pop_back();              //  clear sub symbol table after parsing
 }
 
 void Parser::parseFnBody(){
@@ -195,7 +191,7 @@ std::vector<Token*> Parser::parseExpr(T_Type T_type){
             expr.push_back(currentToken());
         else if(currentToken()->type == T_ID ){
             std::cout << "\n" << currentToken()->val << "\n";
-            if(!symbol_table.contains(currentToken()->val)){
+            if(!ID_isDefined(currentToken()->val)){
                 ErrorHandler::printError(ERR_UNDEFINED_ID, m_tokens, pos_ptr);
                 WAIT_AND_EXIT(-1);
             }
@@ -286,4 +282,27 @@ Token* Parser::peekTwoTokens(){
 
 Token* Parser::currentToken(){
     return m_tokens[pos_ptr];
+}
+
+void Parser::initSymbolTableList(){
+    newScope();
+}
+
+void Parser::newScope(){
+    symbol_table_list.emplace_back(SymbolTable());
+}
+
+bool Parser::ID_isDefined(std::string ID){
+    for(SymbolTable st : symbol_table_list)
+        if(st.contains(ID))
+            return true;
+    return false;
+}
+
+void Parser::STPrint(){
+    for(SymbolTable st: symbol_table_list){
+        std::cout << "\n";
+        st.printSymbolTable();
+        std::cout << "|\n";
+    }
 }

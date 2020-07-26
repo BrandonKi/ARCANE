@@ -1,3 +1,6 @@
+
+gbl_test : string = "Hello, World!";
+
 fn main(): int {
     int_test: int = 100 + 60;
     ret 0;

@@ -6,13 +6,17 @@ class Parser{
         unsigned int pos_ptr;
         std::vector<Token*> m_tokens;
         std::stack<Token*> m_stack;
-        SymbolTable symbol_table;
-        SymbolTable sub_table;
+        std::vector<SymbolTable> symbol_table_list;
  
     public:
         Parser(std::vector<Token*> tokens, std::unordered_map<std::string, int> keywords): m_tokens(tokens), pos_ptr(0), inner_scope(false){start();}
 
     private:
+        void initSymbolTableList();
+        void newScope();
+        bool ID_isDefined(std::string);
+        void STPrint();
+
         void start();
 
         void parseStatementBlock();
