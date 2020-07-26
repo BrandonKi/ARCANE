@@ -1,2 +1,2 @@
 @echo off
-%~dp0..\ARCVM\src\BMain.exe %*
+%~dp0..\bin\ARCVM.exe %*
