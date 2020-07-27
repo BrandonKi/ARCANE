@@ -5,7 +5,7 @@ A programming language and bytecode VM. (ARCVM)
 
 WIP
 
-
+Tested on Windows 10 and multiple Linux distros
 
 # Notes
 
