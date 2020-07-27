@@ -13,8 +13,6 @@ _deps
 
 build/*
 
-!build/Makefile
-
 # Prerequisites
 *.d
 
