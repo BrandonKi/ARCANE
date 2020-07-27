@@ -36,12 +36,11 @@ int main(){
         'd',
         'd',
         0x00,
-          
+        
         _CALL_LOCAL_,   // bootstrap code
-        'm',
-        'a',
-        'i',
-        'n',
+        0x00,
+        0x00,
+        0x00,
         0x00,
 
         _EXIT_,         // exit
@@ -58,20 +57,21 @@ int main(){
         'n',
         0x00,
         
-        0x01,           // local variable count
-        0x01,           // arg count
+        0x00,           // local variable count
+        0x00,           // arg count
 
-        0x02,           // arg types
+        //0x02,           // arg types
                     
-        _UB_LOAD_,
-        0x00,
         _UBCONST_PUSH_,
         0x04,
+        _UBCONST_PUSH_,
+        0x02,
         _CALL_LOCAL_,
-        'a',
-        'd',
-        'd',
+        0x01,
         0x00,
+        0x00,
+        0x00,
+
         _RET_,
                         // end main
         

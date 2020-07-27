@@ -18,10 +18,12 @@ VM::VM(char* data, uint size)
 	for(int i = 0; i < functionTable_len; i++){
 		functionTable[i].second = findSymbol(functionTable[i].first);
 	}
+	#ifdef DEBUG_BUILD
 	for(std::pair<std::string,int> s : functionTable)
 		logn(s.first + " : " + std::to_string(s.second));
+	#endif
 
-	m_variableTable = (container*)malloc(10);   			// temp
+	m_variableTable = (container*)malloc(sizeof(container) * 10);   			// temp
 
 
 	// printVariableTable();
@@ -38,7 +40,7 @@ void VM::printProgram(byte* arr){
 
 int VM::findSymbol(std::string symbol){
 	symbol = std::string(2, 0xff) + std::string("fn") + symbol;
-	unsigned int len = symbol.length();
+	u32 len = symbol.length();
 	const char* c_str = symbol.c_str();
 	for(int i = 0; i < m_size; i++){
 		if(memcmp(c_str, m_data+i, len) == 0)
