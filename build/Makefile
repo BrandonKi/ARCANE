@@ -241,6 +241,19 @@ NightlyStart/fast:
 .PHONY : NightlyStart/fast
 
 #=============================================================================
+# Target rules for targets named Compiler_RELEASE
+
+# Build rule for target.
+Compiler_RELEASE: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Compiler_RELEASE
+.PHONY : Compiler_RELEASE
+
+# fast build rule for target.
+Compiler_RELEASE/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/build
+.PHONY : Compiler_RELEASE/fast
+
+#=============================================================================
 # Target rules for targets named Continuous
 
 # Build rule for target.
@@ -252,6 +265,19 @@ Continuous: cmake_check_build_system
 Continuous/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Continuous.dir/build.make CMakeFiles/Continuous.dir/build
 .PHONY : Continuous/fast
+
+#=============================================================================
+# Target rules for targets named filewriter_RELEASE
+
+# Build rule for target.
+filewriter_RELEASE: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 filewriter_RELEASE
+.PHONY : filewriter_RELEASE
+
+# fast build rule for target.
+filewriter_RELEASE/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/filewriter_RELEASE.dir/build.make CMakeFiles/filewriter_RELEASE.dir/build
+.PHONY : filewriter_RELEASE/fast
 
 #=============================================================================
 # Target rules for targets named NightlyTest
@@ -553,6 +579,19 @@ ARCVM/fast:
 .PHONY : ARCVM/fast
 
 #=============================================================================
+# Target rules for targets named ARCVM_RELEASE
+
+# Build rule for target.
+ARCVM_RELEASE: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ARCVM_RELEASE
+.PHONY : ARCVM_RELEASE
+
+# fast build rule for target.
+ARCVM_RELEASE/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM_RELEASE.dir/build.make CMakeFiles/ARCVM_RELEASE.dir/build
+.PHONY : ARCVM_RELEASE/fast
+
+#=============================================================================
 # Target rules for targets named filewriter
 
 # Build rule for target.
@@ -578,6 +617,19 @@ Disassembler/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler.dir/build.make CMakeFiles/Disassembler.dir/build
 .PHONY : Disassembler/fast
 
+#=============================================================================
+# Target rules for targets named Disassembler_RELEASE
+
+# Build rule for target.
+Disassembler_RELEASE: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Disassembler_RELEASE
+.PHONY : Disassembler_RELEASE
+
+# fast build rule for target.
+Disassembler_RELEASE/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler_RELEASE.dir/build.make CMakeFiles/Disassembler_RELEASE.dir/build
+.PHONY : Disassembler_RELEASE/fast
+
 ARCVM/src/VM.obj: ARCVM/src/VM.cpp.obj
 
 .PHONY : ARCVM/src/VM.obj
@@ -585,6 +637,7 @@ ARCVM/src/VM.obj: ARCVM/src/VM.cpp.obj
 # target to build an object file
 ARCVM/src/VM.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VM.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM_RELEASE.dir/build.make CMakeFiles/ARCVM_RELEASE.dir/ARCVM/src/VM.cpp.obj
 .PHONY : ARCVM/src/VM.cpp.obj
 
 ARCVM/src/VM.i: ARCVM/src/VM.cpp.i
@@ -594,6 +647,7 @@ ARCVM/src/VM.i: ARCVM/src/VM.cpp.i
 # target to preprocess a source file
 ARCVM/src/VM.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VM.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM_RELEASE.dir/build.make CMakeFiles/ARCVM_RELEASE.dir/ARCVM/src/VM.cpp.i
 .PHONY : ARCVM/src/VM.cpp.i
 
 ARCVM/src/VM.s: ARCVM/src/VM.cpp.s
@@ -603,6 +657,7 @@ ARCVM/src/VM.s: ARCVM/src/VM.cpp.s
 # target to generate assembly for a file
 ARCVM/src/VM.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VM.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM_RELEASE.dir/build.make CMakeFiles/ARCVM_RELEASE.dir/ARCVM/src/VM.cpp.s
 .PHONY : ARCVM/src/VM.cpp.s
 
 ARCVM/src/VMDriver.obj: ARCVM/src/VMDriver.cpp.obj
@@ -612,6 +667,7 @@ ARCVM/src/VMDriver.obj: ARCVM/src/VMDriver.cpp.obj
 # target to build an object file
 ARCVM/src/VMDriver.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VMDriver.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM_RELEASE.dir/build.make CMakeFiles/ARCVM_RELEASE.dir/ARCVM/src/VMDriver.cpp.obj
 .PHONY : ARCVM/src/VMDriver.cpp.obj
 
 ARCVM/src/VMDriver.i: ARCVM/src/VMDriver.cpp.i
@@ -621,6 +677,7 @@ ARCVM/src/VMDriver.i: ARCVM/src/VMDriver.cpp.i
 # target to preprocess a source file
 ARCVM/src/VMDriver.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VMDriver.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM_RELEASE.dir/build.make CMakeFiles/ARCVM_RELEASE.dir/ARCVM/src/VMDriver.cpp.i
 .PHONY : ARCVM/src/VMDriver.cpp.i
 
 ARCVM/src/VMDriver.s: ARCVM/src/VMDriver.cpp.s
@@ -630,6 +687,7 @@ ARCVM/src/VMDriver.s: ARCVM/src/VMDriver.cpp.s
 # target to generate assembly for a file
 ARCVM/src/VMDriver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM.dir/build.make CMakeFiles/ARCVM.dir/ARCVM/src/VMDriver.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ARCVM_RELEASE.dir/build.make CMakeFiles/ARCVM_RELEASE.dir/ARCVM/src/VMDriver.cpp.s
 .PHONY : ARCVM/src/VMDriver.cpp.s
 
 Compiler/src/Compiler.obj: Compiler/src/Compiler.cpp.obj
@@ -638,6 +696,7 @@ Compiler/src/Compiler.obj: Compiler/src/Compiler.cpp.obj
 
 # target to build an object file
 Compiler/src/Compiler.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Compiler.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Compiler.cpp.obj
 .PHONY : Compiler/src/Compiler.cpp.obj
 
@@ -647,6 +706,7 @@ Compiler/src/Compiler.i: Compiler/src/Compiler.cpp.i
 
 # target to preprocess a source file
 Compiler/src/Compiler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Compiler.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Compiler.cpp.i
 .PHONY : Compiler/src/Compiler.cpp.i
 
@@ -656,6 +716,7 @@ Compiler/src/Compiler.s: Compiler/src/Compiler.cpp.s
 
 # target to generate assembly for a file
 Compiler/src/Compiler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Compiler.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Compiler.cpp.s
 .PHONY : Compiler/src/Compiler.cpp.s
 
@@ -665,6 +726,7 @@ Compiler/src/ErrorHandler.obj: Compiler/src/ErrorHandler.cpp.obj
 
 # target to build an object file
 Compiler/src/ErrorHandler.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/ErrorHandler.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/ErrorHandler.cpp.obj
 .PHONY : Compiler/src/ErrorHandler.cpp.obj
 
@@ -674,6 +736,7 @@ Compiler/src/ErrorHandler.i: Compiler/src/ErrorHandler.cpp.i
 
 # target to preprocess a source file
 Compiler/src/ErrorHandler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/ErrorHandler.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/ErrorHandler.cpp.i
 .PHONY : Compiler/src/ErrorHandler.cpp.i
 
@@ -683,6 +746,7 @@ Compiler/src/ErrorHandler.s: Compiler/src/ErrorHandler.cpp.s
 
 # target to generate assembly for a file
 Compiler/src/ErrorHandler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/ErrorHandler.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/ErrorHandler.cpp.s
 .PHONY : Compiler/src/ErrorHandler.cpp.s
 
@@ -692,6 +756,7 @@ Compiler/src/Lexer.obj: Compiler/src/Lexer.cpp.obj
 
 # target to build an object file
 Compiler/src/Lexer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Lexer.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Lexer.cpp.obj
 .PHONY : Compiler/src/Lexer.cpp.obj
 
@@ -701,6 +766,7 @@ Compiler/src/Lexer.i: Compiler/src/Lexer.cpp.i
 
 # target to preprocess a source file
 Compiler/src/Lexer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Lexer.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Lexer.cpp.i
 .PHONY : Compiler/src/Lexer.cpp.i
 
@@ -710,6 +776,7 @@ Compiler/src/Lexer.s: Compiler/src/Lexer.cpp.s
 
 # target to generate assembly for a file
 Compiler/src/Lexer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Lexer.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Lexer.cpp.s
 .PHONY : Compiler/src/Lexer.cpp.s
 
@@ -719,6 +786,7 @@ Compiler/src/OS.obj: Compiler/src/OS.cpp.obj
 
 # target to build an object file
 Compiler/src/OS.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/OS.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/OS.cpp.obj
 .PHONY : Compiler/src/OS.cpp.obj
 
@@ -728,6 +796,7 @@ Compiler/src/OS.i: Compiler/src/OS.cpp.i
 
 # target to preprocess a source file
 Compiler/src/OS.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/OS.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/OS.cpp.i
 .PHONY : Compiler/src/OS.cpp.i
 
@@ -737,6 +806,7 @@ Compiler/src/OS.s: Compiler/src/OS.cpp.s
 
 # target to generate assembly for a file
 Compiler/src/OS.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/OS.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/OS.cpp.s
 .PHONY : Compiler/src/OS.cpp.s
 
@@ -746,6 +816,7 @@ Compiler/src/Parser.obj: Compiler/src/Parser.cpp.obj
 
 # target to build an object file
 Compiler/src/Parser.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Parser.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Parser.cpp.obj
 .PHONY : Compiler/src/Parser.cpp.obj
 
@@ -755,6 +826,7 @@ Compiler/src/Parser.i: Compiler/src/Parser.cpp.i
 
 # target to preprocess a source file
 Compiler/src/Parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Parser.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Parser.cpp.i
 .PHONY : Compiler/src/Parser.cpp.i
 
@@ -764,6 +836,7 @@ Compiler/src/Parser.s: Compiler/src/Parser.cpp.s
 
 # target to generate assembly for a file
 Compiler/src/Parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/Parser.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/Parser.cpp.s
 .PHONY : Compiler/src/Parser.cpp.s
 
@@ -773,6 +846,7 @@ Compiler/src/SymbolTable.obj: Compiler/src/SymbolTable.cpp.obj
 
 # target to build an object file
 Compiler/src/SymbolTable.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/SymbolTable.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/SymbolTable.cpp.obj
 .PHONY : Compiler/src/SymbolTable.cpp.obj
 
@@ -782,6 +856,7 @@ Compiler/src/SymbolTable.i: Compiler/src/SymbolTable.cpp.i
 
 # target to preprocess a source file
 Compiler/src/SymbolTable.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/SymbolTable.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/SymbolTable.cpp.i
 .PHONY : Compiler/src/SymbolTable.cpp.i
 
@@ -791,6 +866,7 @@ Compiler/src/SymbolTable.s: Compiler/src/SymbolTable.cpp.s
 
 # target to generate assembly for a file
 Compiler/src/SymbolTable.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler_RELEASE.dir/build.make CMakeFiles/Compiler_RELEASE.dir/Compiler/src/SymbolTable.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Compiler.dir/build.make CMakeFiles/Compiler.dir/Compiler/src/SymbolTable.cpp.s
 .PHONY : Compiler/src/SymbolTable.cpp.s
 
@@ -801,6 +877,7 @@ debug/Disassemble.obj: debug/Disassemble.cpp.obj
 # target to build an object file
 debug/Disassemble.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler.dir/build.make CMakeFiles/Disassembler.dir/debug/Disassemble.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler_RELEASE.dir/build.make CMakeFiles/Disassembler_RELEASE.dir/debug/Disassemble.cpp.obj
 .PHONY : debug/Disassemble.cpp.obj
 
 debug/Disassemble.i: debug/Disassemble.cpp.i
@@ -810,6 +887,7 @@ debug/Disassemble.i: debug/Disassemble.cpp.i
 # target to preprocess a source file
 debug/Disassemble.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler.dir/build.make CMakeFiles/Disassembler.dir/debug/Disassemble.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler_RELEASE.dir/build.make CMakeFiles/Disassembler_RELEASE.dir/debug/Disassemble.cpp.i
 .PHONY : debug/Disassemble.cpp.i
 
 debug/Disassemble.s: debug/Disassemble.cpp.s
@@ -819,6 +897,7 @@ debug/Disassemble.s: debug/Disassemble.cpp.s
 # target to generate assembly for a file
 debug/Disassemble.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler.dir/build.make CMakeFiles/Disassembler.dir/debug/Disassemble.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Disassembler_RELEASE.dir/build.make CMakeFiles/Disassembler_RELEASE.dir/debug/Disassemble.cpp.s
 .PHONY : debug/Disassemble.cpp.s
 
 debug/filewriter.obj: debug/filewriter.cpp.obj
@@ -827,6 +906,7 @@ debug/filewriter.obj: debug/filewriter.cpp.obj
 
 # target to build an object file
 debug/filewriter.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/filewriter_RELEASE.dir/build.make CMakeFiles/filewriter_RELEASE.dir/debug/filewriter.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/filewriter.dir/build.make CMakeFiles/filewriter.dir/debug/filewriter.cpp.obj
 .PHONY : debug/filewriter.cpp.obj
 
@@ -836,6 +916,7 @@ debug/filewriter.i: debug/filewriter.cpp.i
 
 # target to preprocess a source file
 debug/filewriter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/filewriter_RELEASE.dir/build.make CMakeFiles/filewriter_RELEASE.dir/debug/filewriter.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/filewriter.dir/build.make CMakeFiles/filewriter.dir/debug/filewriter.cpp.i
 .PHONY : debug/filewriter.cpp.i
 
@@ -845,6 +926,7 @@ debug/filewriter.s: debug/filewriter.cpp.s
 
 # target to generate assembly for a file
 debug/filewriter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/filewriter_RELEASE.dir/build.make CMakeFiles/filewriter_RELEASE.dir/debug/filewriter.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/filewriter.dir/build.make CMakeFiles/filewriter.dir/debug/filewriter.cpp.s
 .PHONY : debug/filewriter.cpp.s
 
@@ -888,9 +970,13 @@ help:
 	@echo "... NightlyTest"
 	@echo "... NightlyUpdate"
 	@echo "... ARCVM"
+	@echo "... ARCVM_RELEASE"
 	@echo "... Compiler"
+	@echo "... Compiler_RELEASE"
 	@echo "... Disassembler"
+	@echo "... Disassembler_RELEASE"
 	@echo "... filewriter"
+	@echo "... filewriter_RELEASE"
 	@echo "... ARCVM/src/VM.obj"
 	@echo "... ARCVM/src/VM.i"
 	@echo "... ARCVM/src/VM.s"
