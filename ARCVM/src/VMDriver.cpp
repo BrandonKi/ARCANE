@@ -2,9 +2,11 @@
 #include <chrono> 
 #include "VM.h"
 
-clock_t start, end; 
-#define TIMER_START start = clock()
-#define TIMER_STOP std::cout << "Time taken by program is : " << ((double(clock() - start) / double(CLOCKS_PER_SEC)) * 1000) << " milliseconds " << std::endl; 
+std::chrono::high_resolution_clock::time_point start, end; 
+#define TIMER_START start = std::chrono::high_resolution_clock::now()
+#define TIMER_STOP end =  std::chrono::high_resolution_clock::now(); \
+                   std::chrono::duration<int64_t,std::nano> time_span = std::chrono::duration<int64_t,std::nano>(end - start); \
+                   std::cout << "Time taken by program is : " << (time_span.count()/1000000) << " ms " << std::endl; 
 
 inline bool checkFileType(char* data);
 inline char* appendExtension(const char* filename);
@@ -31,7 +33,9 @@ int main (int argc, const char* argv[]) {
         VM vm(filedata, (uint)size-16);
         vm.run();
         TIMER_STOP;
+        #ifdef DEBUG_BUILD
         std::cin.get();
+        #endif
         return 0;
       }else
         ERR("FILE_FORMAT_NOT_RECOGNIZED");
