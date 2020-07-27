@@ -7,9 +7,6 @@
 
 #include "MNEMONICS.h"
 
-#define DEBUG_BUILD
-// #define RELEASE_BUILD
-
 #define log(x) std::cout << x
 #define logn(x) std::cout << x << "\n"
 #define ERR(x) std::cout << x << "\n"; std::cin.get(); return -1
@@ -39,6 +36,7 @@
 typedef uint_fast64_t uint;
 typedef int_fast64_t sint;
 typedef uint_fast8_t byte;
+typedef uint_fast32_t u32;
 
 struct container {
     byte type;
@@ -49,18 +47,18 @@ class VM {
 
 private:
     std::vector<std::pair<std::string, int>> functionTable;
-    unsigned int functionTable_len;
+    u32 functionTable_len;
     byte* m_data; 
     uint m_size;
     uint m_memptr;
-    unsigned int m_lclptr;
-    unsigned int m_frameptr;
+    u32 m_lclptr;
+    u32 m_frameptr;
     container* m_variableTable;         // c arr
-    unsigned int m_variableTable_len;
+    u32 m_variableTable_len;
     std::vector<container> m_stack;
 
     bool EXIT_ON_NEXT_INTSRUCTION = false;
-    unsigned int EXIT_CODE;
+    u32 EXIT_CODE;
 
 
     int findSymbol(std::string);
@@ -90,7 +88,7 @@ private:
     inline void RET(){                       // IMPLEMENT ME
         MNEMONIC("RET");
         container result = m_stack.back();
-        unsigned int end_frame = m_lclptr;
+        u32 end_frame = m_lclptr;
         m_memptr = m_stack[m_frameptr+1].data;
         m_lclptr = m_stack[m_frameptr+2].data;
         m_frameptr = m_stack[m_frameptr+3].data;
@@ -140,16 +138,19 @@ private:
     }
     inline void CALL_LOCAL(){                           // IMPLEMENT ME
         MNEMONIC("CALL_LOCAL");
-        char* fn_name = (char*)getNextByte();
+        u32 index = *(u32*)getNextByte();
+        std::string fn_name = functionTable[index].first;
+        m_memptr += 3;
+        // char* fn_name = (char*)getNextByte();
         DEBUG(fn_name);
-        unsigned int old_memptr = m_memptr + strlen(fn_name);
-        unsigned int old_lclptr = m_lclptr;
-        unsigned int old_frameptr = m_frameptr;
+        u32 old_memptr = m_memptr;
+        u32 old_lclptr = m_lclptr;
+        u32 old_frameptr = m_frameptr;
         for(std::pair<std::string, int> pair : functionTable)
             if(pair.first == fn_name)
                 m_memptr = pair.second;
         m_lclptr = m_stack.size() - (int)(m_data[m_memptr+1]);
-        for(unsigned int i = 0; i < (int)(m_data[m_memptr+1]) - (int)(m_data[m_memptr]); i++){
+        for(u32 i = 0; i < (int)(m_data[m_memptr+1]) - (int)(m_data[m_memptr]); i++){
             m_stack.push_back(container{_UNDEFINED_, 0});
         }
         m_memptr += (int)(m_data[m_memptr+1]) + 1;
