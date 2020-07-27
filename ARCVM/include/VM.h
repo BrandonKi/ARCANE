@@ -33,14 +33,14 @@
     #define EXIT_MSG(x)
 #endif
 
-typedef uint_fast64_t uint;
+typedef uint_fast64_t u64;
 typedef int_fast64_t sint;
 typedef uint_fast8_t byte;
 typedef uint_fast32_t u32;
 
 struct container {
     byte type;
-    uint data;
+    u64 data;
 };
 
 class VM {
@@ -49,8 +49,8 @@ private:
     std::vector<std::pair<std::string, int>> functionTable;
     u32 functionTable_len;
     byte* m_data; 
-    uint m_size;
-    uint m_memptr;
+    u64 m_size;
+    u64 m_memptr;
     u32 m_lclptr;
     u32 m_frameptr;
     container* m_variableTable;         // c arr
@@ -70,7 +70,7 @@ private:
     void executeInstruction();
 
 public:
-    VM(char* data, uint size);
+    VM(char* data, u64 size);
     ~VM(){delete[] m_data;}
     void printProgram(byte*);
     inline byte* getProgram(){return m_data;}
@@ -107,30 +107,30 @@ private:
     }
     inline void UBCONST_PUSH(){
         MNEMONIC("UBCONST_PUSH");
-        m_stack.push_back({_UBYTE_, (uint)*getNextByte()});
-        DEBUG(std::dec << (uint)m_stack.back().data);
+        m_stack.push_back({_UBYTE_, (u64)*getNextByte()});
+        DEBUG(std::dec << (u64)m_stack.back().data);
     }
     inline void SICONST_PUSH(){
         MNEMONIC("SICONST_PUSH");
-        m_stack.push_back({_SINT_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
+        m_stack.push_back({_SINT_, *reinterpret_cast<u64*>(&m_data[++m_memptr])});
         m_memptr += 7;
         DEBUG(std::dec << (sint)m_stack.back().data);
     }
     inline void UICONST_PUSH(){
         MNEMONIC("UICONST_PUSH");
-        m_stack.push_back({_UINT_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
+        m_stack.push_back({_UINT_, *reinterpret_cast<u64*>(&m_data[++m_memptr])});
         m_memptr += 7;
-        DEBUG(std::dec << (uint)m_stack.back().data);
+        DEBUG(std::dec << (u64)m_stack.back().data);
     }
     inline void FCONST_PUSH(){
         MNEMONIC("FCONST_PUSH");
-        m_stack.push_back({_FLOAT_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
+        m_stack.push_back({_FLOAT_, *reinterpret_cast<u64*>(&m_data[++m_memptr])});
         m_memptr += 3;
         DEBUG(std::dec << *reinterpret_cast<float*>(&m_stack.back().data));
     }
     inline void DCONST_PUSH(){                          
         MNEMONIC("DCONST_PUSH");
-        m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&m_data[++m_memptr])});
+        m_stack.push_back({_DOUBLE_, *reinterpret_cast<u64*>(&m_data[++m_memptr])});
         m_memptr += 7;
         DEBUG(std::dec << (double)m_stack.back().data);
     }
@@ -164,7 +164,7 @@ private:
     }
     inline void ARR_LEN(){
         MNEMONIC("ARR_LEN");
-        uint len = *reinterpret_cast<uint*>(m_stack.back().data);
+        u64 len = *reinterpret_cast<u64*>(m_stack.back().data);
         DEBUG(len);
         m_stack.pop_back();
         m_stack.push_back({_UINT_,len});
@@ -179,7 +179,7 @@ private:
             logn("INVALID_ARRAY_LENGTH");
             std::exit(-1);
         }
-        uint length = top.data;
+        u64 length = top.data;
         void* temp;
         switch (*getNextByte()){
             case _NULL_:
@@ -187,33 +187,33 @@ private:
                 break;
             case _SBYTE_:
                 temp = (signed char*)malloc(length + 8);            // leave the first 64 bits for the length
-                *(uint*)temp = length;                              // set first 64 bits equal to length
-                m_stack.push_back({_REF_, (uint)(signed char*)temp});
+                *(u64*)temp = length;                              // set first 64 bits equal to length
+                m_stack.push_back({_REF_, (u64)(signed char*)temp});
                 break;
             case _UBYTE_:                                                               
                 temp = (unsigned char*)malloc(length + 8);
-                *(uint*)temp = length;
-                m_stack.push_back({_REF_, reinterpret_cast<uint>(temp)});
+                *(u64*)temp = length;
+                m_stack.push_back({_REF_, reinterpret_cast<u64>(temp)});
                 break;
             case _SINT_:
                 temp = (sint*)malloc(8 * length + 8);
-                *(uint*)temp = length;
-                m_stack.push_back({_REF_, (uint)(sint*)temp});
+                *(u64*)temp = length;
+                m_stack.push_back({_REF_, (u64)(sint*)temp});
                 break;
             case _UINT_:
-                temp = (uint*)malloc(8 * length + 8);
-                *(uint*)temp = length;
-                m_stack.push_back({_REF_, (uint)(uint*)temp});
+                temp = (u64*)malloc(8 * length + 8);
+                *(u64*)temp = length;
+                m_stack.push_back({_REF_, (u64)(u64*)temp});
                 break;
             case _FLOAT_:
                 temp = (float*)malloc(4 * length + 8);
-                *(uint*)temp = length;
-                m_stack.push_back({_REF_, (uint)(float*)temp});
+                *(u64*)temp = length;
+                m_stack.push_back({_REF_, (u64)(float*)temp});
                 break;
             case _DOUBLE_:
                 temp = (double*)malloc(8 * length + 8);
-                *(uint*)temp = length;
-                m_stack.push_back({_REF_, (uint)(double*)temp});
+                *(u64*)temp = length;
+                m_stack.push_back({_REF_, (u64)(double*)temp});
                 break;
             case _STRING_:
                 
@@ -225,13 +225,13 @@ private:
             default:
                 break;
         }
-        DEBUG("length: " << *reinterpret_cast<uint*>(temp) << " ref: 0x" << std::hex << m_stack.back().data << std::dec);
+        DEBUG("length: " << *reinterpret_cast<u64*>(temp) << " ref: 0x" << std::hex << m_stack.back().data << std::dec);
     }
     inline void UBA_STORE(){
         MNEMONIC("UBA_STORE");
-        uint index = m_stack.back().data & 0xff;
+        u64 index = m_stack.back().data & 0xff;
         m_stack.pop_back();
-        uint value = m_stack.back().data & 0xff;
+        u64 value = m_stack.back().data & 0xff;
         m_stack.pop_back();
         unsigned char* arr = reinterpret_cast<unsigned char*>(m_stack.back().data);
         m_stack.pop_back();
@@ -241,12 +241,12 @@ private:
             logn("ARRAY_OUT_OF_BOUNDS");
         }else{
             *(arr + 4 + index) = value;
-            DEBUG("index: " << index << " value: " << " " << (uint)*(arr + 4 + index));
+            DEBUG("index: " << index << " value: " << " " << (u64)*(arr + 4 + index));
         }
     }
     inline void UBA_LOAD(){
         MNEMONIC("UBA_LOAD");
-        uint index = m_stack.back().data & 0xff;
+        u64 index = m_stack.back().data & 0xff;
         m_stack.pop_back();
         unsigned char* arr = reinterpret_cast<unsigned char*>(m_stack.back().data);
         m_stack.pop_back();
@@ -266,11 +266,11 @@ private:
         result += (m_stack.back().data & 0xff);
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UB_ADD(){
         MNEMONIC("UB_ADD");
-        uint result = (m_stack.back().data & 0xff);
+        u64 result = (m_stack.back().data & 0xff);
         m_stack.pop_back();
         result += (m_stack.back().data & 0xff);
         m_stack.pop_back();
@@ -284,11 +284,11 @@ private:
         result += m_stack.back().data;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SINT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SINT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UI_ADD(){
         MNEMONIC("UI_ADD");
-        uint result = m_stack.back().data;
+        u64 result = m_stack.back().data;
         m_stack.pop_back();
         result += m_stack.back().data;
         m_stack.pop_back();
@@ -302,7 +302,7 @@ private:
         result += *reinterpret_cast<float*>(&m_stack.back().data);
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_FLOAT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_FLOAT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void D_ADD(){
         MNEMONIC("D_ADD");
@@ -311,7 +311,7 @@ private:
         result += *reinterpret_cast<double*>(&m_stack.back().data);
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_DOUBLE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SB_SUB(){
         MNEMONIC("SB_SUB");
@@ -320,16 +320,16 @@ private:
         result = (m_stack.back().data & 0xff) - result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UB_SUB(){
         MNEMONIC("UB_SUB");
-        uint result = (m_stack.back().data & 0xff);
+        u64 result = (m_stack.back().data & 0xff);
         m_stack.pop_back();
         result = (m_stack.back().data - result) & 0xff;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_UBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_UBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SI_SUB(){
         MNEMONIC("SI_SUB");
@@ -338,11 +338,11 @@ private:
         result = *reinterpret_cast<sint*>(&m_stack.back().data) - result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SINT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SINT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UI_SUB(){
         MNEMONIC("UI_SUB");
-        uint result = m_stack.back().data;
+        u64 result = m_stack.back().data;
         m_stack.pop_back();
         result = m_stack.back().data - result;
         m_stack.pop_back();
@@ -356,7 +356,7 @@ private:
         result = *reinterpret_cast<float*>(&m_stack.back().data) - result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_FLOAT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_FLOAT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void D_SUB(){
         MNEMONIC("D_SUB");
@@ -365,7 +365,7 @@ private:
         result = *reinterpret_cast<double*>(&m_stack.back().data) - result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_DOUBLE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SB_MUL(){
         MNEMONIC("SB_MUL");
@@ -374,16 +374,16 @@ private:
         result = (m_stack.back().data & 0xff) * result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UB_MUL(){
         MNEMONIC("UB_MUL");
-        uint result = (m_stack.back().data & 0xff);
+        u64 result = (m_stack.back().data & 0xff);
         m_stack.pop_back();
         result = (m_stack.back().data * result) & 0xff;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_UBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_UBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SI_MUL(){
         MNEMONIC("SI_MUL");
@@ -392,11 +392,11 @@ private:
         result = m_stack.back().data * result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SINT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SINT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UI_MUL(){
         MNEMONIC("UI_MUL");
-        uint result = m_stack.back().data;
+        u64 result = m_stack.back().data;
         m_stack.pop_back();
         result = m_stack.back().data * result;
         m_stack.pop_back();
@@ -410,7 +410,7 @@ private:
         result = *reinterpret_cast<float*>(&m_stack.back().data) * result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_FLOAT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_FLOAT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void D_MUL(){
         MNEMONIC("D_MUL");
@@ -419,7 +419,7 @@ private:
         result = *reinterpret_cast<double*>(&m_stack.back().data) * result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_DOUBLE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SB_DIV(){
         MNEMONIC("SB_DIV");
@@ -428,16 +428,16 @@ private:
         result = (m_stack.back().data & 0xff) / result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UB_DIV(){
         MNEMONIC("UB_DIV");
-        uint result = (m_stack.back().data & 0xff);
+        u64 result = (m_stack.back().data & 0xff);
         m_stack.pop_back();
         result = (m_stack.back().data / result) & 0xff;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_UBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_UBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SI_DIV(){
         MNEMONIC("SI_DIV");
@@ -446,11 +446,11 @@ private:
         result = m_stack.back().data / result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SINT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SINT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UI_DIV(){
         MNEMONIC("UI_DIV");
-        uint result = m_stack.back().data;
+        u64 result = m_stack.back().data;
         m_stack.pop_back();
         result = m_stack.back().data / result;
         m_stack.pop_back();
@@ -464,7 +464,7 @@ private:
         result = *reinterpret_cast<float*>(&m_stack.back().data) / result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_FLOAT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_FLOAT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void D_DIV(){
         MNEMONIC("D_DIV");
@@ -473,7 +473,7 @@ private:
         result = *reinterpret_cast<double*>(&m_stack.back().data) / result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_DOUBLE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SB_REM(){
         MNEMONIC("SB_DIV");
@@ -482,16 +482,16 @@ private:
         result = (m_stack.back().data & 0xff) % result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UB_REM(){
         MNEMONIC("UB_DIV");
-        uint result = (m_stack.back().data & 0xff);
+        u64 result = (m_stack.back().data & 0xff);
         m_stack.pop_back();
         result = (m_stack.back().data % result) & 0xff;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_UBYTE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_UBYTE_, *reinterpret_cast<u64*>(&result)});
     }
     inline void SI_REM(){
         MNEMONIC("SI_DIV");
@@ -500,11 +500,11 @@ private:
         result = m_stack.back().data % result;
         m_stack.pop_back();
         DEBUG(std::dec << result);
-        m_stack.push_back({_SINT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_SINT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void UI_REM(){
         MNEMONIC("UI_DIV");
-        uint result = m_stack.back().data;
+        u64 result = m_stack.back().data;
         m_stack.pop_back();
         result = m_stack.back().data % result;
         m_stack.pop_back();
@@ -518,7 +518,7 @@ private:
         float result = std::modf(*reinterpret_cast<float*>(&m_stack.back().data), &temp);
         m_stack.pop_back();
         DEBUG(std::dec << (float)result);
-        m_stack.push_back({_FLOAT_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_FLOAT_, *reinterpret_cast<u64*>(&result)});
     }
     inline void D_REM(){
         MNEMONIC("D_REM");
@@ -527,97 +527,97 @@ private:
         double result = std::modf(*reinterpret_cast<double*>(&m_stack.back().data), &temp);
         m_stack.pop_back();
         DEBUG(std::dec << (double)result);
-        m_stack.push_back({_DOUBLE_, *reinterpret_cast<uint*>(&result)});
+        m_stack.push_back({_DOUBLE_, *reinterpret_cast<u64*>(&result)});
     }
 
     inline void SB_STORE(){
         MNEMONIC("SB_STORE");
-        uint index = *getNextByte();
-        m_stack[m_lclptr + index] = {_SBYTE_, (*reinterpret_cast<uint*>(&m_stack.back().data) & 0xff)};               // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
+        u64 index = *getNextByte();
+        m_stack[m_lclptr + index] = {_SBYTE_, (*reinterpret_cast<u64*>(&m_stack.back().data) & 0xff)};               // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
         DEBUG("slot: " << index << " value: " << (sint)(int_fast8_t)(m_stack[m_lclptr + index].data & 0xff));           // I could just do % BYTE_MAX_VALUE but no
         m_stack.pop_back();
     }
     inline void UB_STORE(){
         MNEMONIC("UB_STORE");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack[m_lclptr + index] = {_UBYTE_, (m_stack.back().data & 0xff)};                     // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
         DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);              // I could just do % BYTE_MAX_VALUE but no
         m_stack.pop_back();
     }
     inline void SI_STORE(){
         MNEMONIC("SI_STORE");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack[m_lclptr + index] = m_stack.back();
         DEBUG("slot: " << index << " value: " << (sint)(m_stack[m_lclptr + index].data));       
         m_stack.pop_back();
     }
     inline void UI_STORE(){
         MNEMONIC("UI_STORE");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack[m_lclptr + index] = m_stack.back();
         DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);       
         m_stack.pop_back();
     }
     inline void F_STORE(){
         MNEMONIC("F_STORE");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack[m_lclptr + index] = m_stack.back();
         DEBUG("slot: " << index << " value: " << *reinterpret_cast<float*>(&m_stack[m_lclptr + index].data));
         m_stack.pop_back();
     }
     inline void D_STORE(){
         MNEMONIC("D_STORE");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack[m_lclptr + index] = m_stack.back();
         DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);       
         m_stack.pop_back();
     }
     inline void REF_STORE(){
         MNEMONIC("REF_STORE");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack[m_lclptr + index] = m_stack.back();
         DEBUG("slot: " << index << " ref: 0x" << std::hex << m_stack[m_lclptr + index].data << std::dec);
         m_stack.pop_back();
     }
     inline void SB_LOAD(){
         MNEMONIC("SB_LOAD");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack.push_back({_SBYTE_, m_stack[m_lclptr + index].data & 0xff});
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void UB_LOAD(){
         MNEMONIC("UB_LOAD");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack.push_back({_UBYTE_, m_stack[m_lclptr + index].data & 0xff});
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void SI_LOAD(){
         MNEMONIC("SI_LOAD");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void UI_LOAD(){
         MNEMONIC("UI_LOAD");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void F_LOAD(){
         MNEMONIC("F_LOAD");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void D_LOAD(){
         MNEMONIC("D_LOAD");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " value: " << *reinterpret_cast<double*>(&m_stack.back().data));
     }
     inline void REF_LOAD(){
         MNEMONIC("REF_LOAD");
-        uint index = *getNextByte();
+        u64 index = *getNextByte();
         m_stack.push_back(m_stack[m_lclptr + index]);
         DEBUG("slot: " << index << " ref: 0x" << std::hex << m_stack.back().data << std::dec);
     }
@@ -664,45 +664,45 @@ private:
     inline void JMP(){
         byte address = *getNextByte();
         MNEMONIC("JMP");
-        DEBUG(std::hex << (uint)address << std::dec);
+        DEBUG(std::hex << (u64)address << std::dec);
         JMP_HELPER(address);
     }
     inline void JIFNE(){
-        uint temp = m_stack.back().data;
+        u64 temp = m_stack.back().data;
         byte address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFNE");
-        DEBUG(temp << " != " << m_stack.back().data << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " != " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
         if(temp != m_stack.back().data)
             JMP_HELPER(address);
         m_stack.pop_back();
     }
     inline void JIFE(){
-        uint temp = m_stack.back().data;
+        u64 temp = m_stack.back().data;
         byte address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFE");
-        DEBUG(temp << " == " << m_stack.back().data << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " == " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
         if(temp == m_stack.back().data)
             JMP_HELPER(address);
         m_stack.pop_back();
     }
     inline void JIFLS(){
-        uint temp = m_stack.back().data;
+        u64 temp = m_stack.back().data;
         byte address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFLS");
-        DEBUG(temp << " < " << m_stack.back().data << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " < " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
         if(temp < m_stack.back().data)
             JMP_HELPER(address);
         m_stack.pop_back();
     }
     inline void JIFGT(){
-        uint temp = m_stack.back().data;
+        u64 temp = m_stack.back().data;
         byte address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFGT");
-        DEBUG(temp << " > " << m_stack.back().data << " " << std::hex << (uint)address << std::dec);
+        DEBUG(temp << " > " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
         if(temp > m_stack.back().data)
             JMP_HELPER(address);
         m_stack.pop_back();
@@ -710,7 +710,7 @@ private:
     inline void JIFZ(){
         byte address = *getNextByte();
         MNEMONIC("JIFZ");
-        DEBUG(m_stack.back().data << " == 0 " << std::hex << (uint)address << std::dec);
+        DEBUG(m_stack.back().data << " == 0 " << std::hex << (u64)address << std::dec);
         if(m_stack.back().data == 0)
             JMP_HELPER(address);
         m_stack.pop_back();
@@ -718,7 +718,7 @@ private:
     inline void JIFNZ(){
         byte address = *getNextByte();
         MNEMONIC("JIFNZ");
-        DEBUG(m_stack.back().data << " != 0 " << std::hex << (uint)address << std::dec);
+        DEBUG(m_stack.back().data << " != 0 " << std::hex << (u64)address << std::dec);
         if(m_stack.back().data != 0)
             JMP_HELPER(address);
         m_stack.pop_back();

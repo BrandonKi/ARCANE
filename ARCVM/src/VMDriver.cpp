@@ -30,7 +30,7 @@ int main (int argc, const char* argv[]) {
       file.close();
       if(checkFileType(filedata)){
         filedata = filedata + (16 * sizeof(char));
-        VM vm(filedata, (uint)size-16);
+        VM vm(filedata, (u64)size-16);
         vm.run();
         TIMER_STOP;
         #ifdef DEBUG_BUILD

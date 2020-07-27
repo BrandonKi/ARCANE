@@ -1,6 +1,6 @@
 #include "VM.h"
 
-VM::VM(char* data, uint size)
+VM::VM(char* data, u64 size)
 	:m_size(size), m_memptr(0), m_lclptr(0), m_frameptr(0)
 {
 	m_data = reinterpret_cast<byte*>(data);
@@ -32,7 +32,7 @@ VM::VM(char* data, uint size)
 
 void VM::printProgram(byte* arr){
 	std::cout << "PROGRAM: \n\t";
-	for(uint i = 0; i < m_size; i++)
+	for(u64 i = 0; i < m_size; i++)
       std::cout << std::hex << (int)arr[i] << " ";
 	NEWLINE;
 	NEWLINE;
