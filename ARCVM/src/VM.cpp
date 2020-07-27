@@ -24,7 +24,7 @@ VM::VM(char* data, uint size)
 	#endif
 
 	m_variableTable = (container*)malloc(sizeof(container) * 10);   			// temp
-
+	
 
 	// printVariableTable();
 }

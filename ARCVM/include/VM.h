@@ -75,6 +75,7 @@ public:
     void printProgram(byte*);
     inline byte* getProgram(){return m_data;}
     void run();
+    void freeMem();
 
 private:
     inline void NOP(){
