@@ -1,7 +1,3 @@
-# CMake
-
-build/*
-
 # Prerequisites
 *.d
 
