@@ -34,6 +34,7 @@ int main (int argc, const char* argv[]) {
         vm.run();
         TIMER_STOP;
         #ifdef DEBUG_BUILD
+        delete[] filedata;
         std::cin.get();
         #endif
         return 0;
