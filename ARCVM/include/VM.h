@@ -139,7 +139,7 @@ private:
     }
     inline void CALL_LOCAL(){                           // IMPLEMENT ME
         MNEMONIC("CALL_LOCAL");
-        u32 index = *(u32*)getNextByte();
+        u32 index = *reinterpret_cast<u64*>(&m_data[++m_memptr]);
         std::string fn_name = functionTable[index].first;
         m_memptr += 3;
         // char* fn_name = (char*)getNextByte();
