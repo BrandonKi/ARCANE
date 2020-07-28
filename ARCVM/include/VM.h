@@ -33,10 +33,10 @@
     #define EXIT_MSG(x)
 #endif
 
-typedef uint_fast64_t u64;
-typedef int_fast64_t sint;
-typedef uint_fast8_t byte;
-typedef uint_fast32_t u32;
+typedef uint64_t u64;
+typedef int64_t sint;
+typedef uint8_t byte;
+typedef uint32_t u32;
 
 struct container {
     byte type;
@@ -139,9 +139,11 @@ private:
     }
     inline void CALL_LOCAL(){                           // IMPLEMENT ME
         MNEMONIC("CALL_LOCAL");
-        u32 index = *reinterpret_cast<u64*>(&m_data[++m_memptr]);
-        std::string fn_name = functionTable[index].first;
+        u32 index = *reinterpret_cast<u32*>(&m_data[++m_memptr]);
         m_memptr += 3;
+        DEBUG(sizeof(u32));
+        DEBUG(index);
+        std::string fn_name = functionTable[index].first;
         // char* fn_name = (char*)getNextByte();
         DEBUG(fn_name);
         u32 old_memptr = m_memptr;
