@@ -31,6 +31,7 @@ void Parser::parseStatement(){
         case T_WHILE:
             break;
         case T_RET:
+            parseRet();
             break;
         case T_IF:
             break;
@@ -62,7 +63,6 @@ void Parser::parseInferDecl(){
 }
 
 void Parser::parseExplicitDecl(){
-    //if(m_symbol_table.contains(currentToken()->val))
 
     if(ID_isDefined(currentToken()->val)){    // Check for redeclaration
         ErrorHandler::printError(ERR_REDECL, m_tokens, pos_ptr);
@@ -87,11 +87,13 @@ void Parser::parseExplicitDecl(){
                 nextToken();
                 std::vector<Token*> expr = parseExpr(T_SEMICOLON);
                 symbol_table_list.back().addSymbol(name, type, expr);
+                IR_gen.TAC_genVarDecl(name->val, &expr);
             }
             else{
                 symbol_table_list.back().addSymbol(name, type, false);
-
+                IR_gen.TAC_genVarDecl(name->val, nullptr);
             }
+            
             break;
         default:
             log("ERROR");
@@ -122,16 +124,26 @@ void Parser::parseFnDecl(){
     data[0] = nextToken();
     nextToken();        // RBRACE
     symbol_table_list.back().addSymbol(fn_name, T_FN, data);
+    IR_gen.TAC_genLabel(fn_name->val);
+    IR_gen.TAC_genStartFn();
     newScope();                 // start of new scope. Appends a new symbol table to end
     inFunction = true;
     parseFnBody();
     inFunction = false;
+    IR_gen.TAC_genEndFn();
     STPrint();
     symbol_table_list.pop_back();              //  clear sub symbol table after parsing
 }
 
 void Parser::parseFnBody(){
     parseStatementBlock();
+}
+
+void Parser::parseRet(){
+    nextToken();
+    std::vector<Token*> expr = parseExpr(T_SEMICOLON);
+    IR_gen.TAC_genExpr(&expr);
+    IR_gen.printTable();
 }
 
 std::vector<Token*> Parser::parseExpr(T_Type T_type){

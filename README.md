@@ -38,4 +38,5 @@ Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
 - https://www.scadacore.com/tools/programming-calculators/online-hex-converter/
 - https://en.wikipedia.org/wiki/Java_class_file
 - https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/lectures
+- https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/lectures/13/Slides13.pdf
 

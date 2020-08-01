@@ -13,8 +13,12 @@ void SymbolTable::addSymbol(Token* token, T_Type type, bool param){
     
 }
 
-bool SymbolTable::contains(std::string name){
+bool SymbolTable::contains(std::string& name){
     return m_symbol_table.find(name) != m_symbol_table.end();
+}
+
+ST_entry* SymbolTable::getSymbol(std::string& name){
+    return m_symbol_table.at(name);
 }
 
 T_Type SymbolTable::getReturnType(std::string name){

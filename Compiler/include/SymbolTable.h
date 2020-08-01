@@ -25,7 +25,8 @@ class SymbolTable{
         void addSymbol(Token*, T_Type, std::vector<Token*>);
         void addSymbol(Token*, T_Type, bool);
 
-        bool contains(std::string);
+        bool contains(std::string&);
+        ST_entry* getSymbol(std::string&);
 
         T_Type getReturnType(std::string);
 

@@ -21,7 +21,10 @@ int main(int argc, const char* argv[]){
                 std::cout << '\n';
             );
             Parser parser(tokens, lexer.getKeywords());
-            std::cin.get();
+            #ifdef DEBUG_BUILD
+                lexer.~Lexer();
+                std::cin.get();
+            #endif
             return 0;
         }else
             REPORT_ERROR("UNABLE_TO_OPEN_FILE");
