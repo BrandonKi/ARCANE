@@ -21,6 +21,7 @@ set(COMPILER_SOURCES
     ${C_SRC_DIR}/Parser.cpp 
     ${C_SRC_DIR}/SymbolTable.cpp
     ${C_SRC_DIR}/GenTAC.cpp
+    ${C_SRC_DIR}/CodeGen.cpp
 )
 
 add_executable(Compiler ${COMPILER_SOURCES})

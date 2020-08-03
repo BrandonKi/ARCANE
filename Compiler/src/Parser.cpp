@@ -4,23 +4,34 @@ bool inFunction = false;
 
 void Parser::start(){    
     initSymbolTableList();
-    parseStatementBlock();
+    parseFile();
     std::cin.get();
     STPrint();
 }
 
-void Parser::parseStatementBlock(){
+void Parser::parseFile(){
     for(; pos_ptr < m_tokens.size(); pos_ptr++){
         parseStatement();
     }
 }
 
+void Parser::parseStatementBlock(){
+    for(; pos_ptr < m_tokens.size(); pos_ptr++){
+        parseStatement();
+        logn("[[" << brace_count << "]]");
+        if(brace_count == 0){
+            return;
+        }
+    }
+}
+
 void Parser::parseStatement(){
+    logn(currentToken()->val);
     if(currentToken()->type == T_ID){
         T_Type nextTokenType = peekNextToken()->type;
         if(nextTokenType == T_INFER){
             parseInferDecl();
-        }
+        } 
         else if(nextTokenType == T_COLON){
             parseExplicitDecl();
         }
@@ -47,6 +58,12 @@ void Parser::parseStatement(){
             break;
         case T_FN:
             parseFnDecl();
+            break;
+        case T_LBRACE:
+            brace_count++;
+            break;
+        case T_RBRACE:
+            brace_count--;
             break;
     }
 
@@ -108,21 +125,22 @@ void Parser::parseFnDecl(){
     }
     Token* fn_name = nextToken();
     std::vector<Token*> data;
-    data.push_back(0);
+    data.push_back(0);  //save space for return type
     if(nextToken()->type == T_LPAREN && peekNextToken()->type != T_RPAREN){
         while(peekNextToken()->type == T_COMMA || peekNextToken()->type == T_ID){
-            nextToken();
+            if(peekNextToken()->type == T_COMMA)
+                nextToken();
             Token* temp = nextToken();        // identifier
             nextToken();                      // colon
             nextToken();                      // type
             symbol_table_list.back().addSymbol(temp, currentToken()->type, true);
         }
     }
-    else
-        nextToken();
+    logn(currentToken()->val << "::::::::::");
+    nextToken();        // right paren
     nextToken();        // colon
-    data[0] = nextToken();
-    nextToken();        // RBRACE
+    data[0] = nextToken();      // return type
+    nextToken();
     symbol_table_list.back().addSymbol(fn_name, T_FN, data);
     IR_gen.TAC_genLabel(fn_name->val);
     IR_gen.TAC_genStartFn();
@@ -133,6 +151,7 @@ void Parser::parseFnDecl(){
     IR_gen.TAC_genEndFn();
     STPrint();
     symbol_table_list.pop_back();              //  clear sub symbol table after parsing
+    IR_gen.printTable();
 }
 
 void Parser::parseFnBody(){
@@ -142,8 +161,12 @@ void Parser::parseFnBody(){
 void Parser::parseRet(){
     nextToken();
     std::vector<Token*> expr = parseExpr(T_SEMICOLON);
-    IR_gen.TAC_genExpr(&expr);
-    IR_gen.printTable();
+    if(expr.size() == 0)                //@TODO check if this returns the correct type later
+        IR_gen.TAC_genRet(true);
+    else{
+        IR_gen.TAC_genExpr(&expr);
+        IR_gen.TAC_genRet(false);
+    }
 }
 
 std::vector<Token*> Parser::parseExpr(T_Type T_type){
@@ -202,11 +225,11 @@ std::vector<Token*> Parser::parseExpr(T_Type T_type){
         else if(currentToken()->type == T_FLOAT_LIT || currentToken()->type == T_NUMBER_LIT || currentToken()->type == T_CHAR_LIT || currentToken()->type == T_STR_LIT)
             expr.push_back(currentToken());
         else if(currentToken()->type == T_ID ){
-            std::cout << "\n" << currentToken()->val << "\n";
             if(!ID_isDefined(currentToken()->val)){
                 ErrorHandler::printError(ERR_UNDEFINED_ID, m_tokens, pos_ptr);
                 WAIT_AND_EXIT(-1);
             }
+            expr.push_back(currentToken());
         }
         nextToken();
     }

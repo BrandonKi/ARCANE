@@ -8,9 +8,12 @@ class Parser{
         std::stack<Token*> m_stack;
         std::vector<SymbolTable> symbol_table_list;
         GenTAC IR_gen;
+
+        int brace_count;
  
     public:
-        Parser(std::vector<Token*> tokens, std::unordered_map<std::string, int> keywords): m_tokens(tokens), pos_ptr(0), inner_scope(false), IR_gen(symbol_table_list){start();}
+        Parser(std::vector<Token*> tokens, std::unordered_map<std::string, int> keywords): m_tokens(tokens), pos_ptr(0), inner_scope(false), IR_gen(symbol_table_list), brace_count(0){start();}
+        std::vector<Quad> getIR(){ return IR_gen.getTable(); }
         std::vector<SymbolTable> getSymbolTable(){return symbol_table_list;}
 
     private:
@@ -21,6 +24,7 @@ class Parser{
 
         void start();
 
+        void parseFile();
         void parseStatementBlock();
         void parseStatement();
 

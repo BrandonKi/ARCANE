@@ -1,6 +1,6 @@
 
 fn main(): int {
-    int_test: int = 100 + 60;
-    int_test1: int = int_test + 60;
-    ret 0;
+    int_test: int = 10 + 12;
+    ret int_test;
 }
+

@@ -142,7 +142,7 @@ void Lexer::start(){
             case '`':
                 break;
             case '{':
-                m_tokens.emplace_back(new Token{T_Type(T_RBRACE), std::string(1, m_filedata[i]), m_line, m_char, m_F_char});
+                m_tokens.emplace_back(new Token{T_Type(T_LBRACE), std::string(1, m_filedata[i]), m_line, m_char, m_F_char});
                 break;
             case '|':
                 temp_int = handleBinOr(i) - i;
@@ -151,7 +151,7 @@ void Lexer::start(){
                 m_F_char += temp_int;
                 break;
             case '}':
-                m_tokens.emplace_back(new Token{T_Type(T_LBRACE), std::string(1, m_filedata[i]), m_line, m_char, m_F_char});
+                m_tokens.emplace_back(new Token{T_Type(T_RBRACE), std::string(1, m_filedata[i]), m_line, m_char, m_F_char});
                 break;
             case '~':
                 break;

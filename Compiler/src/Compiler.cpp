@@ -1,4 +1,4 @@
-#include "Parser.h"
+#include "CodeGen.h"
 
 
 int main(int argc, const char* argv[]){
@@ -21,6 +21,7 @@ int main(int argc, const char* argv[]){
                 std::cout << '\n';
             );
             Parser parser(tokens, lexer.getKeywords());
+            CodeGen gen(parser.getIR());
             #ifdef DEBUG_BUILD
                 lexer.~Lexer();
                 std::cin.get();

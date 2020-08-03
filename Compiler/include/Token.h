@@ -11,9 +11,9 @@
 
 // #define DP_KEYWORDS
 // #define DP_TOKEN_STEP
-#define DP_TOKEN_RESULT
-#define DP_INFIX_EXPR
-#define DP_POSTFIX_EXPR
+// #define DP_TOKEN_RESULT
+// #define DP_INFIX_EXPR
+// #define DP_POSTFIX_EXPR
 
 #ifdef DP_KEYWORDS
 #define DEBUG_PRINT_KEYWORDS(x) x
