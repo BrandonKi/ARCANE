@@ -29,7 +29,7 @@ int main (int argc, const char* argv[]) {
       file.read (filedata, size);
       file.close();
       if(checkFileType(filedata)){
-        filedata = filedata + (16 * sizeof(char));
+        filedata = filedata + (16 * sizeof(char)); // causes a mem leak, but it doesn't matter too much
         VM vm(filedata, (u64)size-16);
         vm.run();
         TIMER_STOP;

@@ -88,7 +88,7 @@ std::string GenTAC::opToString(OP op){
             return std::string("+");
         case TAC_SUB:
             return std::string("-");
-        case TAC_DIV:
+        case TAC_DIV: 
             return std::string("/");
         case TAC_MUL:
             return std::string("*");

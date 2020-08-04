@@ -71,7 +71,7 @@ private:
 
 public:
     VM(char* data, u64 size);
-    ~VM(){delete[] m_data;}
+    ~VM(){free(m_variableTable);}
     void printProgram(byte*);
     inline byte* getProgram(){return m_data;}
     void run();

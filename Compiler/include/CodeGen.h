@@ -15,6 +15,6 @@ class CodeGen{
 
     private:
 
-
+        void genFunction();
 
 };
