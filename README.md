@@ -7,19 +7,6 @@ WIP
 
 Tested on Windows 10 and multiple Linux distros
 
-# Notes
-
-https://trello.com/b/tZJWGk7b/arcane
-
-Minimal type checking is done at runtime.
-Otherwise all type checking should/will be done at compile time.
-Only checks for fatal errors at runtime.
-
-
-Bytecode files store variables in Little Endian 
-
-Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
-
 #Sample Code
 
     i := 0;
@@ -31,6 +18,24 @@ Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
         ret a + b;
     }
 
+
+
+
+# Notes
+
+replace reintrpret cast with safe version
+move everything to arena allocator
+
+https://trello.com/b/tZJWGk7b/arcane
+
+Minimal type checking is done at runtime.
+Otherwise all type checking should/will be done at compile time.
+Only checks for fatal errors at runtime.
+
+
+Bytecode files store variables in Little Endian 
+
+Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
 
 
 ### RESOURCES FOR LATER
