@@ -24,6 +24,7 @@ Tested on Windows 10 and multiple Linux distros
 # Notes
 
 replace reintrpret cast with safe version
+
 move everything to arena allocator
 
 https://trello.com/b/tZJWGk7b/arcane
