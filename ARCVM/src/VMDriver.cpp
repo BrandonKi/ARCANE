@@ -1,12 +1,28 @@
 #include <fstream>
-#include <chrono> 
+#include <chrono>
+#include <iomanip>
 #include "VM.h"
 
-std::chrono::high_resolution_clock::time_point start, end; 
-#define TIMER_START start = std::chrono::high_resolution_clock::now()
-#define TIMER_STOP end =  std::chrono::high_resolution_clock::now(); \
-                   std::chrono::duration<int64_t,std::nano> time_span = std::chrono::duration<int64_t,std::nano>(end - start); \
-                   std::cout << "Time taken by program is : " << (time_span.count()/1000000) << " ms " << std::endl; 
+#ifdef _WIN32
+  #include <windows.h>
+
+  LARGE_INTEGER start, end, frequency;
+
+  #define TIMER_START QueryPerformanceFrequency(&frequency); \
+                      QueryPerformanceCounter(&start);
+
+  #define TIMER_STOP  QueryPerformanceCounter(&end); \
+                      std::cout << std::fixed << std::setprecision(6) << \
+                      "Time taken : " << ((((end.QuadPart - start.QuadPart) * 1000000)/frequency.QuadPart)/1000000.0) << " seconds \n"; 
+
+#else
+  std::chrono::high_resolution_clock::time_point start, end; 
+  #define TIMER_START start = std::chrono::high_resolution_clock::now()
+  #define TIMER_STOP end =  std::chrono::high_resolution_clock::now(); \
+                    std::chrono::duration<std::chrono::milliseconds> time_span = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); \
+                    std::cout << std::fixed << std::setprecision(6) << \
+                    "Time taken : " << (time_span.count()/1000000.0) << " seconds \n";  
+#endif
 
 inline bool checkFileType(char* data);
 inline char* appendExtension(const char* filename);
