@@ -1,3 +1,4 @@
+#include "MNEMONICS.h"
 #include <cstdlib>
 
 #ifdef _WIN32

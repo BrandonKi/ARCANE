@@ -47,10 +47,6 @@ int main(){
         0x00, 
 
                         // start main
-        0xff,
-        0xff,
-        'f',
-        'n',
         'm',
         'a',
         'i',
@@ -77,10 +73,6 @@ int main(){
         
 
                         // start add
-        0xff,
-        0xff,
-        'f',
-        'n',
         'a',
         'd',
         'd',

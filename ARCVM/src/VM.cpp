@@ -39,7 +39,6 @@ void VM::printProgram(byte* arr){
 }
 
 int VM::findSymbol(std::string symbol){
-	symbol = std::string(2, 0xff) + std::string("fn") + symbol;
 	u32 len = symbol.length();
 	const char* c_str = symbol.c_str();
 	for(int i = 0; i < m_size; i++){

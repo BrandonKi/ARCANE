@@ -1,9 +1,6 @@
 #include  "GenTAC.h"
 
 
-
-
-
 void GenTAC::TAC_genLabel(std::string& label){
     table.push_back(Quad{TAC_LABEL, std::string(""), std::string(""), label});
 }

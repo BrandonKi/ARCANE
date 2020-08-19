@@ -4,7 +4,6 @@ fn main(): int {
     ret int_test;
 }
 
-fn add(op1: int, op2: int): int {
-    ret main + op2;
-}
-
+// fn add(op1: int, op2: int): int {
+//     ret op1 + op2;
+// }

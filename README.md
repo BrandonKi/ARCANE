@@ -27,6 +27,8 @@ replace reintrpret cast with safe version
 
 move everything to arena allocator
 
+make assignment an expression
+
 https://trello.com/b/tZJWGk7b/arcane
 
 Minimal type checking is done at runtime.

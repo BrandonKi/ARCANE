@@ -22,6 +22,7 @@ int main(int argc, const char* argv[]){
             );
             Parser parser(tokens, lexer.getKeywords());
             CodeGen gen(parser.getIR());
+            gen.generate();
             #ifdef DEBUG_BUILD
                 lexer.~Lexer();
                 std::cin.get();

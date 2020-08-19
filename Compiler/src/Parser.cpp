@@ -125,26 +125,25 @@ void Parser::parseFnDecl(){
     }
     Token* fn_name = nextToken();
     std::vector<Token*> data;
-    data.push_back(0);  //save space for return type
+    data.push_back(0);  // save space for return type
+    newScope();         // start of new scope. Appends a new symbol table to end
     if(nextToken()->type == T_LPAREN && peekNextToken()->type != T_RPAREN){
         while(peekNextToken()->type == T_COMMA || peekNextToken()->type == T_ID){
             if(peekNextToken()->type == T_COMMA)
                 nextToken();
             Token* temp = nextToken();        // identifier
             nextToken();                      // colon
-            nextToken();                      // type
+            data.push_back(nextToken());      // type
             symbol_table_list.back().addSymbol(temp, currentToken()->type, true);
         }
     }
-    logn(currentToken()->val << "::::::::::");
-    nextToken();        // right paren
-    nextToken();        // colon
+    nextToken();                // right paren
+    nextToken();                // colon
     data[0] = nextToken();      // return type
     nextToken();
-    symbol_table_list.back().addSymbol(fn_name, T_FN, data);
+    symbol_table_list[symbol_table_list.size()-2].addSymbol(fn_name, T_FN, data);
     IR_gen.TAC_genLabel(fn_name->val);
     IR_gen.TAC_genStartFn();
-    newScope();                 // start of new scope. Appends a new symbol table to end
     inFunction = true;
     parseFnBody();
     inFunction = false;

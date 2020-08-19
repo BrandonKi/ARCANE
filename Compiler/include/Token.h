@@ -4,7 +4,6 @@
 #include <vector>
 #include <stack>
 #include <unordered_map>
-#include <future>
 #include <cstring>
 
 #include "OS.h"
@@ -45,6 +44,11 @@
 #define DEBUG_PRINT_POSTFIX(x)
 #endif
 
+#ifdef DEBUG_BUILD
+#define DBG_PRINT(x) std::cout << x
+#else
+#define DBG_PRINT
+#endif
 
 
 #define log(x) std::cout << x
