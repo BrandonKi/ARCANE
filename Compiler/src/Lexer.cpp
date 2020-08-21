@@ -286,13 +286,13 @@ unsigned int Lexer::handleSub(unsigned int i){
         m_tokens.emplace_back(token);
         i++;
     }
-    else{                                                                      // unary sub needs some work
+    else{
         Token* token = new Token{T_Type(T_OPERATOR), std::string(1, m_filedata[i]), m_line, m_char, m_F_char};
-        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER_LIT && m_tokens.back()->type != T_FLOAT_LIT){
-            token->op_info = OP_UNARY_SUB;
-            token->val = "-u";
-        }
-        else
+        // if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER_LIT && m_tokens.back()->type != T_FLOAT_LIT){
+        //     token->op_info = OP_UNARY_SUB;
+        //     token->val = "-u";
+        // }                                    //@TODO unary sub needs some work
+        // else
             token->op_info = OP_SUB;
         m_tokens.emplace_back(token);
     }
@@ -315,14 +315,14 @@ unsigned int Lexer::handleAdd(unsigned int i){
             token->op_info = OP_UNARY_PRE_INC;
         m_tokens.emplace_back(token);
         i++;
-    }
-    else{                                                                                   // unary plus needs some work
+    } 
+    else{
         Token* token = new Token{T_Type(T_OPERATOR), std::string(1, m_filedata[i]), m_line, m_char, m_F_char};
-        if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER_LIT && m_tokens.back()->type != T_FLOAT_LIT && m_tokens.back()->type != T_LONG_LIT){
-            token->op_info = OP_UNARY_PLUS;
-            token->val = "+u";
-        }
-        else
+        // if(m_tokens.back()->type != T_ID && m_tokens.back()->type != T_NUMBER_LIT && m_tokens.back()->type != T_FLOAT_LIT && m_tokens.back()->type != T_LONG_LIT){
+        //     token->op_info = OP_UNARY_PLUS;      
+        //     token->val = "+u";                       //@TODO unary plus needs some work
+        // }
+        // else
             token->op_info = OP_ADD;
         m_tokens.emplace_back(token);
     }

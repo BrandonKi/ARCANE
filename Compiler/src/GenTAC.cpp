@@ -36,7 +36,7 @@ void GenTAC::TAC_genExpr(std::vector<Token*>* expr_ptr){
             table.push_back(Quad{TAC_EQUAL, expr[i]->val, std::string(""), std::string("_") + std::to_string(temp_num)});
             temp_num++;
         }
-        if(expr[i]->type == T_OPERATOR){
+        else if(expr[i]->type == T_OPERATOR){
             table.push_back(Quad{T_TO_TAC(expr[i]->op_info), table[table.size()-2].result, table[table.size()-1].result, std::string("_") + std::to_string(temp_num)});
             temp_num++;
         }

@@ -47,9 +47,19 @@ void CodeGen::genTmpVar(){          //@TODO support other types. For now int is 
 			push_int64(str_to_int64(m_table[current_pos].operand1));
 			break;
 		case TAC_ADD:
-			// push_int64(str_to_int64(m_table[current_pos].operand1));
-			// push_int64(str_to_int64(m_table[current_pos].operand2));
 			code.push_back(_SI_ADD_);
+			break;
+		case TAC_SUB:
+			code.push_back(_SI_SUB_);
+			break;
+		case TAC_MUL:
+			code.push_back(_SI_MUL_);
+			break;
+		case TAC_DIV:
+			code.push_back(_SI_DIV_);
+			break;
+		case TAC_MOD:
+			code.push_back(_SI_REM_);
 			break;
 	}
 	DBG_PRINT(m_table[current_pos].operand1);
