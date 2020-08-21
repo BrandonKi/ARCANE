@@ -1,4 +1,3 @@
-temp 180 "testr"
-if(132 + 456 > num)
-    return num == 900;
-//testing comments with spaces and s0me other spec1al characters -+/()
+fn main(): int{
+    ret 10 + 30;
+}

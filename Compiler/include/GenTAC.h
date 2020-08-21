@@ -1,9 +1,5 @@
 #include "SymbolTable.h"
 
-
-
-enum OP { TAC_UNDEF, TAC_PARAM, TAC_CALL, TAC_LABEL, TAC_FN_START, TAC_FN_END, TAC_TAC_GOTO, TAC_RET, TAC_EQUAL, TAC_ADD, TAC_SUB, TAC_MUL, TAC_DIV, TAC_MOD};
-
 struct Quad{
     OP op;
     std::string operand1;

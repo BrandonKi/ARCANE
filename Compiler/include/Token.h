@@ -5,6 +5,7 @@
 #include <stack>
 #include <unordered_map>
 #include <cstring>
+#include <sstream>
 
 #include "OS.h"
 
@@ -81,6 +82,12 @@ enum OperatorDescriptor{
                             OP_MUL_EQUAL, OP_DIV_EQUAL, OP_MOD_EQUAL, OP_RSHIFT_EQUAL, OP_LSHIFT_EQUAL, 
                             OP_AND_EQUAL, OP_OR_EQUAL, OP_XOR_EQUAL, OP_TERNARY
                         };
+
+enum OP {   TAC_UNDEF, TAC_PARAM, TAC_CALL, TAC_LABEL, TAC_FN_START, 
+            TAC_FN_END, TAC_TAC_GOTO, TAC_RET, TAC_EQUAL, TAC_ADD, 
+            TAC_SUB, TAC_MUL, TAC_DIV, TAC_MOD
+        };
+
 
 struct Token{
     T_Type type;

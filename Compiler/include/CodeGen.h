@@ -17,7 +17,7 @@ class CodeGen{
         std::vector<unsigned char> const_table;
         std::vector<unsigned char> code;
         
-        unsigned char file_signature[17] = {
+        unsigned char file_signature[16] = {
             0x42,  
             0x72,
             0x61,
@@ -59,4 +59,11 @@ class CodeGen{
         void genRet();
         void genLabel();
 
+        void genConstTable();
+
+        void push_string(std::string&);
+        void push_int64(int64_t);
+        int64_t str_to_int64(std::string&);
+
+        void writeFile();
 };
