@@ -3,7 +3,7 @@
 VM::VM(char* data, u64 size)
 	:m_size(size), m_memptr(0), m_lclptr(0), m_frameptr(0)
 {
-	m_data = reinterpret_cast<byte*>(data);
+	m_data = reinterpret_cast<u8*>(data);
 
 	functionTable_len = m_data[0];
 	int last_len = 0;
@@ -30,7 +30,7 @@ VM::VM(char* data, u64 size)
 }
 
 
-void VM::printProgram(byte* arr){
+void VM::printProgram(u8* arr){
 	std::cout << "PROGRAM: \n\t";
 	for(u64 i = 0; i < m_size; i++)
       std::cout << std::hex << (int)arr[i] << " ";
@@ -64,7 +64,7 @@ void VM::run(){
 
 	// uint tempptr2 = *reinterpret_cast<uint*>(&m_data[0]);    			Usable version
 
-	EXIT_MSG(std::dec << EXIT_CODE);
+	EXIT_MSG(std::dec << (int)EXIT_CODE);
 }
 
 void VM::nextInstruction(){
@@ -75,7 +75,7 @@ void VM::nextInstruction(){
 	}
 }
 
-byte* VM::getNextByte(){
+u8* VM::getNextByte(){
 	return &m_data[++m_memptr];
 }
 
@@ -84,7 +84,7 @@ byte* VM::getNextByte(){
 // }
 
 void VM::executeInstruction(){
-	byte value = m_data[m_memptr];
+	u8 value = m_data[m_memptr];
 	INSTRUCTION("0x" << std::hex << (int)value);
 	log(std::dec);
 	switch(value){

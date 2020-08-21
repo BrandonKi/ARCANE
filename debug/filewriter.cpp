@@ -44,7 +44,6 @@ int main(){
         0x00,
 
         _EXIT_,         // exit
-        0x00, 
 
                         // start main
         'm',

@@ -43,8 +43,7 @@ class CodeGen{
             0x00,
             0x00,
             0x00,
-            _EXIT_,    
-            0x00,
+            _EXIT_
         };
 
     public:

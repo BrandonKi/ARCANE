@@ -35,11 +35,12 @@
 
 typedef uint64_t u64;
 typedef int64_t sint;
-typedef uint8_t byte;
+typedef uint8_t u8;
+typedef int8_t s8;
 typedef uint32_t u32;
 
 struct container {
-    byte type;
+    u8 type;
     u64 data;
 };
 
@@ -48,7 +49,7 @@ class VM {
 private:
     std::vector<std::pair<std::string, int>> functionTable;
     u32 functionTable_len;
-    byte* m_data; 
+    u8* m_data; 
     u64 m_size;
     u64 m_memptr;
     u32 m_lclptr;
@@ -58,22 +59,22 @@ private:
     std::vector<container> m_stack;
 
     bool EXIT_ON_NEXT_INTSRUCTION = false;
-    u32 EXIT_CODE;
+    s8 EXIT_CODE = 0;
 
 
     int findSymbol(std::string);
     void printStack();
     void printTempStack();
     void printVariableTable();
-    byte* getNextByte();
+    u8* getNextByte();
     void nextInstruction();
     void executeInstruction();
 
 public:
     VM(char* data, u64 size);
     ~VM(){free(m_variableTable);}
-    void printProgram(byte*);
-    inline byte* getProgram(){return m_data;}
+    void printProgram(u8*);
+    inline u8* getProgram(){return m_data;}
     void run();
     void freeMem();
 
@@ -82,9 +83,10 @@ private:
         MNEMONIC("NOP");
     }
     inline void EXIT(){
-        MNEMONIC("EXIT");
+        MNEMONIC("EXIT");        
         EXIT_ON_NEXT_INTSRUCTION = true;
-        EXIT_CODE = *getNextByte();
+        if(!m_stack.empty())
+            EXIT_CODE = m_stack.back().data;
     }
     inline void RET(){                       // IMPLEMENT ME
         MNEMONIC("RET");
@@ -657,21 +659,21 @@ private:
         std::swap(a, m_stack.back());
         m_stack.push_back(a);
     }
-    inline void JMP_HELPER(byte address){
+    inline void JMP_HELPER(u8 address){
         if(address == 0)
             m_memptr = 0xffffffffffffffff;
         else
             m_memptr = address-1;       // ugly workaround... haha get it workaround... like integer wraparound...
     }
     inline void JMP(){
-        byte address = *getNextByte();
+        u8 address = *getNextByte();
         MNEMONIC("JMP");
         DEBUG(std::hex << (u64)address << std::dec);
         JMP_HELPER(address);
     }
     inline void JIFNE(){
         u64 temp = m_stack.back().data;
-        byte address = *getNextByte();
+        u8 address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFNE");
         DEBUG(temp << " != " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
@@ -681,7 +683,7 @@ private:
     }
     inline void JIFE(){
         u64 temp = m_stack.back().data;
-        byte address = *getNextByte();
+        u8 address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFE");
         DEBUG(temp << " == " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
@@ -691,7 +693,7 @@ private:
     }
     inline void JIFLS(){
         u64 temp = m_stack.back().data;
-        byte address = *getNextByte();
+        u8 address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFLS");
         DEBUG(temp << " < " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
@@ -701,7 +703,7 @@ private:
     }
     inline void JIFGT(){
         u64 temp = m_stack.back().data;
-        byte address = *getNextByte();
+        u8 address = *getNextByte();
         m_stack.pop_back();
         MNEMONIC("JIFGT");
         DEBUG(temp << " > " << m_stack.back().data << " " << std::hex << (u64)address << std::dec);
@@ -710,7 +712,7 @@ private:
         m_stack.pop_back();
     }
     inline void JIFZ(){
-        byte address = *getNextByte();
+        u8 address = *getNextByte();
         MNEMONIC("JIFZ");
         DEBUG(m_stack.back().data << " == 0 " << std::hex << (u64)address << std::dec);
         if(m_stack.back().data == 0)
@@ -718,7 +720,7 @@ private:
         m_stack.pop_back();
     }
     inline void JIFNZ(){
-        byte address = *getNextByte();
+        u8 address = *getNextByte();
         MNEMONIC("JIFNZ");
         DEBUG(m_stack.back().data << " != 0 " << std::hex << (u64)address << std::dec);
         if(m_stack.back().data != 0)
