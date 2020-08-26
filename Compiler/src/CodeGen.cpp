@@ -102,7 +102,6 @@ void CodeGen::push_string(std::string& str){
 void CodeGen::push_int64(int64_t integer){
 	code.push_back(_SICONST_PUSH_);
 	for(int i = 0; i < 8; i++){
-		DBG_PRINT(integer << "|\n");
 		code.push_back((unsigned char)(integer & 0xFF));
 		integer >>= 8;
 	}

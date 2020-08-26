@@ -11,17 +11,18 @@
   #define TIMER_START QueryPerformanceFrequency(&frequency); \
                       QueryPerformanceCounter(&start);
 
-  #define TIMER_STOP  QueryPerformanceCounter(&end); \
-                      std::cout << std::fixed << std::setprecision(6) << \
+  #define TIMER_STOP  QueryPerformanceCounter(&end);
+
+  #define TIMER_PRINT std::cout << std::fixed << std::setprecision(6) << \
                       "Time taken : " << ((((end.QuadPart - start.QuadPart) * 1000000)/frequency.QuadPart)/1000000.0) << " seconds \n"; 
 
 #else
   std::chrono::high_resolution_clock::time_point start, end; 
   #define TIMER_START start = std::chrono::high_resolution_clock::now()
-  #define TIMER_STOP end =  std::chrono::high_resolution_clock::now(); \
-                    std::chrono::duration<std::chrono::milliseconds> time_span = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); \
-                    std::cout << std::fixed << std::setprecision(6) << \
-                    "Time taken : " << (time_span.count()/1000000.0) << " seconds \n";  
+  #define TIMER_STOP end =  std::chrono::high_resolution_clock::now();
+  #define TIMER_PRINT std::chrono::duration<std::chrono::milliseconds> time_span = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); \
+                      std::cout << std::fixed << std::setprecision(6) << \
+                      "Time taken : " << (time_span.count()/1000000.0) << " seconds \n";  
 #endif
 
 inline bool checkFileType(char* data);
@@ -49,8 +50,9 @@ int main (int argc, const char* argv[]) {
         VM vm(filedata, (u64)size-16);
         vm.run();
         TIMER_STOP;
+        TIMER_PRINT;
         #ifdef DEBUG_BUILD
-        delete[] filedata;
+        delete[] (filedata -16);
         std::cin.get();
         #endif
         return 0;
