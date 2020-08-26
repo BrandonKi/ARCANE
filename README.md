@@ -9,18 +9,19 @@ Tested on Windows 10 and multiple Linux distros
 
 #Sample Code
 
-    fn main(): int{
-        i := 0;
-        x : int = 5;
-        result := add(i, x);
-        ret result;
-    }
-
-    fn add(a : int, b : int): int {
-        ret a + b;
-    }
-
-
+```zig
+fn main(): int{
+    i := 0;
+    x : int = 5;
+    result := add(i, x);
+    ret result;
+}
+fn add(a : int, b : int): int {
+    ret a + b;
+}
+```
+Syntax highlighting is a bit off. Use this extension for correct highlighting in VSCode.
+Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
 
 
 # Notes
@@ -40,7 +41,7 @@ Only checks for fatal errors at runtime.
 
 Bytecode files store variables in Little Endian 
 
-Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
+
 
 
 ### RESOURCES FOR LATER
