@@ -20,9 +20,8 @@
   std::chrono::high_resolution_clock::time_point start, end; 
   #define TIMER_START start = std::chrono::high_resolution_clock::now()
   #define TIMER_STOP end =  std::chrono::high_resolution_clock::now();
-  #define TIMER_PRINT std::chrono::duration<std::chrono::milliseconds> time_span = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); \
-                      std::cout << std::fixed << std::setprecision(6) << \
-                      "Time taken : " << (time_span.count()/1000000.0) << " seconds \n";  
+  #define TIMER_PRINT auto time_span = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); \
+                      std::cout << std::fixed << std::setprecision(6) << "Time taken : " << (time_span.count()/1000.0) << " seconds \n";  
 #endif
 
 inline bool checkFileType(char* data);
