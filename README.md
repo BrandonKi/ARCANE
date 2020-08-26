@@ -9,10 +9,12 @@ Tested on Windows 10 and multiple Linux distros
 
 #Sample Code
 
-    i := 0;
-    x : int = 5;
-    
-    result := add(i, x);
+    fn main(): int{
+        i := 0;
+        x : int = 5;
+        result := add(i, x);
+        ret result;
+    }
 
     fn add(a : int, b : int): int {
         ret a + b;
