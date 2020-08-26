@@ -5,9 +5,9 @@ A programming language and bytecode VM. (ARCVM)
 
 WIP
 
-Tested on Windows 10 and multiple Linux distros
+Tested on Windows 10 and multiple Linux distros with gcc and clang
 
-#Sample Code
+# Sample Code
 
 ```zig
 fn main(): int{

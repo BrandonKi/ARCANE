@@ -17,7 +17,7 @@
     #define NEWLINE file << "\n"
 #endif
 
-typedef uint64_t uint;
+typedef uint64_t u64;
 typedef int64_t sint;
 
 inline bool checkFileType(char* data);                      //check if file is the correct format
@@ -100,9 +100,9 @@ inline void start(char* data, int size, std::string path){
                 case _UICONST_PUSH_:
                 {
                     OUTPUT("UICONST_PUSH\t");
-                    uint temp = *reinterpret_cast<uint*>(&UCdata[++i]);
+                    u64 temp = *reinterpret_cast<u64*>(&UCdata[++i]);
                     i += 7;
-                    OUTPUT((uint)temp);
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _FCONST_PUSH_:
@@ -143,7 +143,7 @@ inline void start(char* data, int size, std::string path){
                             OUTPUT("$SINT");
                             break;
                         case _UINT_:
-                            OUTPUT("$UINT");
+                            OUTPUT("$u64");
                             break;
                         case _FLOAT_:
                             OUTPUT("$FLOAT");
@@ -325,99 +325,99 @@ inline void start(char* data, int size, std::string path){
                 case _SB_STORE_:
                 {
                     OUTPUT("SB_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _UB_STORE_:
                 {
                     OUTPUT("UB_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _SI_STORE_:
                 {
                     OUTPUT("SI_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _UI_STORE_:
                 {
                     OUTPUT("UI_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _F_STORE_:
                 {
                     OUTPUT("F_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _D_STORE_:
                 {
                     OUTPUT("D_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _REF_STORE_:
                 {
                     OUTPUT("REF_STORE\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _SB_LOAD_:
                 {
                     OUTPUT("SB_LOAD\t\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _UB_LOAD_:
                 {
                     OUTPUT("UB_LOAD\t\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _SI_LOAD_:
                 {
                     OUTPUT("SI_LOAD\t\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _UI_LOAD_:
                 {
                     OUTPUT("UI_LOAD\t\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _F_LOAD_:
                 {
                     OUTPUT("F_LOAD\t\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _D_LOAD_:
                 {
                     OUTPUT("D_LOAD\t\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _REF_LOAD_:
                 {
                     OUTPUT("REF_LOAD\t\t");
-                    uint temp = UCdata[++i];
-                    OUTPUT((uint)temp);
+                    u64 temp = UCdata[++i];
+                    OUTPUT((u64)temp);
                     break;
                 }
                 case _POP_:
