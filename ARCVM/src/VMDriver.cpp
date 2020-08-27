@@ -23,9 +23,9 @@
   
   #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end_time);
 
-  #define TIMER_PRINT std::cout << "Time taken: " << 
-                      ((end_time.tv_sec - start_time.tv_sec) * 
-                      (long)1e9 + (end_time.tv_nsec - start_time.tv_nsec)) * 1000000 
+  #define TIMER_PRINT std::cout << "Time taken: " << \
+                      (end_time.tv_sec - start_time.tv_sec) <<
+                      "   :   " << (end_time.tv_nsec - start_time.tv_nsec)\
                       << " seconds \n"
 
 #else
