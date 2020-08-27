@@ -18,12 +18,15 @@
 
 #elif defined(__unix__)
   #include<time.h>
-  timespec start_time;
-  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start_time);
-  timespec end_time;
-  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end_time);
-  long diffInNanos = (end_time.tv_sec - start_time.tv_sec) * (long)1e9 + (end_time.tv_nsec - start_time.tv_nsec);
-  std::cout << "Time taken: " << diffInNanos * 1000000 << " seconds \n"
+  timespec start_time, end_time;
+  #define TIMER_START clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start_time);
+  
+  #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end_time);
+
+  #define TIMER_PRINT std::cout << "Time taken: " << 
+                      ((end_time.tv_sec - start_time.tv_sec) * 
+                      (long)1e9 + (end_time.tv_nsec - start_time.tv_nsec)) * 1000000 
+                      << " seconds \n"
 
 #else
   std::chrono::high_resolution_clock::time_point start, end; 
