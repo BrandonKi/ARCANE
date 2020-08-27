@@ -25,7 +25,7 @@
 
   #define TIMER_PRINT std::cout << "Time taken: " << \
                       ((end_time.tv_sec - start_time.tv_sec) * (long)1e9 + \
-                      (end_time.tv_nsec - start_time.tv_nsec) / 1000000000.0) \
+                      (end_time.tv_nsec - start_time.tv_nsec)) \
                       << " seconds \n"
 
 #else
