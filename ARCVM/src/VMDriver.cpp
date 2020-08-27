@@ -16,17 +16,17 @@
   #define TIMER_PRINT std::cout << std::fixed << std::setprecision(6) << \
                       "Time taken : " << ((((end.QuadPart - start.QuadPart) * 1000000)/frequency.QuadPart)/1000000.0) << " seconds \n"; 
 
-#elif defined(__unix__)
-  #include<time.h>
-  timespec start_time, end_time;
-  #define TIMER_START clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start_time);
+// #elif defined(__unix__)
+//   #include<time.h>
+//   timespec start_time, end_time;
+//   #define TIMER_START clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start_time);
   
-  #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end_time);
+//   #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end_time);
 
-  #define TIMER_PRINT std::cout << "Time taken: " << \
-                      ((end_time.tv_sec - start_time.tv_sec) * (long)1e9 + \
-                      (end_time.tv_nsec - start_time.tv_nsec)) \
-                      << " seconds \n"
+//   #define TIMER_PRINT std::cout << "Time taken: " << \
+//                       ((end_time.tv_sec - start_time.tv_sec) * (long)1e9 + \
+//                       (end_time.tv_nsec - start_time.tv_nsec)) \
+//                       << " seconds \n"
 
 #else
   std::chrono::high_resolution_clock::time_point start, end; 
