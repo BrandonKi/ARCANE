@@ -65,6 +65,8 @@ void Parser::parseStatement(){
         case T_RBRACE:
             brace_count--;
             break;
+        default:
+            break;
     }
 
 }

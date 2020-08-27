@@ -279,7 +279,7 @@ unsigned int Lexer::handleSub(unsigned int i){
     }else if(i+1 < m_length && m_filedata[i+1] == '-'){
         val = "--";
         Token* token =  new Token{T_Type(T_OPERATOR), val, m_line, m_char, m_F_char};
-        if(m_tokens.back()->type = T_ID)
+        if(m_tokens.back()->type == T_ID)
             token->op_info = OP_UNARY_POST_DEC;
         else
             token->op_info = OP_UNARY_PRE_DEC;
@@ -309,7 +309,7 @@ unsigned int Lexer::handleAdd(unsigned int i){
     }else if(i+1 < m_length && m_filedata[i+1] == '+'){
         val = "++";
         Token* token =  new Token{T_Type(T_OPERATOR), val, m_line, m_char, m_F_char};
-        if(m_tokens.back()->type = T_ID)
+        if(m_tokens.back()->type == T_ID)
             token->op_info = OP_UNARY_POST_INC;
         else
             token->op_info = OP_UNARY_PRE_INC;

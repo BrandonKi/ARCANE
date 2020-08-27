@@ -76,7 +76,7 @@ void CodeGen::genRet(){
 
 void CodeGen::genLabel(){
 	DBG_PRINT("Generating Label\n");
-	label_table.push_back(Label{m_table[current_pos].result, code.size()-1, m_table[current_pos+1].op == TAC_FN_START});
+	label_table.push_back(Label{m_table[current_pos].result, static_cast<unsigned int>(code.size()-1), m_table[current_pos+1].op == TAC_FN_START});
 
 }
 
