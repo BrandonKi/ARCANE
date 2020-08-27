@@ -16,6 +16,15 @@
   #define TIMER_PRINT std::cout << std::fixed << std::setprecision(6) << \
                       "Time taken : " << ((((end.QuadPart - start.QuadPart) * 1000000)/frequency.QuadPart)/1000000.0) << " seconds \n"; 
 
+#elif defined(__unix__)
+  #include<time.h>
+  timespec start_time;
+  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start_time);
+  timespec end_time;
+  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end_time);
+  long diffInNanos = (end_time.tv_sec - start_time.tv_sec) * (long)1e9 + (end_time.tv_nsec - start_time.tv_nsec);
+  std::cout << "Time taken: " << diffInNanos * 1000000 << " seconds \n"
+
 #else
   std::chrono::high_resolution_clock::time_point start, end; 
   #define TIMER_START start = std::chrono::high_resolution_clock::now()

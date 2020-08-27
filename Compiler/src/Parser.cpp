@@ -152,7 +152,9 @@ void Parser::parseFnDecl(){
     IR_gen.TAC_genEndFn();
     STPrint();
     symbol_table_list.pop_back();              //  clear sub symbol table after parsing
-    IR_gen.printTable();
+    #ifdef DEBUG_BUILD
+        IR_gen.printTable();
+    #endif
 }
 
 void Parser::parseFnBody(){
