@@ -34,7 +34,7 @@ add_executable(Compiler_RELEASE ${COMPILER_SOURCES})
 
 target_compile_definitions(Compiler_RELEASE PRIVATE RELEASE_BUILD)
 
-target_compile_options(Compiler_RELEASE PRIVATE "-O2")
+target_compile_options(Compiler_RELEASE PRIVATE "-O3")
 
 target_include_directories(Compiler_RELEASE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include)
 
@@ -53,7 +53,7 @@ add_executable(ARCVM_RELEASE ${VM_SOURCES})
 
 target_compile_definitions(ARCVM_RELEASE PRIVATE RELEASE_BUILD)
 
-target_compile_options(ARCVM_RELEASE PRIVATE "-O2")
+target_compile_options(ARCVM_RELEASE PRIVATE "-O3")
 
 target_include_directories(ARCVM_RELEASE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/include)
 

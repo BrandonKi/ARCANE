@@ -48,7 +48,7 @@
 #ifdef DEBUG_BUILD
 #define DBG_PRINT(x) std::cout << x
 #else
-#define DBG_PRINT
+#define DBG_PRINT(x)
 #endif
 
 

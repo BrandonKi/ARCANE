@@ -11,11 +11,10 @@ class GenTAC{
 
     private:
         std::vector<Quad> table;
-        std::vector<SymbolTable>* symbol_table_list;
         unsigned int temp_num;
 
     public:
-        GenTAC(std::vector<SymbolTable> symbol_table_list): symbol_table_list(&symbol_table_list), temp_num(0) {}
+        GenTAC(): temp_num(0) {}
         std::vector<Quad> getTable(){ return table; }
 
         void TAC_genLabel(std::string&);

@@ -54,7 +54,7 @@ int main (int argc, const char* argv[]) {
   if(argc > 1){
     TIMER_START;
     std::streampos size;
-    std::ifstream file (argv[1], std::ios::in|std::ios::binary|std::ios::ate);
+    std::ifstream file (appendExtension(argv[1]), std::ios::in|std::ios::binary|std::ios::ate);
     char* filedata;
     if (file.is_open()){
       size = file.tellg();
@@ -86,8 +86,8 @@ inline bool checkFileType(char* data){
 }
 
 inline char* appendExtension(const char* filename){
-  char* result = (char*) malloc(sizeof(filename)+5);
-  memcpy(result, filename, sizeof(filename));
-  memcpy(&result[sizeof(filename)-1], ".arcb", 5);
+  char* result = (char*) malloc(strlen(filename)+5);
+  memcpy(result, filename, strlen(filename));
+  memcpy(result + strlen(filename), ".arcb\0", 6);
   return result;
 }
