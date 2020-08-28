@@ -18,14 +18,21 @@
 
 #elif defined(__unix__)
   #include<time.h>
-  timespec start_time, end_time;
-  #define TIMER_START clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start_time);
+  timespec start, end;
+  #define TIMER_START clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
   
-  #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end_time);
+  #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 
   #define TIMER_PRINT std::cout << "Time taken: " << \
-                      (static_cast<double>((end.tv_sec - start.tv_sec) * 1E9) + static_cast<double>(end.tv_nsec - start.tv_nsec)) \
+                      compute_cpu_time(start, end) \
                       << " seconds \n"
+
+  double compute_cpu_time(timespec start, timespec end){
+    double nano = static_cast<double>(end.tv_nsec - start.tv_nsec);
+    double sec = static_cast<double>((end.tv_sec - start.tv_sec) * 1E9);
+
+    return sec + nano;
+  }
 
 #else
   std::chrono::high_resolution_clock::time_point start, end; 
