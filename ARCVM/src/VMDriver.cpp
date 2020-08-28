@@ -19,9 +19,9 @@
 #elif defined(__unix__)
   #include<time.h>
   timespec start, end;
-  #define TIMER_START clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+  #define TIMER_START clock_gettime(CLOCK_REALTIME, &start);
   
-  #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
+  #define TIMER_STOP clock_gettime(CLOCK_REALTIME, &end);
 
   #define TIMER_PRINT std::cout << "Time taken: " << \
                       (compute_cpu_time(start, end)/ 1E9) \
