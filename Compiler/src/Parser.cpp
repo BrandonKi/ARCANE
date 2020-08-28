@@ -182,7 +182,7 @@ std::vector<Token*> Parser::parseExpr(T_Type T_type){
                 expr.push_back(m_stack.top());
                 m_stack.pop();
                 if(expr.back()->type == T_LPAREN){
-                    ErrorHandler::printError(ERR_OPEN_EXTRA_PAREN, m_tokens, pos_ptr);
+                    ErrorHandler::printError(ERR_EXTRA_OPEN_PAREN, m_tokens, pos_ptr);
                     WAIT_AND_EXIT(-1);
                 }
             }
@@ -197,7 +197,7 @@ std::vector<Token*> Parser::parseExpr(T_Type T_type){
                     expr.push_back(m_stack.top());
                     m_stack.pop();
                     if(m_stack.empty()){
-                        ErrorHandler::printError(ERR_CLOSE_EXTRA_PAREN, m_tokens, pos_ptr);
+                        ErrorHandler::printError(ERR_EXTRA_CLOSE_PAREN, m_tokens, pos_ptr);
                         WAIT_AND_EXIT(-1);
                     }
                 }

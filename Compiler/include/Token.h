@@ -58,7 +58,7 @@
 #define WAIT_AND_EXIT(x) std::cin.get(); std::exit(x)
 
 enum ErrorType{ 
-                ERR_REDECL, ERR_UNDEFINED_ID, ERR_CLOSE_EXTRA_PAREN, ERR_OPEN_EXTRA_PAREN, ERR_INVALID_FN_DECL
+                ERR_REDECL, ERR_UNDEFINED_ID, ERR_EXTRA_CLOSE_PAREN, ERR_EXTRA_OPEN_PAREN, ERR_INVALID_FN_DECL
               };
 
 enum T_Type{ 

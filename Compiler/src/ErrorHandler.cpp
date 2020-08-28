@@ -21,10 +21,10 @@ void ErrorHandler::printError(ErrorType type, std::vector<Token*>& tokens, unsig
         case ERR_UNDEFINED_ID:
             std::cout << "Undefined identifier '" << err_token->val << "'";
             break;
-        case ERR_CLOSE_EXTRA_PAREN:
+        case ERR_EXTRA_CLOSE_PAREN:
             std::cout << "Extra closing parenthesis";
             break;
-        case ERR_OPEN_EXTRA_PAREN:
+        case ERR_EXTRA_OPEN_PAREN:
             std::cout << "Expected closing parenthesis";
             break;
         case ERR_INVALID_FN_DECL:
