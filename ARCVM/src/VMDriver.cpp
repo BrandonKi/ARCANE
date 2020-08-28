@@ -24,7 +24,7 @@
   #define TIMER_STOP clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 
   #define TIMER_PRINT std::cout << "Time taken: " << \
-                      compute_cpu_time(start, end) \
+                      (compute_cpu_time(start, end)/ 1E9) \
                       << " seconds \n"
 
   double compute_cpu_time(timespec start, timespec end){
