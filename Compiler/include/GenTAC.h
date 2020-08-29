@@ -1,10 +1,15 @@
 #include "SymbolTable.h"
 
+struct value{
+    std::string data;
+    T_Type type;
+};
+
 struct Quad{
     OP op;
-    std::string operand1;
-    std::string operand2;
-    std::string result;
+    value operand1;
+    value operand2;
+    value result;
 };
 
 class GenTAC{

@@ -13,6 +13,7 @@ class CodeGen{
     private:
         std::vector<Label> label_table;
         std::vector<Quad> m_table;
+        std::vector<std::string&> m_lcl_var_table;
         unsigned int current_pos;
         std::vector<unsigned char> const_table;
         std::vector<unsigned char> code;
@@ -47,7 +48,7 @@ class CodeGen{
         };
 
     public:
-        CodeGen(std::vector<Quad> table): m_table(table), current_pos(0) { label_table.reserve(30); code.reserve(50); const_table.reserve(50);}
+        CodeGen(std::vector<Quad> table): m_table(table), current_pos(0) { label_table.reserve(30); code.reserve(50); m_lcl_var_table.reserve(20), const_table.reserve(50);}
         void generate();
 
 

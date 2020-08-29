@@ -1,3 +1,4 @@
 fn main(): int{
-    ret (2 * 10) + (10 / 5) * (2 - 1);
+    int_test : int = (2 * 10); 
+    ret int_test + (10 / 5) * (2 - 1);
 }

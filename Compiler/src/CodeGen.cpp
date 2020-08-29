@@ -6,11 +6,11 @@ void CodeGen::generate(){
 			genFunction();
 		else if(m_table[current_pos].op == TAC_LABEL)
 			genLabel();
-		else if (m_table[current_pos].result[0] == '_')
+		else if (m_table[current_pos].result.data[0] == '_')
 			genTmpVar();
 		else if (m_table[current_pos].op == TAC_RET)
 			genRet();
-		else if (std::isalpha(m_table[current_pos].result[0]) && m_table[current_pos].op != TAC_FN_END)
+		else if (std::isalpha(m_table[current_pos].result.data[0]) && m_table[current_pos].op != TAC_FN_END)
 			genVar();
 		DBG_PRINT(m_table[current_pos].op << '\n');
 	}
@@ -20,20 +20,20 @@ void CodeGen::generate(){
 
 void CodeGen::genFunction(){
 	DBG_PRINT("Generating function\n");
-	push_string(m_table[current_pos-1].result);
+	push_string(m_table[current_pos-1].result.data);
 	code.push_back('\0');
-	code.push_back(0);		//@TODO local variable count
+	code.push_back(1);		//@TODO local variable count
 	code.push_back(0);		//@TODO arg count
 	//code.push_back(0x02);	//@TODO arg types
 	current_pos++;                  // skip begin func quad
 	for(; m_table[current_pos].op != TAC_FN_END; current_pos++){
 		if(m_table[current_pos].op == TAC_LABEL)
 			genLabel();
-		else if (m_table[current_pos].result[0] == '_')
+		else if (m_table[current_pos].result.data[0] == '_')
 			genTmpVar();
 		else if (m_table[current_pos].op == 7)
 			genRet();
-		else if (std::isalpha(m_table[current_pos].result[0]) && m_table[current_pos].op != TAC_FN_END)  // remove second check
+		else if (std::isalpha(m_table[current_pos].result.data[0]) && m_table[current_pos].op != TAC_FN_END)  // remove second check
 			genVar();
 		DBG_PRINT(m_table[current_pos].op << '\n');
 	}
@@ -44,7 +44,9 @@ void CodeGen::genTmpVar(){          //@TODO support other types. For now int is 
 	DBG_PRINT("Generating tmp var\n");
 	switch(m_table[current_pos].op){
 		case TAC_EQUAL:
-			push_int64(str_to_int64(m_table[current_pos].operand1));
+			if(isalpha(m_table[current_pos].operand1.data[0]))
+				
+			push_int64(str_to_int64(m_table[current_pos].operand1.data));
 			break;
 		case TAC_ADD:
 			code.push_back(_SI_ADD_);
@@ -62,11 +64,14 @@ void CodeGen::genTmpVar(){          //@TODO support other types. For now int is 
 			code.push_back(_SI_REM_);
 			break;
 	}
-	DBG_PRINT(m_table[current_pos].operand1);
+	DBG_PRINT(m_table[current_pos].operand1.data);
 }
 
 void CodeGen::genVar(){
 	DBG_PRINT("Generating var\n");
+	m_lcl_var_table.push_back(m_table[current_pos].result.data);
+	code.push_back(_SI_STORE_);
+	push_int64((int64_t)m_lcl_var_table.size());
 }
 
 void CodeGen::genRet(){
@@ -76,7 +81,7 @@ void CodeGen::genRet(){
 
 void CodeGen::genLabel(){
 	DBG_PRINT("Generating Label\n");
-	label_table.push_back(Label{m_table[current_pos].result, static_cast<unsigned int>(code.size()-1), m_table[current_pos+1].op == TAC_FN_START});
+	label_table.push_back(Label{m_table[current_pos].result.data, static_cast<unsigned int>(code.size()-1), m_table[current_pos+1].op == TAC_FN_START});
 
 }
 
