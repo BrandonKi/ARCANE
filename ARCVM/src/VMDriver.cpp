@@ -54,7 +54,8 @@ int main (int argc, const char* argv[]) {
   if(argc > 1){
     TIMER_START;
     std::streampos size;
-    std::ifstream file (appendExtension(argv[1]), std::ios::in|std::ios::binary|std::ios::ate);
+    char* filename = appendExtension(argv[1]);
+    std::ifstream file (filename, std::ios::in|std::ios::binary|std::ios::ate);
     char* filedata;
     if (file.is_open()){
       size = file.tellg();
@@ -69,7 +70,7 @@ int main (int argc, const char* argv[]) {
         TIMER_STOP;
         TIMER_PRINT;
         #ifdef DEBUG_BUILD
-        delete[] (filedata -16);
+        delete[] (filedata-16);
         std::cin.get();
         #endif
         return 0;
