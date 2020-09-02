@@ -2,7 +2,7 @@
 
 struct value{
     std::string data;
-    T_Type type;
+    ST_TYPE type;
 };
 
 struct Quad{
@@ -16,10 +16,11 @@ class GenTAC{
 
     private:
         std::vector<Quad> table;
+        std::vector<SymbolTable>* symbol_table;
         unsigned int temp_num;
 
     public:
-        GenTAC(): temp_num(0) {}
+        GenTAC(std::vector<SymbolTable>* st): temp_num(0), symbol_table(st) {}
         std::vector<Quad> getTable(){ return table; }
 
         void TAC_genLabel(std::string&);
@@ -34,6 +35,9 @@ class GenTAC{
         OP T_TO_TAC(OperatorDescriptor t);
         void printTable();
         std::string opToString(OP);
+        ST_TYPE T_TO_ST(T_Type type);
+
+        ST_TYPE getSymbolType(std::string&);
 
     private:
 

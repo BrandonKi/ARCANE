@@ -13,8 +13,9 @@ class CodeGen{
     private:
         std::vector<Label> label_table;
         std::vector<Quad> m_table;
-        std::vector<std::string&> m_lcl_var_table;
+        std::vector<value> m_lcl_var_table;
         unsigned int current_pos;
+        unsigned int local_var_index;//@TODO Variables are not supported outside functions yet. Need to implement in the future.
         std::vector<unsigned char> const_table;
         std::vector<unsigned char> code;
         
@@ -37,7 +38,7 @@ class CodeGen{
             0x68
         };
 
-        unsigned char bootstrap[7] = 
+        unsigned char bootstrap[6] = 
         {
             _CALL_LOCAL_,
             0x00,
@@ -48,7 +49,7 @@ class CodeGen{
         };
 
     public:
-        CodeGen(std::vector<Quad> table): m_table(table), current_pos(0) { label_table.reserve(30); code.reserve(50); m_lcl_var_table.reserve(20), const_table.reserve(50);}
+        CodeGen(std::vector<Quad> table): m_table(table), current_pos(0), local_var_index(0) { label_table.reserve(30); code.reserve(100); m_lcl_var_table.reserve(20), const_table.reserve(50);}
         void generate();
 
 
@@ -58,6 +59,8 @@ class CodeGen{
         void genVar();
         void genRet();
         void genLabel();
+
+        void loadVar(std::string&);
 
         void genConstTable();
 

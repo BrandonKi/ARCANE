@@ -12,7 +12,7 @@ class Parser{
         int brace_count;
  
     public:
-        Parser(std::vector<Token*> tokens, std::unordered_map<std::string, int> keywords): m_tokens(tokens), pos_ptr(0), inner_scope(false), brace_count(0){start();}
+        Parser(std::vector<Token*> tokens, std::unordered_map<std::string, int> keywords): m_tokens(tokens), pos_ptr(0), inner_scope(false), brace_count(0), IR_gen(&symbol_table_list){start();}
         std::vector<Quad> getIR(){ return IR_gen.getTable(); }
         std::vector<SymbolTable> getSymbolTable(){return symbol_table_list;}
 
