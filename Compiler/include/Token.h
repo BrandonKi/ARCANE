@@ -61,6 +61,12 @@ enum ErrorType{
                 ERR_REDECL, ERR_UNDEFINED_ID, ERR_EXTRA_CLOSE_PAREN, ERR_EXTRA_OPEN_PAREN, ERR_INVALID_FN_DECL
               };
 
+enum ST_TYPE{   
+                ST_CHAR, ST_UCHAR, ST_INT, ST_UINT, ST_LONG, ST_FLOAT, 
+                ST_DOUBLE, ST_STRING, ST_ARRAY, ST_FN, ST_INVALID
+            };
+
+
 enum T_Type{ 
                 T_CHAR_LIT, T_NUMBER_LIT, T_LONG_LIT, T_FLOAT_LIT, T_STR_LIT, T_ID, T_INFER,
                 T_OPERATOR, T_COMMA, T_DOT, T_LPAREN, T_RPAREN, T_NOT, 

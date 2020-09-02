@@ -1,8 +1,5 @@
 #include "Lexer.h"
 
-
-enum ST_TYPE{ST_CHAR, ST_UCHAR, ST_INT, ST_UINT, ST_LONG, ST_FLOAT, ST_DOUBLE, ST_STRING, ST_ARRAY, ST_FN, ST_INVALID};
-
 struct ST_entry{
     std::string name;
     ST_TYPE type;
