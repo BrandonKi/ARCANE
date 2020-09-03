@@ -152,10 +152,12 @@ private:
         for(std::pair<std::string, int> pair : functionTable)
             if(pair.first == fn_name)
                 m_memptr = pair.second;
-        m_lclptr = m_stack.size() - (int)(m_data[m_memptr]);
+        if(m_stack.size() < (int)(m_data[m_memptr]))
+            m_lclptr = 0;
+        else
+            m_lclptr = m_stack.size() - (int)(m_data[m_memptr]);
         //@TODO This has something to do with passing args, but I don't recall what/how
         for(u32 i = 0; i < (int)(m_data[m_memptr]) - (int)(m_data[m_memptr+1]); i++){
-            DEBUG((int)(m_data[m_memptr]) - (int)(m_data[m_memptr+1]));
             m_stack.push_back(container{_UNDEFINED_, 0});
         }
         m_memptr += (int)(m_data[m_memptr+1]) + 1;
@@ -537,107 +539,93 @@ private:
     inline void SB_STORE(){
         MNEMONIC("SB_STORE");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack[m_lclptr + index] = {_SBYTE_, (m_stack.back().data & 0xff)};               // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
-        DEBUG("slot: " << index << " value: " << (sint)(int_fast8_t)(m_stack[m_lclptr + index].data & 0xff));           // I could just do % BYTE_MAX_VALUE but no
+        DEBUG("slot: " << (int)index << " value: " << (sint)(int_fast8_t)(m_stack[m_lclptr + index].data & 0xff));           // I could just do % BYTE_MAX_VALUE but no
         m_stack.pop_back();
     }
     inline void UB_STORE(){
         MNEMONIC("UB_STORE");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack[m_lclptr + index] = {_UBYTE_, (m_stack.back().data & 0xff)};                     // take the 8 least significant bits by using bitmask 0xff and & to convert to byte
-        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);              // I could just do % BYTE_MAX_VALUE but no
+        DEBUG("slot: " << (int)index << " value: " << m_stack[m_lclptr + index].data);              // I could just do % BYTE_MAX_VALUE but no
         m_stack.pop_back();
     }
     inline void SI_STORE(){
         MNEMONIC("SI_STORE");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack[m_lclptr + index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << (sint)(m_stack[m_lclptr + index].data));       
+        DEBUG("slot: " << (int)index << " value: " << (sint)(m_stack[m_lclptr + index].data));       
         m_stack.pop_back();
     }
     inline void UI_STORE(){
         MNEMONIC("UI_STORE");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack[m_lclptr + index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);       
+        DEBUG("slot: " << (int)index << " value: " << m_stack[m_lclptr + index].data);       
         m_stack.pop_back();
     }
     inline void F_STORE(){
         MNEMONIC("F_STORE");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack[m_lclptr + index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << *reinterpret_cast<float*>(&m_stack[m_lclptr + index].data));
+        DEBUG("slot: " << (int)index << " value: " << *reinterpret_cast<float*>(&m_stack[m_lclptr + index].data));
         m_stack.pop_back();
     }
     inline void D_STORE(){
         MNEMONIC("D_STORE");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack[m_lclptr + index] = m_stack.back();
-        DEBUG("slot: " << index << " value: " << m_stack[m_lclptr + index].data);       
+        DEBUG("slot: " << (int)index << " value: " << m_stack[m_lclptr + index].data);       
         m_stack.pop_back();
     }
     inline void REF_STORE(){
         MNEMONIC("REF_STORE");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack[m_lclptr + index] = m_stack.back();
-        DEBUG("slot: " << index << " ref: 0x" << std::hex << m_stack[m_lclptr + index].data << std::dec);
+        DEBUG("slot: " << (int)index << " ref: 0x" << std::hex << m_stack[m_lclptr + index].data << std::dec);
         m_stack.pop_back();
     }
     inline void SB_LOAD(){
         MNEMONIC("SB_LOAD");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack.push_back({_SBYTE_, m_stack[m_lclptr + index].data & 0xff});
-        DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
+        DEBUG("slot: " << (int)index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void UB_LOAD(){
         MNEMONIC("UB_LOAD");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack.push_back({_UBYTE_, m_stack[m_lclptr + index].data & 0xff});
-        DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
+        DEBUG("slot: " << (int)index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void SI_LOAD(){
         MNEMONIC("SI_LOAD");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack.push_back(m_stack[m_lclptr + index]);
-        DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
+        DEBUG("slot: " << (int)index << " value: " << m_stack.back().data);
     }
     inline void UI_LOAD(){
         MNEMONIC("UI_LOAD");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack.push_back(m_stack[m_lclptr + index]);
-        DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
+        DEBUG("slot: " << (int)index << " value: " << m_stack.back().data);
     }
     inline void F_LOAD(){
         MNEMONIC("F_LOAD");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack.push_back(m_stack[m_lclptr + index]);
-        DEBUG("slot: " << index << " value: " << (m_stack.back().data & 0xff));
+        DEBUG("slot: " << (int)index << " value: " << (m_stack.back().data & 0xff));
     }
     inline void D_LOAD(){
         MNEMONIC("D_LOAD");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack.push_back(m_stack[m_lclptr + index]);
-        DEBUG("slot: " << index << " value: " << *reinterpret_cast<double*>(&m_stack.back().data));
+        DEBUG("slot: " << (int)index << " value: " << *reinterpret_cast<double*>(&m_stack.back().data));
     }
     inline void REF_LOAD(){
         MNEMONIC("REF_LOAD");
         u8 index = *getNextByte();
-        m_memptr++;
         m_stack.push_back(m_stack[m_lclptr + index]);
-        DEBUG("slot: " << index << " ref: 0x" << std::hex << m_stack.back().data << std::dec);
+        DEBUG("slot: " << (int)index << " ref: 0x" << std::hex << m_stack.back().data << std::dec);
     }
     inline void POP(){
         MNEMONIC("POP");

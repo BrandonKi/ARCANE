@@ -10,7 +10,7 @@ void CodeGen::generate(){
 			genTmpVar();
 		else if (m_table[current_pos].op == TAC_RET)
 			genRet();
-		else if (std::isalpha(m_table[current_pos].result.data[0]) && m_table[current_pos].op != TAC_FN_END)
+		else if (isalpha(m_table[current_pos].result.data[0]) && m_table[current_pos].op != TAC_FN_END)
 			genVar();
 	}
 	genConstTable();
@@ -33,7 +33,7 @@ void CodeGen::genFunction(){
 			genTmpVar();
 		else if (m_table[current_pos].op == 7)
 			genRet();
-		else if (std::isalpha(m_table[current_pos].result.data[0]))
+		else if (isalpha(m_table[current_pos].result.data[0]))
 			genVar();
 		else
 			logn("FALLTHROUGH" << m_table[current_pos].operand1.type);
@@ -44,11 +44,11 @@ void CodeGen::genFunction(){
 
 void CodeGen::genTmpVar(){          //@TODO support other types. For now int is assumed
 	DBG_PRINT("Generating tmp var\n");
-	if(std::isalpha(m_table[current_pos].operand1.data[0]) || std::isalpha(m_table[current_pos].operand2.data[0]))
-		if(std::isalpha(m_table[current_pos].operand1.data[0])){
+	if(isalpha(m_table[current_pos].operand1.data[0]) || isalpha(m_table[current_pos].operand2.data[0]))
+		if(isalpha(m_table[current_pos].operand1.data[0])){
 			loadVar(m_table[current_pos].operand1.data);
 		}
-		else if(std::isalpha(m_table[current_pos].operand2.data[0])){
+		else if(isalpha(m_table[current_pos].operand2.data[0])){
 			loadVar(m_table[current_pos].operand2.data);
 		}
 		else{
@@ -59,7 +59,7 @@ void CodeGen::genTmpVar(){          //@TODO support other types. For now int is 
 		case ST_INT:
 			switch(m_table[current_pos].op){
 				case TAC_EQUAL:
-					if(std::isalpha(m_table[current_pos].operand1.data[0])){
+					if(isalpha(m_table[current_pos].operand1.data[0])){
 						loadVar(m_table[current_pos].operand1.data);
 					}
 					push_int64(str_to_int64(m_table[current_pos].operand1.data));
@@ -90,7 +90,7 @@ void CodeGen::genVar(){
 	m_lcl_var_table.push_back({m_table[current_pos].result.data, m_table[current_pos].result.type});
 	code[local_var_index] = code[local_var_index] + 1;
 	code.push_back(_SI_STORE_);
-	unsigned char temp = m_lcl_var_table.size() & 0xff;
+	unsigned char temp = m_lcl_var_table.size() - 1 & 0xff;
 	code.push_back(temp);
 	// push_int64((int64_t)m_lcl_var_table.size());
 }
@@ -105,8 +105,8 @@ void CodeGen::loadVar(std::string& var){
 					logn("ST_INT");
 					code.push_back(_SI_LOAD_);
 				break;
-
 			}
+			code.push_back(i & 0xff);  //@NOTE '&' is probably not needed 
 		}
 	}
 }
