@@ -63,9 +63,9 @@ int main(){
         0x00,
         0x00,
         _SI_STORE_,
-        0x00,
+        0x01,
         _SI_LOAD_,
-        0x00,
+        0x01,
 
         _RET_,
                         // end main
