@@ -1,7 +1,15 @@
+The ARCVM is being moved into a seperate repository
+
+This repository is being renamed to "Legacy ARCANE" and the new repo will be called ARCANE
+
+The whole front end of the compiler will be rewritten(for the 2nd time)
+
+This is mainly because of bad coding habits and structure early on
+
 # ARCANE
 ARCANE Runs, Compiles, And Never Explodes
 
-A programming language and bytecode VM. (ARCVM)
+A programming language built on a bytecode VM. (ARCVM)
 
 WIP
 
