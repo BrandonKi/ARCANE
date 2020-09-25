@@ -1,8 +1,7 @@
 The ARCVM is being moved into a seperate repository
 
-This repository is being renamed to "Legacy ARCANE" and the new repo will be called ARCANE
-
-The whole front end of the compiler will be rewritten(for the 2nd time)
+The current front end is being moved into a branch called "ARCANE legacy" and 
+the whole front end of the compiler will be rewritten(for the 2nd time)
 
 This is mainly because of bad coding habits and structure early on
 
@@ -31,16 +30,13 @@ fn add(a : int, b : int): int {
 Syntax highlighting is a bit off. Use this extension for correct highlighting in VSCode.
 Syntax Highlighting : https://github.com/BrandonKi/arcane-syntax-highlighter
 
+# Trello
+
+https://trello.com/b/tZJWGk7b/arcane
 
 # Notes
 
-replace reintrpret cast with safe version
-
-move everything to arena allocator
-
-make assignment an expression
-
-https://trello.com/b/tZJWGk7b/arcane
+replace reintrpret cast with safe version (memcpy or bitcast(c++20))
 
 Minimal type checking is done at runtime.
 Otherwise all type checking should/will be done at compile time.
@@ -48,9 +44,6 @@ Only checks for fatal errors at runtime.
 
 
 Bytecode files store variables in Little Endian 
-
-
-
 
 ### RESOURCES FOR LATER
 
