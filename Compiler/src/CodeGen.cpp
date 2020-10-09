@@ -4,6 +4,8 @@ void CodeGen::generate(){
 	for(current_pos = 0; current_pos < m_table.size(); current_pos++){
 		if(m_table[current_pos].op == TAC_FN_START)
 			genFunction();
+		else if(m_table[current_pos].op == TAC_CALL)
+			genFnCall();
 		else if(m_table[current_pos].op == TAC_LABEL)
 			genLabel();
 		else if (m_table[current_pos].result.data[0] == '_')
@@ -13,9 +15,15 @@ void CodeGen::generate(){
 		else if (isalpha(m_table[current_pos].result.data[0]) && m_table[current_pos].op != TAC_FN_END)
 			genVar();
 	}
+	moveMain();
 	genConstTable();
 	writeFile();
 }
+
+void CodeGen::genFnCall(){
+	code.push_back(_CALL_LOCAL_);
+}
+
 
 void CodeGen::genFunction(){
 	DBG_PRINT("Generating function\n");
@@ -99,7 +107,6 @@ void CodeGen::loadVar(std::string& var){
 	logn("LOADING VAR");
 	for(unsigned int i = 0; i < m_lcl_var_table.size(); i++){
 		if(var == m_lcl_var_table[i].data){
-			logn(m_lcl_var_table[i].type);
 			switch(m_lcl_var_table[i].type){
 				case ST_INT:
 					logn("ST_INT");
@@ -119,7 +126,16 @@ void CodeGen::genRet(){
 void CodeGen::genLabel(){
 	DBG_PRINT("Generating Label\n");
 	label_table.push_back(Label{m_table[current_pos].result.data, static_cast<unsigned int>(code.size()-1), m_table[current_pos+1].op == TAC_FN_START});
+}
 
+void CodeGen::moveMain(){
+	for(unsigned int i = 0; i < label_table.size(); i++){
+		if(label_table[i].is_fn && label_table[i].label == "main"){
+			Label temp = label_table[0];
+			label_table[0] = label_table[i];
+			label_table[i] = temp;
+		}
+	}
 }
 
 void CodeGen::genConstTable(){

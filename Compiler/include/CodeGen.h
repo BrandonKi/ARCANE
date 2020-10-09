@@ -54,6 +54,9 @@ class CodeGen{
 
 
     private:
+        void moveMain();
+
+        void genFnCall();
         void genFunction();
         void genTmpVar();
         void genVar();

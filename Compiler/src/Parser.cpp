@@ -18,7 +18,6 @@ void Parser::parseFile(){
 void Parser::parseStatementBlock(){
     for(; pos_ptr < m_tokens.size(); pos_ptr++){
         parseStatement();
-        logn("[[" << brace_count << "]]");
         if(brace_count == 0){
             return;
         }
@@ -26,7 +25,6 @@ void Parser::parseStatementBlock(){
 }
 
 void Parser::parseStatement(){
-    logn(currentToken()->val);
     if(currentToken()->type == T_ID){
         T_Type nextTokenType = peekNextToken()->type;
         if(nextTokenType == T_INFER){
@@ -231,6 +229,17 @@ std::vector<Token*> Parser::parseExpr(T_Type T_type){
             if(!ID_isDefined(currentToken()->val)){
                 ErrorHandler::printError(ERR_UNDEFINED_ID, m_tokens, pos_ptr);
                 WAIT_AND_EXIT(-1);
+            }
+            if(peekNextToken()->type == T_LPAREN){
+                Token* fn_name = currentToken();
+                nextToken();
+                if(peekNextToken()->type == T_RPAREN){
+                    fn_name->type = T_FN;
+                    expr.push_back(fn_name);
+                    nextToken();
+                }
+                else
+                    parseExpr(T_COMMA);
             }
             expr.push_back(currentToken());
         }

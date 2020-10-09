@@ -18,7 +18,7 @@ void GenTAC::TAC_genParam(std::string& var_name){
 }
 
 void GenTAC::TAC_genCallFn(std::string& label){
-    
+    table.push_back(Quad{TAC_CALL, {std::string("")}, {std::string("")}, {label, ST_FN}});
 }
 
 void GenTAC::TAC_genVarDecl(std::string& var_name, std::vector<Token*>* expr){
@@ -33,6 +33,7 @@ void GenTAC::TAC_genExpr(std::vector<Token*>* expr_ptr){
     std::vector<Token*> expr = *expr_ptr;
     for(unsigned int i = 0; i < expr.size(); i++){
         if(expr[i]->type == T_NUMBER_LIT || expr[i]->type == T_FLOAT_LIT || expr[i]->type == T_ID){
+            // table.push_back(Quad{TAC_CALL, {expr[i]->val, ST_FN}, {std::string(""), T_TO_ST(expr[i]->type)}, {std::string(""), T_TO_ST(expr[i]->type)}, });
             table.push_back(Quad{TAC_EQUAL, {expr[i]->val, T_TO_ST(expr[i]->type)}, {std::string(""), T_TO_ST(expr[i]->type)}, {std::string("_") + std::to_string(temp_num), T_TO_ST(expr[i]->type)}});
             temp_num++;
         }
@@ -44,6 +45,9 @@ void GenTAC::TAC_genExpr(std::vector<Token*>* expr_ptr){
                 {std::string("_") + std::to_string(temp_num), table[table.size()-1].result.type}});
 
             temp_num++;
+        }
+        else if(expr[i]->type == T_FN){
+            TAC_genCallFn(expr[i]->val);
         }
     }
 }
