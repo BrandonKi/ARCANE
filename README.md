@@ -1,9 +1,10 @@
-The ARCVM is being moved into a seperate repository
+The old version of ARCANE has been moved to the deprecated branch
 
-The current front end is being moved into a branch called "ARCANE legacy" and 
-the whole front end of the compiler will be rewritten(for the 2nd time)
+It had a complete front-end written and was functional
 
-This is mainly because of bad coding habits and structure early on
+However I've decided to rewrite everything mainly because
+of bad coding habits and structure early on. This made it 
+extremely hard to add new features and extend existing ones.
 
 # ARCANE
 ARCANE Runs, Compiles, And Never Explodes
@@ -36,12 +37,7 @@ https://trello.com/b/tZJWGk7b/arcane
 
 # Notes
 
-replace reintrpret cast with safe version (memcpy or bitcast(c++20))
-
-Minimal type checking is done at runtime.
-Otherwise all type checking should/will be done at compile time.
-Only checks for fatal errors at runtime.
-
+All type checking is done at runtime
 
 Bytecode files store variables in Little Endian 
 
