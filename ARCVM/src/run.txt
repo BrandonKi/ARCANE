@@ -1,4 +1,0 @@
-cd C:\Users\Kirin\Desktop\ARCANE\ARCVM\debug; g++ -o filewriter filewriter.cpp; start filewriter.exe
-cd C:\Users\Kirin\Desktop\ARCANE\ARCVM\debug; g++ -o ReadableBytecode ReadableBytecode.cpp; start ReadableBytecode.exe
-cd C:\Users\Kirin\Desktop\ARCANE\ARCVM\src; g++ -o BMain BMain.cpp VM.cpp; start BMain.exe example
-cd C:\Users\Kirin\Desktop\ARCANE\Compiler; g++ -std=c++17 -o Compiler Compiler.cpp Lexer.cpp Parser.cpp SymbolTable.cpp ErrorHandler.cpp OS.cpp; start Compiler.exe C:\Users\Kirin\Desktop\ARCANE\tests\varDeclTest1.ar
