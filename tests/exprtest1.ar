@@ -1,4 +1,7 @@
 
-char_test : char = 't';
-int_test : int = 68 + 45 * 78 / (35 % 7);
-str_test : string = "work pls";
+fn main(): int {
+    char_test : char = 't';
+    int_test : int = 68 + 45 * 78 / (35 % 7);
+    str_test : string = "work pls";
+    ret 0;
+}
