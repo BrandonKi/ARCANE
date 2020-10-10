@@ -2,7 +2,7 @@
 
 /**
  * @brief The main function and entry point
- *          of the front-compiler end 
+ *          of the compiler front-end 
  * 
  * @return [int] exit code (should not return)
  */
