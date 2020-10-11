@@ -1,0 +1,9 @@
+
+fn main(): int{
+    if(false){
+        ret 1;
+    }
+    if(true){
+        ret 2;
+    }
+}

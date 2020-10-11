@@ -1,6 +1,6 @@
 
 fn main(): int {
-    int_test: int = 10 + 12;  
+    int_test: int = add(10, 12);  
     ret int_test;
 }
 
