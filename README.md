@@ -1,4 +1,4 @@
-The old version of ARCANE has been moved to the deprecated branch
+The old version of ARCANE has been moved
 
 It had a functional front-end
 
