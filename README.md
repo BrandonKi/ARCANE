@@ -1,9 +1,9 @@
-The old version of ARCANE has been moved to the deprecated branch
+The old version of ARCANE has been moved
 
-It had a complete front-end written and was functional
+It had a functional front-end
 
 However I've decided to rewrite everything mainly because
-of bad coding habits and structure early on. This made it 
+of bad coding habits and structure early on which made it 
 extremely hard to add new features and extend existing ones.
 
 # ARCANE
