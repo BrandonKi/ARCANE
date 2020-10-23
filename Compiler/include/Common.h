@@ -1,9 +1,10 @@
 #include <string>
 #include <cstdint>
+#include <pLog.h>
 
 struct ARGS{
-    std::string output_filepath; 
     std::string filepath;
+    std::string output_filepath; 
     bool optimize;
 }args;
 
