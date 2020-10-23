@@ -10,6 +10,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM)
 
 set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Compiler.cpp
 )
 
 
