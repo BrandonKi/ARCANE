@@ -1,6 +1,5 @@
 #include <string>
 #include <cstdint>
-#include <pLog.h>
 
 struct ARGS{
     std::string filepath;

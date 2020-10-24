@@ -1,23 +1,41 @@
 #include <string>
-#include <Common.h>
-#include <Compiler.h>
+#include <vector>
 
-std::string parseArgs(int, char**);
+#include <pLog.h>
+
+#include "Common.h"
+#include "Compiler.h"
+
+extern ARGS args;
+
+using namespace pLog;
+
+void parseArgs(int, char* argv[]);
 
 /**
- * @brief The main function and entry point of the compiler front-end 
+ * @brief The main function and entry point of the compiler front-end
+ * parses cmd args and calls compile()
  * 
  * @return [int] exit code
  */
 int main(int argc, char* argv[]){
-    // std::string filepath = parseArgs(argc, argv);
-    // Compiler compiler;
-    // compiler.compile();
+
+    init_pLog();        // init pLog lib
+
+    parseArgs(argc, argv);
+    print(args.filepath);
+    Compiler compiler;
+    compiler.compile();
 }
 
-// std::string parseArgs(int argc, char* argv[]){
-//     for(u32 i = 0; i > argc; i++){
-
-//     }
-// }
+/**
+ * @brief parses command line arguments and updates the global args struct accordingly
+ * 
+ * @param argc number of args
+ * @param argv array of args
+ */
+void parseArgs(int argc, char* argv[]){         //TODO implement the rest of the availible flags
+    std::vector<std::string> argList(argv, argv + argc);
+    args.filepath = argList[1];
+}
 
