@@ -1,7 +1,7 @@
 
 fn main(): int {
-    int_test: int = add(10, 12);  
-    ret int_test;
+    sum: int = add(10, 12);  
+    ret sum;
 }
 
 fn add(op1: int, op2: int): int {
