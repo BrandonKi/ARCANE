@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
     parseArgs(argc, argv);
 
     Compiler compiler;
-    compiler.compile();
+    compiler.compile(compiler.filedata());
 }
 
 /**
