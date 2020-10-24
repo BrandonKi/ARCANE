@@ -18,7 +18,7 @@ add_executable(ARCC ${SRC})
 
 target_compile_definitions(ARCC PRIVATE DEBUG_BUILD)
 
-target_include_directories(ARCC PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib)
+target_include_directories(ARCC PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib)
 
 add_executable(ARCC_RELEASE ${SRC})
 
