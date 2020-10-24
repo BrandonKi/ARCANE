@@ -1,7 +1,5 @@
 #include "Common.h"
 
-extern ARGS args;
-
 class Compiler{
 
     public:
@@ -9,7 +7,7 @@ class Compiler{
         void compile();
 
     private:
-        
+        std::string readFile(std::string&);
 
 
 };

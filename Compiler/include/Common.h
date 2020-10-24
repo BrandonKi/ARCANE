@@ -1,9 +1,11 @@
 #include <string>
 #include <cstdint>
+#include <fstream>
+#include <sstream>
 
 #include <pLog.h>
 
-inline static struct ARGS{
+inline struct ARGS{
     std::string filepath;
     std::string output_filepath; 
     bool optimize;
