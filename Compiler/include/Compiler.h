@@ -1,3 +1,6 @@
+#include "Common.h"
+
+extern ARGS args;
 
 class Compiler{
 

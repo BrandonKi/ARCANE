@@ -1,7 +1,9 @@
 #include <string>
 #include <cstdint>
 
-struct ARGS{
+#include <pLog.h>
+
+inline static struct ARGS{
     std::string filepath;
     std::string output_filepath; 
     bool optimize;
@@ -15,4 +17,3 @@ typedef uint8_t  u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
-

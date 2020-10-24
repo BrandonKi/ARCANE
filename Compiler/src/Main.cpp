@@ -1,12 +1,7 @@
 #include <string>
 #include <vector>
 
-#include <pLog.h>
-
-#include "Common.h"
 #include "Compiler.h"
-
-extern ARGS args;
 
 using namespace pLog;
 
@@ -23,7 +18,7 @@ int main(int argc, char* argv[]){
     init_pLog();        // init pLog lib
 
     parseArgs(argc, argv);
-    print(args.filepath);
+
     Compiler compiler;
     compiler.compile();
 }
