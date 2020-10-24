@@ -50,6 +50,9 @@
  * SOFTWARE.
  * 
  */
+
+#ifndef _PLOG_INCLUDE_GUARD_
+#define _PLOG_INCLUDE_GUARD_
 #include <string>
 #include <iostream>
 #include <cstdint>
@@ -196,7 +199,7 @@ namespace pLog{
      * @param b value for blue (0 - 255)
      * @return formatted string representing rgb value
      */
-    const std::string rgb(uint8_t r, uint8_t g, uint8_t b){
+    inline const std::string rgb(uint8_t r, uint8_t g, uint8_t b){
         return std::move("38;2;" + std::to_string(+r) + ';' + std::to_string(+g) + ';' + std::to_string(+b) + ';');
     }
 
@@ -207,7 +210,7 @@ namespace pLog{
      * be a predefined color macro or rgb() string
      * @return formatted string representing background color
      */
-    std::string bg(const std::string& color){
+    inline std::string bg(const std::string& color){
         if(color.length() > 3)
             return std::move(std::string("48;2;" + color.substr(5)));   // if color is in rgb() format
         return std::move(std::to_string(std::stoi(color) + 10) + ';');
@@ -221,7 +224,7 @@ namespace pLog{
      * @param b value for blue (0 - 255)
      * @return formatted string representing background color
      */
-    std::string bg(uint8_t r, uint8_t g, uint8_t b){
+    inline std::string bg(uint8_t r, uint8_t g, uint8_t b){
         return std::string("48;2;" + std::to_string(+r) + ';' + std::to_string(+g) + ';' + std::to_string(+b) + ';');
     }
 
@@ -230,7 +233,7 @@ namespace pLog{
      * 
      * @return an empty string
      */
-    std::string fstring(){ 
+    inline std::string fstring(){ 
         return std::move(std::string(""));
     }
 
@@ -244,7 +247,7 @@ namespace pLog{
      * @return all args combined into a single string 
      */
     template <typename T, typename... Types> 
-    std::string fstring(T var1, Types... var2){     
+    inline std::string fstring(T var1, Types... var2){     
         return std::move(std::string(var1) + fstring(var2...)); 
     }
 
@@ -257,7 +260,7 @@ namespace pLog{
      * @return base string with ansii escape args added onto it
      */
     template <typename T, typename... Types> 
-    std::string fmt(T str, Types... var2){
+    inline std::string fmt(T str, Types... var2){
         std::string&& color = fstring(var2...);
         return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR);
     }
@@ -430,6 +433,6 @@ namespace pLog{
     template <typename T, typename... Types> 
     void println(T var1, Types... var2){ 
         println((std::string)var1, (std::string)fstring(var2...));
-    }
-    
+    }   
 }
+#endif
