@@ -2,8 +2,14 @@
 
 using namespace pLog;
 
-Compiler::Compiler(){
-    data = std::move(readFile(args.filepath));
+/**
+ * @brief Construct a Compiler object
+ * also initializes data by reading from a file
+ */
+Compiler::Compiler():
+    data(std::move(readFile(args.filepath)))
+{
+    /* Nothing to see here */
 }
 
 std::vector<u8> Compiler::compile(const std::string& code){
@@ -36,6 +42,11 @@ std::string Compiler::readFile(const std::string& filepath){
     return std::move(buffer.str());
 }
 
+/**
+ * @brief return a string of the current file data
+ * 
+ * @return [std::string] a copy of the current file data
+ */
 std::string Compiler::filedata(){
     return data;
 }
