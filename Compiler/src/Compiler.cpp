@@ -13,8 +13,8 @@ Compiler::Compiler():
 }
 
 std::vector<u8> Compiler::compile(const std::string& code){
-    // Parser parser;
-    // parser.parse(code);
+    Parser parser;
+    parser.parse(code);
 
     //TODO convert to another IR for easier optimization
     //TODO optimize step
