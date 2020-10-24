@@ -12,6 +12,19 @@ inline struct ARGS{
     bool optimize;
 }args;
 
+struct Token{
+    TokenKind kind;
+    u32 srcLine;
+    u32 srcChar;
+    struct {
+        std::string str;
+    }info;
+};
+
+enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
+    /* TODO fill this out */
+};
+
 typedef int8_t   i8;
 typedef int16_t  i16;
 typedef int32_t  i32;
