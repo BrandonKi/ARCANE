@@ -20,9 +20,12 @@ target_compile_definitions(ARCC PRIVATE DEBUG_BUILD)
 
 target_include_directories(ARCC PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib)
 
+target_compile_options(ARCC PRIVATE "-Wall")
+
 add_executable(ARCC_RELEASE ${SRC})
 
 target_compile_definitions(ARCC_RELEASE PRIVATE RELEASE_BUILD)
 
-target_compile_options(ARCC_RELEASE PRIVATE "-O3")
+target_include_directories(ARCC_RELEASE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib)
 
+target_compile_options(ARCC_RELEASE PRIVATE "-O3")
