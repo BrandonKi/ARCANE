@@ -35,7 +35,9 @@ https://trello.com/b/tZJWGk7b/arcane
 
 # Notes
 
-All type checking is done at runtime
+All type checking is done at compile time
+
+ARCVM expects correct semantics
 
 Bytecode files store variables in Little Endian 
 
