@@ -1,7 +1,5 @@
-The old version of ARCANE has been moved
-
-It had a functional front-end
-
+The old version of ARCANE has been moved.
+It had a functional front-end which supported about half of the major features I plan to do.
 However I've decided to rewrite everything mainly because
 of bad coding habits and structure early on which made it 
 extremely hard to add new features and extend existing ones.
@@ -37,7 +35,9 @@ https://trello.com/b/tZJWGk7b/arcane
 
 # Notes
 
-All type checking is done at runtime
+All type checking is done at compile time
+
+ARCVM expects correct semantics
 
 Bytecode files store variables in Little Endian 
 
