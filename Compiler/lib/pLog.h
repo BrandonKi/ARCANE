@@ -199,7 +199,7 @@ namespace pLog{
      * @param b value for blue (0 - 255)
      * @return formatted string representing rgb value
      */
-    inline const std::string rgb(uint8_t r, uint8_t g, uint8_t b){
+    inline std::string rgb(uint8_t r, uint8_t g, uint8_t b){
         return std::move("38;2;" + std::to_string(+r) + ';' + std::to_string(+g) + ';' + std::to_string(+b) + ';');
     }
 
