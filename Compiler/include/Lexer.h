@@ -3,11 +3,11 @@
 class Lexer{
 
     public:
-        Lexer();
-        // Token next();
-        // Token peekNext();
+        Lexer(const std::string&);
+        Token next();
+        Token peekNext();
 
     private:
-
+        const std::string& data;
 
 };
