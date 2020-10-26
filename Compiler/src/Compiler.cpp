@@ -13,14 +13,14 @@ Compiler::Compiler():
 }
 
 std::vector<u8> Compiler::compile(const std::string& code){
-    Parser parser;
-    parser.parse(code);
+    Parser parser(code);
+    parser.parse();
 
     //TODO convert to another IR for easier optimization
     //TODO optimize step
 
     // CodeGenerator gen;
-    // gen.convert(/* Whatever IR I decide on */);
+    // gen.generate(/* Whatever IR I decide on */);
 
     
     std::vector<u8> temp;        //TODO replace in the future this is just so the code compiles and runs prerequisites
@@ -41,6 +41,7 @@ std::string Compiler::readFile(const std::string& filepath){
     file.close();
     return std::move(buffer.str());
 }
+
 
 /**
  * @brief return a string of the current file data
