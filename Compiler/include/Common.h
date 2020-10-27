@@ -21,18 +21,29 @@ inline struct ARGS{
     bool optimize;
 }args;
 
+enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
+    /* TODO fill this out */
+
+    NONE,
+
+    /* Types */
+
+    INT_LIT,
+    FLOAT_LIT,
+
+};
+
+struct info{
+    std::string val;
+};
+
 struct Token{
     TokenKind kind;
     u32 srcLine;
     u32 srcChar;
-    struct {
-        std::string str;
-    }info;
+    struct info;
 };
 
-enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
-    /* TODO fill this out */
 
-    /* Types */
 
-};
+
