@@ -66,7 +66,61 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_CASE,
     ARC_DEFAULT,
 
+    /* Symbols */
 
+    ARC_OPEN_BRACE,
+    ARC_CLOSE_BRACE,
+    ARC_OPEN_BRACKET,
+    ARC_CLOSE_BRACKET,
+    ARC_OPEN_PAREN,
+    ARC_CLOSE_PAREN,
+    ARC_DOT,
+    ARC_COMMA,
+    ARC_TERNARY,
+    ARC_SEMICOLON,
+    ARC_COLON,
+    ARC_AT,     //TODO implement AT, HASH, and DOLLAR
+    ARC_HASH,   //
+    ARC_DOLLAR, //
+
+    /* Operators */
+
+    ARC_ADD_EQUAL,
+    ARC_SUB_EQUAL,
+    ARC_DIV_EQUAL,
+    ARC_MUL_EQUAL,
+    ARC_MOD_EQUAL,
+    ARC_OR_EQUAL,
+    ARC_AND_EQUAL,
+    ARC_NOT_EQUAL,
+    ARC_LEFT_SHIFT_EQUAL,
+    ARC_RIGHT_SHIFT_EQUAL,
+    ARC_XOR_EQUAL,
+    ARC_LESS_EQUAL,
+    ARC_GREATER_EQUAL,
+    ARC_EQUAL,
+    ARC_ASSIGN,
+    ARC_INFER_ASSIGN,
+    ARC_ADD,
+    ARC_SUB,
+    ARC_DIV,
+    ARC_MUL,
+    ARC_MOD,
+    ARC_BIN_OR,
+    ARC_BIN_AND,
+    ARC_NOT,
+    ARC_LEFT_SHIFT,
+    ARC_RIGHT_SHIFT,
+    ARC_XOR,
+    ARC_LESS,
+    ARC_GREATER,
+    ARC_NEGATE,
+    ARC_LOGICAL_OR,
+    ARC_LOGICAL_AND,
+    ARC_PRE_INCREMENT,
+    ARC_POST_INCREMENT,
+    ARC_PRE_DECREMENT,
+    ARC_POST_DECREMENT,
 };
 
 struct info{

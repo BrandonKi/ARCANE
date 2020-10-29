@@ -1,12 +1,11 @@
 # Symbols
 
-{   }   [   ]   <   >   (   )
-%   *   /   +   -   ^   &   |
-~   !   .   ,   ?   ;   :   =
+{   }   [   ]   (   )
+.   ,   ?   ;   :
 
-# Potential Symbols 
+# Symbols (No Implementation) 
 
-@   #   $
+@   #   
 
 # Operators
 
