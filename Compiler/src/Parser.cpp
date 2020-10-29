@@ -8,5 +8,5 @@ Parser::Parser(const std::string& code):
 
 void Parser::parse(){
     Lexer lexer(data);
-    lexer.next();
+    lexer.lex();
 }

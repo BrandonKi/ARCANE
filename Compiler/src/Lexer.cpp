@@ -1,38 +1,34 @@
 #include "Lexer.h"
 
 Lexer::Lexer(const std::string& data):
-    data(data), index(0), lineNum(0), charNum(0)
+    data(data), memPool(100), tokens(), index(0), lineNum(0), charNum(0)
 {
-
+    tokens.reserve(100);
 }
 
-Token Lexer::next(){
-    Token temp = std::move(peekNext());
-    index++;
-    return std::move(temp);
-}
-
-inline Token Lexer::peekNext(){
-    switch(data[index]){
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-            return number_lit();
-        // default:
-        //     peekNext();
+void Lexer::lex(){
+    while(index < data.size()){
+        switch(data[index]){
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                number_lit();
+            // default:
+            //     peekNext();
+        }
     }
-    return nullptr;
 }
 
-inline Token Lexer::number(){
-    std::string num;
+
+inline Token* Lexer::number_lit(){
+    std::string num("");
     bool isFloat = false;
     bool isHex = false;
     bool isInt = true;
@@ -52,7 +48,7 @@ inline Token Lexer::number(){
             case '7':
             case '8':
             case '9':
-                num.append(data[index]);
+                num.push_back(data[index]);
                 break;
             case '.':
                 if(isFloat)
@@ -66,10 +62,23 @@ inline Token Lexer::number(){
         }
     }
     if(isInt)
-        return Token();
+        return allocToken(std::move(Token()));
     else if(isFloat)
-        return Token();
+        return allocToken(std::move(Token()));
     else
-        return Token();
+        return allocToken(std::move(Token()));
 }
 
+Token* Lexer::allocToken(Token tkn){
+    Token* t = memPool.allocate();
+    *t = tkn;
+    return t;
+}
+
+inline Token* Lexer::next(){
+    return nullptr;
+}
+
+inline Token* Lexer::peekNext(){   
+    return nullptr;
+}
