@@ -51,6 +51,8 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_STR,
     ARC_ARR,
 
+    ARC_ID,
+
     /* Keywords */
 
     ARC_FN,
