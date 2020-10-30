@@ -20,13 +20,12 @@ class Lexer{
 
         Token* allocToken(Token);
 
-        constexpr static inline bool isDigit(char c){
+        constexpr static inline bool isDigit(char c) noexcept {
             return c >= 48 && c <= 57;
         }
 
-        constexpr static inline bool isAlpha(char c){
+        constexpr static inline bool isAlpha(char c) noexcept {
             return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
         }
-
 
 };

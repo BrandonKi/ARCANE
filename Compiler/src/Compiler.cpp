@@ -12,8 +12,9 @@ Compiler::Compiler():
     /* Nothing to see here */
 }
 
-std::vector<u8> Compiler::compile(const std::string& code){
+std::vector<u8> Compiler::compile(const std::string& code) {
     Parser parser(code);
+    print(args.filepath);
     parser.parse();
 
     //TODO convert to another IR for easier optimization

@@ -6,7 +6,7 @@ Lexer::Lexer(const std::string& data):
     tokens.reserve(100);
 }
 
-void Lexer::lex(){
+void Lexer::lex() {     // TODO return Token* instead
     while(index < data.size()){
         switch(data[index]){
             case '0':

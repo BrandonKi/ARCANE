@@ -16,7 +16,7 @@ class MemoryPool {
         }
 
     public:
-        MemoryPool(size_t initialCapacity){
+        MemoryPool(size_t initialCapacity) noexcept {
             start = (T*)malloc(initialCapacity * sizeof(T));
             nextFreeSlot = start;
             end = start + initialCapacity;
@@ -32,8 +32,8 @@ class MemoryPool {
 
         inline constexpr void freePool(){free(start);}
 
-        inline constexpr T* data(){ return start; }
+        inline constexpr T* data() const noexcept { return start; }
 
-        inline constexpr size_t size(){ return size_t(nextFreeSlot) / sizeof(T); } //TODO may have to subtract 1 from nextFreeSlot
+        inline constexpr size_t size() const noexcept { return size_t(nextFreeSlot) / sizeof(T); } //TODO may have to subtract 1 from nextFreeSlot
 
 };

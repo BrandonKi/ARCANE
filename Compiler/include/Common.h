@@ -16,7 +16,7 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
-inline struct ARGS{
+inline struct ARGS {
     std::string filepath;
     std::string output_filepath; 
     bool optimize;
@@ -29,8 +29,6 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 
     /* Types */
 
-    ARC_TRUE,
-    ARC_FALSE,
     ARC_INT_LIT,
     ARC_FLOAT_LIT,
 
@@ -47,9 +45,9 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_F32,
     ARC_F64,
 
-    ARC_STRUCT,
+    ARC_STRUCT,     // TODO this is just filler for now. It needs type information to be useful
     ARC_STR,
-    ARC_ARR,
+    ARC_ARR,       // TODO this is just filler for now. It needs type information to be useful
 
     ARC_ID,
 
@@ -68,6 +66,9 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_CASE,
     ARC_DEFAULT,
 
+    ARC_TRUE,
+    ARC_FALSE,
+    
     /* Symbols */
 
     ARC_OPEN_BRACE,
@@ -136,7 +137,7 @@ struct Token{
     struct info;
 };
 
-std::unordered_map<std::string, TokenKind> keywords( { 
+const static std::unordered_map<std::string, TokenKind> keywords( { 
 
     {"i8", ARC_I8}, {"i16", ARC_I16}, {"i32", ARC_I32}, {"i64", ARC_I64}, 
     {"u8", ARC_U8}, {"u16", ARC_U16}, {"u32", ARC_U32}, {"u64", ARC_U64}, 
@@ -149,11 +150,4 @@ std::unordered_map<std::string, TokenKind> keywords( {
     {"true", ARC_TRUE}, {"false", ARC_FALSE}
     
 });
-
-
-// fn
-// ret  if    elif  else
-// switch   break   case
-// default
-
 
