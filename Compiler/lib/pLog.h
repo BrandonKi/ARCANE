@@ -56,6 +56,7 @@
 #include <string>
 #include <iostream>
 #include <cstdint>
+#include <type_traits>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -262,7 +263,12 @@ namespace pLog{
     template <typename T, typename... Types> 
     inline std::string fmt(T str, Types... var2){
         std::string&& color = fstring(var2...);
-        return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR);
+        if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
+            return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR);
+        else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
+            return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::string(str) + CLEAR);
+        else
+            return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::to_string(str) + CLEAR);
     }
     
 
@@ -283,7 +289,6 @@ namespace pLog{
     inline void print(const std::string&& str = ""){
         std::cout << str;
     }
-
 
     /**
      * @brief print string to the console with specified format as a string
@@ -349,7 +354,12 @@ namespace pLog{
      */
     template <typename T, typename... Types> 
     void print(T var1, Types... var2){
-        print((std::string)var1, (std::string)fstring(var2...));
+        if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
+            print(std::string("") + var1, fstring(var2...));
+        else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
+            print(std::string(var1), fstring(var2...));
+        else
+            print(std::to_string(var1), fstring(var2...));
     }
 
     /**
@@ -432,7 +442,12 @@ namespace pLog{
      */
     template <typename T, typename... Types> 
     void println(T var1, Types... var2){ 
-        println((std::string)var1, (std::string)fstring(var2...));
+        if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
+            println(std::string("") + var1, fstring(var2...));
+        else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
+            println(std::string(var1), fstring(var2...));
+        else
+            println(std::to_string(var1), fstring(var2...));
     }   
 }
 #endif
