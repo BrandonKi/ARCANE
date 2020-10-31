@@ -5,8 +5,9 @@ class Lexer{
     public:
         Lexer(const std::string&);
         void lex();
-        Token* next();
-        Token* peekNext();
+        char currentChar();
+        char nextChar();
+        char peekNextChar();
 
     private:
         const std::string& data;
