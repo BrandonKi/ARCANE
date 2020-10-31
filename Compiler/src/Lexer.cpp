@@ -1,7 +1,7 @@
 #include "Lexer.h"
 
 Lexer::Lexer(const std::string& data):
-    data(data), memPool(100), tokens(), index(0), lineNum(1), charNum(1)
+    data(data), tokens(), index(0), lineNum(1), charNum(1)
 {
     tokens.reserve(100);
 }
@@ -46,15 +46,14 @@ Token* Lexer::number_lit(){
         isFloat = false;
     }
     while(isDigit(currentChar())) {
-        if(isDigit(currentChar())){
-            num.push_back(currentChar());
-        }
-        else if(currentChar() == '.'){
+        num.push_back(currentChar());
+
+        if(peekNextChar() == '.'){
             if(isFloat)
                 continue;   //TODO print error message because two "." are present in number literal 
             isFloat = true;
             isInt = false;
-            num.push_back(currentChar());
+            num.push_back(nextChar());
         }
         else{
             //TODO error here. Invalid character in literal
@@ -66,19 +65,13 @@ Token* Lexer::number_lit(){
     index--;
 
     if(isInt)
-        return allocToken(std::move(Token{num.c_str(), ARC_INT_LIT, lineNum, charPos}));
+        return new Token{num, ARC_INT_LIT, lineNum, charPos};
     else if(isFloat)
-        return allocToken(std::move(Token{num.c_str(), ARC_FLOAT_LIT, lineNum, charPos}));
+        return new Token{num, ARC_FLOAT_LIT, lineNum, charPos};
     else{
         //TODO convert hex literal to int or float literal
-        return allocToken(std::move(Token{num.c_str(), ARC_INT_LIT, lineNum, charPos}));
+        return new Token{num, ARC_INT_LIT, lineNum, charPos};
     }
-}
-
-Token* Lexer::allocToken(Token tkn){
-    Token* t = memPool.allocate();
-    *t = std::move(tkn);
-    return t;
 }
 
 inline char Lexer::currentChar(){

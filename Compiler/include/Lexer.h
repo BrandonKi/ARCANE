@@ -11,15 +11,12 @@ class Lexer{
 
     private:
         const std::string& data;
-        MemoryPool<Token> memPool;
         std::vector<Token*> tokens;
         u32 index;
         u32 lineNum;
         u32 charNum;
 
         Token* number_lit();
-
-        Token* allocToken(Token);
 
         constexpr static inline bool isDigit(char c) noexcept {
             return c >= 48 && c <= 57;

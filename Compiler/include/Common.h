@@ -129,11 +129,11 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 };
 
 struct info{
-    const char* val;
+    std::string val;
 };
 
 struct Token{
-    const char* id;
+    std::string id;
     TokenKind kind;
     u32 srcLine;
     u32 srcChar;
