@@ -1,7 +1,5 @@
 #include "Compiler.h"
 
-using namespace pLog;
-
 /**
  * @brief Construct a Compiler object
  * also initializes data by reading from a file
@@ -14,7 +12,6 @@ Compiler::Compiler():
 
 std::vector<u8> Compiler::compile(const std::string& code) {
     Parser parser(code);
-    print(args.filepath);
     parser.parse();
 
     //TODO convert to another IR for easier optimization

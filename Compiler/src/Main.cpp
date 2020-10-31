@@ -3,8 +3,6 @@
 
 #include "Compiler.h"
 
-using namespace pLog;
-
 void parseArgs(int, char* argv[]);
 
 /**

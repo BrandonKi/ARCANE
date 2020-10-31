@@ -1,7 +1,5 @@
 #include "Parser.h"
 
-using namespace pLog;
-
 Parser::Parser(const std::string& code):
     data(code)
 {
@@ -9,7 +7,6 @@ Parser::Parser(const std::string& code):
 }
 
 void Parser::parse(){
-    print(args.filepath);
     Lexer lexer(data);
     lexer.lex();
 }

@@ -7,6 +7,8 @@
 
 #include <pLog.h>
 
+using namespace pLog;
+
 typedef int8_t   i8;
 typedef int16_t  i16;
 typedef int32_t  i32;
@@ -68,7 +70,7 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 
     ARC_TRUE,
     ARC_FALSE,
-    
+
     /* Symbols */
 
     ARC_OPEN_BRACE,
@@ -127,10 +129,11 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 };
 
 struct info{
-    std::string val;
+    const char* val;
 };
 
 struct Token{
+    const char* id;
     TokenKind kind;
     u32 srcLine;
     u32 srcChar;
@@ -151,3 +154,10 @@ const static std::unordered_map<std::string, TokenKind> keywords( {
     
 });
 
+inline void printToken(Token t){
+    print(std::string(t.id) + " " + std::to_string((int)t.kind) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
+}
+
+inline void printTokenln(Token t){
+    println(std::string(t.id) + " " + std::to_string((int)t.kind) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
+}
