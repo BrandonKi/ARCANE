@@ -13,6 +13,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Compiler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Lexer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/ErrorHandler.cpp
 )
 
 
