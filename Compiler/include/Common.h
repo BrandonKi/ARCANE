@@ -155,9 +155,9 @@ const static std::unordered_map<std::string, TokenKind> keywords( {
 });
 
 inline void printToken(Token t){
-    print(std::string(t.id) + " " + std::to_string((int)t.kind) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
+    print("'" + std::string(t.id) + "' " + std::to_string((int)t.kind) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
 }
 
 inline void printTokenln(Token t){
-    println(std::string(t.id) + " " + std::to_string((int)t.kind) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
+    println("'" + std::string(t.id) + "' " + std::to_string((int)t.kind) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
 }
