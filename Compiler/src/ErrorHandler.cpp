@@ -1,34 +1,33 @@
 #include "ErrorHandler.h"
 
 
-ErrorHandler::ErrorHandler():
-    buffer()
+ErrorHandler::ErrorHandler(const std::string& src):
+    buffer(), src(src)
 {
     buffer.reserve(200);
 }
 
-ErrorHandler::ErrorHandler(std::string& filepath):
-    buffer(), filepath(filepath)
-{
-    buffer.reserve(200);
-}
-
-void ErrorHandler::log(ErrorMessage& error) {
+void ErrorHandler::log(ErrorMessage error) {
 
     buffer += makePreamble(error);
 
     switch(error.severity){
         case FATAL:
-            buffer += fmt("ERROR "); 
+            buffer += fmt("ERROR ", RED); 
             break;
         case WARN:
+            buffer += fmt("WARNING ", YELLOW); 
             break;
         case NOTE:
+            buffer += fmt("NOTE ", BLUE); 
             break;
         case MESSAGE:
+            buffer += fmt("MESSAGE ", GREEN); 
             break;
-
     }
+
+    buffer += error.message;
+    //TODO output an arrow pointing to the token that caused the error on the next line
 }
 
 std::string ErrorHandler::makePreamble(ErrorMessage& error){
@@ -36,11 +35,5 @@ std::string ErrorHandler::makePreamble(ErrorMessage& error){
 }
 
 void ErrorHandler::flush(){
-    if(filepath.size() == 0){
-        println(buffer);
-    }
-    else{
-        std::ofstream file(filepath);
-        file << buffer;
-    }
+    println(buffer);
 }

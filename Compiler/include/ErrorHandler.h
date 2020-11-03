@@ -15,16 +15,16 @@ class ErrorHandler {
     public:
 
         ErrorHandler();
-        ErrorHandler(std::string&);
+        ErrorHandler(const std::string&);
 
-        void log(ErrorMessage&);
-        std::string makePreamble(ErrorMessage& error);
+        void log(ErrorMessage);
         void flush();
 
     private:
 
         std::string buffer;
-        std::string filepath;
+        const std::string& src;
 
+        std::string makePreamble(ErrorMessage& error);
 
 };
