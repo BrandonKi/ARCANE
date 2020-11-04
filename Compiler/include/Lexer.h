@@ -17,6 +17,9 @@ class Lexer{
         void lex();
         char currentChar();
         char nextChar();
+        char prevChar();
+        void nextChar_noreturn();
+        void prevChar_noreturn();
         char peekNextChar();
 
     private:
@@ -27,8 +30,23 @@ class Lexer{
         u32 col;
         ErrorHandler error;
 
-        Token* number_lit();
-        Token* identifier();
+        Token* lexNumberLit();
+        Token* lexIdentifier();
+        Token* lexString();
+        Token* lexInterpolatedString();
+        Token* lexColon();
+        Token* lexAdd();
+        Token* lexSub();
+        Token* lexDiv();
+        Token* lexMul();
+        Token* lexMod();
+        Token* lexOr();
+        Token* lexAnd();
+        Token* lexNot();
+        Token* lexXor();
+        Token* lexLess();
+        Token* lexGreater();
+        Token* lexEqual();
 
         Token* createToken(std::string&, TokenKind);
         Token* createToken(std::string&&, TokenKind);

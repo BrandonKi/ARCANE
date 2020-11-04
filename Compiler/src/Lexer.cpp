@@ -8,16 +8,23 @@ Lexer::Lexer(const std::string& filedata):
     tokens.reserve(100);
 }
 
-void Lexer::lex() {     // TODO return Token* instead
+void Lexer::lex(){     // TODO return Token* instead
 
     while(index < data.size()){
 
         switch(currentChar()){
             CASE_DIGIT:
-                tokens.push_back(number_lit());
+                tokens.push_back(lexNumberLit());
                 break;
             CASE_ID:
-                tokens.push_back(identifier());
+                tokens.push_back(lexIdentifier());
+                break;
+            case '\'':  //TODO ARC_STRING_LIT is not trivial to tokenize
+            case '"':   //TODO ARC_STRING_LIT is not trivial to tokenize
+                tokens.push_back(lexString());
+                break;
+            case '`':   //TODO interpolated string literals is not trivial to tokenize
+                tokens.push_back(lexInterpolatedString());
                 break;
             case '{':
                 tokens.push_back(createToken(std::string(1, currentChar()), ARC_OPEN_BRACE));
@@ -50,7 +57,7 @@ void Lexer::lex() {     // TODO return Token* instead
                 tokens.push_back(createToken(std::string(1, currentChar()), ARC_SEMICOLON));
                 break;
             case ':':   //TODO ARC_COLON is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_COLON));
+                tokens.push_back(lexColon());
                 break;
             case '@':
                 tokens.push_back(createToken(std::string(1, currentChar()), ARC_AT));
@@ -85,14 +92,14 @@ void Lexer::lex() {     // TODO return Token* instead
             case '!':   //TODO ARC_NOT is not trivial to tokenize
                 tokens.push_back(createToken(std::string(1, currentChar()), ARC_NOT));
                 break;
+            case '^':   //TODO ARC_XOR is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_XOR));
+                break;
             case '<':   //TODO ARC_LESS is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_LESS));
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_LESSER));
                 break;
             case '>':   //TODO ARC_GREATER is not trivial to tokenize
                 tokens.push_back(createToken(std::string(1, currentChar()), ARC_GREATER));
-                break;
-            case '^':   //TODO ARC_XOR is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_XOR));
                 break;
             case '=':   //TODO ARC_EQUAL is not trivial to tokenize
                 tokens.push_back(createToken(std::string(1, currentChar()), ARC_ASSIGN));
@@ -104,26 +111,24 @@ void Lexer::lex() {     // TODO return Token* instead
             default:
                 break;
         }
-            col++;
-            index++;
+            nextChar_noreturn();
     }
 
-    printTokens(false);
+    printTokens(false);  // true for verbose false for succint
 }
 
 
-Token* Lexer::number_lit(){
+Token* Lexer::lexNumberLit(){
     std::string num;
     u32 currentCol = col;
     bool isFloat = false;
     bool isInt = true;
     if(peekNextChar() == 'x'){  //TODO implement hex literal lexing
-        index++;
-        col++;
+        nextChar_noreturn();
         isInt = false;
         isFloat = false;
     }
-    while(isDigit(currentChar())) {
+    while(isDigit(currentChar())){      //TODO refactor
         num.push_back(currentChar());
 
         if(peekNextChar() == '.'){
@@ -134,12 +139,10 @@ Token* Lexer::number_lit(){
             num.push_back(nextChar());
         }
 
-        col++;
-        index++;
+        nextChar_noreturn();
     }
 
-    col--;
-    index--;
+    prevChar_noreturn();    // the above loop goes one char too far so decrement here
 
     if(isInt)
         return createToken(num, ARC_INT_LIT, currentCol);
@@ -151,7 +154,7 @@ Token* Lexer::number_lit(){
     }
 }
 
-Token* Lexer::identifier(){
+Token* Lexer::lexIdentifier(){
 
     std::string id;
 
@@ -159,17 +162,99 @@ Token* Lexer::identifier(){
 
     while(isAlpha(currentChar())  || isDigit(currentChar())){
         id.push_back(currentChar());
-        col++;
-        index++;
+        nextChar_noreturn();
     }
 
-    col--;
-    index--;
+    prevChar_noreturn();    // the above loop goes one char too far so decrement here
 
     if(keywords.find(id) != keywords.end())
         return createToken(id, keywords.find(id)->second, currentCol);
     return createToken(id, ARC_ID, currentCol);
 }
+
+Token* Lexer::lexString(){  //TODO escape sequences 
+
+    std::string id;
+        
+    char end = currentChar();
+
+    while(nextChar() != end){
+        id.push_back(currentChar());
+    }
+
+    nextChar_noreturn();
+
+    return createToken(id, ARC_STRING_LIT);
+}
+
+Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
+    error.log(ErrorMessage{FATAL, lexString(), args.filepath, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
+    error.flush();
+    std::exit(-1);
+    // return new Token{};
+}
+
+Token* Lexer::lexColon(){
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(std::string(":="), ARC_INFER);
+    }
+    else
+        return createToken(std::string(1, currentChar()), ARC_COLON);
+
+}
+
+Token* Lexer::lexAdd(){
+    return new Token{};
+}
+
+Token* Lexer::lexSub(){
+    return new Token{};
+}
+
+Token* Lexer::lexDiv(){
+    return new Token{};
+}
+
+Token* Lexer::lexMul(){
+    return new Token{};
+}
+
+Token* Lexer::lexMod(){
+    return new Token{};
+}
+
+Token* Lexer::lexOr(){
+    return new Token{};
+}
+
+Token* Lexer::lexAnd(){
+    return new Token{};
+}
+
+Token* Lexer::lexNot(){
+    return new Token{};
+}
+
+Token* Lexer::lexXor(){
+    return new Token{};
+}
+
+Token* Lexer::lexLess(){
+    return new Token{};
+}
+
+Token* Lexer::lexGreater(){
+    return new Token{};
+}
+
+Token* Lexer::lexEqual(){
+    return new Token{};
+}
+
+
+
 
 inline char Lexer::currentChar(){
     return data[index];
@@ -178,6 +263,21 @@ inline char Lexer::currentChar(){
 inline char Lexer::nextChar(){
     col++;
     return data[++index];
+}
+
+inline char Lexer::prevChar(){
+    col--;
+    return data[--index];
+}
+
+inline void Lexer::nextChar_noreturn(){
+    col++;
+    index++;
+}
+
+inline void Lexer::prevChar_noreturn(){
+    col--;
+    index--;
 }
 
 inline char Lexer::peekNextChar(){   
