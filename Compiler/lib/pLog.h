@@ -51,8 +51,8 @@
  * 
  */
 
-#ifndef _PLOG_INCLUDE_GUARD_
-#define _PLOG_INCLUDE_GUARD_
+#ifndef PLOG_HEADER_H
+#define PLOG_HEADER_H
 #include <string>
 #include <iostream>
 #include <cstdint>
