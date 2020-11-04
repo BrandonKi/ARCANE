@@ -201,7 +201,7 @@ namespace pLog{
      * @return formatted string representing rgb value
      */
     inline std::string rgb(uint8_t r, uint8_t g, uint8_t b){
-        return std::move("38;2;" + std::to_string(+r) + ';' + std::to_string(+g) + ';' + std::to_string(+b) + ';');
+        return "38;2;" + std::to_string(+r) + ';' + std::to_string(+g) + ';' + std::to_string(+b) + ';';
     }
 
     /**
@@ -213,8 +213,8 @@ namespace pLog{
      */
     inline std::string bg(const std::string& color){
         if(color.length() > 3)
-            return std::move(std::string("48;2;" + color.substr(5)));   // if color is in rgb() format
-        return std::move(std::to_string(std::stoi(color) + 10) + ';');
+            return std::string("48;2;" + color.substr(5));   // if color is in rgb() format
+        return std::to_string(std::stoi(color) + 10) + ';';
     }
 
     /**
@@ -235,7 +235,7 @@ namespace pLog{
      * @return an empty string
      */
     inline std::string fstring(){ 
-        return std::move(std::string(""));
+        return std::string("");
     }
 
     /**
@@ -264,11 +264,11 @@ namespace pLog{
     inline std::string fmt(T str, Types... var2){
         std::string&& color = fstring(var2...);
         if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
-            return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR);
+            return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR;
         else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
-            return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::string(str) + CLEAR);
+            return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::string(str) + CLEAR;
         else
-            return std::move(_pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::to_string(str) + CLEAR);
+            return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::to_string(str) + CLEAR;
     }
     
 
