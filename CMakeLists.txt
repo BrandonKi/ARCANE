@@ -23,7 +23,7 @@ target_compile_definitions(ARCC PRIVATE DEBUG_BUILD)
 
 target_include_directories(ARCC PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib)
 
-target_compile_options(ARCC PRIVATE "-Wall")
+target_compile_options(ARCC PRIVATE "-W -Wall -Wextra -Wno-c++98-compat")
 
 add_executable(ARCC_RELEASE ${SRC})
 
