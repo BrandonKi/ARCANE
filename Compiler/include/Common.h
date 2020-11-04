@@ -102,11 +102,11 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_LEFT_SHIFT_EQUAL,
     ARC_RIGHT_SHIFT_EQUAL,
     ARC_XOR_EQUAL,
-    ARC_LESS_EQUAL,
+    ARC_LESSER_EQUAL,
     ARC_GREATER_EQUAL,
     ARC_EQUAL,
     ARC_ASSIGN,
-    ARC_INFER_ASSIGN,
+    ARC_INFER,
     ARC_ADD,
     ARC_SUB,
     ARC_DIV,
@@ -118,7 +118,7 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_LEFT_SHIFT,
     ARC_RIGHT_SHIFT,
     ARC_XOR,
-    ARC_LESS,
+    ARC_LESSER,
     ARC_GREATER,
     ARC_NEGATE,
     ARC_LOGICAL_OR,
@@ -350,8 +350,8 @@ inline std::string str(TokenKind kind){
     case ARC_XOR_EQUAL:
         return "XOR_EQUAL";
         
-    case ARC_LESS_EQUAL:
-        return "LESS_EQUAL";
+    case ARC_LESSER_EQUAL:
+        return "LESSER_EQUAL";
         
     case ARC_GREATER_EQUAL:
         return "GREATER_EQUAL";
@@ -362,8 +362,8 @@ inline std::string str(TokenKind kind){
     case ARC_ASSIGN:
         return "ASSIGN";
         
-    case ARC_INFER_ASSIGN:
-        return "INFER_ASSIGN";
+    case ARC_INFER:
+        return "INFER";
         
     case ARC_ADD:
         return "ADD";
@@ -398,8 +398,8 @@ inline std::string str(TokenKind kind){
     case ARC_XOR:
         return "XOR";
         
-    case ARC_LESS:
-        return "LESS";
+    case ARC_LESSER:
+        return "LESSER";
         
     case ARC_GREATER:
         return "GREATER";
