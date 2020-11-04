@@ -25,9 +25,10 @@ inline struct ARGS {
 }args;
 
 enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
+    // NOTE Any changes to this enum must be changed below in the str() method as well
     /* TODO fill this out */
 
-    NONE,
+    ARC_NONE,
 
     /* Types */
 
@@ -166,7 +167,7 @@ inline std::string str(TokenKind kind){
     
     switch(kind){
 
-    case NONE:
+    case ARC_NONE:
         return "NONE";
         break;
     case ARC_INT_LIT:
