@@ -32,7 +32,7 @@ class Lexer{
 
         Token* createToken(std::string&, TokenKind, u32);
 
-        void printTokens();
+        void printTokens(bool verbose);
 
         constexpr static inline bool isDigit(char c) noexcept {
             return c >= 48 && c <= 57;

@@ -3,8 +3,8 @@
 Lexer::Lexer(const std::string& filedata):
     data(filedata), tokens(), index(0), line(1), col(1), error(filedata)
 {
-    error.log(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
-    error.flush();
+    // error.log(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
+    // error.flush();
     tokens.reserve(100);
 }
 
@@ -30,7 +30,7 @@ void Lexer::lex() {     // TODO return Token* instead
             index++;
     }
 
-    printTokens();
+    printTokens(false);
 }
 
 
@@ -110,7 +110,12 @@ inline Token* Lexer::createToken(std::string& id, TokenKind kind, u32 currentCol
     return new Token {id, kind, line, currentCol};
 }
 
-void Lexer::printTokens(){
-    for(Token*& tkn : tokens)
-        printTokenln(*tkn);
+void Lexer::printTokens(bool verbose){
+    if(verbose)
+        for(Token*& tkn : tokens)
+            printTokenln(*tkn);
+    else{
+        for(Token*& tkn : tokens)
+            println(str(tkn->kind) + ": " + tkn->id);
+    }
 }

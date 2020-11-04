@@ -161,3 +161,268 @@ inline void printToken(Token t){
 inline void printTokenln(Token t){
     println("'" + std::string(t.id) + "' " + std::to_string((int)t.kind) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
 }
+
+inline std::string str(TokenKind kind){
+    
+    switch(kind){
+
+    case NONE:
+        return "NONE";
+        break;
+    case ARC_INT_LIT:
+        return "INT_LIT";
+        break;
+    case ARC_FLOAT_LIT:
+        return "FLOAT_LIT";
+        break;
+
+    case ARC_I8:
+        return "I8";
+        break;
+    case ARC_I16:
+        return "I16";
+        break;
+    case ARC_I32:
+        return "I32";
+        break;
+    case ARC_I64:
+        return "I64";
+        break;
+
+    case ARC_U8:
+        return "U8";
+        break;
+    case ARC_U16:
+        return "U16";
+        break;
+    case ARC_U32:
+        return "U32";
+        break;
+    case ARC_U64:
+        return "U64";
+        break;
+
+    case ARC_F32:
+        return "F32";
+        break;
+    case ARC_F64:
+        return "F64";
+        break;
+
+    case ARC_STRUCT:
+        return "STRUCT";
+        break;
+    case ARC_STR:
+        return "STR";
+        break;
+    case ARC_ARR:
+        return "ARR";
+        break;
+
+    case ARC_ID:
+        return "ID";
+        break;
+
+    /* Keywords */
+
+    case ARC_FN:
+        return "FN";
+        break;
+    case ARC_RET:
+        return "RET";
+        break;
+    case ARC_IF:
+        return "IF";
+        break;
+    case ARC_ELIF:
+        return "ELIF";
+        break;
+    case ARC_ELSE:
+        return "ELSE";
+        break;
+    case ARC_WHILE:
+        return "WHILE";
+        break;
+    case ARC_FOR:
+        return "FOR";
+        break;
+    case ARC_DO:
+        return "DO";
+        break;
+    case ARC_SWITCH:
+        return "SWITCH";
+        break;
+    case ARC_BREAK:
+        return "BREAK";
+        break;
+    case ARC_CASE:
+        return "CASE";
+        break;
+    case ARC_DEFAULT:
+        return "DEFAULT";
+        break;
+
+    case ARC_TRUE:
+        return "TRUE";
+        break;
+    case ARC_FALSE:
+        return "FALSE";
+        break;
+
+    /* Symbols */
+
+    case ARC_OPEN_BRACE:
+        return "OPEN_BRACE";
+        break;
+    case ARC_CLOSE_BRACE:
+        return "CLOSE_BRACE";
+        break;
+    case ARC_OPEN_BRACKET:
+        return "OPEN_BRACKET";
+        break;
+    case ARC_CLOSE_BRACKET:
+        return "CLOSE_BRACKET";
+        break;
+    case ARC_OPEN_PAREN:
+        return "OPEN_PAREN";
+        break;
+    case ARC_CLOSE_PAREN:
+        return "CLOSE_PAREN";
+        break;
+    case ARC_DOT:
+        return "DOT";
+        break;
+    case ARC_COMMA:
+        return "COMMA";
+        break;
+    case ARC_TERNARY:
+        return "TERNARY";
+        break;
+    case ARC_SEMICOLON:
+        return "SEMICOLON";
+        break;
+    case ARC_COLON:
+        return "COLON";
+        break;
+    case ARC_AT:
+        return "AT";
+        break;
+    case ARC_HASH:
+        return "HASH";
+        break;
+    case ARC_DOLLAR:
+        return "DOLLAR";
+        break;
+
+    /* Operators */
+
+    case ARC_ADD_EQUAL:
+        return "ADD_EQUAL";
+        break;
+    case ARC_SUB_EQUAL:
+        return "SUB_EQUAL";
+        break;
+    case ARC_DIV_EQUAL:
+        return "DIV_EQUAL";
+        break;
+    case ARC_MUL_EQUAL:
+        return "MUL_EQUAL";
+        break;
+    case ARC_MOD_EQUAL:
+        return "MOD_EQUAL";
+        break;
+    case ARC_OR_EQUAL:
+        return "OR_EQUAL";
+        break;
+    case ARC_AND_EQUAL:
+        return "AND_EQUAL";
+        break;
+    case ARC_NOT_EQUAL:
+        return "NOT_EQUAL";
+        break;
+    case ARC_LEFT_SHIFT_EQUAL:
+        return "LEFT_SHIFT_EQUAL";
+        break;
+    case ARC_RIGHT_SHIFT_EQUAL:
+        return "RIGHT_SHIFT_EQUAL";
+        break;
+    case ARC_XOR_EQUAL:
+        return "XOR_EQUAL";
+        break;
+    case ARC_LESS_EQUAL:
+        return "LESS_EQUAL";
+        break;
+    case ARC_GREATER_EQUAL:
+        return "GREATER_EQUAL";
+        break;
+    case ARC_EQUAL:
+        return "EQUAL";
+        break;
+    case ARC_ASSIGN:
+        return "ASSIGN";
+        break;
+    case ARC_INFER_ASSIGN:
+        return "INFER_ASSIGN";
+        break;
+    case ARC_ADD:
+        return "ADD";
+        break;
+    case ARC_SUB:
+        return "SUB";
+        break;
+    case ARC_DIV:
+        return "DIV";
+        break;
+    case ARC_MUL:
+        return "MUL";
+        break;
+    case ARC_MOD:
+        return "MOD";
+        break;
+    case ARC_BIN_OR:
+        return "BIN_OR";
+        break;
+    case ARC_BIN_AND:
+        return "BIN_AND";
+        break;
+    case ARC_NOT:
+        return "NOT";
+        break;
+    case ARC_LEFT_SHIFT:
+        return "LEFT_SHIFT";
+        break;
+    case ARC_RIGHT_SHIFT:
+        return "RIGHT_SHIFT";
+        break;
+    case ARC_XOR:
+        return "XOR";
+        break;
+    case ARC_LESS:
+        return "LESS";
+        break;
+    case ARC_GREATER:
+        return "GREATER";
+        break;
+    case ARC_NEGATE:
+        return "NEGATE";
+        break;
+    case ARC_LOGICAL_OR:
+        return "LOGICAL_OR";
+        break;
+    case ARC_LOGICAL_AND:
+        return "LOGICAL_AND";
+        break;
+    case ARC_PRE_INCREMENT:
+        return "PRE_INCREMENT";
+        break;
+    case ARC_POST_INCREMENT:
+        return "POST_INCREMENT";
+        break;
+    case ARC_PRE_DECREMENT:
+        return "PRE_DECREMENT";
+        break;
+    case ARC_POST_DECREMENT:
+        return "POST_DECREMENT";
+        break;
+    }
+}
