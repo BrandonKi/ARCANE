@@ -1,7 +1,7 @@
 #include "Lexer.h"
 
-Lexer::Lexer(const std::string& data):
-    data(data), tokens(), index(0), line(1), col(1), error(data)
+Lexer::Lexer(const std::string& filedata):
+    data(filedata), tokens(), index(0), line(1), col(1), error(filedata)
 {
     error.log(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
     error.flush();
