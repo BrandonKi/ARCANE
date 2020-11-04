@@ -19,6 +19,84 @@ void Lexer::lex() {     // TODO return Token* instead
             CASE_ID:
                 tokens.push_back(identifier());
                 break;
+            case '{':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_OPEN_BRACE));
+                break;
+            case '}':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_CLOSE_BRACE));
+                break;
+            case '[':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_OPEN_BRACKET));
+                break;
+            case ']':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_CLOSE_BRACKET));
+                break;
+            case '(':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_OPEN_PAREN));
+                break;
+            case ')':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_CLOSE_PAREN));
+                break;
+            case '.':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_DOT));
+                break;
+            case ',':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_COMMA));
+                break;
+            case '?':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_TERNARY));
+                break;
+            case ';':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_SEMICOLON));
+                break;
+            case ':':   //TODO ARC_COLON is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_COLON));
+                break;
+            case '@':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_AT));
+                break;
+            case '#':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_HASH));
+                break;
+            case '$':
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_DOLLAR));
+                break;
+            case '+':   //TODO ARC_ADD is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_ADD));
+                break;
+            case '-':   //TODO ARC_SUB is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_SUB));
+                break;
+            case '/':   //TODO ARC_DIV is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_DIV));
+                break;
+            case '*':   //TODO ARC_MUL is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_MUL));
+                break;
+            case '%':   //TODO ARC_MOD is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_MOD));
+                break;
+            case '|':   //TODO ARC_OR is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_BIN_OR));
+                break;
+            case '&':   //TODO ARC_AND is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_BIN_AND));
+                break;
+            case '!':   //TODO ARC_NOT is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_NOT));
+                break;
+            case '<':   //TODO ARC_LESS is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_LESS));
+                break;
+            case '>':   //TODO ARC_GREATER is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_GREATER));
+                break;
+            case '^':   //TODO ARC_XOR is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_XOR));
+                break;
+            case '=':   //TODO ARC_EQUAL is not trivial to tokenize
+                tokens.push_back(createToken(std::string(1, currentChar()), ARC_ASSIGN));
+                break;
             case '\n':
                 line++;
                 col = 0;
@@ -105,6 +183,15 @@ inline char Lexer::nextChar(){
 inline char Lexer::peekNextChar(){   
     return data[index+1];
 }
+
+inline Token* Lexer::createToken(std::string& id, TokenKind kind){
+    return new Token {id, kind, line, col};
+}
+
+inline Token* Lexer::createToken(std::string&& id, TokenKind kind){
+    return new Token {id, kind, line, col};
+}
+
 
 inline Token* Lexer::createToken(std::string& id, TokenKind kind, u32 currentCol){
     return new Token {id, kind, line, currentCol};

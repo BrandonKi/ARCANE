@@ -30,6 +30,8 @@ class Lexer{
         Token* number_lit();
         Token* identifier();
 
+        Token* createToken(std::string&, TokenKind);
+        Token* createToken(std::string&&, TokenKind);
         Token* createToken(std::string&, TokenKind, u32);
 
         void printTokens(bool verbose);
