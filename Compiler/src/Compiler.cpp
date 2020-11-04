@@ -5,7 +5,7 @@
  * also initializes data by reading from a file
  */
 Compiler::Compiler():
-    data(std::move(readFile(args.filepath)))
+    data(readFile(args.filepath))
 {
     /* Nothing to see here */
 }
@@ -33,11 +33,11 @@ std::vector<u8> Compiler::compile(const std::string& code) {
  */
 std::string Compiler::readFile(const std::string& filepath){
     std::ifstream file;
-    file.open(args.filepath);
+    file.open(filepath);
     std::stringstream buffer;
     buffer << file.rdbuf();
     file.close();
-    return std::move(buffer.str());
+    return buffer.str();
 }
 
 
