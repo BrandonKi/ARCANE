@@ -1,8 +1,8 @@
 #include "ErrorHandler.h"
 
 
-ErrorHandler::ErrorHandler(const std::string& src):
-    buffer(), src(src)
+ErrorHandler::ErrorHandler(const std::string& _src):
+    buffer(), src(_src)
 {
     buffer.reserve(200);
 }
@@ -31,7 +31,7 @@ void ErrorHandler::log(ErrorMessage error) {
 }
 
 std::string ErrorHandler::makePreamble(ErrorMessage& error){
-    return std::move(error.filename + '[' + std::to_string(error.token->srcLine) + ", " + std::to_string(error.token->srcChar) + "] : ");
+    return error.filename + '[' + std::to_string(error.token->srcLine) + ", " + std::to_string(error.token->srcChar) + "] : ";
 }
 
 void ErrorHandler::flush(){
