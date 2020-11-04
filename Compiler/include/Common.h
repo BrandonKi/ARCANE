@@ -34,6 +34,7 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 
     ARC_INT_LIT,
     ARC_FLOAT_LIT,
+    ARC_STRING_LIT,
 
     ARC_I8,
     ARC_I16,
@@ -145,7 +146,7 @@ const static std::unordered_map<std::string, TokenKind> keywords( {
 
     {"i8", ARC_I8}, {"i16", ARC_I16}, {"i32", ARC_I32}, {"i64", ARC_I64}, 
     {"u8", ARC_U8}, {"u16", ARC_U16}, {"u32", ARC_U32}, {"u64", ARC_U64}, 
-    {"f32", ARC_F32}, {"f64", ARC_F64}, {"str", ARC_STR}, {"arr", ARC_ARR}, 
+    {"f32", ARC_F32}, {"f64", ARC_F64}, {"string", ARC_STR}, {"arr", ARC_ARR}, 
     {"struct", ARC_STRUCT}, {"char", ARC_I8}, {"int", ARC_I32}, {"float", ARC_F32},
 
     {"fn", ARC_FN}, {"ret", ARC_RET}, {"if", ARC_IF}, {"elif", ARC_ELIF},
@@ -176,6 +177,8 @@ inline std::string str(TokenKind kind){
     case ARC_FLOAT_LIT:
         return "FLOAT_LIT";
         
+    case ARC_STRING_LIT:
+        return "STRING_LIT";
 
     case ARC_I8:
         return "I8";
