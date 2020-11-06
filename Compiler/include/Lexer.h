@@ -48,9 +48,12 @@ class Lexer{
         Token* lexGreater();
         Token* lexEqual();
 
-        Token* createToken(std::string&, TokenKind);
-        Token* createToken(std::string&&, TokenKind);
-        Token* createToken(std::string&, TokenKind, u32);
+        Token* createToken(TokenKind, u32);
+        Token* createToken(TokenKind, u32, u32);
+        Token* createToken(TokenKind, u32, std::string& val);
+        Token* createToken(TokenKind, u32, std::string&& val);
+        Token* createToken(TokenKind, u32, u32, std::string& val);
+        Token* createToken(TokenKind, u32, u32, std::string&& val);
 
         void printTokens(bool verbose);
 

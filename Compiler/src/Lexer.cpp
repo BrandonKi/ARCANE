@@ -27,82 +27,82 @@ void Lexer::lex(){     // TODO return Token* instead
                 tokens.push_back(lexInterpolatedString());
                 break;
             case '{':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_OPEN_BRACE));
+                tokens.push_back(createToken(ARC_OPEN_BRACE, index));
                 break;
             case '}':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_CLOSE_BRACE));
+                tokens.push_back(createToken(ARC_CLOSE_BRACE, index));
                 break;
             case '[':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_OPEN_BRACKET));
+                tokens.push_back(createToken(ARC_OPEN_BRACKET, index));
                 break;
             case ']':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_CLOSE_BRACKET));
+                tokens.push_back(createToken(ARC_CLOSE_BRACKET, index));
                 break;
             case '(':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_OPEN_PAREN));
+                tokens.push_back(createToken(ARC_OPEN_PAREN, index));
                 break;
             case ')':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_CLOSE_PAREN));
+                tokens.push_back(createToken(ARC_CLOSE_PAREN, index));
                 break;
             case '.':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_DOT));
+                tokens.push_back(createToken(ARC_DOT, index));
                 break;
             case ',':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_COMMA));
+                tokens.push_back(createToken(ARC_COMMA, index));
                 break;
             case '?':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_TERNARY));
+                tokens.push_back(createToken(ARC_TERNARY, index));
                 break;
             case ';':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_SEMICOLON));
+                tokens.push_back(createToken(ARC_SEMICOLON, index));
                 break;
             case ':':   //TODO ARC_COLON is not trivial to tokenize
                 tokens.push_back(lexColon());
                 break;
             case '@':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_AT));
+                tokens.push_back(createToken(ARC_AT, index));
                 break;
             case '#':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_HASH));
+                tokens.push_back(createToken(ARC_HASH, index));
                 break;
             case '$':
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_DOLLAR));
+                tokens.push_back(createToken(ARC_DOLLAR, index));
                 break;
             case '+':   //TODO ARC_ADD is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_ADD));
+                tokens.push_back(createToken(ARC_ADD, index));
                 break;
             case '-':   //TODO ARC_SUB is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_SUB));
+                tokens.push_back(createToken(ARC_SUB, index));
                 break;
             case '/':   //TODO ARC_DIV is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_DIV));
+                tokens.push_back(createToken(ARC_DIV, index));
                 break;
             case '*':   //TODO ARC_MUL is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_MUL));
+                tokens.push_back(createToken(ARC_MUL, index));
                 break;
             case '%':   //TODO ARC_MOD is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_MOD));
+                tokens.push_back(createToken(ARC_MOD, index));
                 break;
             case '|':   //TODO ARC_OR is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_BIN_OR));
+                tokens.push_back(createToken(ARC_BIN_OR, index));
                 break;
             case '&':   //TODO ARC_AND is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_BIN_AND));
+                tokens.push_back(createToken(ARC_BIN_AND, index));
                 break;
             case '!':   //TODO ARC_NOT is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_NOT));
+                tokens.push_back(createToken(ARC_NOT, index));
                 break;
             case '^':   //TODO ARC_XOR is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_XOR));
+                tokens.push_back(createToken(ARC_XOR, index));
                 break;
             case '<':   //TODO ARC_LESS is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_LESSER));
+                tokens.push_back(createToken(ARC_LESSER, index));
                 break;
             case '>':   //TODO ARC_GREATER is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_GREATER));
+                tokens.push_back(createToken(ARC_GREATER, index));
                 break;
             case '=':   //TODO ARC_EQUAL is not trivial to tokenize
-                tokens.push_back(createToken(std::string(1, currentChar()), ARC_ASSIGN));
+                tokens.push_back(createToken(ARC_ASSIGN, index));
                 break;
             case '\n':
                 line++;
@@ -113,13 +113,13 @@ void Lexer::lex(){     // TODO return Token* instead
         }
             nextChar_noreturn();
     }
-
     printTokens(false);  // true for verbose false for succint
 }
 
 
 Token* Lexer::lexNumberLit(){
     std::string num;
+    u32 startPos = index;
     u32 currentCol = col;
     bool isFloat = false;
     bool isInt = true;
@@ -145,19 +145,19 @@ Token* Lexer::lexNumberLit(){
     prevChar_noreturn();    // the above loop goes one char too far so decrement here
 
     if(isInt)
-        return createToken(num, ARC_INT_LIT, currentCol);
+        return createToken(ARC_INT_LIT, currentCol, startPos, num);
     else if(isFloat)
-        return createToken(num, ARC_FLOAT_LIT, currentCol);
+        return createToken(ARC_FLOAT_LIT, currentCol, startPos, num);
     else{
         //TODO convert hex literal to int or float literal
-        return createToken(num, ARC_INT_LIT, currentCol);
+        return createToken(ARC_INT_LIT, currentCol, startPos, num);
     }
 }
 
 Token* Lexer::lexIdentifier(){
 
     std::string id;
-
+    u32 startPos = index;
     u32 currentCol = col;
 
     while(isAlpha(currentChar())  || isDigit(currentChar())){
@@ -168,11 +168,13 @@ Token* Lexer::lexIdentifier(){
     prevChar_noreturn();    // the above loop goes one char too far so decrement here
 
     if(keywords.find(id) != keywords.end())
-        return createToken(id, keywords.find(id)->second, currentCol);
-    return createToken(id, ARC_ID, currentCol);
+        return createToken(keywords.find(id)->second, currentCol, startPos);
+    return createToken(ARC_ID, currentCol, startPos, id);
 }
 
-Token* Lexer::lexString(){  //TODO escape sequences 
+Token* Lexer::lexString(){  //TODO escape sequences
+
+    u32 startPos = index;
 
     std::string id;
         
@@ -184,7 +186,7 @@ Token* Lexer::lexString(){  //TODO escape sequences
 
     nextChar_noreturn();
 
-    return createToken(id, ARC_STRING_LIT);
+    return createToken(ARC_STRING_LIT, startPos, id);
 }
 
 Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
@@ -196,12 +198,14 @@ Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
 
 Token* Lexer::lexColon(){
 
+    u32 startPos = index;
+
     if(peekNextChar() == '='){
         nextChar_noreturn();
-        return createToken(std::string(":="), ARC_INFER);
+        return createToken(ARC_INFER, startPos);
     }
     else
-        return createToken(std::string(1, currentChar()), ARC_COLON);
+        return createToken(ARC_COLON, startPos);
 
 }
 
@@ -284,25 +288,41 @@ inline char Lexer::peekNextChar(){
     return data[index+1];
 }
 
-inline Token* Lexer::createToken(std::string& id, TokenKind kind){
-    return new Token {id, kind, line, col};
+inline Token* Lexer::createToken(TokenKind kind, u32 startPos){
+    Token* tkn = new Token {kind, line, col, startPos, index, std::string()};
+    return tkn;
 }
 
-inline Token* Lexer::createToken(std::string&& id, TokenKind kind){
-    return new Token {id, kind, line, col};
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos){
+    Token* tkn = new Token {kind, line, currentCol, startPos, index, std::string()};
+    return tkn;
+}
+
+inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string& val){
+    return createToken(kind, col, startPos, val);
+}
+
+inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string&& val){
+    return createToken(kind, col, startPos, val);
 }
 
 
-inline Token* Lexer::createToken(std::string& id, TokenKind kind, u32 currentCol){
-    return new Token {id, kind, line, currentCol};
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val){
+    Token* tkn = new Token {kind, line, currentCol, startPos, index, val};
+    return tkn;
+}
+
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string&& val){
+    Token* tkn = new Token {kind, line, currentCol, startPos, index, val};
+    return tkn;
 }
 
 void Lexer::printTokens(bool verbose){
     if(verbose)
-        for(Token*& tkn : tokens)
-            printTokenln(*tkn);
+        for(Token* tkn : tokens)
+            printTokenln(tkn);
     else{
-        for(Token*& tkn : tokens)
-            println(str(tkn->kind) + ": " + tkn->id);
+        for(Token* tkn : tokens)
+            println(str(tkn->kind) + ": " + tkn->data);
     }
 }

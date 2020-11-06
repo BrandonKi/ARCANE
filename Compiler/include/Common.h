@@ -17,11 +17,15 @@ typedef uint8_t  u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
+typedef float_t f32;
+typedef double_t f64;
 
 inline struct ARGS {
     std::string filepath;
-    std::string output_filepath; 
-    bool optimize;
+    std::string output_filepath;
+    bool LexOut = false;
+    bool verboseLexOut = false;
+    bool optimize = false;
 }args;
 
 enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
@@ -130,16 +134,13 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_POST_DECREMENT,
 };
 
-struct info{
-    std::string val;
-};
-
 struct Token{
-    std::string id;
     TokenKind kind;
     u32 srcLine;
     u32 srcChar;
-    struct info;
+    u32 startPos;
+    u32 endPos;
+    std::string data;
 };
 
 const static std::unordered_map<std::string, TokenKind> keywords( { 
@@ -156,12 +157,12 @@ const static std::unordered_map<std::string, TokenKind> keywords( {
     
 });
 
-inline void printToken(Token t){
-    print("'" + std::string(t.id) + "' " + std::to_string(static_cast<i32>(t.kind)) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
+inline void printToken(Token* t){
+    print("'" + std::string(t->data) + "' " + std::to_string(static_cast<i32>(t->kind)) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
 }
 
-inline void printTokenln(Token t){
-    println("'" + std::string(t.id) + "' " + std::to_string(static_cast<i32>(t.kind)) + " [" + std::to_string(t.srcLine) + ", " + std::to_string(t.srcChar) + "]");
+inline void printTokenln(Token* t){
+    println("'" + std::string(t->data) + "' " + std::to_string(static_cast<i32>(t->kind)) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
 }
 
 inline std::string str(TokenKind kind){
