@@ -431,3 +431,270 @@ inline std::string str(TokenKind kind){
         
     }
 }
+
+inline std::string getStringRep(TokenKind kind){
+    
+    switch(kind){
+
+    case ARC_NONE:
+        return "NONE";
+        
+    case ARC_INT_LIT:
+        return "";
+        
+    case ARC_FLOAT_LIT:
+        return "";
+        
+    case ARC_STRING_LIT:
+        return "";
+
+    case ARC_I8:
+        return "i8";
+        
+    case ARC_I16:
+        return "i16";
+        
+    case ARC_I32:
+        return "i32";
+        
+    case ARC_I64:
+        return "i64";
+        
+
+    case ARC_U8:
+        return "u8";
+        
+    case ARC_U16:
+        return "u16";
+        
+    case ARC_U32:
+        return "u32";
+        
+    case ARC_U64:
+        return "u64";
+        
+
+    case ARC_F32:
+        return "f32";
+        
+    case ARC_F64:
+        return "f64";
+        
+
+    case ARC_STRUCT:
+        return "struct";
+        
+    case ARC_STR:
+        return "string";
+        
+    case ARC_ARR:
+        return "arr";
+        
+
+    case ARC_ID:
+        return "";
+        
+
+    /* Keywords */
+
+    case ARC_FN:
+        return "fn";
+        
+    case ARC_RET:
+        return "ret";
+        
+    case ARC_IF:
+        return "if";
+        
+    case ARC_ELIF:
+        return "elif";
+        
+    case ARC_ELSE:
+        return "else";
+        
+    case ARC_WHILE:
+        return "while";
+        
+    case ARC_FOR:
+        return "for";
+        
+    case ARC_DO:
+        return "do";
+        
+    case ARC_SWITCH:
+        return "switch";
+        
+    case ARC_BREAK:
+        return "break";
+        
+    case ARC_CASE:
+        return "case";
+        
+    case ARC_DEFAULT:
+        return "default";
+        
+
+    case ARC_TRUE:
+        return "true";
+        
+    case ARC_FALSE:
+        return "false";
+        
+
+    /* Symbols */
+
+    case ARC_OPEN_BRACE:
+        return "{";
+        
+    case ARC_CLOSE_BRACE:
+        return "}";
+        
+    case ARC_OPEN_BRACKET:
+        return "[";
+        
+    case ARC_CLOSE_BRACKET:
+        return "]";
+        
+    case ARC_OPEN_PAREN:
+        return "(";
+        
+    case ARC_CLOSE_PAREN:
+        return ")";
+        
+    case ARC_DOT:
+        return ".";
+        
+    case ARC_COMMA:
+        return ",";
+        
+    case ARC_TERNARY:
+        return "?";
+        
+    case ARC_SEMICOLON:
+        return ";";
+        
+    case ARC_COLON:
+        return ":";
+        
+    case ARC_AT:
+        return "@";
+        
+    case ARC_HASH:
+        return "#";
+        
+    case ARC_DOLLAR:
+        return "$";
+        
+
+    /* Operators */
+
+    case ARC_ADD_EQUAL:
+        return "+=";
+        
+    case ARC_SUB_EQUAL:
+        return "-=";
+        
+    case ARC_DIV_EQUAL:
+        return "/=";
+        
+    case ARC_MUL_EQUAL:
+        return "*=";
+        
+    case ARC_MOD_EQUAL:
+        return "%=";
+        
+    case ARC_OR_EQUAL:
+        return "|=";
+        
+    case ARC_AND_EQUAL:
+        return "&=";
+        
+    case ARC_NOT_EQUAL:
+        return "!=";
+        
+    case ARC_LEFT_SHIFT_EQUAL:
+        return "<<=";
+        
+    case ARC_RIGHT_SHIFT_EQUAL:
+        return ">>=";
+        
+    case ARC_XOR_EQUAL:
+        return "^=";
+        
+    case ARC_LESSER_EQUAL:
+        return "<=";
+        
+    case ARC_GREATER_EQUAL:
+        return ">=";
+        
+    case ARC_EQUAL:
+        return "==";
+        
+    case ARC_ASSIGN:
+        return "=";
+        
+    case ARC_INFER:
+        return ":=";
+        
+    case ARC_ADD:
+        return "+";
+        
+    case ARC_SUB:
+        return "-";
+        
+    case ARC_DIV:
+        return "/";
+        
+    case ARC_MUL:
+        return "*";
+        
+    case ARC_MOD:
+        return "%";
+        
+    case ARC_BIN_OR:
+        return "|";
+        
+    case ARC_BIN_AND:
+        return "&";
+        
+    case ARC_NOT:
+        return "!";
+        
+    case ARC_LEFT_SHIFT:
+        return "<<";
+        
+    case ARC_RIGHT_SHIFT:
+        return ">>";
+        
+    case ARC_XOR:
+        return "^";
+        
+    case ARC_LESSER:
+        return "<";
+        
+    case ARC_GREATER:
+        return ">";
+        
+    case ARC_NEGATE:
+        return "-x";
+        
+    case ARC_LOGICAL_OR:
+        return "||";
+        
+    case ARC_LOGICAL_AND:
+        return "&&";
+        
+    case ARC_PRE_INCREMENT:
+        return "++x";
+        
+    case ARC_POST_INCREMENT:
+        return "x++";
+        
+    case ARC_PRE_DECREMENT:
+        return "--x";
+        
+    case ARC_POST_DECREMENT:
+        return "x--";
+        
+    }
+}

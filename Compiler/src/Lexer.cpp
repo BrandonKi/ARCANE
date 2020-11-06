@@ -318,12 +318,15 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     return tkn;
 }
 
-void Lexer::printTokens(bool verbose){
+inline void Lexer::printTokens(bool verbose){
     if(verbose)
         for(Token* tkn : tokens)
             printTokenln(tkn);
     else{
         for(Token* tkn : tokens)
-            println(str(tkn->kind) + ": " + tkn->data);
+            if(tkn->data == std::string(""))
+                println(str(tkn->kind) + ": " + getStringRep(tkn->kind));
+            else
+                println(str(tkn->kind) + ": " + tkn->data);
     }
 }
