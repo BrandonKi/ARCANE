@@ -113,7 +113,8 @@ void Lexer::lex(){     // TODO return Token* instead
         }
             nextChar_noreturn();
     }
-    printTokens(false);  // true for verbose false for succint
+    if(args.LexOut)
+        printTokens(args.verboseLexOut);  // true for verbose false for succint
 }
 
 
