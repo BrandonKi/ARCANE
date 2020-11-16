@@ -1,10 +1,10 @@
 #include "Lexer.h"
 
 Lexer::Lexer(const std::string& filedata):
-    data(filedata), tokens(), index(0), line(1), col(1), error(filedata)
+    data(filedata), tokens(), index(0), line(1), col(1), errorLog(filedata)
 {
-    // error.log(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
-    // error.flush();
+    // errorLog.push(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
+    // errorLog.flush();
     tokens.reserve(100);
 }
 
@@ -69,13 +69,16 @@ void Lexer::lex(){     // TODO return Token* instead
                 tokens.push_back(createToken(ARC_DOLLAR, index));
                 break;
             case '+':   //TODO ARC_ADD is not trivial to tokenize
-                tokens.push_back(createToken(ARC_ADD, index));
+                tokens.push_back(lexAdd());
                 break;
             case '-':   //TODO ARC_SUB is not trivial to tokenize
                 tokens.push_back(createToken(ARC_SUB, index));
                 break;
             case '/':   //TODO ARC_DIV is not trivial to tokenize
-                tokens.push_back(createToken(ARC_DIV, index));
+                if(peekNextChar() == '/' || peekNextChar() == '*')
+                    consumeComment();
+                else
+                    tokens.push_back(lexDiv());
                 break;
             case '*':   //TODO ARC_MUL is not trivial to tokenize
                 tokens.push_back(createToken(ARC_MUL, index));
@@ -117,6 +120,24 @@ void Lexer::lex(){     // TODO return Token* instead
         printTokens(args.verboseLexOut);  // true for verbose false for succint
 }
 
+
+void Lexer::consumeComment(){
+
+    if(nextChar() == '*'){
+        nextChar_noreturn();
+        while(!(currentChar() == '*' && peekNextChar() == '/')){    // TODO possible to run out of bounds of the file here
+            if(currentChar() == '\n')
+                line++;
+            nextChar_noreturn();
+        }
+        nextChar_noreturn();
+    }
+    else{
+        while(currentChar() != '\n'){
+            nextChar_noreturn();
+        }
+    }
+}
 
 Token* Lexer::lexNumberLit(){
     std::string num;
@@ -185,14 +206,12 @@ Token* Lexer::lexString(){  //TODO escape sequences
         id.push_back(currentChar());
     }
 
-    nextChar_noreturn();
-
     return createToken(ARC_STRING_LIT, startPos, id);
 }
 
 Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
-    error.log(ErrorMessage{FATAL, lexString(), args.filepath, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
-    error.flush();
+    errorLog.push(ErrorMessage{FATAL, lexString(), args.filepath, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
+    errorLog.flush();
     std::exit(-1);
     // return new Token{};
 }
@@ -210,16 +229,43 @@ Token* Lexer::lexColon(){
 
 }
 
-Token* Lexer::lexAdd(){
-    return new Token{};
+inline Token* Lexer::lexAdd(){
+
+    u32 startPos = index;
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_ADD_EQUAL, startPos);
+    }
+    else if(peekNextChar() == '+'){
+        nextChar_noreturn();
+        if(tokens.back()->kind == ARC_ID)
+            return createToken(ARC_POST_INCREMENT, startPos);
+        return createToken(ARC_PRE_INCREMENT, startPos);
+    }
+    else
+        return createToken(ARC_ADD, startPos);
 }
 
 Token* Lexer::lexSub(){
-    return new Token{};
+    
+    u32 startPos = index;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_SUB_EQUAL, startPos);
+    }
+    else if(peekNextChar() == '+'){
+        nextChar_noreturn();
+        if(tokens.back()->kind == ARC_ID)
+            return createToken(ARC_POST_DECREMENT, startPos);
+        return createToken(ARC_PRE_DECREMENT, startPos);
+    }
+    else
+        return createToken(ARC_ADD, startPos);
 }
 
 Token* Lexer::lexDiv(){
-    return new Token{};
+    return createToken(ARC_DIV, index);
 }
 
 Token* Lexer::lexMul(){

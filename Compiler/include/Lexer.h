@@ -28,7 +28,9 @@ class Lexer{
         u32 index;
         u32 line;
         u32 col;
-        ErrorHandler error;
+        ErrorHandler errorLog;
+
+        void consumeComment();
 
         Token* lexNumberLit();
         Token* lexIdentifier();
