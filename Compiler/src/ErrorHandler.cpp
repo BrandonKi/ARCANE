@@ -7,7 +7,7 @@ ErrorHandler::ErrorHandler(const std::string& _src):
     buffer.reserve(200);
 }
 
-void ErrorHandler::log(ErrorMessage error) {
+void ErrorHandler::push(ErrorMessage error) {
 
     buffer += makePreamble(error);
 

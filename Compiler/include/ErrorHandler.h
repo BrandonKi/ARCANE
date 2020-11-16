@@ -17,7 +17,7 @@ class ErrorHandler {
         ErrorHandler();
         ErrorHandler(const std::string&);
 
-        void log(ErrorMessage);
+        void push(ErrorMessage);
         void flush();
 
     private:
