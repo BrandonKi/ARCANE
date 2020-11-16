@@ -38,7 +38,9 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 
     ARC_INT_LIT,
     ARC_FLOAT_LIT,
+    ARC_STRUCT_LIT,
     ARC_STRING_LIT,
+    ARC_ARR_LIT,
 
     ARC_I8,
     ARC_I16,
@@ -178,8 +180,14 @@ inline std::string str(TokenKind kind){
     case ARC_FLOAT_LIT:
         return "FLOAT_LIT";
         
+    case ARC_STRUCT_LIT:
+        return "STRUCT_LIT";
+
     case ARC_STRING_LIT:
         return "STRING_LIT";
+
+    case ARC_ARR_LIT:
+        return "ARR_LIT";
 
     case ARC_I8:
         return "I8";
@@ -445,8 +453,14 @@ inline std::string getStringRep(TokenKind kind){
     case ARC_FLOAT_LIT:
         return "";
         
+    case ARC_STRUCT_LIT:
+        return "{}";
+    
     case ARC_STRING_LIT:
         return "";
+
+    case ARC_ARR_LIT:
+        return "[]";
 
     case ARC_I8:
         return "i8";
