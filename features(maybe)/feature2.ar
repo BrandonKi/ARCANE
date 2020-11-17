@@ -1,0 +1,5 @@
+
+fn main(): int{
+    defer print('Hello');
+    print('World');
+} // output: WorldHello

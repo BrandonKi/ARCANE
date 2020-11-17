@@ -9,5 +9,9 @@ fn main(): int{
     $i[0, 3]
         print(i);
     // output: 0, 1, 2, 3
-    
+
+    i : int = 0;
+    $(0, 3)
+        i++;
+    // i = 2 because range is 0 to 3 exclusive
 }
