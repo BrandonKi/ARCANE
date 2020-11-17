@@ -1,0 +1,13 @@
+
+fn main(): int{
+
+    $i[0, 2]U(8, 11)U{14}{
+        print(i);
+    }
+    // output: 0 1 2 9 10 14
+
+    $i[0, 3]
+        print(i);
+    // output: 0, 1, 2, 3
+    
+}

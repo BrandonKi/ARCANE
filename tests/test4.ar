@@ -3,5 +3,5 @@
 /* testing block comments*/
 
 fn /* block comment*/main(): /* block comment */int {
-    ret /* block comment */0;
+    ret /* block comment */0 + true + false;
 }

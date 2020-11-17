@@ -1,0 +1,11 @@
+
+var : int = 10;
+
+fn main(): int {
+    globalTest();
+    ret var;
+}
+
+fn globalTest(): void{
+    var++;
+}

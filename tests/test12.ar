@@ -1,0 +1,13 @@
+
+fn main(): int{
+
+    if(false){
+        ret 1;
+    }
+    elif(false){
+        ret 2;
+    }
+    else{
+        ret 3;
+    }
+}

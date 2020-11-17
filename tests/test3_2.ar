@@ -1,0 +1,7 @@
+
+fn main():int{
+    byte: u8 = 1;
+    byte += 300;
+    var: i64 = 2000;
+    ret byte + var;
+}

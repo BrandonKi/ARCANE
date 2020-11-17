@@ -1,0 +1,20 @@
+
+fn main(): int{
+
+    var0 : struct = {f1 : int, f2 : int}
+
+    var1 : i8 = 0;
+    var2 : i16 = 0;
+    var3 : i32 = 0;
+    var4 : i64 = 0;
+    var5 : u8 = 0;
+    var6 : u16 = 0;
+    var7 : u32 = 0;
+    var8 : u64 = 0;
+    var9 : f32 = 0;
+    var10 : f64 = 0;
+    var11 : string = "";
+    var12 : arr = [];
+    
+    ret 0;
+}

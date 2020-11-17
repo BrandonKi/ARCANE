@@ -1,0 +1,10 @@
+
+fn main(): int {
+    ret fib(7);
+}
+
+fn fib(n : int): int {
+    if(n <= 1)
+        ret n;
+    ret fib(n-1) + fib(n-2);
+}
