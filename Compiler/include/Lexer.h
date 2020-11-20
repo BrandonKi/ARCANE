@@ -46,7 +46,7 @@ class Lexer{
         Token* lexAnd();
         Token* lexNot();
         Token* lexXor();
-        Token* lexLess();
+        Token* lexLesser();
         Token* lexGreater();
         Token* lexEqual();
 
