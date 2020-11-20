@@ -159,14 +159,6 @@ const static std::unordered_map<std::string, TokenKind> keywords( {
     
 });
 
-inline void printToken(Token* t){
-    print("'" + std::string(t->data) + "' " + std::to_string(static_cast<i32>(t->kind)) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
-}
-
-inline void printTokenln(Token* t){
-    println("'" + std::string(t->data) + "' " + std::to_string(static_cast<i32>(t->kind)) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
-}
-
 inline std::string str(TokenKind kind){
     
     switch(kind){
@@ -711,4 +703,12 @@ inline std::string getStringRep(TokenKind kind){
         return "x--";
         
     }
+}
+
+inline void printToken(Token* t){
+    print("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
+}
+
+inline void printTokenln(Token* t){
+    println("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
 }
