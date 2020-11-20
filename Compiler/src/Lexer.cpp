@@ -56,7 +56,7 @@ void Lexer::lex(){     // TODO return Token* instead
             case ';':
                 tokens.push_back(createToken(ARC_SEMICOLON, index));
                 break;
-            case ':':   //TODO ARC_COLON is not trivial to tokenize
+            case ':':
                 tokens.push_back(lexColon());
                 break;
             case '@':
@@ -68,44 +68,44 @@ void Lexer::lex(){     // TODO return Token* instead
             case '$':
                 tokens.push_back(createToken(ARC_DOLLAR, index));
                 break;
-            case '+':   //TODO ARC_ADD is not trivial to tokenize
+            case '+':
                 tokens.push_back(lexAdd());
                 break;
-            case '-':   //TODO ARC_SUB is not trivial to tokenize
-                tokens.push_back(createToken(ARC_SUB, index));
+            case '-':
+                tokens.push_back(lexSub());
                 break;
-            case '/':   //TODO ARC_DIV is not trivial to tokenize
+            case '/':
                 if(peekNextChar() == '/' || peekNextChar() == '*')
                     consumeComment();
                 else
                     tokens.push_back(lexDiv());
                 break;
-            case '*':   //TODO ARC_MUL is not trivial to tokenize
-                tokens.push_back(createToken(ARC_MUL, index));
+            case '*':
+                tokens.push_back(lexMul());
                 break;
-            case '%':   //TODO ARC_MOD is not trivial to tokenize
-                tokens.push_back(createToken(ARC_MOD, index));
+            case '%':
+                tokens.push_back(lexMod());
                 break;
-            case '|':   //TODO ARC_OR is not trivial to tokenize
-                tokens.push_back(createToken(ARC_BIN_OR, index));
+            case '|':
+                tokens.push_back(lexOr());
                 break;
-            case '&':   //TODO ARC_AND is not trivial to tokenize
-                tokens.push_back(createToken(ARC_BIN_AND, index));
+            case '&':
+                tokens.push_back(lexAnd());
                 break;
-            case '!':   //TODO ARC_NOT is not trivial to tokenize
-                tokens.push_back(createToken(ARC_NOT, index));
+            case '!':
+                tokens.push_back(lexNot());
                 break;
-            case '^':   //TODO ARC_XOR is not trivial to tokenize
-                tokens.push_back(createToken(ARC_XOR, index));
+            case '^':
+                tokens.push_back(lexXor());
                 break;
-            case '<':   //TODO ARC_LESS is not trivial to tokenize
-                tokens.push_back(createToken(ARC_LESSER, index));
+            case '<':
+                tokens.push_back(lexLesser());
                 break;
-            case '>':   //TODO ARC_GREATER is not trivial to tokenize
-                tokens.push_back(createToken(ARC_GREATER, index));
+            case '>':
+                tokens.push_back(lexGreater());
                 break;
-            case '=':   //TODO ARC_EQUAL is not trivial to tokenize
-                tokens.push_back(createToken(ARC_ASSIGN, index));
+            case '=':
+                tokens.push_back(lexEqual());
                 break;
             case '\n':
                 line++;
@@ -125,7 +125,7 @@ void Lexer::consumeComment(){
 
     if(nextChar() == '*'){
         nextChar_noreturn();
-        while(!(currentChar() == '*' && peekNextChar() == '/')){    // TODO possible to run out of bounds of the file here
+        while(!(currentChar() == '*' && peekNextChar() == '/')){    // TODO possible to run out of the bounds of the file here
             if(currentChar() == '\n')
                 line++;
             nextChar_noreturn();
@@ -219,10 +219,11 @@ Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
 Token* Lexer::lexColon(){
 
     u32 startPos = index;
-
+    u32 startCol = col;
+    
     if(peekNextChar() == '='){
         nextChar_noreturn();
-        return createToken(ARC_INFER, startPos);
+        return createToken(ARC_INFER, startCol, startPos);
     }
     else
         return createToken(ARC_COLON, startPos);
@@ -232,15 +233,17 @@ Token* Lexer::lexColon(){
 inline Token* Lexer::lexAdd(){
 
     u32 startPos = index;
+    u32 startCol = col;
+
     if(peekNextChar() == '='){
         nextChar_noreturn();
-        return createToken(ARC_ADD_EQUAL, startPos);
+        return createToken(ARC_ADD_EQUAL, startCol, startPos);
     }
     else if(peekNextChar() == '+'){
         nextChar_noreturn();
-        if(tokens.back()->kind == ARC_ID)
-            return createToken(ARC_POST_INCREMENT, startPos);
-        return createToken(ARC_PRE_INCREMENT, startPos);
+        if(tokens.back()->kind == ARC_ID)  // FIXME incorrectly lexes some cases for ex. "4++", "*++4", etc.
+            return createToken(ARC_POST_INCREMENT, startCol, startPos);
+        return createToken(ARC_PRE_INCREMENT, startCol, startPos);
     }
     else
         return createToken(ARC_ADD, startPos);
@@ -249,59 +252,158 @@ inline Token* Lexer::lexAdd(){
 Token* Lexer::lexSub(){
     
     u32 startPos = index;
+    u32 startCol = col;
 
     if(peekNextChar() == '='){
         nextChar_noreturn();
-        return createToken(ARC_SUB_EQUAL, startPos);
+        return createToken(ARC_SUB_EQUAL, startCol, startPos);
     }
-    else if(peekNextChar() == '+'){
+    else if(peekNextChar() == '-'){
         nextChar_noreturn();
-        if(tokens.back()->kind == ARC_ID)
-            return createToken(ARC_POST_DECREMENT, startPos);
-        return createToken(ARC_PRE_DECREMENT, startPos);
+        if(tokens.back()->kind == ARC_ID)   // FIXME incorrectly lexes some cases for ex. "4--", "*--4", etc.
+            return createToken(ARC_POST_DECREMENT, startCol, startPos);
+        return createToken(ARC_PRE_DECREMENT, startCol, startPos);
     }
     else
-        return createToken(ARC_ADD, startPos);
+        return createToken(ARC_ADD, startPos);  // FIXME doesn't even attempt to parse a unary sub
 }
 
 Token* Lexer::lexDiv(){
-    return createToken(ARC_DIV, index);
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_DIV_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_DIV, startPos);
 }
 
 Token* Lexer::lexMul(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_MUL_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_MUL, startPos);
 }
 
 Token* Lexer::lexMod(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_MOD_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_MOD, startPos);
 }
 
 Token* Lexer::lexOr(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_OR_EQUAL, startCol, startPos);
+    }
+    else if(peekNextChar() == '|'){
+        nextChar_noreturn();
+        return createToken(ARC_LOGICAL_OR, startCol, startPos);
+    }
+    else
+        return createToken(ARC_BIN_OR, startPos);
 }
 
 Token* Lexer::lexAnd(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_AND_EQUAL, startCol, startPos);
+    }
+    else if(peekNextChar() == '&'){
+        nextChar_noreturn();
+        return createToken(ARC_LOGICAL_AND, startCol, startPos);
+    }
+    else
+        return createToken(ARC_BIN_AND, startPos);
 }
 
 Token* Lexer::lexNot(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_NOT_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_NOT, startPos);
 }
 
 Token* Lexer::lexXor(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_XOR_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_XOR, startPos);
 }
 
-Token* Lexer::lexLess(){
-    return new Token{};
+Token* Lexer::lexLesser(){
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_LESSER_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_LESSER, startPos);
 }
 
 Token* Lexer::lexGreater(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_GREATER_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_GREATER, startPos);
 }
 
 Token* Lexer::lexEqual(){
-    return new Token{};
+    
+    u32 startPos = index;
+    u32 startCol = col;
+
+    if(peekNextChar() == '='){
+        nextChar_noreturn();
+        return createToken(ARC_EQUAL, startCol, startPos);
+    }
+    else
+        return createToken(ARC_ASSIGN, startPos);
 }
 
 
