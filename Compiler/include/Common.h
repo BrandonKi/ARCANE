@@ -23,10 +23,10 @@ typedef double_t f64;
 inline struct ARGS {
     std::string filepath;
     std::string output_filepath;
-    bool LexOut = false;
+    bool lexOut = false;
     bool verboseLexOut = false;
     bool optimize = false;
-}args;
+} args;
 
 enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
     // NOTE Any changes to this enum must be changed below in the str() method as well
