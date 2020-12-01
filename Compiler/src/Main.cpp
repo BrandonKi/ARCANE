@@ -19,6 +19,9 @@ int main(int argc, char* argv[]){
 
     Compiler compiler;
     compiler.compile(compiler.filedata());
+    #ifdef _DEBUG
+    std::cin.get();
+    #endif
 }
 
 /**
@@ -31,16 +34,15 @@ void parseArgs(int argc, char* argv[]){         //TODO implement the rest of the
     std::vector<std::string> argList(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
     for(std::string& str : argList){
         if(str == "--lex-out")
-            args.LexOut = true;
+            args.lexOut = true;
         else if(str == "--lex-out-v"){
-            args.LexOut = true;
+            args.lexOut = true;
             args.verboseLexOut = true;
         }
         else if(str == "-O")
             args.optimize = true;
         //if(str == "-out")
     }
-            args.output_filepath = "out.exe";
-    args.filepath = argList[1];
+    args.output_filepath = "out.exe";
+    args.filepath = argList.back();
 }
-
