@@ -125,7 +125,7 @@ void Lexer::consumeComment(){
 
     if(nextChar() == '*'){
         nextChar_noreturn();
-        while(!(currentChar() == '*' && peekNextChar() == '/')){    // TODO possible to run out of the bounds of the file here
+        while(index < data.size() && !(currentChar() == '*' && peekNextChar() == '/')){
             if(currentChar() == '\n')
                 line++;
             nextChar_noreturn();
@@ -133,7 +133,7 @@ void Lexer::consumeComment(){
         nextChar_noreturn();
     }
     else{
-        while(currentChar() != '\n'){
+        while(index < data.size() &&  currentChar() != '\n'){
             nextChar_noreturn();
         }
     }
