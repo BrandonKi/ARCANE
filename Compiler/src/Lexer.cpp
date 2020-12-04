@@ -19,8 +19,8 @@ void Lexer::lex(){     // TODO return Token* instead
             CASE_ID:
                 tokens.push_back(lexIdentifier());
                 break;
-            case '\'':  //TODO ARC_STRING_LIT is not trivial to tokenize
-            case '"':   //TODO ARC_STRING_LIT is not trivial to tokenize
+            case '\'':
+            case '"': 
                 tokens.push_back(lexString());
                 break;
             case '`':   //TODO interpolated string literals is not trivial to tokenize
@@ -438,12 +438,12 @@ inline char Lexer::peekNextChar(){
 }
 
 inline Token* Lexer::createToken(TokenKind kind, u32 startPos){
-    Token* tkn = new Token {kind, line, col, startPos, index, std::string()};
+    Token* tkn = new Token {kind, SourcePos{line, col, startPos, index}, std::string()};
     return tkn;
 }
 
 inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos){
-    Token* tkn = new Token {kind, line, currentCol, startPos, index, std::string()};
+    Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, std::string()};
     return tkn;
 }
 
@@ -457,12 +457,12 @@ inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string&& val
 
 
 inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val){
-    Token* tkn = new Token {kind, line, currentCol, startPos, index, val};
+    Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
     return tkn;
 }
 
 inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string&& val){
-    Token* tkn = new Token {kind, line, currentCol, startPos, index, val};
+    Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
     return tkn;
 }
 

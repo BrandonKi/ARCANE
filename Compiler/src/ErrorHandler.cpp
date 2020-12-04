@@ -31,7 +31,7 @@ void ErrorHandler::push(ErrorMessage error) {
 }
 
 std::string ErrorHandler::makePreamble(ErrorMessage& error){
-    return error.filename + '[' + std::to_string(error.token->srcLine) + ", " + std::to_string(error.token->srcChar) + "] : ";
+    return error.filename + '[' + std::to_string(error.token->pos.srcLine) + ", " + std::to_string(error.token->pos.srcChar) + "] : ";
 }
 
 void ErrorHandler::flush(){

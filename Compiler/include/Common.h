@@ -17,7 +17,7 @@ typedef uint8_t  u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
-typedef float_t f32;
+typedef float_t  f32;
 typedef double_t f64;
 
 inline struct ARGS {
@@ -136,12 +136,17 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_POST_DECREMENT,
 };
 
-struct Token{
-    TokenKind kind;
+struct SourcePos {
     u32 srcLine;
     u32 srcChar;
     u32 startPos;
     u32 endPos;
+};
+
+
+struct Token{
+    TokenKind kind;
+    SourcePos pos;
     std::string data;
 };
 
@@ -706,9 +711,9 @@ inline std::string getStringRep(TokenKind kind){
 }
 
 inline void printToken(Token* t){
-    print("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
+    print("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
 }
 
 inline void printTokenln(Token* t){
-    println("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->srcLine) + ", " + std::to_string(t->srcChar) + "] " + "[" + std::to_string(t->startPos) + ", " + std::to_string(t->endPos) + "]");
+    println("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
 }
