@@ -440,14 +440,12 @@ inline char Lexer::peekNextChar(){
 inline Token* Lexer::createToken(TokenKind kind, u32 startPos){
     Token* tkn = allocator.alloc<Token>();
     *tkn = Token {kind, SourcePos{line, col, startPos, index}, nullptr};
-    // Token* tkn = new Token {kind, SourcePos{line, col, startPos, index}, std::string()};
     return tkn;
 }
  
 inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos){
     Token* tkn = allocator.alloc<Token>();
     *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
-    // Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, std::string()};
     return tkn;
 }
 
@@ -460,13 +458,12 @@ inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string&& val
 }
 
 
-inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val){   //FIXME no reason to pass a string here
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val){   //FIXME no reason to pass a string here    
     Token* tkn = allocator.alloc<Token>();
     size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
     char* data = allocator.alloc<char>(dataSize);
     memcpy_s(data, dataSize, val.c_str(), dataSize);
     *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
-    // Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
     return tkn;
 }
 
@@ -476,7 +473,6 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     char* data = allocator.alloc<char>(dataSize);
     memcpy_s(data, dataSize, val.c_str(), dataSize);
     *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
-    // Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
     return tkn;
 }
 
