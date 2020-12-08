@@ -7,6 +7,8 @@
 
 #include <pLog.h>
 
+#include "ArenaAlloc.h"
+
 using namespace pLog;
 
 typedef int8_t   i8;
@@ -147,7 +149,7 @@ struct SourcePos {
 struct Token{
     TokenKind kind;
     SourcePos pos;
-    std::string data;
+    const char* data;
 };
 
 const static std::unordered_map<std::string, TokenKind> keywords( { 
@@ -433,7 +435,9 @@ inline std::string str(TokenKind kind){
         
     case ARC_POST_DECREMENT:
         return "POST_DECREMENT";
-        
+
+    default:
+        return "";    
     }
 }
 
@@ -707,13 +711,15 @@ inline std::string getStringRep(TokenKind kind){
     case ARC_POST_DECREMENT:
         return "x--";
         
+    default:
+        return "";
     }
 }
 
 inline void printToken(Token* t){
-    print("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
+    print("'" + std::string(t->data == nullptr ? "" : t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
 }
 
 inline void printTokenln(Token* t){
-    println("'" + std::string(t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
+    println("'" + std::string(t->data == nullptr ? "" : t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
 }

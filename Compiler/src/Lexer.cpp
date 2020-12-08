@@ -1,7 +1,7 @@
 #include "Lexer.h"
 
 Lexer::Lexer(const std::string& filedata):
-    data(filedata), tokens(), index(0), line(1), col(1), errorLog(filedata)
+    data(filedata), tokens(), allocator(5000), index(0), line(1), col(1), errorLog(filedata)
 {
     // errorLog.push(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
     // errorLog.flush();
@@ -438,12 +438,16 @@ inline char Lexer::peekNextChar(){
 }
 
 inline Token* Lexer::createToken(TokenKind kind, u32 startPos){
-    Token* tkn = new Token {kind, SourcePos{line, col, startPos, index}, std::string()};
+    Token* tkn = allocator.alloc<Token>();
+    *tkn = Token {kind, SourcePos{line, col, startPos, index}, nullptr};
+    // Token* tkn = new Token {kind, SourcePos{line, col, startPos, index}, std::string()};
     return tkn;
 }
-
+ 
 inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos){
-    Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, std::string()};
+    Token* tkn = allocator.alloc<Token>();
+    *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
+    // Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, std::string()};
     return tkn;
 }
 
@@ -456,13 +460,23 @@ inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string&& val
 }
 
 
-inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val){
-    Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val){   //FIXME no reason to pass a string here
+    Token* tkn = allocator.alloc<Token>();
+    size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
+    char* data = allocator.alloc<char>(dataSize);
+    memcpy_s(data, dataSize, val.c_str(), dataSize);
+    *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
+    // Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
     return tkn;
 }
 
-inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string&& val){
-    Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string&& val){   //FIXME no reason to pass a string here
+    Token* tkn = allocator.alloc<Token>();
+    size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
+    char* data = allocator.alloc<char>(dataSize);
+    memcpy_s(data, dataSize, val.c_str(), dataSize);
+    *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
+    // Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, val};
     return tkn;
 }
 
@@ -472,7 +486,7 @@ inline void Lexer::printTokens(bool verbose){
             printTokenln(tkn);
     else{
         for(Token* tkn : tokens)
-            if(tkn->data == std::string(""))
+            if(tkn->data == nullptr)
                 println(str(tkn->kind) + ": " + getStringRep(tkn->kind));
             else
                 println(str(tkn->kind) + ": " + tkn->data);
