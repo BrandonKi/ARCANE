@@ -463,7 +463,7 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     Token* tkn = allocator.alloc<Token>();
     size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
     char* data = allocator.alloc<char>(dataSize);
-    memmove_s(data, dataSize, val.c_str(), dataSize);
+    memcpy_s(data, dataSize, val.c_str(), dataSize);
     *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
     return tkn;
 }
@@ -472,7 +472,7 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     Token* tkn = allocator.alloc<Token>();
     size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
     char* data = allocator.alloc<char>(dataSize);
-    memmove_s(data, dataSize, val.c_str(), dataSize);
+    memcpy_s(data, dataSize, val.c_str(), dataSize);
     *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
     return tkn;
 }
