@@ -14,7 +14,7 @@ class Lexer{
 
     public:
         Lexer(const std::string&);
-        void lex();
+        std::vector<Token*> lex();
         char currentChar();
         char nextChar();
         char prevChar();

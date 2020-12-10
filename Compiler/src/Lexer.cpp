@@ -8,7 +8,7 @@ Lexer::Lexer(const std::string& filedata):
     tokens.reserve(100);
 }
 
-void Lexer::lex(){     // TODO return Token* instead
+std::vector<Token*> Lexer::lex(){     // TODO return Token* instead
 
     while(index < data.size()){
 
@@ -117,7 +117,8 @@ void Lexer::lex(){     // TODO return Token* instead
             nextChar_noreturn();
     }
     if(args.lexOut)
-        printTokens(args.verboseLexOut);  // true for verbose false for succint
+        printTokens(args.verboseLexOut);  // true for verbose and false for succint
+    return std::move(tokens);   // not a big deal but there is no reason to make an extra copy
 }
 
 
@@ -462,7 +463,7 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     Token* tkn = allocator.alloc<Token>();
     size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
     char* data = allocator.alloc<char>(dataSize);
-    memcpy_s(data, dataSize, val.c_str(), dataSize);
+    memmove_s(data, dataSize, val.c_str(), dataSize);
     *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
     return tkn;
 }
@@ -471,7 +472,7 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     Token* tkn = allocator.alloc<Token>();
     size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
     char* data = allocator.alloc<char>(dataSize);
-    memcpy_s(data, dataSize, val.c_str(), dataSize);
+    memmove_s(data, dataSize, val.c_str(), dataSize);
     *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
     return tkn;
 }
