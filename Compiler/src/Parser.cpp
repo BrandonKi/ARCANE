@@ -1,6 +1,6 @@
 #include "Parser.h"
 
-Parser::Parser(std::vector<RawFile> projectFiles){  //TODO good candidate for multithreading
+Parser::Parser(std::vector<RawFile>& projectFiles){  //TODO good candidate for multithreading
 
     // std::thread worker([](){});
     for(RawFile rf: projectFiles){
@@ -8,7 +8,6 @@ Parser::Parser(std::vector<RawFile> projectFiles){  //TODO good candidate for mu
         Lexer lexer(rf.filedata);
         data.push_back(LexedFile{rf.filepath, lexer.lex()});
     }
-    // parseFile(tokens);
 }
 
 Project* Parser::parse(){
@@ -17,12 +16,12 @@ Project* Parser::parse(){
 
 Project* Parser::parseProject(){    //TODO another good candidate for multithreading
 
-    for(LexedFile lf : data){
-        // parseFile();
+    for(LexedFile& lf : data){
+        parseFile(lf.filedata);
     }
     return new Project{};
 }
 
-File* parseFile(std::vector<Token*> tokens){
+File* parseFile(std::vector<Token*>& tokens){
     return new File{};
 }
