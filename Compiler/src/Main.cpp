@@ -13,17 +13,12 @@ int main(int argc, char* argv[]){
 
     Compiler compiler;
     compiler.compile();
+
     #ifdef _DEBUG
     std::cin.get();
     #endif
 }
 
-/**
- * @brief parses command line arguments and updates the global args struct accordingly
- * 
- * @param argc number of args
- * @param argv array of args
- */
 void parseArgs(int argc, char* argv[]){         //TODO implement the rest of the availible flags
     std::vector<std::string> argList(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
     for(std::string& str : argList){
@@ -35,6 +30,8 @@ void parseArgs(int argc, char* argv[]){         //TODO implement the rest of the
         }
         else if(str == "-O")
             args.optimize = true;
+        else if(str == "-p")
+            args.project = true;
         //if(str == "-out")
     }
     args.output_path = "out.exe";
