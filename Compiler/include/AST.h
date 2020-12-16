@@ -3,6 +3,7 @@
 struct Node;
 struct Project;
 struct File;
+struct Import;
 struct Function;
 struct Block;
 struct Statement;
@@ -64,13 +65,21 @@ struct Node {
 };
 
 struct Project : Node {
-    std::vector<File> files;
+    std::vector<File*> files;
 };
 
 struct File : Node{
-    std::vector<Decl> globals;
-    std::vector<Function> functions;
+    std::vector<Import*> imports;
+    std::vector<Decl*> globals;
+    std::vector<Function*> functions;
     bool isMain;
+};
+
+struct Import : Node {
+    std::string id;
+    std::string filename;
+    // std::vector<Decl*> decls;
+    // std::vector<Function*> functions;
 };
 
 struct Function : Node {
@@ -79,10 +88,16 @@ struct Function : Node {
 };
 
 struct Block : Node {
-    std::vector<Statement> statements;
+    std::vector<Statement*> statements;
+};
+
+enum StatementType {
+    EXPRESSION,
+    DECLARATION
 };
 
 struct Statement : Node {
+    StatementType type;
     union {
         Expr* expr;
         Decl* decl;
@@ -128,8 +143,19 @@ class AST {
         AST();
         ~AST();
 
-        Expr newExprNode();
-        Decl newDeclNode();
+        Project* newProjectNode(SourcePos pos, std::vector<File*>&);
+        File* newFileNode(SourcePos pos, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&);
+        Import* newImportNode(SourcePos pos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
+        Function* newFunctionNode(SourcePos pos, std::vector<Type*>&, Block&);
+        Block* newBlockNode(SourcePos pos, std::vector<Statement*>&);
+        Statement* newStatementNode_decl(SourcePos pos, Decl*);
+        Statement* newStatementNode_expr(SourcePos pos, Expr*);
+        Expr* newExprNode_intLiteral(SourcePos pos, u64);
+        Expr* newExprNode_floatLiteral(SourcePos pos, f64);
+        Expr* newExprNode_stringLiteral(SourcePos pos, std::string&);
+        Expr* newExprNode_binExpr(SourcePos pos, Operator, Expr*, Expr*);
+        Expr* newExprNode_unaryExpr(SourcePos pos, Operator, Expr*);
+        Decl* newDeclNode(SourcePos pos, std::string&, Type, Expr*);
 
 
 };
