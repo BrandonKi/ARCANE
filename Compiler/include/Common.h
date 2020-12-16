@@ -4,6 +4,8 @@
 #include <sstream>
 #include <vector>
 #include <unordered_map>
+#include <filesystem>
+#include <thread>
 
 #include <pLog.h>
 
@@ -23,28 +25,17 @@ using u64 = uint64_t;
 using f32 = float_t;
 using f64 = double_t;
 
-// typedef int8_t   i8;
-// typedef int16_t  i16;
-// typedef int32_t  i32;
-// typedef int64_t  i64;
-// typedef uint8_t  u8;
-// typedef uint16_t u16;
-// typedef uint32_t u32;
-// typedef uint64_t u64;
-// typedef float_t  f32;
-// typedef double_t f64;
-
 inline struct ARGS {
-    std::string filepath;
-    std::string output_filepath;
+    std::string path;
+    std::string output_path;
     bool lexOut = false;
     bool verboseLexOut = false;
+    bool project = false;
     bool optimize = false;
 } args;
 
 enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
     // NOTE Any changes to this enum must be changed below in the str() method as well
-    /* TODO fill this out */
 
     ARC_NONE,
 
@@ -162,6 +153,18 @@ struct Token{
     TokenKind kind;
     SourcePos pos;
     const char* data;
+};
+
+struct RawFile {
+    std::string filepath;
+    // std::string filename;
+    std::string filedata;
+};
+
+struct LexedFile {
+    std::string filepath;
+    // std::string filename;
+    std::vector<Token*> filedata;
 };
 
 const static std::unordered_map<std::string, TokenKind> keywords( { 

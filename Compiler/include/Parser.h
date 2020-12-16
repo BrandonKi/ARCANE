@@ -3,10 +3,12 @@
 class Parser{
 
     public:
-        Parser(const std::string& data);
-        void parse();   //TODO figure out what IR I'm going to use and replace return type with it
+        Parser(std::vector<RawFile>);
+        Project* parse();
 
     private:
-        const std::string& data;
-        
+        std::vector<LexedFile> data;
+
+        Project* parseProject();
+        File* parseFile(std::vector<Token*>);
 };

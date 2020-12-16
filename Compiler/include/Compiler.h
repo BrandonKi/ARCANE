@@ -4,13 +4,14 @@ class Compiler{
 
     public:
         Compiler();
-        std::vector<u8> compile(const std::string&);
-        std::string filedata();
+        std::vector<u8> compile();
 
     private:
-        std::string data;
-
         std::string readFile(const std::string&);
 
+        std::vector<RawFile> getProjectFiles();
+        std::vector<std::string> Compiler::parseProjectSpecFile(std::string& file);
+
+        void trim(std::string&);
 
 };
