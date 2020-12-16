@@ -120,7 +120,7 @@ struct Decl : Node {
     Expr* val;
 };
 
-class AST {     //TODO make a custom allocator
+class AST {
 
     private:
     
