@@ -138,6 +138,7 @@ struct Decl : Node {
 class AST {
 
     private:
+        ArenaAlloc allocator;
     
     public:
         AST();

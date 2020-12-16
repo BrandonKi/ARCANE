@@ -1,7 +1,9 @@
 #include "AST.h"
 
 
-AST::AST(){
+AST::AST():
+    allocator(5000)
+{
 
 }
 
