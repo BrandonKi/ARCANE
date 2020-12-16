@@ -47,7 +47,7 @@ class Lexer{
         Token* lexAnd();
         Token* lexNot();
         Token* lexXor();
-        Token* lexLesser();
+        Token* lexLesser(); 
         Token* lexGreater();
         Token* lexEqual();
 
@@ -64,7 +64,7 @@ class Lexer{
             return c >= 48 && c <= 57;
         }
 
-        constexpr static inline bool isAlpha(char c) noexcept {
+        constexpr static inline bool isLetter(char c) noexcept {
             return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
         }
 

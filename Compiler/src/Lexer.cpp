@@ -8,7 +8,7 @@ Lexer::Lexer(const std::string& filedata):
     tokens.reserve(100);
 }
 
-std::vector<Token*> Lexer::lex(){     // TODO return Token* instead
+std::vector<Token*> Lexer::lex(){
 
     while(index < data.size()){
 
@@ -183,7 +183,7 @@ Token* Lexer::lexIdentifier(){
     u32 startPos = index;
     u32 currentCol = col;
 
-    while(isAlpha(currentChar())  || isDigit(currentChar())){
+    while(isLetter(currentChar())  || isDigit(currentChar())){
         id.push_back(currentChar());
         nextChar_noreturn();
     }
@@ -211,7 +211,7 @@ Token* Lexer::lexString(){  //TODO escape sequences
 }
 
 Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
-    errorLog.push(ErrorMessage{FATAL, lexString(), args.filepath, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
+    errorLog.push(ErrorMessage{FATAL, lexString(), args.path, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
     errorLog.flush();
     std::exit(-1);
     // return new Token{};
