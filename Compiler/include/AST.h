@@ -10,15 +10,6 @@ struct Statement;
 struct Expr;
 struct Decl;
 
-
-
-enum ExprType {
-    EXPR_INT_LIT,
-    EXPR_FLOAT_LIT,
-    EXPR_STRING_LIT,
-
-};
-
 enum Operator {
     OP_UNARY_SUB,
     OP_UNARY_NOT,
@@ -70,7 +61,7 @@ struct Project : Node {
 
 struct File : Node{
     std::vector<Import*> imports;
-    std::vector<Decl*> globals;
+    std::vector<Decl*> decls;
     std::vector<Function*> functions;
     bool isMain;
 };
@@ -104,6 +95,14 @@ struct Statement : Node {
     };
 };
 
+enum ExprType {
+    EXPR_INT_LIT,
+    EXPR_FLOAT_LIT,
+    EXPR_STRING_LIT,
+    EXPR_BIN,
+    EXPR_UNARY
+};
+
 struct Expr : Node {
     ExprType type;
     union {
@@ -114,7 +113,7 @@ struct Expr : Node {
             f64 val;
         } floatLiteral;
         struct {
-            std::string* val;   //TODO I don't like this too much
+            char* val;   //FIXME I don't like this too much
         } stringLiteral;
         struct {
             Operator op;
@@ -144,19 +143,19 @@ class AST {
         AST();
         ~AST();
 
-        Project* newProjectNode(SourcePos pos, std::vector<File*>&);
-        File* newFileNode(SourcePos pos, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&);
-        Import* newImportNode(SourcePos pos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
-        Function* newFunctionNode(SourcePos pos, std::vector<Type*>&, Block&);
-        Block* newBlockNode(SourcePos pos, std::vector<Statement*>&);
-        Statement* newStatementNode_decl(SourcePos pos, Decl*);
-        Statement* newStatementNode_expr(SourcePos pos, Expr*);
-        Expr* newExprNode_intLiteral(SourcePos pos, u64);
-        Expr* newExprNode_floatLiteral(SourcePos pos, f64);
-        Expr* newExprNode_stringLiteral(SourcePos pos, std::string&);
-        Expr* newExprNode_binExpr(SourcePos pos, Operator, Expr*, Expr*);
-        Expr* newExprNode_unaryExpr(SourcePos pos, Operator, Expr*);
-        Decl* newDeclNode(SourcePos pos, std::string&, Type, Expr*);
+        Project* newProjectNode(SourcePos, std::vector<File*>&);
+        File* newFileNode(SourcePos, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&, bool);
+        Import* newImportNode(SourcePos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
+        Function* newFunctionNode(SourcePos, std::vector<Type>&, Block*);
+        Block* newBlockNode(SourcePos, std::vector<Statement*>&);
+        Statement* newStatementNode_decl(SourcePos, Decl*);
+        Statement* newStatementNode_expr(SourcePos, Expr*);
+        Expr* newExprNode_intLiteral(SourcePos, u64);
+        Expr* newExprNode_floatLiteral(SourcePos, f64);
+        Expr* newExprNode_stringLiteral(SourcePos, std::string&);
+        Expr* newExprNode_binExpr(SourcePos, Operator, Expr*, Expr*);
+        Expr* newExprNode_unaryExpr(SourcePos, Operator, Expr*);
+        Decl* newDeclNode(SourcePos, std::string&, Type, Expr*);
 
 
 };

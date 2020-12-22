@@ -11,54 +11,92 @@ AST::~AST(){
 
 }
 
-Project* newProjectNode(SourcePos pos, std::vector<File*>&){
-    return nullptr;
+Project* AST::newProjectNode(SourcePos pos, std::vector<File*>& files){
+    Project* ptr = allocator.alloc<Project>();
+    *ptr = Project{pos, files};
+    return ptr;
 }
 
-File* newFileNode(SourcePos pos, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&){
-    return nullptr;
+File* AST::newFileNode(SourcePos pos, std::vector<Import*>& imports, std::vector<Decl*>& decls, std::vector<Function*>& functions, bool isMain){
+    File* ptr = allocator.alloc<File>();
+    *ptr = File{pos, imports, decls, functions, isMain};
+    return ptr;
 }
 
-Import* newImportNode(SourcePos pos, std::string&, std::string&){
-    return nullptr;
+Import* AST::newImportNode(SourcePos pos, std::string& id, std::string& filename){
+    Import* ptr = allocator.alloc<Import>();
+    *ptr = Import{pos, id, filename};
+    return ptr;
 }
 
-Function* newFunctionNode(SourcePos pos, std::vector<Type*>&, Block&){
-    return nullptr;
+Function* AST::newFunctionNode(SourcePos pos, std::vector<Type>& argTypes, Block* body){
+    Function* ptr = allocator.alloc<Function>();
+    *ptr = Function{pos, argTypes, body};
+    return ptr;
 }
 
-Block* newBlockNode(SourcePos pos, std::vector<Statement*>&){
-    return nullptr;
+Block* AST::newBlockNode(SourcePos pos, std::vector<Statement*>& statements){
+    Block* ptr = allocator.alloc<Block>();
+    *ptr = Block{pos, statements};
+    return ptr;
 }
 
-Statement* newStatementNode_decl(SourcePos pos, Decl*){
-    return nullptr;
+Statement* AST::newStatementNode_decl(SourcePos pos, Decl* decl){
+    Statement* ptr = allocator.alloc<Statement>();
+    *ptr = Statement{ pos, DECLARATION};
+    ptr->decl = decl;
+    return ptr;
 }
 
-Statement* newStatementNode_expr(SourcePos pos, Expr*){
-    return nullptr;
+Statement* AST::newStatementNode_expr(SourcePos pos, Expr* expr){
+    Statement* ptr = allocator.alloc<Statement>();
+    *ptr = Statement{ pos, EXPRESSION};
+    ptr->expr = expr;
+    return ptr;
 }
 
-Expr* newExprNode_intLiteral(SourcePos pos, u64){
-    return nullptr;
+Expr* AST::newExprNode_intLiteral(SourcePos pos, u64 intLiteral){
+    Expr* ptr = allocator.alloc<Expr>();
+    *ptr = Expr{pos, EXPR_INT_LIT};
+    ptr->intLiteral.val = intLiteral;
+    return ptr;
 }
 
-Expr* newExprNode_floatLiteral(SourcePos pos, f64){
-    return nullptr;
+Expr* AST::newExprNode_floatLiteral(SourcePos pos, f64 floatLiteral){
+    Expr* ptr = allocator.alloc<Expr>();
+    *ptr = Expr{pos, EXPR_FLOAT_LIT};
+    ptr->floatLiteral.val = floatLiteral;
+    return ptr;
 }
 
-Expr* newExprNode_stringLiteral(SourcePos pos, std::string&){
-    return nullptr;
+Expr* AST::newExprNode_stringLiteral(SourcePos pos, std::string& stringLiteral){
+    Expr* ptr = allocator.alloc<Expr>();
+    *ptr = Expr{pos, EXPR_STRING_LIT};
+    size_t dataSize = stringLiteral.size() + 1;
+    char* data = allocator.alloc<char>(dataSize);
+    memcpy_s(data, dataSize, stringLiteral.c_str(), dataSize);
+    ptr->stringLiteral.val = data;
+    return ptr;}
+
+Expr* AST::newExprNode_binExpr(SourcePos pos, Operator op, Expr* left, Expr* right){
+    Expr* ptr = allocator.alloc<Expr>();
+    *ptr = Expr{pos, EXPR_BIN};
+    ptr->binaryExpr.op = op;
+    ptr->binaryExpr.left = left;
+    ptr->binaryExpr.right = right;
+    return ptr;
 }
 
-Expr* newExprNode_binExpr(SourcePos pos, Operator, Expr*, Expr*){
-    return nullptr;
+Expr* AST::newExprNode_unaryExpr(SourcePos pos, Operator op, Expr* expr){
+    Expr* ptr = allocator.alloc<Expr>();
+    *ptr = Expr{pos, EXPR_UNARY};
+    ptr->unaryExpr.op = op;
+    ptr->unaryExpr.expr = expr;
+    return ptr;
 }
 
-Expr* newExprNode_unaryExpr(SourcePos pos, Operator, Expr*){
-    return nullptr;
-}
-
-Decl* newDeclNode(SourcePos pos, std::string&, Type, Expr*){
-    return nullptr;
+Decl* AST::newDeclNode(SourcePos pos, std::string& id, Type type, Expr* val){
+    Decl* ptr = allocator.alloc<Decl>();
+    *ptr = Decl{pos, id, type, val};
+    return ptr;
 }
