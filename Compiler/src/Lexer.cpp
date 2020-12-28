@@ -1,7 +1,7 @@
 #include "Lexer.h"
 
 Lexer::Lexer(const std::string& filedata):
-    data(filedata), tokens(), allocator(5000), index(0), line(1), col(1), errorLog(filedata)
+    data(filedata), tokens(), allocator(5000), index(0), line(1), col(1)
 {
     // errorLog.push(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
     // errorLog.flush();
@@ -23,7 +23,7 @@ std::vector<Token*> Lexer::lex(){
             case '"': 
                 tokens.push_back(lexString());
                 break;
-            case '`':   //TODO interpolated string literals is not trivial to tokenize
+            case '`':   //TODO interpolated string literal is not trivial to tokenize
                 tokens.push_back(lexInterpolatedString());
                 break;
             case '{':
@@ -211,8 +211,8 @@ Token* Lexer::lexString(){  //TODO escape sequences
 }
 
 Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
-    errorLog.push(ErrorMessage{FATAL, lexString(), args.path, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
-    errorLog.flush();
+    // errorLog.push(ErrorMessage{FATAL, lexString(), args.path, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
+    // errorLog.flush();
     std::exit(-1);
     // return new Token{};
 }

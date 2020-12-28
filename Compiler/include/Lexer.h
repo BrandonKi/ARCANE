@@ -1,5 +1,7 @@
 #include "ErrorHandler.h"
 
+static ErrorHandler errorLog{};
+
 class Lexer{
 
     #define CASE_DIGIT case '0': case '1': case '2': case '3': case '4': case '5': \
@@ -29,7 +31,6 @@ class Lexer{
         u32 index;
         u32 line;
         u32 col;
-        ErrorHandler errorLog;
 
         void consumeComment();
 
@@ -66,6 +67,6 @@ class Lexer{
 
         constexpr static inline bool isLetter(char c) noexcept {
             return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
-        }
+        } 
 
 };

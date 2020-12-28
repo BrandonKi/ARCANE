@@ -1,6 +1,5 @@
 #include "Compiler.h"
 
-
 Compiler::Compiler(){
     /* Nothing to see here */
 }

@@ -35,7 +35,7 @@ inline struct ARGS {
 } args;
 
 enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
-    // NOTE Any changes to this enum must be changed below in the str() method as well
+    // NOTE Any changes to this enum must be changed below in the str() function and the keywords hashmap
 
     ARC_NONE,
 
@@ -68,6 +68,7 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 
     /* Keywords */
 
+    ARC_IMPORT,
     ARC_FN,
     ARC_RET,
     ARC_IF,
@@ -174,10 +175,10 @@ const static std::unordered_map<std::string, TokenKind> keywords( {
     {"f32", ARC_F32}, {"f64", ARC_F64}, {"string", ARC_STR}, {"arr", ARC_ARR}, 
     {"struct", ARC_STRUCT}, {"char", ARC_I8}, {"int", ARC_I32}, {"float", ARC_F32},
 
-    {"fn", ARC_FN}, {"ret", ARC_RET}, {"if", ARC_IF}, {"elif", ARC_ELIF},
-    {"else", ARC_ELSE}, {"while", ARC_WHILE}, {"for", ARC_FOR}, {"do", ARC_DO},
-    {"switch", ARC_SWITCH}, {"break", ARC_BREAK}, {"case", ARC_CASE}, {"default", ARC_DEFAULT},
-    {"true", ARC_TRUE}, {"false", ARC_FALSE}
+    {"import", ARC_IMPORT}, {"fn", ARC_FN}, {"ret", ARC_RET}, {"if", ARC_IF},
+    {"elif", ARC_ELIF}, {"else", ARC_ELSE}, {"while", ARC_WHILE}, {"for", ARC_FOR},
+    {"do", ARC_DO}, {"switch", ARC_SWITCH}, {"break", ARC_BREAK}, {"case", ARC_CASE},
+    {"default", ARC_DEFAULT}, {"true", ARC_TRUE}, {"false", ARC_FALSE}
     
 });
 
@@ -251,6 +252,9 @@ inline std::string str(TokenKind kind){
         
 
     /* Keywords */
+
+    case ARC_IMPORT:
+        return "IMPORT";
 
     case ARC_FN:
         return "FN";
