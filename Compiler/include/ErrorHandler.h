@@ -15,7 +15,6 @@ class ErrorHandler {
     public:
 
         ErrorHandler();
-        ErrorHandler(const std::string&);
 
         void push(ErrorMessage);
         void flush();
@@ -23,7 +22,6 @@ class ErrorHandler {
     private:
 
         std::string buffer;
-        const std::string& src;
 
         std::string makePreamble(ErrorMessage& error);
 

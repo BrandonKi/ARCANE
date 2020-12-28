@@ -1,8 +1,8 @@
 #include "ErrorHandler.h"
 
 
-ErrorHandler::ErrorHandler(const std::string& _src):
-    buffer(), src(_src)
+ErrorHandler::ErrorHandler():
+    buffer()
 {
     buffer.reserve(200);
 }
