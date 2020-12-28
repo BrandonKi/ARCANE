@@ -129,7 +129,7 @@ struct Expr : Node {
 };
 
 struct Decl : Node {
-    std::string id;
+    char* id;
     Type type;
     Expr* val;
 };

@@ -1,6 +1,5 @@
 #include "AST.h"
 
-
 AST::AST():
     allocator(5000)
 {
@@ -12,32 +11,37 @@ AST::~AST(){
 }
 
 Project* AST::newProjectNode(SourcePos pos, std::vector<File*>& files){
-    Project* ptr = allocator.alloc<Project>();
-    *ptr = Project{pos, files};
+    // Project* ptr = allocator.alloc<Project>();
+    // *ptr = Project{pos, files};
+    Project* ptr = new Project{pos, files};  // FIXME temporary solution
     return ptr;
 }
 
 File* AST::newFileNode(SourcePos pos, std::vector<Import*>& imports, std::vector<Decl*>& decls, std::vector<Function*>& functions, bool isMain){
-    File* ptr = allocator.alloc<File>();
-    *ptr = File{pos, imports, decls, functions, isMain};
+    // File* ptr = allocator.alloc<File>();
+    // *ptr = File{pos, imports, decls, functions, isMain};
+    File* ptr = new File{pos, imports, decls, functions, isMain};  // FIXME temporary solution
     return ptr;
 }
 
 Import* AST::newImportNode(SourcePos pos, std::string& id, std::string& filename){
-    Import* ptr = allocator.alloc<Import>();
-    *ptr = Import{pos, id, filename};
+    // Import* ptr = allocator.alloc<Import>();
+    // *ptr = Import{pos, id, filename};
+    Import* ptr = new Import{pos, id, filename};  // FIXME temporary solution
     return ptr;
 }
 
 Function* AST::newFunctionNode(SourcePos pos, std::vector<Type>& argTypes, Block* body){
-    Function* ptr = allocator.alloc<Function>();
-    *ptr = Function{pos, argTypes, body};
+    // Function* ptr = allocator.alloc<Function>();
+    // *ptr = Function{pos, argTypes, body};
+    Function* ptr = new Function{pos, argTypes, body};  // FIXME temporary solution
     return ptr;
-}
+} 
 
 Block* AST::newBlockNode(SourcePos pos, std::vector<Statement*>& statements){
-    Block* ptr = allocator.alloc<Block>();
-    *ptr = Block{pos, statements};
+    // Block* ptr = allocator.alloc<Block>();
+    // *ptr = Block{pos, statements};
+    Block* ptr = ptr = new Block{pos, statements};  // FIXME temporary solution
     return ptr;
 }
 
@@ -95,8 +99,11 @@ Expr* AST::newExprNode_unaryExpr(SourcePos pos, Operator op, Expr* expr){
     return ptr;
 }
 
-Decl* AST::newDeclNode(SourcePos pos, std::string& id, Type type, Expr* val){
+Decl* AST::newDeclNode(SourcePos pos, std::string& id, Type type, Expr* val){   
     Decl* ptr = allocator.alloc<Decl>();
-    *ptr = Decl{pos, id, type, val};
+    size_t dataSize = id.size() + 1;
+    char* data = allocator.alloc<char>(dataSize);
+    memcpy_s(data, dataSize, id.c_str(), dataSize);
+    *ptr = Decl{pos, data, type, val};
     return ptr;
 }
