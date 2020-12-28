@@ -8,7 +8,18 @@ class Parser{
 
     private:
         std::vector<LexedFile> data;
+        std::vector<Token*> tokens;
+        u64 index;
+        AST ast;
 
         Project* parseProject();
-        File* parseFile(std::vector<Token*>&);
+        File* parseFile();
+        Decl* Parser::parseDecl();
+        Expr* Parser::parseExpr();
+
+        Token* Parser::currentToken();
+        Token* Parser::nextToken();
+        Token* Parser::peekNextToken();
+
+        Type Parser::tokenKind2Type(TokenKind);
 };
