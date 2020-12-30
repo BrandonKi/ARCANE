@@ -99,6 +99,7 @@ enum ExprType {
     EXPR_INT_LIT,
     EXPR_FLOAT_LIT,
     EXPR_STRING_LIT,
+    EXPR_ID,
     EXPR_BIN,
     EXPR_UNARY
 };
@@ -115,6 +116,9 @@ struct Expr : Node {
         struct {
             char* val;   //FIXME I don't like this too much
         } stringLiteral;
+        struct {
+            char* val;
+        } id;
         struct {
             Operator op;
             Expr* left;
@@ -153,6 +157,7 @@ class AST {
         Expr* newExprNode_intLiteral(SourcePos, u64);
         Expr* newExprNode_floatLiteral(SourcePos, f64);
         Expr* newExprNode_stringLiteral(SourcePos, std::string&);
+        Expr* newExprNode_variable(SourcePos, std::string&);
         Expr* newExprNode_binExpr(SourcePos, Operator, Expr*, Expr*);
         Expr* newExprNode_unaryExpr(SourcePos, Operator, Expr*);
         Decl* newDeclNode(SourcePos, std::string&, Type, Expr*);

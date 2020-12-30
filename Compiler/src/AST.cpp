@@ -80,7 +80,18 @@ Expr* AST::newExprNode_stringLiteral(SourcePos pos, std::string& stringLiteral){
     char* data = allocator.alloc<char>(dataSize);
     memcpy_s(data, dataSize, stringLiteral.c_str(), dataSize);
     ptr->stringLiteral.val = data;
-    return ptr;}
+    return ptr;
+}
+
+Expr* AST::newExprNode_variable(SourcePos pos, std::string& id){
+    Expr* ptr = allocator.alloc<Expr>();
+    *ptr = Expr{pos, EXPR_ID};
+    size_t dataSize = id.size() + 1;
+    char* data = allocator.alloc<char>(dataSize);
+    memcpy_s(data, dataSize, id.c_str(), dataSize);
+    ptr->id.val = data;
+    return ptr;
+}
 
 Expr* AST::newExprNode_binExpr(SourcePos pos, Operator op, Expr* left, Expr* right){
     Expr* ptr = allocator.alloc<Expr>();
