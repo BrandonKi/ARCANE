@@ -10,31 +10,6 @@ struct Statement;
 struct Expr;
 struct Decl;
 
-enum Operator {
-    OP_UNARY_SUB,
-    OP_UNARY_NOT,
-    OP_UNARY_PRE_INCREMENT,
-    OP_UNARY_PRE_DECREMENT,
-    OP_UNARY_POST_INCREMENT,
-    OP_UNARY_POST_DECREMENT,
-
-    OP_ADD,
-    OP_SUB,
-    OP_DIV,
-    OP_MUL,
-    OP_MOD,
-    OP_BIN_OR,
-    OP_BIN_AND,
-    OP_LOGICAL_OR,
-    OP_LOGICAL_AND,
-    OP_LEFT_SHIFT,
-    OP_RIGHT_SHIFT,
-    OP_XOR,
-    OP_LESSER,
-    OP_GREATER,
-    OP_NEGATE,
-};
-
 enum Type {
     TYPE_I8,
     TYPE_I16,
@@ -120,12 +95,12 @@ struct Expr : Node {
             char* val;
         } id;
         struct {
-            Operator op;
+            TokenKind op;   // op is expected to be a valid operator
             Expr* left;
             Expr* right;
         } binaryExpr;
         struct {
-            Operator op;
+            TokenKind op;   // op is expected to be a valid operator
             Expr* expr;
         } unaryExpr;
 
@@ -156,10 +131,10 @@ class AST {
         Statement* newStatementNode_expr(SourcePos, Expr*);
         Expr* newExprNode_intLiteral(SourcePos, u64);
         Expr* newExprNode_floatLiteral(SourcePos, f64);
-        Expr* newExprNode_stringLiteral(SourcePos, std::string&);
-        Expr* newExprNode_variable(SourcePos, std::string&);
-        Expr* newExprNode_binExpr(SourcePos, Operator, Expr*, Expr*);
-        Expr* newExprNode_unaryExpr(SourcePos, Operator, Expr*);
+        Expr* newExprNode_stringLiteral(SourcePos, const char*);
+        Expr* newExprNode_variable(SourcePos, const char*);
+        Expr* newExprNode_binExpr(SourcePos, TokenKind, Expr*, Expr*);
+        Expr* newExprNode_unaryExpr(SourcePos, TokenKind, Expr*);
         Decl* newDeclNode(SourcePos, std::string&, Type, Expr*);
 
 

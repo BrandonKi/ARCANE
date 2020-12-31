@@ -73,27 +73,27 @@ Expr* AST::newExprNode_floatLiteral(SourcePos pos, f64 floatLiteral){
     return ptr;
 }
 
-Expr* AST::newExprNode_stringLiteral(SourcePos pos, std::string& stringLiteral){
+Expr* AST::newExprNode_stringLiteral(SourcePos pos, const char* stringLiteral){
     Expr* ptr = allocator.alloc<Expr>();
     *ptr = Expr{pos, EXPR_STRING_LIT};
-    size_t dataSize = stringLiteral.size() + 1;
+    size_t dataSize = strlen(stringLiteral) + 1;
     char* data = allocator.alloc<char>(dataSize);
-    memcpy_s(data, dataSize, stringLiteral.c_str(), dataSize);
+    memcpy_s(data, dataSize, stringLiteral, dataSize);
     ptr->stringLiteral.val = data;
     return ptr;
 }
 
-Expr* AST::newExprNode_variable(SourcePos pos, std::string& id){
+Expr* AST::newExprNode_variable(SourcePos pos, const char* id){
     Expr* ptr = allocator.alloc<Expr>();
     *ptr = Expr{pos, EXPR_ID};
-    size_t dataSize = id.size() + 1;
+    size_t dataSize = strlen(id) + 1;
     char* data = allocator.alloc<char>(dataSize);
-    memcpy_s(data, dataSize, id.c_str(), dataSize);
+    memcpy_s(data, dataSize, id, dataSize);
     ptr->id.val = data;
     return ptr;
 }
 
-Expr* AST::newExprNode_binExpr(SourcePos pos, Operator op, Expr* left, Expr* right){
+Expr* AST::newExprNode_binExpr(SourcePos pos, TokenKind op, Expr* left, Expr* right){
     Expr* ptr = allocator.alloc<Expr>();
     *ptr = Expr{pos, EXPR_BIN};
     ptr->binaryExpr.op = op;
@@ -102,7 +102,7 @@ Expr* AST::newExprNode_binExpr(SourcePos pos, Operator op, Expr* left, Expr* rig
     return ptr;
 }
 
-Expr* AST::newExprNode_unaryExpr(SourcePos pos, Operator op, Expr* expr){
+Expr* AST::newExprNode_unaryExpr(SourcePos pos, TokenKind op, Expr* expr){
     Expr* ptr = allocator.alloc<Expr>();
     *ptr = Expr{pos, EXPR_UNARY};
     ptr->unaryExpr.op = op;
