@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 
+//TODO make a real C++ style allocator instead of this more C style one
+// This is a temporary allocator and will be replaced soon with a standards compliant allocator
 class ArenaAlloc {
 
 private:
@@ -10,7 +12,7 @@ private:
 	char* pos;
 	char* end;
 
-	void reallocate() {		//FIXME DOES NOT WORK AAAAAHHHHHHHHHHHHHHHH
+	void reallocate() {
 		size_t offset = pos - start;
 		size_t newSize = static_cast<size_t>(static_cast<size_t>(end - start) * 1.5);
 		start = reinterpret_cast<char*>(realloc(start, newSize));
