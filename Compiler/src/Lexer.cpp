@@ -266,7 +266,7 @@ Token* Lexer::lexSub(){
         return createToken(ARC_PRE_DECREMENT, startCol, startPos);
     }
     else
-        return createToken(ARC_ADD, startPos);  // FIXME doesn't even attempt to parse a unary sub
+        return createToken(ARC_SUB, startPos);  // FIXME doesn't even attempt to parse a unary sub
 }
 
 Token* Lexer::lexDiv(){
@@ -406,9 +406,6 @@ Token* Lexer::lexEqual(){
     else
         return createToken(ARC_ASSIGN, startPos);
 }
-
-
-
 
 inline char Lexer::currentChar(){
     return data[index];
