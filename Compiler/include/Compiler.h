@@ -10,7 +10,7 @@ class Compiler{
         std::string readFile(const std::string&);
 
         std::vector<RawFile> getProjectFiles();
-        std::vector<std::string> Compiler::parseProjectSpecFile(std::string& file);
+        std::vector<std::string> parseProjectSpecFile(std::string& file);
 
         void trim(std::string&);
 

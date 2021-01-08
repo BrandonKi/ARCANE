@@ -5,7 +5,8 @@ Compiler::Compiler(){
 }
 
 std::vector<u8> Compiler::compile() {
-    Parser parser(getProjectFiles());
+    std::vector<RawFile> projectFiles = getProjectFiles();
+    Parser parser(projectFiles);
     parser.parse();
     
     //TODO convert to another IR for easier optimization and optimize step
@@ -36,7 +37,8 @@ std::vector<RawFile> Compiler::getProjectFiles(){   // TODO refactor big time
     else{
         for(const auto& file : std::filesystem::directory_iterator(args.path)){
             if(file.path().filename().string() == "ARProjSpec"){
-                projectFileNames = parseProjectSpecFile(file.path().string());
+                std::string path = file.path().string();
+                projectFileNames = parseProjectSpecFile(path);
             }
         }
         for(const auto& file : std::filesystem::directory_iterator(args.path)){

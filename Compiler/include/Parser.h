@@ -14,16 +14,16 @@ class Parser{
 
         Project* parseProject();
         File* parseFile();
-        Decl* Parser::parseDecl();
-        Expr* Parser::parseExpr();
+        Decl* parseDecl();
+        Expr* parseExpr();
 
-        Token* Parser::currentToken();
-        Token* Parser::nextToken();
-        Token* Parser::peekNextToken();
+        Token* currentToken();
+        Token* nextToken();
+        Token* peekNextToken();
 
-        bool Parser::isOperator(TokenKind);
-        bool Parser::isUnaryOperator(TokenKind kind);
-        u8 Parser::precedence(TokenKind kind);
+        bool isOperator(TokenKind);
+        bool isUnaryOperator(TokenKind kind);
+        u8 precedence(TokenKind kind);
 
-        Type Parser::tokenKind2Type(TokenKind);
+        Type tokenKind2Type(TokenKind);
 };
