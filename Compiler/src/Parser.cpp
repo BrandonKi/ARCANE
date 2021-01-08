@@ -26,7 +26,10 @@ Project* Parser::parseProject(){    //TODO another good candidate for multithrea
 }
 
 File* Parser::parseFile(){
-
+    SourcePos startPos = currentToken()->pos;
+    std::vector<Import*> imports;
+    std::vector<Decl*> decls;
+    std::vector<Function*> functions;
     for(; index < tokens.size(); index++){  
         switch(currentToken()->kind){
             case ARC_IMPORT:
@@ -39,7 +42,7 @@ File* Parser::parseFile(){
                 parseDecl();
         }
     }
-    return new File{};
+    return ast.newFileNode(startPos, imports, decls, functions, true);
 }
 
 Decl* Parser::parseDecl(){
@@ -108,7 +111,10 @@ Expr* Parser::parseExpr(){
             result.push_back(currentToken());
         }
     else if(isOperator(currentToken()->kind)){  //TODO support unary operators also
-            while ((!stack.empty()) && (isOperator(stack.back()->kind)) && ((precedence(stack.back()->kind) > precedence(currentToken()->kind)) || (precedence(stack.back()->kind) == precedence(currentToken()->kind))) && (stack.back()->kind != ARC_OPEN_PAREN)){
+            while ((!stack.empty()) && (isOperator(stack.back()->kind)) && 
+                        ((precedence(stack.back()->kind) > precedence(currentToken()->kind)) || 
+                            (precedence(stack.back()->kind) == precedence(currentToken()->kind))) && 
+                                (stack.back()->kind != ARC_OPEN_PAREN)){
                 result.push_back(stack.back());
                 stack.pop_back();
             }
@@ -136,15 +142,15 @@ Expr* Parser::parseExpr(){
     }
 
     /**
-     * convert the vector of Tokens into a Expr which will represent a tree
+     * convert the vector of Tokens into a Expr tree
      */
     std::vector<Expr*> conversionStack;
     for(int i = 0; i < result.size(); i++){
         Token* token = result[i];
         if(isOperator(token->kind)){
             if(isUnaryOperator(token->kind)){
-                // conversionStack.push_back(token);
-
+                conversionStack.push_back(ast.newExprNode_unaryExpr(token->pos, token->kind, conversionStack.back()));
+                conversionStack.pop_back();
             }
             else{
                 Expr* operand1 = conversionStack.back();
@@ -280,5 +286,7 @@ u8 Parser::precedence(TokenKind kind){
         case ARC_ASSIGN:
         case ARC_INFER:
             return 0;
+        default:
+            return -1; // this should never happen
     }
 }
