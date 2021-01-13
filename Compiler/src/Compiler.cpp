@@ -12,7 +12,7 @@ std::vector<u8> Compiler::compile() {
     //TODO convert to another IR for easier optimization and optimize step
 
     // CodeGenerator gen;
-    // gen.generate(/* Whatever IR I decide on */);
+    // gen.generate(/* Whatever IR I decide on */); 
 
     
     std::vector<u8> temp;        //TODO replace in the future this is just so the code compiles and runs prerequisites

@@ -34,15 +34,28 @@ File* Parser::parseFile(){
         switch(currentToken()->kind){
             case ARC_IMPORT:
                 std::cout << "import statement\n";
+                imports.push_back(parseImport());
                 break;
             case ARC_FN:
                 std::cout << "function start\n";
+                functions.push_back(parseFunction());
                 break;
             case ARC_ID:
-                parseDecl();
+                std::cout << "function start\n";
+                decls.push_back(parseDecl());
+                break;
         }
     }
     return ast.newFileNode(startPos, imports, decls, functions, true);
+}
+
+Import* Parser::parseImport(){
+
+}
+
+
+Function* Parser::parseFunction(){
+
 }
 
 Decl* Parser::parseDecl(){

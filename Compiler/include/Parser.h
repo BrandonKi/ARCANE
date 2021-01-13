@@ -14,6 +14,8 @@ class Parser{
 
         Project* parseProject();
         File* parseFile();
+        Import* parseImport();
+        Function* parseFunction();
         Decl* parseDecl();
         Expr* parseExpr();
 

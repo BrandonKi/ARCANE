@@ -1,3 +1,3 @@
 # This file specifies all files to include in project and will have other project info in the future
-test0.ar
-test14.ar
+# The first file listed is the entrypoint/main file
+exprtest.ar
