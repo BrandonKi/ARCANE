@@ -50,12 +50,12 @@ File* Parser::parseFile(){
 }
 
 Import* Parser::parseImport(){
-
+    return new Import{};
 }
 
 
 Function* Parser::parseFunction(){
-
+    return new Function{};
 }
 
 Decl* Parser::parseDecl(){

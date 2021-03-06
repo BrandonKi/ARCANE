@@ -116,7 +116,7 @@ struct Decl : Node {
 class AST {
 
     private:
-        ArenaAlloc allocator;
+        ArenaAllocator<u8> allocator;
     
     public:
         AST();

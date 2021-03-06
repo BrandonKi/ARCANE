@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Arcane VERSION 0.1.0)
 
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 20)
 
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)

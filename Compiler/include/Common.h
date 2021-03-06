@@ -10,7 +10,7 @@
 
 #include <pLog.h>
 
-#include "ArenaAlloc.h"
+#include "ArenaAllocator.h"
 
 using namespace pLog;
 

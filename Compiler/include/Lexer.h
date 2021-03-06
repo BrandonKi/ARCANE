@@ -27,7 +27,7 @@ class Lexer{
     private:
         const std::string& data;
         std::vector<Token*> tokens;
-        ArenaAlloc allocator;
+        ArenaAllocator<Token> allocator;
         u32 index;
         u32 line;
         u32 col;
