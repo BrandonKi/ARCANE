@@ -10,6 +10,7 @@
 
 #include <small_profiler.h>
 #include <pLog.h>
+#define ARENA_ALLOCATOR_SIZE 5120   /// FIXME 5 mb but change in the future depending on # of files, size, etc.
 #include <arena_alloc.h>
 
 

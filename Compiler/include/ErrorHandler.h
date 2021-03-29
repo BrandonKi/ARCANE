@@ -15,6 +15,7 @@ class ErrorHandler {
     public:
 
         ErrorHandler();
+        ~ErrorHandler();
 
         void push(ErrorMessage);
         void flush();

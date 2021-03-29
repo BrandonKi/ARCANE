@@ -44,7 +44,7 @@ File* Parser::parseFile() {
                 functions.push_back(parseFunction());
                 break;
             case ARC_ID:
-                std::cout << "function start\n";
+                std::cout << "decl start\n";
                 decls.push_back(parseDecl());
                 break;
         }
@@ -97,6 +97,7 @@ Decl* Parser::parseDecl() {
                 }
                 else {
                     //TODO syntax error here
+                    errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "INVALID TOKEN"});
                 }
                 break;
             default:
@@ -165,7 +166,7 @@ Expr* Parser::parseExpr() {
      * convert the vector of Tokens into a Expr tree
      */
     std::vector<Expr*> conversionStack;
-    for(int i = 0; i < result.size(); i++){
+    for(int i = 0; i < result.size(); i++) {
         Token* token = result[i];
         if(isOperator(token->kind)) {
             if(isUnaryOperator(token->kind)) {

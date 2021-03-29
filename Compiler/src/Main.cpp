@@ -14,7 +14,6 @@ int main(int argc, char* argv[]) {
 
     Compiler compiler;
     compiler.compile();
-    
 }
 
 void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of the availible flags

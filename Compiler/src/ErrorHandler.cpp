@@ -7,6 +7,10 @@ ErrorHandler::ErrorHandler():
     buffer.reserve(200);
 }
 
+ErrorHandler::~ErrorHandler() {
+    flush();
+}
+
 void ErrorHandler::push(ErrorMessage error) {
     PROFILE();
     buffer += makePreamble(error);
@@ -37,5 +41,6 @@ astring ErrorHandler::makePreamble(ErrorMessage& error){
 
 void ErrorHandler::flush(){
     PROFILE();
-    println(astrtostr(buffer));
+    if(!buffer.empty())
+        println(astrtostr(buffer));
 }
