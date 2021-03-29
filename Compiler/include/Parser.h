@@ -11,6 +11,7 @@ class Parser{
         std::vector<Token, arena_allocator<Token>> tokens;
         u64 index;
         AST ast;
+        SymbolTable s_table;
 
         Project* parseProject();
         File* parseFile();

@@ -3,6 +3,7 @@
 Parser::Parser(std::vector<RawFile>& projectFiles) {  //TODO good candidate for multithreading
     PROFILE();
     // std::thread worker([](){});
+    // lex all the files
     for(RawFile rf: projectFiles){
         std::cout << rf.filepath << '\n';
         Lexer lexer(rf.filedata);
@@ -20,7 +21,6 @@ Project* Parser::parseProject() {    //TODO another good candidate for multithre
     std::vector<File*> files;
     for(LexedFile& lf : data){
         // update/reset member variables for each file
-        index = 0;
         tokens = lf.filedata;
         files.push_back(parseFile());
     }
@@ -29,6 +29,8 @@ Project* Parser::parseProject() {    //TODO another good candidate for multithre
 
 File* Parser::parseFile() {
     PROFILE();
+    // reset the class wide index variable to zero
+    index = 0;
     SourcePos startPos = currentToken()->pos;
     std::vector<Import*> imports;
     std::vector<Decl*> decls;
@@ -36,15 +38,15 @@ File* Parser::parseFile() {
     for(; index < tokens.size(); index++) {  
         switch(currentToken()->kind) {
             case ARC_IMPORT:
-                std::cout << "import statement\n";
+                println("import statement");
                 imports.push_back(parseImport());
                 break;
             case ARC_FN:
-                std::cout << "function start\n";
+                println("function start");
                 functions.push_back(parseFunction());
                 break;
             case ARC_ID:
-                std::cout << "decl start\n";
+                println("decl start");
                 decls.push_back(parseDecl());
                 break;
         }
@@ -68,7 +70,7 @@ Decl* Parser::parseDecl() {
     SourcePos startPos = currentToken()->pos;
     astring& id = *(currentToken()->data);
     if(peekNextToken()->kind == ARC_INFER) {
-
+        s_table.addSymbol(id, VARIABLE, TYPE_INFER);
     }
     else if(nextToken()->kind == ARC_COLON) {
         nextToken();
@@ -89,11 +91,16 @@ Decl* Parser::parseDecl() {
             case ARC_ARR:
                 if(peekNextToken()->kind == ARC_SEMICOLON) {
                     //TODO definition but no declaration
+                    s_table.addSymbol(id, VARIABLE, tokenKind2Type(currentToken()->kind));
                 }
                 else if(peekNextToken()->kind == ARC_ASSIGN) {
                     nextToken();
                     nextToken();
-                    return ast.newDeclNode(startPos, id, type, parseExpr());
+                    auto result = ast.newDeclNode(startPos, id, type, parseExpr());
+                    // add symbol after parsing to avoid situations like this
+                    // var := var + 1;
+                    s_table.addSymbol(id, VARIABLE, tokenKind2Type(currentToken()->kind));
+                    return result;
                 }
                 else {
                     //TODO syntax error here
@@ -129,6 +136,8 @@ Expr* Parser::parseExpr() {
             result.push_back(currentToken());
         }
         else if(currentToken()->kind == ARC_ID) {    //TODO differentiate between functions and variables
+            if(!s_table.has(*(currentToken()->data)))
+                errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Unknown identifier"});
             result.push_back(currentToken());
         }
     else if(isOperator(currentToken()->kind)) {  //TODO support unary operators also

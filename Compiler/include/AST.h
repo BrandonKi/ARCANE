@@ -11,6 +11,7 @@ struct Expr;
 struct Decl;
 
 enum Type {
+    TYPE_INFER,
     TYPE_I8,
     TYPE_I16,
     TYPE_I32,
