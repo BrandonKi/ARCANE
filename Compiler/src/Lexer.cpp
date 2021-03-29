@@ -3,16 +3,18 @@
 Lexer::Lexer(const std::string& filedata):
     data(filedata), tokens(), allocator(), index(0), line(1), col(1)
 {
+    PROFILE();
     // errorLog.push(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
     // errorLog.flush();
     tokens.reserve(100);
 }
 
-std::vector<Token*> Lexer::lex(){
+std::vector<Token*> Lexer::lex() {
+    PROFILE();
 
-    while(index < data.size()){
+    while(index < data.size()) {
 
-        switch(currentChar()){
+        switch(currentChar()) {
             CASE_DIGIT:
                 tokens.push_back(lexNumberLit());
                 break;
@@ -122,9 +124,10 @@ std::vector<Token*> Lexer::lex(){
 }
 
 
-void Lexer::consumeComment(){
+void Lexer::consumeComment() {
+    PROFILE();
 
-    if(nextChar() == '*'){
+    if(nextChar() == '*') {
         nextChar_noreturn();
         while(index < data.size() && !(currentChar() == '*' && peekNextChar() == '/')){
             if(currentChar() == '\n')
@@ -140,21 +143,22 @@ void Lexer::consumeComment(){
     }
 }
 
-Token* Lexer::lexNumberLit(){
+Token* Lexer::lexNumberLit() {
+    PROFILE();
     std::string num;
     u32 startPos = index;
     u32 currentCol = col;
     bool isFloat = false;
     bool isInt = true;
-    if(peekNextChar() == 'x'){  //TODO implement hex literal lexing
+    if(peekNextChar() == 'x') {  //TODO implement hex literal lexing
         nextChar_noreturn();
         isInt = false;
         isFloat = false;
     }
-    while(isDigit(currentChar())){      //TODO refactor
+    while(isDigit(currentChar())) {      //TODO refactor
         num.push_back(currentChar());
 
-        if(peekNextChar() == '.'){
+        if(peekNextChar() == '.') {
             // if(isFloat) //TODO print error message because two "." are present in number literal
             isFloat = true;
             isInt = false;
@@ -177,13 +181,14 @@ Token* Lexer::lexNumberLit(){
     }
 }
 
-Token* Lexer::lexIdentifier(){
+Token* Lexer::lexIdentifier() {
+    PROFILE();
 
     std::string id;
     u32 startPos = index;
     u32 currentCol = col;
 
-    while(isLetter(currentChar())  || isDigit(currentChar())){
+    while(isLetter(currentChar())  || isDigit(currentChar())) {
         id.push_back(currentChar());
         nextChar_noreturn();
     }
@@ -195,7 +200,8 @@ Token* Lexer::lexIdentifier(){
     return createToken(ARC_ID, currentCol, startPos, id);
 }
 
-Token* Lexer::lexString(){  //TODO escape sequences
+Token* Lexer::lexString() {  //TODO escape sequences
+    PROFILE();
 
     u32 startPos = index;
 
@@ -203,26 +209,27 @@ Token* Lexer::lexString(){  //TODO escape sequences
         
     char end = currentChar();
 
-    while(nextChar() != end){
+    while(nextChar() != end) {
         id.push_back(currentChar());
     }
 
     return createToken(ARC_STRING_LIT, startPos, id);
 }
 
-Token* Lexer::lexInterpolatedString(){  //TODO implement interpolated strings
+Token* Lexer::lexInterpolatedString() {  //TODO implement interpolated strings
     // errorLog.push(ErrorMessage{FATAL, lexString(), args.path, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
     // errorLog.flush();
     std::exit(-1);
     // return new Token{};
 }
 
-Token* Lexer::lexColon(){
+Token* Lexer::lexColon() {
+    PROFILE();
 
     u32 startPos = index;
     u32 startCol = col;
     
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_INFER, startCol, startPos);
     }
@@ -231,16 +238,17 @@ Token* Lexer::lexColon(){
 
 }
 
-inline Token* Lexer::lexAdd(){
+inline Token* Lexer::lexAdd() {
+    PROFILE();
 
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_ADD_EQUAL, startCol, startPos);
     }
-    else if(peekNextChar() == '+'){
+    else if(peekNextChar() == '+') {
         nextChar_noreturn();
         if(tokens.back()->kind == ARC_ID)  // FIXME incorrectly lexes some cases for ex. "4++", "*++4", etc.
             return createToken(ARC_POST_INCREMENT, startCol, startPos);
@@ -250,16 +258,17 @@ inline Token* Lexer::lexAdd(){
         return createToken(ARC_ADD, startPos);
 }
 
-Token* Lexer::lexSub(){
+Token* Lexer::lexSub() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_SUB_EQUAL, startCol, startPos);
     }
-    else if(peekNextChar() == '-'){
+    else if(peekNextChar() == '-') {
         nextChar_noreturn();
         if(tokens.back()->kind == ARC_ID)   // FIXME incorrectly lexes some cases for ex. "4--", "*--4", etc.
             return createToken(ARC_POST_DECREMENT, startCol, startPos);
@@ -269,12 +278,13 @@ Token* Lexer::lexSub(){
         return createToken(ARC_SUB, startPos);  // FIXME doesn't even attempt to parse a unary sub
 }
 
-Token* Lexer::lexDiv(){
+Token* Lexer::lexDiv() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_DIV_EQUAL, startCol, startPos);
     }
@@ -282,12 +292,13 @@ Token* Lexer::lexDiv(){
         return createToken(ARC_DIV, startPos);
 }
 
-Token* Lexer::lexMul(){
+Token* Lexer::lexMul() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_MUL_EQUAL, startCol, startPos);
     }
@@ -295,12 +306,13 @@ Token* Lexer::lexMul(){
         return createToken(ARC_MUL, startPos);
 }
 
-Token* Lexer::lexMod(){
+Token* Lexer::lexMod() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_MOD_EQUAL, startCol, startPos);
     }
@@ -308,12 +320,13 @@ Token* Lexer::lexMod(){
         return createToken(ARC_MOD, startPos);
 }
 
-Token* Lexer::lexOr(){
+Token* Lexer::lexOr() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_OR_EQUAL, startCol, startPos);
     }
@@ -325,16 +338,17 @@ Token* Lexer::lexOr(){
         return createToken(ARC_BIN_OR, startPos);
 }
 
-Token* Lexer::lexAnd(){
+Token* Lexer::lexAnd() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_AND_EQUAL, startCol, startPos);
     }
-    else if(peekNextChar() == '&'){
+    else if(peekNextChar() == '&') {
         nextChar_noreturn();
         return createToken(ARC_LOGICAL_AND, startCol, startPos);
     }
@@ -342,12 +356,13 @@ Token* Lexer::lexAnd(){
         return createToken(ARC_BIN_AND, startPos);
 }
 
-Token* Lexer::lexNot(){
+Token* Lexer::lexNot() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_NOT_EQUAL, startCol, startPos);
     }
@@ -356,11 +371,12 @@ Token* Lexer::lexNot(){
 }
 
 Token* Lexer::lexXor(){
-    
+    PROFILE();
+
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_XOR_EQUAL, startCol, startPos);
     }
@@ -368,12 +384,13 @@ Token* Lexer::lexXor(){
         return createToken(ARC_XOR, startPos);
 }
 
-Token* Lexer::lexLesser(){
+Token* Lexer::lexLesser() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_LESSER_EQUAL, startCol, startPos);
     }
@@ -381,12 +398,13 @@ Token* Lexer::lexLesser(){
         return createToken(ARC_LESSER, startPos);
 }
 
-Token* Lexer::lexGreater(){
+Token* Lexer::lexGreater() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_GREATER_EQUAL, startCol, startPos);
     }
@@ -394,12 +412,13 @@ Token* Lexer::lexGreater(){
         return createToken(ARC_GREATER, startPos);
 }
 
-Token* Lexer::lexEqual(){
+Token* Lexer::lexEqual() {
+    PROFILE();
     
     u32 startPos = index;
     u32 startCol = col;
 
-    if(peekNextChar() == '='){
+    if(peekNextChar() == '=') {
         nextChar_noreturn();
         return createToken(ARC_EQUAL, startCol, startPos);
     }
@@ -407,58 +426,69 @@ Token* Lexer::lexEqual(){
         return createToken(ARC_ASSIGN, startPos);
 }
 
-inline char Lexer::currentChar(){
+inline char Lexer::currentChar() {
+    PROFILE();
     return data[index];
 }
 
-inline char Lexer::nextChar(){
+inline char Lexer::nextChar() {
+    PROFILE();
     col++;
     return data[++index];
 }
 
-inline char Lexer::prevChar(){
+inline char Lexer::prevChar() {
+    PROFILE();
     col--;
     return data[--index];
 }
 
-inline void Lexer::nextChar_noreturn(){
+inline void Lexer::nextChar_noreturn() {
+    PROFILE();
     col++;
     index++;
 }
 
-inline void Lexer::prevChar_noreturn(){
+inline void Lexer::prevChar_noreturn() {
+    PROFILE();
     col--;
     index--;
 }
 
-inline char Lexer::peekNextChar(){   
+inline char Lexer::peekNextChar() {
+    PROFILE();
     return data[index+1];
 }
 
-inline Token* Lexer::createToken(TokenKind kind, u32 startPos){
+inline Token* Lexer::createToken(TokenKind kind, u32 startPos) {
+    PROFILE();
     // Token* tkn = allocator.alloc<Token>();
     // *tkn = Token {kind, SourcePos{line, col, startPos, index}, nullptr};
     Token* tkn = new Token {kind, SourcePos{line, col, startPos, index}, nullptr};
     return tkn;
 }
  
-inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos){
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos) {
+    PROFILE();
     // Token* tkn = allocator.alloc<Token>();
     // *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
     Token* tkn = new Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
     return tkn;
 }
 
-inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string& val){
+inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string& val) {
+    PROFILE();
     return createToken(kind, col, startPos, val);
 }
 
-inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string&& val){
+inline Token* Lexer::createToken(TokenKind kind, u32 startPos, std::string&& val) {
+    PROFILE();
     return createToken(kind, col, startPos, val);
 }
 
 
-inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val){   //FIXME no reason to pass a string here    
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val) {   //FIXME no reason to pass a string here
+    PROFILE();
     // Token* tkn = allocator.alloc<Token>();
     // size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
     // char* data = allocator.alloc<char>(dataSize);
@@ -471,7 +501,8 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     return tkn;
 }
 
-inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string&& val){   //FIXME no reason to pass a string here
+inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string&& val) {   //FIXME no reason to pass a string here
+    PROFILE();
     // Token* tkn = allocator.alloc<Token>();
     // size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
     // char* data = allocator.alloc<char>(dataSize);
@@ -484,7 +515,8 @@ inline Token* Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, s
     return tkn;
 }
 
-inline void Lexer::printTokens(bool verbose){
+inline void Lexer::printTokens(bool verbose) {
+    PROFILE();
     if(verbose)
         for(Token* tkn : tokens)
             printTokenln(tkn);

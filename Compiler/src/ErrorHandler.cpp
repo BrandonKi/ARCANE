@@ -8,7 +8,7 @@ ErrorHandler::ErrorHandler():
 }
 
 void ErrorHandler::push(ErrorMessage error) {
-
+    PROFILE();
     buffer += makePreamble(error);
 
     switch(error.severity){
@@ -31,9 +31,11 @@ void ErrorHandler::push(ErrorMessage error) {
 }
 
 std::string ErrorHandler::makePreamble(ErrorMessage& error){
+    PROFILE();
     return error.filename + '[' + std::to_string(error.token->pos.srcLine) + ", " + std::to_string(error.token->pos.srcChar) + "] : ";
 }
 
 void ErrorHandler::flush(){
+    PROFILE();
     println(buffer);
 }

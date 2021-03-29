@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <thread>
 
+#include <small_profiler.h>
 #include <pLog.h>
 
 #include "ArenaAllocator.h"

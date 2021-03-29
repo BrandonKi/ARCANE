@@ -1,10 +1,12 @@
 #include "Compiler.h"
 
-Compiler::Compiler(){
+Compiler::Compiler() {
+    PROFILE();
     /* Nothing to see here */
 }
 
 std::vector<u8> Compiler::compile() {
+    PROFILE();
     std::vector<RawFile> projectFiles = getProjectFiles();
     Parser parser(projectFiles);
     parser.parse();
@@ -19,7 +21,8 @@ std::vector<u8> Compiler::compile() {
     return temp;
 }
 
-std::string Compiler::readFile(const std::string& filepath){
+std::string Compiler::readFile(const std::string& filepath) {
+    PROFILE();
     std::ifstream file;
     file.open(filepath);
     std::stringstream buffer;
@@ -28,7 +31,8 @@ std::string Compiler::readFile(const std::string& filepath){
     return buffer.str();
 }
 
-std::vector<RawFile> Compiler::getProjectFiles(){   // TODO refactor big time
+std::vector<RawFile> Compiler::getProjectFiles() {   // TODO refactor big time
+    PROFILE();
     std::vector<RawFile> result;
     std::vector<std::string> projectFileNames;
     if(!args.project){
@@ -54,7 +58,8 @@ std::vector<RawFile> Compiler::getProjectFiles(){   // TODO refactor big time
     return result;
 }
 
-std::vector<std::string> Compiler::parseProjectSpecFile(std::string& filepath){
+std::vector<std::string> Compiler::parseProjectSpecFile(std::string& filepath) {
+    PROFILE();
     std::vector<std::string> result;
     std::ifstream file(filepath);
     std::string line;
@@ -66,7 +71,8 @@ std::vector<std::string> Compiler::parseProjectSpecFile(std::string& filepath){
     return result;
 }
 
-void Compiler::trim(std::string& str){  //TODO move this function to a different file
+void Compiler::trim(std::string& str) {  //TODO move this function to a different file
+    PROFILE();
     while(!str.empty() && isspace(str.back()))
         str.erase(str.end()-1);
     while(!str.empty() && isspace(str.front()))

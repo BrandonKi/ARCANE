@@ -5,7 +5,8 @@
 
 void parseArgs(int, char* argv[]);
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
+    PROFILE();
 
     init_pLog();        // init pLog lib
 
@@ -14,12 +15,13 @@ int main(int argc, char* argv[]){
     Compiler compiler;
     compiler.compile();
 
-    #ifdef _DEBUG
-    std::cin.get();
-    #endif
+    // #ifdef _DEBUG
+    // std::cin.get();
+    // #endif
 }
 
-void parseArgs(int argc, char* argv[]){         //TODO implement the rest of the availible flags
+void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of the availible flags
+    PROFILE();
     std::vector<std::string> argList(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
     for(std::string& str : argList){
         if(str == "--lex-out")

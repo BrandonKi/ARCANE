@@ -49,7 +49,7 @@ public:
         current = start;
         end = start + ARENA_ALLOCATOR_SIZE;
 
-#       ifdef ARENA_ALLOC_DEBUG
+        #ifdef ARENA_ALLOC_DEBUG
         std::cout << "new arena allocated\n";
         #endif
     }

@@ -1,7 +1,7 @@
 #include "Parser.h"
 
-Parser::Parser(std::vector<RawFile>& projectFiles){  //TODO good candidate for multithreading
-
+Parser::Parser(std::vector<RawFile>& projectFiles) {  //TODO good candidate for multithreading
+    PROFILE();
     // std::thread worker([](){});
     for(RawFile rf: projectFiles){
         std::cout << rf.filepath << '\n';
@@ -10,11 +10,13 @@ Parser::Parser(std::vector<RawFile>& projectFiles){  //TODO good candidate for m
     } 
 }
 
-Project* Parser::parse(){
+Project* Parser::parse() {
+    PROFILE();
     return parseProject();
 }
 
-Project* Parser::parseProject(){    //TODO another good candidate for multithreading
+Project* Parser::parseProject() {    //TODO another good candidate for multithreading
+    PROFILE();
     std::vector<File*> files;
     for(LexedFile& lf : data){
         // update/reset member variables for each file
@@ -25,13 +27,14 @@ Project* Parser::parseProject(){    //TODO another good candidate for multithrea
     return ast.newProjectNode(SourcePos{}, files);
 }
 
-File* Parser::parseFile(){
+File* Parser::parseFile() {
+    PROFILE();
     SourcePos startPos = currentToken()->pos;
     std::vector<Import*> imports;
     std::vector<Decl*> decls;
     std::vector<Function*> functions;
-    for(; index < tokens.size(); index++){  
-        switch(currentToken()->kind){
+    for(; index < tokens.size(); index++) {  
+        switch(currentToken()->kind) {
             case ARC_IMPORT:
                 std::cout << "import statement\n";
                 imports.push_back(parseImport());
@@ -49,25 +52,28 @@ File* Parser::parseFile(){
     return ast.newFileNode(startPos, imports, decls, functions, true);
 }
 
-Import* Parser::parseImport(){
+Import* Parser::parseImport() {
+    PROFILE();
     return new Import{};
 }
 
 
-Function* Parser::parseFunction(){
+Function* Parser::parseFunction() {
+    PROFILE();
     return new Function{};
 }
 
-Decl* Parser::parseDecl(){
+Decl* Parser::parseDecl() {
+    PROFILE();
     SourcePos startPos = currentToken()->pos;
     std::string id = currentToken()->data;
-    if(peekNextToken()->kind == ARC_INFER){
+    if(peekNextToken()->kind == ARC_INFER) {
 
     }
-    else if(nextToken()->kind == ARC_COLON){
+    else if(nextToken()->kind == ARC_COLON) {
         nextToken();
         Type type = tokenKind2Type(currentToken()->kind);
-        switch(currentToken()->kind){
+        switch(currentToken()->kind) {
             case ARC_I8:
             case ARC_I16:
             case ARC_I32:
@@ -81,15 +87,15 @@ Decl* Parser::parseDecl(){
             case ARC_STRUCT:
             case ARC_STR:
             case ARC_ARR:
-                if(peekNextToken()->kind == ARC_SEMICOLON){
+                if(peekNextToken()->kind == ARC_SEMICOLON) {
                     //TODO definition but no declaration
                 }
-                else if(peekNextToken()->kind == ARC_ASSIGN){
+                else if(peekNextToken()->kind == ARC_ASSIGN) {
                     nextToken();
                     nextToken();
                     return ast.newDeclNode(startPos, id, type, parseExpr());
                 }
-                else{
+                else {
                     //TODO syntax error here
                 }
                 break;
@@ -99,7 +105,7 @@ Decl* Parser::parseDecl(){
                 break;
         }
     }
-    else{
+    else {
         //TODO syntax error here
         errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "INVALID TOKEN"});
     }
@@ -109,21 +115,22 @@ Decl* Parser::parseDecl(){
 /**
  * expects the current token to be the first token in the expression
  */
-Expr* Parser::parseExpr(){
+Expr* Parser::parseExpr() {
+    PROFILE();
     std::vector<Token*> result;
     std::vector<Token*> stack;
 
     /**
      * shunting yard algorithm
      */
-    while(currentToken()->kind != ARC_SEMICOLON){
-        if(currentToken()->kind == ARC_INT_LIT){
+    while(currentToken()->kind != ARC_SEMICOLON) {
+        if(currentToken()->kind == ARC_INT_LIT) {
             result.push_back(currentToken());
         }
-        else if(currentToken()->kind == ARC_ID){    //TODO differentiate between functions and variables
+        else if(currentToken()->kind == ARC_ID) {    //TODO differentiate between functions and variables
             result.push_back(currentToken());
         }
-    else if(isOperator(currentToken()->kind)){  //TODO support unary operators also
+    else if(isOperator(currentToken()->kind)) {  //TODO support unary operators also
             while ((!stack.empty()) && (isOperator(stack.back()->kind)) && 
                         ((precedence(stack.back()->kind) > precedence(currentToken()->kind)) || 
                             (precedence(stack.back()->kind) == precedence(currentToken()->kind))) && 
@@ -133,11 +140,11 @@ Expr* Parser::parseExpr(){
             }
             stack.push_back(currentToken());
         }
-        else if(currentToken()->kind == ARC_OPEN_PAREN){
+        else if(currentToken()->kind == ARC_OPEN_PAREN) {
             stack.push_back(currentToken());
         }
-        else if(currentToken()->kind == ARC_CLOSE_PAREN){
-            while(stack.back()->kind != ARC_OPEN_PAREN){
+        else if(currentToken()->kind == ARC_CLOSE_PAREN) {
+            while(stack.back()->kind != ARC_OPEN_PAREN) {
                 result.push_back(stack.back());
                 stack.pop_back();
                 if(stack.empty()){
@@ -149,7 +156,7 @@ Expr* Parser::parseExpr(){
         nextToken();
     }
 
-    while(!stack.empty()){
+    while(!stack.empty()) {
         result.push_back(stack.back());
         stack.pop_back();
     }
@@ -160,12 +167,12 @@ Expr* Parser::parseExpr(){
     std::vector<Expr*> conversionStack;
     for(int i = 0; i < result.size(); i++){
         Token* token = result[i];
-        if(isOperator(token->kind)){
-            if(isUnaryOperator(token->kind)){
+        if(isOperator(token->kind)) {
+            if(isUnaryOperator(token->kind)) {
                 conversionStack.push_back(ast.newExprNode_unaryExpr(token->pos, token->kind, conversionStack.back()));
                 conversionStack.pop_back();
             }
-            else{
+            else {
                 Expr* operand1 = conversionStack.back();
                 conversionStack.pop_back();
                 Expr* operand2 = conversionStack.back();
@@ -173,8 +180,8 @@ Expr* Parser::parseExpr(){
                 conversionStack.push_back(ast.newExprNode_binExpr(token->pos, token->kind, operand1, operand2));
             }
         }
-        else{
-            switch(result[i]->kind){
+        else {
+            switch(result[i]->kind) {
                 case ARC_INT_LIT:
                     conversionStack.push_back(ast.newExprNode_intLiteral(token->pos, strtoll(token->data, nullptr, 10)));
                     break;
@@ -189,12 +196,14 @@ Expr* Parser::parseExpr(){
     return conversionStack.back();
 }
 
-inline Token* Parser::currentToken(){
+inline Token* Parser::currentToken() {
+    PROFILE();
     return tokens[index];
 }
 
-inline Token* Parser::nextToken(){
-    if(index + 1 >= tokens.size()){
+inline Token* Parser::nextToken() {
+    PROFILE();
+    if(index + 1 >= tokens.size()) {
         errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Reached EOF while parsing"});
         errorLog.flush();
     }
@@ -202,15 +211,17 @@ inline Token* Parser::nextToken(){
     return tokens[++index];
 }
 
-inline Token* Parser::peekNextToken(){
-    if(index + 1 >= tokens.size()){
+inline Token* Parser::peekNextToken() {
+    PROFILE();
+    if(index + 1 >= tokens.size()) {
         errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Reached EOF while parsing"});
         errorLog.flush();
     }
     return tokens[index + 1];
 }
 
-inline Type Parser::tokenKind2Type(TokenKind tkn){
+inline Type Parser::tokenKind2Type(TokenKind tkn) {
+    PROFILE();
     switch(tkn){
         case ARC_I8:
             return TYPE_I8;
@@ -242,17 +253,20 @@ inline Type Parser::tokenKind2Type(TokenKind tkn){
     return (Type)-1;
 }
 
-bool Parser::isOperator(TokenKind kind){
+bool Parser::isOperator(TokenKind kind) {
+    PROFILE();
     return kind >= 49;  //FIXME this needs to change if the TokenKind enum changes
 }
 
-bool Parser::isUnaryOperator(TokenKind kind){
+bool Parser::isUnaryOperator(TokenKind kind) {
+    PROFILE();
     return 
         kind == ARC_NEGATE || kind == ARC_NOT || kind == ARC_PRE_INCREMENT || 
         kind == ARC_POST_INCREMENT || kind == ARC_PRE_DECREMENT || kind == ARC_POST_DECREMENT;
 }
 
-u8 Parser::precedence(TokenKind kind){
+u8 Parser::precedence(TokenKind kind) {
+    PROFILE();
 
     switch(kind){
         case ARC_PRE_INCREMENT:
