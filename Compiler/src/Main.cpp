@@ -19,8 +19,8 @@ int main(int argc, char* argv[]) {
 
 void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of the availible flags
     PROFILE();
-    std::vector<std::string> argList(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
-    for(std::string& str : argList){
+    std::vector<astring> argList(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
+    for(astring& str : argList){
         if(str == "--lex-out")
             args.lexOut = true;
         else if(str == "--lex-out-v"){

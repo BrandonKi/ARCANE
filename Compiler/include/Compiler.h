@@ -7,11 +7,11 @@ class Compiler{
         std::vector<u8> compile();
 
     private:
-        std::string readFile(const std::string&);
+        astring readFile(astring);
 
         std::vector<RawFile> getProjectFiles();
-        std::vector<std::string> parseProjectSpecFile(std::string& file);
+        std::vector<astring> parseProjectSpecFile(astring& file);
 
-        void trim(std::string&);
+        void trim(astring&);
 
 };

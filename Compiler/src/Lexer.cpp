@@ -1,10 +1,10 @@
 #include "Lexer.h"
 
-Lexer::Lexer(const std::string& filedata):
+Lexer::Lexer(const astring& filedata):
     data(filedata), tokens(arena_allocator<Token>{}), index(0), line(1), col(1)
 {
     PROFILE();
-    // errorLog.push(ErrorMessage{FATAL, new Token{std::string("100"), (TokenKind)0, 0, 0}, std::string("filename.txt"), std::string("invalid token")});
+    // errorLog.push(ErrorMessage{FATAL, new Token{astring("100"), (TokenKind)0, 0, 0}, astring("filename.txt"), astring("invalid token")});
     // errorLog.flush();
     tokens.reserve(100);
 }
@@ -145,7 +145,7 @@ void Lexer::consumeComment() {
 
 Token Lexer::lexNumberLit() {
     PROFILE();
-    std::string num;
+    astring& num = *new astring;
     u32 startPos = index;
     u32 currentCol = col;
     bool isFloat = false;
@@ -184,7 +184,7 @@ Token Lexer::lexNumberLit() {
 Token Lexer::lexIdentifier() {
     PROFILE();
 
-    std::string id;
+    astring& id = *new astring;
     u32 startPos = index;
     u32 currentCol = col;
 
@@ -205,7 +205,7 @@ Token Lexer::lexString() {  //TODO escape sequences
 
     u32 startPos = index;
 
-    std::string id;
+    astring& id = *new astring;
         
     char end = currentChar();
 
@@ -217,7 +217,7 @@ Token Lexer::lexString() {  //TODO escape sequences
 }
 
 Token Lexer::lexInterpolatedString() {  //TODO implement interpolated strings
-    // errorLog.push(ErrorMessage{FATAL, lexString(), args.path, std::string("interpolated strings are not implemented yet stop trying to use them >.>")});
+    // errorLog.push(ErrorMessage{FATAL, lexString(), args.path, astring("interpolated strings are not implemented yet stop trying to use them >.>")});
     // errorLog.flush();
     std::exit(-1);
     // return new Token{};
@@ -474,41 +474,26 @@ inline Token Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos) {
     return Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
 }
 
-inline Token Lexer::createToken(TokenKind kind, u32 startPos, std::string& val) {
+inline Token Lexer::createToken(TokenKind kind, u32 startPos, astring& val) {
     PROFILE();
     return createToken(kind, col, startPos, val);
 }
 
-inline Token Lexer::createToken(TokenKind kind, u32 startPos, std::string&& val) {
+inline Token Lexer::createToken(TokenKind kind, u32 startPos, astring&& val) {
     PROFILE();
     return createToken(kind, col, startPos, val);
 }
 
 
-inline Token Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string& val) {   //FIXME no reason to pass a string here
+inline Token Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, astring& val) {   //FIXME no reason to pass a string here
     PROFILE();
-    // Token* tkn = allocator.alloc<Token>();
-    // size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
-    // char* data = allocator.alloc<char>(dataSize);
-    // memcpy_s(data, dataSize, val.c_str(), dataSize);
-    // *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
-    size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
-    char* data = reinterpret_cast<char*>(::operator new(dataSize));
-    memcpy_s(data, dataSize, val.c_str(), dataSize);
-    return Token {kind, SourcePos{line, currentCol, startPos, index}, data};
+    return Token {kind, SourcePos{line, currentCol, startPos, index}, &val};
 }
 
-inline Token Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, std::string&& val) {   //FIXME no reason to pass a string here
+inline Token Lexer::createToken(TokenKind kind, u32 currentCol, u32 startPos, astring&& val) {   //FIXME no reason to pass a string here
     PROFILE();
-    // Token* tkn = allocator.alloc<Token>();
-    // size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
-    // char* data = allocator.alloc<char>(dataSize);
-    // memcpy_s(data, dataSize, val.c_str(), dataSize);
-    // *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, data};
-    size_t dataSize = val.size() + 1;     //NOTE add one for null byte 
-    char* data = reinterpret_cast<char*>(::operator new(dataSize));
-    memcpy_s(data, dataSize, val.c_str(), dataSize);
-    return Token {kind, SourcePos{line, currentCol, startPos, index}, data};
+    astring* val2 = new astring(val);   //FIXME temporary
+    return Token {kind, SourcePos{line, currentCol, startPos, index}, val2};
 }
 
 inline void Lexer::printTokens(bool verbose) {
@@ -519,8 +504,8 @@ inline void Lexer::printTokens(bool verbose) {
     else{
         for(Token tkn : tokens)
             if(tkn.data == nullptr)
-                println(str(tkn.kind) + ": " + getStringRep(tkn.kind));
+                println(astrtostr(str(tkn.kind) + ": " + getStringRep(tkn.kind)));
             else
-                println(str(tkn.kind) + ": " + tkn.data);
+                println(astrtostr(str(tkn.kind) + ": " + *(tkn.data)));
     }
 }

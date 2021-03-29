@@ -66,7 +66,7 @@ Function* Parser::parseFunction() {
 Decl* Parser::parseDecl() {
     PROFILE();
     SourcePos startPos = currentToken()->pos;
-    std::string id = currentToken()->data;
+    astring& id = *(currentToken()->data);
     if(peekNextToken()->kind == ARC_INFER) {
 
     }
@@ -183,7 +183,7 @@ Expr* Parser::parseExpr() {
         else {
             switch(result[i]->kind) {
                 case ARC_INT_LIT:
-                    conversionStack.push_back(ast.newExprNode_intLiteral(token->pos, strtoll(token->data, nullptr, 10)));
+                    conversionStack.push_back(ast.newExprNode_intLiteral(token->pos, astoll(*(token->data))));
                     break;
                 case ARC_ID:
                     conversionStack.push_back(ast.newExprNode_variable(token->pos, token->data));

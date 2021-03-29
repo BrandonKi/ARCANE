@@ -6,8 +6,8 @@ enum Severity{ FATAL, WARN, NOTE, MESSAGE };
 struct ErrorMessage { 
     Severity severity;
     Token* token;
-    std::string filename;
-    std::string message;
+    astring filename;
+    astring message;
 };
 
 class ErrorHandler {
@@ -21,8 +21,8 @@ class ErrorHandler {
 
     private:
 
-        std::string buffer;
+        astring buffer;
 
-        std::string makePreamble(ErrorMessage& error);
+        astring makePreamble(ErrorMessage& error);
 
 };

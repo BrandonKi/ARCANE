@@ -30,12 +30,12 @@ void ErrorHandler::push(ErrorMessage error) {
     //TODO output an arrow pointing to the token that caused the error on the next line
 }
 
-std::string ErrorHandler::makePreamble(ErrorMessage& error){
+astring ErrorHandler::makePreamble(ErrorMessage& error){
     PROFILE();
-    return error.filename + '[' + std::to_string(error.token->pos.srcLine) + ", " + std::to_string(error.token->pos.srcChar) + "] : ";
+    return error.filename + '[' + to_astring(error.token->pos.srcLine) + ", " + to_astring(error.token->pos.srcChar) + "] : ";
 }
 
 void ErrorHandler::flush(){
     PROFILE();
-    println(buffer);
+    println(astrtostr(buffer));
 }

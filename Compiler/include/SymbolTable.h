@@ -13,11 +13,11 @@ struct Symbol {
 
 class SymbolTable {
     public:
-        void addSymbol(std::string&);
-        bool isFunction(std::string&);
-        bool isVariable(std::string&);
+        void addSymbol(astring&);
+        bool isFunction(astring&);
+        bool isVariable(astring&);
 
     private:
-        std::unordered_map<std::string, Symbol> table;
+        std::unordered_map<astring, Symbol> table;
 
 };

@@ -42,8 +42,8 @@ struct File : Node{
 };
 
 struct Import : Node {
-    std::string id;
-    std::string filename;
+    astring id;
+    astring filename;
     // std::vector<Decl*> decls;
     // std::vector<Function*> functions;
 };
@@ -89,10 +89,10 @@ struct Expr : Node {
             f64 val;
         } floatLiteral;
         struct {
-            char* val;   //FIXME I don't like this too much
+            astring* val;   //FIXME I don't like this too much
         } stringLiteral;
         struct {
-            char* val;
+            astring* val;
         } id;
         struct {
             TokenKind op;   // op is expected to be a valid operator
@@ -108,7 +108,7 @@ struct Expr : Node {
 };
 
 struct Decl : Node {
-    char* id;
+    astring* id;
     Type type;
     Expr* val;
 };
@@ -118,8 +118,9 @@ class AST {
     private:
         //TODO this would be a good use case for a polymorphic allocator
         // everything that needs to be allocated is of different types
-        // for now we can use the standard allocator or use allocators specified for each type
-        // that would essentially emulate a polymorphic allocator
+        // for now we emulate a polymorphic allocator by manually allocating bytes for each type
+        arena_allocator<u8> allocator;
+
     
     public:
         AST();
@@ -127,18 +128,18 @@ class AST {
 
         Project* newProjectNode(SourcePos, std::vector<File*>&);
         File* newFileNode(SourcePos, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&, bool);
-        Import* newImportNode(SourcePos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
+        Import* newImportNode(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
         Function* newFunctionNode(SourcePos, std::vector<Type>&, Block*);
         Block* newBlockNode(SourcePos, std::vector<Statement*>&);
         Statement* newStatementNode_decl(SourcePos, Decl*);
         Statement* newStatementNode_expr(SourcePos, Expr*);
         Expr* newExprNode_intLiteral(SourcePos, u64);
         Expr* newExprNode_floatLiteral(SourcePos, f64);
-        Expr* newExprNode_stringLiteral(SourcePos, const char*);
-        Expr* newExprNode_variable(SourcePos, const char*);
+        Expr* newExprNode_stringLiteral(SourcePos, astring&);
+        Expr* newExprNode_variable(SourcePos, astring*);
         Expr* newExprNode_binExpr(SourcePos, TokenKind, Expr*, Expr*);
         Expr* newExprNode_unaryExpr(SourcePos, TokenKind, Expr*);
-        Decl* newDeclNode(SourcePos, std::string&, Type, Expr*);
+        Decl* newDeclNode(SourcePos, astring&, Type, Expr*);
 
 
 };

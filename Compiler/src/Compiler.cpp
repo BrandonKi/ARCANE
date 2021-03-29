@@ -21,34 +21,34 @@ std::vector<u8> Compiler::compile() {
     return temp;
 }
 
-std::string Compiler::readFile(const std::string& filepath) {
+astring Compiler::readFile(astring filepath) {
     PROFILE();
     std::ifstream file;
     file.open(filepath);
     std::stringstream buffer;
     buffer << file.rdbuf();
     file.close();
-    return buffer.str();
+    return astring(buffer.str());
 }
 
 std::vector<RawFile> Compiler::getProjectFiles() {   // TODO refactor big time
     PROFILE();
     std::vector<RawFile> result;
-    std::vector<std::string> projectFileNames;
+    std::vector<astring> projectFileNames;
     if(!args.project){
         result.push_back(RawFile{args.path, readFile(args.path)});
     }
     else{
         for(const auto& file : std::filesystem::directory_iterator(args.path)){
             if(file.path().filename().string() == "ARProjSpec"){
-                std::string path = file.path().string();
+                astring path = strtoastr(file.path().string());
                 projectFileNames = parseProjectSpecFile(path);
             }
         }
         for(const auto& file : std::filesystem::directory_iterator(args.path)){
-            for(std::string& name : projectFileNames){
-                if(file.path().filename().string() == name){
-                    result.push_back(RawFile{file.path().string(), readFile(file.path().string())});
+            for(astring& name : projectFileNames){
+                if(strtoastr(file.path().filename().string()) == name){
+                    result.push_back(RawFile{strtoastr(file.path().string()), readFile(strtoastr(file.path().string()))});
                     break;
                 }
             }
@@ -58,11 +58,11 @@ std::vector<RawFile> Compiler::getProjectFiles() {   // TODO refactor big time
     return result;
 }
 
-std::vector<std::string> Compiler::parseProjectSpecFile(std::string& filepath) {
+std::vector<astring> Compiler::parseProjectSpecFile(astring& filepath) {
     PROFILE();
-    std::vector<std::string> result;
+    std::vector<astring> result;
     std::ifstream file(filepath);
-    std::string line;
+    astring line;
     while(std::getline(file, line)){
         trim(line);
         if(line[0] != '#')
@@ -71,7 +71,7 @@ std::vector<std::string> Compiler::parseProjectSpecFile(std::string& filepath) {
     return result;
 }
 
-void Compiler::trim(std::string& str) {  //TODO move this function to a different file
+void Compiler::trim(astring& str) {  //TODO move this function to a different file
     PROFILE();
     while(!str.empty() && isspace(str.back()))
         str.erase(str.end()-1);

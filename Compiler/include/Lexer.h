@@ -15,7 +15,7 @@ class Lexer {
                     case 't':case 'u':case 'v':case 'w':case 'x':case 'y':case 'z':case '_'
 
     public:
-        Lexer(const std::string&);
+        Lexer(const astring&);
         std::vector<Token, arena_allocator<Token>> lex();
         char currentChar();
         char nextChar();
@@ -25,7 +25,7 @@ class Lexer {
         char peekNextChar();
 
     private:
-        const std::string& data;
+        const astring data;
         std::vector<Token, arena_allocator<Token>> tokens;
         u32 index;
         u32 line;
@@ -53,10 +53,10 @@ class Lexer {
 
         Token createToken(TokenKind, u32);
         Token createToken(TokenKind, u32, u32);
-        Token createToken(TokenKind, u32, std::string& val);
-        Token createToken(TokenKind, u32, std::string&& val);
-        Token createToken(TokenKind, u32, u32, std::string& val);
-        Token createToken(TokenKind, u32, u32, std::string&& val);
+        Token createToken(TokenKind, u32, astring&);
+        Token createToken(TokenKind, u32, astring&&);
+        Token createToken(TokenKind, u32, u32, astring&);
+        Token createToken(TokenKind, u32, u32, astring&&);
 
         void printTokens(bool verbose);
 

@@ -27,9 +27,11 @@ using u64 = uint64_t;
 using f32 = float_t;
 using f64 = double_t;
 
+using astring = std::basic_string<char, std::char_traits<char>, arena_allocator<char>>;
+
 inline struct ARGS {
-    std::string path;
-    std::string output_path;
+    astring path;
+    astring output_path;
     bool lexOut = false;
     bool verboseLexOut = false;
     bool project = false;
@@ -152,25 +154,25 @@ struct SourcePos {
 };
 
 
-struct Token{
+struct Token {
     TokenKind kind;
     SourcePos pos;
-    const char* data;
+    astring* data;
 };
 
 struct RawFile {
-    std::string filepath;
-    // std::string filename;
-    std::string filedata;
+    astring filepath;
+    // astring filename;
+    astring filedata;
 };
 
 struct LexedFile {
-    std::string filepath;
-    // std::string filename;
+    astring filepath;
+    // astring filename;
     std::vector<Token, arena_allocator<Token>> filedata;
 };
 
-const static std::unordered_map<std::string, TokenKind> keywords( { 
+const static std::unordered_map<astring, TokenKind> keywords( { 
 
     {"i8", ARC_I8}, {"i16", ARC_I16}, {"i32", ARC_I32}, {"i64", ARC_I64}, 
     {"u8", ARC_U8}, {"u16", ARC_U16}, {"u32", ARC_U32}, {"u64", ARC_U64}, 
@@ -184,7 +186,7 @@ const static std::unordered_map<std::string, TokenKind> keywords( {
     
 });
 
-inline std::string str(TokenKind kind){
+inline astring str(TokenKind kind){
     
     switch(kind){
 
@@ -462,7 +464,7 @@ inline std::string str(TokenKind kind){
     }
 }
 
-inline std::string getStringRep(TokenKind kind){
+inline astring getStringRep(TokenKind kind){
     
     switch(kind){
 
@@ -737,10 +739,41 @@ inline std::string getStringRep(TokenKind kind){
     }
 }
 
+inline astring strtoastr(std::string& str) {
+    return astring(str);
+}
+
+inline astring strtoastr(std::string&& str) {
+    return astring(str);
+}
+
+inline std::string astrtostr(astring& str) {
+    return std::string(str);
+}
+
+inline std::string astrtostr(astring&& str) {
+    return std::string(str);
+}
+
+template <typename T>
+inline astring to_astring(T arg) {
+    return astring(std::to_string(arg));
+}
+
+inline long long astoll(astring& arg) {
+    return std::stoll(std::string(arg));
+}
+
+inline bool operator==(astring const & s1, astring const & s2)
+{
+    return s1.length() == s2.length() &&
+           std::equal(s1.begin(), s1.end(), s2.begin());
+}
+
 inline void printToken(Token* t){
-    print("'" + std::string(t->data == nullptr ? "" : t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
+    print(astrtostr("'" + (t->data == nullptr ? astring("") : *(t->data)) + "' " + getStringRep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
 }
 
 inline void printTokenln(Token* t){
-    println("'" + std::string(t->data == nullptr ? "" : t->data) + "' " + getStringRep(t->kind) + " [" + std::to_string(t->pos.srcLine) + ", " + std::to_string(t->pos.srcChar) + "] " + "[" + std::to_string(t->pos.startPos) + ", " + std::to_string(t->pos.endPos) + "]");
+    println(astrtostr("'" + astring(t->data == nullptr ? astring("") : *(t->data)) + "' " + getStringRep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
 }
