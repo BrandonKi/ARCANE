@@ -2,7 +2,7 @@
 
 static ErrorHandler errorLog{};
 
-class Lexer{
+class Lexer {
 
     #define CASE_DIGIT case '0': case '1': case '2': case '3': case '4': case '5': \
                        case '6': case '7': case '8': case '9'
@@ -16,7 +16,7 @@ class Lexer{
 
     public:
         Lexer(const std::string&);
-        std::vector<Token*> lex();
+        std::vector<Token, arena_allocator<Token>> lex();
         char currentChar();
         char nextChar();
         char prevChar();
@@ -26,38 +26,37 @@ class Lexer{
 
     private:
         const std::string& data;
-        std::vector<Token*> tokens;
-        ArenaAllocator<Token> allocator;
+        std::vector<Token, arena_allocator<Token>> tokens;
         u32 index;
         u32 line;
         u32 col;
 
         void consumeComment();
 
-        Token* lexNumberLit();
-        Token* lexIdentifier();
-        Token* lexString();
-        Token* lexInterpolatedString();
-        Token* lexColon();
-        Token* lexAdd();
-        Token* lexSub();
-        Token* lexDiv();
-        Token* lexMul();
-        Token* lexMod();
-        Token* lexOr();
-        Token* lexAnd();
-        Token* lexNot();
-        Token* lexXor();
-        Token* lexLesser(); 
-        Token* lexGreater();
-        Token* lexEqual();
+        Token lexNumberLit();
+        Token lexIdentifier();
+        Token lexString();
+        Token lexInterpolatedString();
+        Token lexColon();
+        Token lexAdd();
+        Token lexSub();
+        Token lexDiv();
+        Token lexMul();
+        Token lexMod();
+        Token lexOr();
+        Token lexAnd();
+        Token lexNot();
+        Token lexXor();
+        Token lexLesser(); 
+        Token lexGreater();
+        Token lexEqual();
 
-        Token* createToken(TokenKind, u32);
-        Token* createToken(TokenKind, u32, u32);
-        Token* createToken(TokenKind, u32, std::string& val);
-        Token* createToken(TokenKind, u32, std::string&& val);
-        Token* createToken(TokenKind, u32, u32, std::string& val);
-        Token* createToken(TokenKind, u32, u32, std::string&& val);
+        Token createToken(TokenKind, u32);
+        Token createToken(TokenKind, u32, u32);
+        Token createToken(TokenKind, u32, std::string& val);
+        Token createToken(TokenKind, u32, std::string&& val);
+        Token createToken(TokenKind, u32, u32, std::string& val);
+        Token createToken(TokenKind, u32, u32, std::string&& val);
 
         void printTokens(bool verbose);
 
@@ -67,6 +66,6 @@ class Lexer{
 
         constexpr static inline bool isLetter(char c) noexcept {
             return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
-        } 
+        }
 
 };

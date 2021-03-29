@@ -3,7 +3,7 @@
 
 enum Severity{ FATAL, WARN, NOTE, MESSAGE };
 
-struct ErrorMessage{ 
+struct ErrorMessage { 
     Severity severity;
     Token* token;
     std::string filename;

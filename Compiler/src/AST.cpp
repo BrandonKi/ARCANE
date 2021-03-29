@@ -1,6 +1,6 @@
 #include "AST.h"
 
-#define ARENA_ALLOCATOR_INITIAL_SIZE 5000
+#define ARENA_ALLOCATOR__SIZE 5000
 
 AST::AST():
     allocator() // arena allocator size is defined above

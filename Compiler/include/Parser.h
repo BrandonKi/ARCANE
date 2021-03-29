@@ -8,7 +8,7 @@ class Parser{
 
     private:
         std::vector<LexedFile> data;
-        std::vector<Token*> tokens;
+        std::vector<Token, arena_allocator<Token>> tokens;
         u64 index;
         AST ast;
 

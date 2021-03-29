@@ -198,7 +198,7 @@ Expr* Parser::parseExpr() {
 
 inline Token* Parser::currentToken() {
     PROFILE();
-    return tokens[index];
+    return &tokens[index];
 }
 
 inline Token* Parser::nextToken() {
@@ -208,7 +208,7 @@ inline Token* Parser::nextToken() {
         errorLog.flush();
     }
 
-    return tokens[++index];
+    return &tokens[++index];
 }
 
 inline Token* Parser::peekNextToken() {
@@ -217,7 +217,7 @@ inline Token* Parser::peekNextToken() {
         errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Reached EOF while parsing"});
         errorLog.flush();
     }
-    return tokens[index + 1];
+    return &tokens[index + 1];
 }
 
 inline Type Parser::tokenKind2Type(TokenKind tkn) {

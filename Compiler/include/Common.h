@@ -10,8 +10,8 @@
 
 #include <small_profiler.h>
 #include <pLog.h>
+#include <arena_alloc.h>
 
-#include "ArenaAllocator.h"
 
 using namespace pLog;
 
@@ -167,7 +167,7 @@ struct RawFile {
 struct LexedFile {
     std::string filepath;
     // std::string filename;
-    std::vector<Token*> filedata;
+    std::vector<Token, arena_allocator<Token>> filedata;
 };
 
 const static std::unordered_map<std::string, TokenKind> keywords( { 

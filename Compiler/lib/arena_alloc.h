@@ -1,35 +1,3 @@
-/**
- * @file arena_alloc.h
- * @author Brandon Kirincich
- * @brief Arena allocator that mantains state and can be used with standard containers.
- * @version 0.1
- * @date 2021-03-27
- * 
- * @copyright 
- *
- *   MIT License
- *
- *   Copyright (c) 2021 Brandon Kirincich
- *
- *   Permission is hereby granted, free of charge, to any person obtaining a copy
- *   of this software and associated documentation files (the "Software"), to deal
- *   in the Software without restriction, including without limitation the rights
- *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *   copies of the Software, and to permit persons to whom the Software is
- *   furnished to do so, subject to the following conditions:
- *
- *   The above copyright notice and this permission notice shall be included in all
- *   copies or substantial portions of the Software.
- *
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *   SOFTWARE.
- * 
- */
 
 #include <type_traits>
 #include <iostream>
@@ -49,7 +17,7 @@ public:
         current = start;
         end = start + ARENA_ALLOCATOR_SIZE;
 
-        #ifdef ARENA_ALLOC_DEBUG
+#       ifdef ARENA_ALLOC_DEBUG
         std::cout << "new arena allocated\n";
         #endif
     }
@@ -83,7 +51,7 @@ private:
 static inline internal_allocator_arena internal_state{};
 
 template <typename T>
-class allocator final {
+class arena_allocator final {
 public:
     using value_type = T;
 
@@ -95,19 +63,19 @@ public:
     using difference_type = typename std::pointer_traits<pointer>::difference_type;
     using size_type = std::make_unsigned_t<difference_type>;
 
-    template <class U> struct rebind { typedef allocator<U> other; };
+    template <class U> struct rebind { typedef arena_allocator<U> other; };
 
     using propagate_on_container_copy_assignment = std::false_type;
     using propagate_on_container_move_assignment = std::false_type;
     using propagate_on_container_swap = std::false_type;
-    using is_always_equal = std::is_empty<allocator>;
+    using is_always_equal = std::is_empty<arena_allocator>;
 
-    constexpr allocator() {};
-    constexpr allocator(const allocator&) {};
-    ~allocator() = default;
+    constexpr arena_allocator() {};
+    constexpr arena_allocator(const arena_allocator&) {};
+    ~arena_allocator() = default;
 
     template <class U>
-    constexpr allocator(const allocator<U>&) {}
+    constexpr arena_allocator(const arena_allocator<U>&) {}
 
     constexpr T* allocate(std::size_t n) noexcept {
         T* result = internal_state.alloc<T>(n * sizeof(T));
@@ -130,12 +98,12 @@ public:
 };
 
 template <class T, class U>
-constexpr bool operator==(const allocator<T>&, const allocator<U>&) noexcept {
+constexpr bool operator==(const arena_allocator<T>&, const arena_allocator<U>&) noexcept {
     return true;
 }
 
 template <class T, class U>
-constexpr bool operator!=(const allocator<T>&, const allocator<U>&) noexcept {
+constexpr bool operator!=(const arena_allocator<T>&, const arena_allocator<U>&) noexcept {
     return false;
 }
 

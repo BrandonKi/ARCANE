@@ -116,7 +116,10 @@ struct Decl : Node {
 class AST {
 
     private:
-        ArenaAllocator<u8> allocator;
+        //TODO this would be a good use case for a polymorphic allocator
+        // everything that needs to be allocated is of different types
+        // for now we can use the standard allocator or use allocators specified for each type
+        // that would essentially emulate a polymorphic allocator
     
     public:
         AST();
