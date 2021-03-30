@@ -17,6 +17,8 @@ class Parser{
         File* parseFile();
         Import* parseImport();
         Function* parseFunction();
+        Block* parseBlock();
+        Statement* parseStatement();
         Decl* parseDecl();
         Expr* parseExpr();
 

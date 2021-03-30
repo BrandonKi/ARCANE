@@ -1,2 +1,2 @@
 var : int;
-num : int = 1 * 4 - (3 % 6);
+num : int = 1 * var + 4 - (3 % 6);

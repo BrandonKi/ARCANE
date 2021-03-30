@@ -18,8 +18,8 @@ Project* Parser::parse() {
 
 Project* Parser::parseProject() {    //TODO another good candidate for multithreading
     PROFILE();
-    std::vector<File*> files;
-    for(LexedFile& lf : data){
+    std::vector<File*, arena_allocator<File*>> files;
+    for(LexedFile& lf : data) {
         // update/reset member variables for each file
         tokens = lf.filedata;
         files.push_back(parseFile());
@@ -32,9 +32,9 @@ File* Parser::parseFile() {
     // reset the class wide index variable to zero
     index = 0;
     SourcePos startPos = currentToken()->pos;
-    std::vector<Import*> imports;
-    std::vector<Decl*> decls;
-    std::vector<Function*> functions;
+    std::vector<Import*, arena_allocator<Import*>> imports;
+    std::vector<Decl*, arena_allocator<Decl*>> decls;
+    std::vector<Function*, arena_allocator<Function*>> functions;
     for(; index < tokens.size(); index++) {  
         switch(currentToken()->kind) {
             case ARC_IMPORT:
@@ -43,14 +43,20 @@ File* Parser::parseFile() {
                 break;
             case ARC_FN:
                 println("function start");
+                std::cout.flush();
                 functions.push_back(parseFunction());
+                println("function end");
                 break;
             case ARC_ID:
                 println("decl start");
                 decls.push_back(parseDecl());
                 break;
+            case ARC_EOF:   // placed at the end of each file by the lexer
+                return ast.newFileNode(startPos, imports, decls, functions, true);
+                break;
         }
     }
+    // should never reach this point
     return ast.newFileNode(startPos, imports, decls, functions, true);
 }
 
@@ -62,7 +68,59 @@ Import* Parser::parseImport() {
 
 Function* Parser::parseFunction() {
     PROFILE();
-    return new Function{};
+    SourcePos startPos = currentToken()->pos;
+    nextToken();    // id
+    nextToken();    // open paren
+    // parse func args
+    nextToken();    // close paren
+    nextToken();    // colon
+    nextToken();    // ret type
+    nextToken();    // open brace
+    std::vector<Type, arena_allocator<Type>> args;
+    Block* block = parseBlock();
+    return ast.newFunctionNode(startPos, args, TYPE_I8, block);
+}
+
+/**
+ *  expect first token to be opening brace '{' 
+ */
+Block* Parser::parseBlock() {
+    PROFILE();
+    s_table.pushScope();
+    SourcePos startPos = currentToken()->pos;
+    std::vector<Statement*, arena_allocator<Statement*>> statements;
+    // cases
+    // statement
+    while(nextToken()->kind != ARC_CLOSE_BRACE) 
+        statements.push_back(parseStatement());
+    nextToken(); // go past the closed brace
+    return new Block{startPos, statements};
+}
+
+Statement* Parser::parseStatement() {
+    PROFILE();
+    SourcePos startPos = currentToken()->pos;
+    // cases
+    // while loop
+    // for loop
+    // if
+    // ret
+    // decl
+    // expr
+    switch (currentToken()->kind) {
+    case ARC_RET:
+    {
+        nextToken();
+        auto result = ast.newStatementNode_ret(startPos, ast.newRetNode(startPos, parseExpr()));
+        if(currentToken()->kind != ARC_SEMICOLON)
+            errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Expected semicolon"});
+        return result;
+        break;
+    }
+    default:
+        break;
+    }
+    return new Statement{};
 }
 
 Decl* Parser::parseDecl() {
@@ -125,8 +183,8 @@ Decl* Parser::parseDecl() {
  */
 Expr* Parser::parseExpr() {
     PROFILE();
-    std::vector<Token*> result;
-    std::vector<Token*> stack;
+    std::vector<Token*, arena_allocator<Token*>> result;
+    std::vector<Token*, arena_allocator<Token*>> stack;
 
     /**
      * shunting yard algorithm
@@ -144,7 +202,7 @@ Expr* Parser::parseExpr() {
             while ((!stack.empty()) && (isOperator(stack.back()->kind)) && 
                         ((precedence(stack.back()->kind) > precedence(currentToken()->kind)) || 
                             (precedence(stack.back()->kind) == precedence(currentToken()->kind))) && 
-                                (stack.back()->kind != ARC_OPEN_PAREN)){
+                                (stack.back()->kind != ARC_OPEN_PAREN)) {
                 result.push_back(stack.back());
                 stack.pop_back();
             }
@@ -174,7 +232,7 @@ Expr* Parser::parseExpr() {
     /**
      * convert the vector of Tokens into a Expr tree
      */
-    std::vector<Expr*> conversionStack;
+    std::vector<Expr*, arena_allocator<Expr*>> conversionStack;
     for(int i = 0; i < result.size(); i++) {
         Token* token = result[i];
         if(isOperator(token->kind)) {

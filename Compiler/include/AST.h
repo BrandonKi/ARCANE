@@ -32,13 +32,13 @@ struct Node {
 };
 
 struct Project : Node {
-    std::vector<File*> files;
+    std::vector<File*, arena_allocator<File*>> files;
 };
 
 struct File : Node{
-    std::vector<Import*> imports;
-    std::vector<Decl*> decls;
-    std::vector<Function*> functions;
+    std::vector<Import*, arena_allocator<Import*>> imports;
+    std::vector<Decl*, arena_allocator<Decl*>> decls;
+    std::vector<Function*, arena_allocator<Function*>> functions;
     bool isMain;
 };
 
@@ -50,15 +50,40 @@ struct Import : Node {
 };
 
 struct Function : Node {
-    std::vector<Type> args;
+    std::vector<Type, arena_allocator<Type>> args;
+    Type type;
     Block* body;
 };
 
 struct Block : Node {
-    std::vector<Statement*> statements;
+    std::vector<Statement*, arena_allocator<Statement*>> statements;
+};
+
+struct While_ : Node {
+    Expr* expr;
+    Block* block;
+};
+
+struct For_ : Node {
+    Decl* decl;
+    Expr* expr1;
+    Expr* expr2;
+    Block* block;
+};
+struct If_ : Node {
+    Expr* expr;
+    Block* block;
+    // TODO add a vector of If_* for else if statements
+};
+struct Ret : Node {
+    Expr* expr;
 };
 
 enum StatementType {
+    WHILE,
+    FOR,
+    IF,
+    RET,
     EXPRESSION,
     DECLARATION
 };
@@ -66,6 +91,10 @@ enum StatementType {
 struct Statement : Node {
     StatementType type;
     union {
+        While_* while_;
+        For_* for_;
+        If_* if_;
+        Ret* ret;
         Expr* expr;
         Decl* decl;
     };
@@ -127,11 +156,13 @@ class AST {
         AST();
         ~AST();
 
-        Project* newProjectNode(SourcePos, std::vector<File*>&);
-        File* newFileNode(SourcePos, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&, bool);
+        Project* newProjectNode(SourcePos, std::vector<File*, arena_allocator<File*>>&);
+        File* newFileNode(SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, bool);
         Import* newImportNode(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        Function* newFunctionNode(SourcePos, std::vector<Type>&, Block*);
-        Block* newBlockNode(SourcePos, std::vector<Statement*>&);
+        Function* newFunctionNode(SourcePos, std::vector<Type, arena_allocator<Type>>&, Type, Block*);
+        Block* newBlockNode(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
+        Ret* newRetNode(SourcePos, Expr*);
+        Statement* newStatementNode_ret(SourcePos, Ret*);
         Statement* newStatementNode_decl(SourcePos, Decl*);
         Statement* newStatementNode_expr(SourcePos, Expr*);
         Expr* newExprNode_intLiteral(SourcePos, u64);

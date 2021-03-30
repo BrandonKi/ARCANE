@@ -15,14 +15,20 @@ AST::~AST() {
 //FIXME fix all of this absolute trash
 // at the moment we are making copies of the vectors and moving some and none of it is good
 
-Project* AST::newProjectNode(SourcePos pos, std::vector<File*>& files) {
+Project* AST::newProjectNode(SourcePos pos, std::vector<File*, arena_allocator<File*>>& files) {
     PROFILE();
     Project* ptr = reinterpret_cast<Project*>(allocator.allocate(sizeof(Project)));
     allocator.construct(ptr, Project{{pos}, files});
     return ptr;
 }
 
-File* AST::newFileNode(SourcePos pos, std::vector<Import*>& imports, std::vector<Decl*>& decls, std::vector<Function*>& functions, bool isMain) {
+File* AST::newFileNode(
+        SourcePos pos,
+        std::vector<Import*, arena_allocator<Import*>>& imports,
+        std::vector<Decl*, arena_allocator<Decl*>>&  decls,
+        std::vector<Function*, arena_allocator<Function*>>& functions,
+        bool isMain
+    ) {
     PROFILE();
     File* ptr = reinterpret_cast<File*>(allocator.allocate(sizeof(File)));
     allocator.construct(ptr, File{{pos}, std::move(imports), std::move(decls), std::move(functions), isMain});
@@ -36,17 +42,32 @@ Import* AST::newImportNode(SourcePos pos, astring& id, astring& filename) {
     return ptr;
 }
 
-Function* AST::newFunctionNode(SourcePos pos, std::vector<Type>& argTypes, Block* body) {
+Function* AST::newFunctionNode(SourcePos pos, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body) {
     PROFILE();
     Function* ptr = reinterpret_cast<Function*>(allocator.allocate(sizeof(Function)));
-    allocator.construct(ptr, Function{{pos}, argTypes, body});
+    allocator.construct(ptr, Function{{pos}, argTypes, type, body});
     return ptr;
 } 
 
-Block* AST::newBlockNode(SourcePos pos, std::vector<Statement*>& statements) {
+Block* AST::newBlockNode(SourcePos pos, std::vector<Statement*, arena_allocator<Statement*>>& statements) {
     PROFILE();
     Block* ptr = reinterpret_cast<Block*>(allocator.allocate(sizeof(Block)));
     allocator.construct(ptr, Block{{pos}, statements});
+    return ptr;
+}
+
+Ret* AST::newRetNode(SourcePos pos, Expr* expr) {
+    PROFILE();
+    Ret* ptr = reinterpret_cast<Ret*>(allocator.allocate(sizeof(Ret)));
+    allocator.construct(ptr, Ret{{pos}, expr});
+    return ptr;
+}
+
+Statement* AST::newStatementNode_ret(SourcePos pos, Ret* ret) {
+    PROFILE();
+    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
+    allocator.construct(ptr, Statement{ {pos}, RET});
+    ptr->ret = ret;
     return ptr;
 }
 

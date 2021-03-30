@@ -42,8 +42,8 @@ inline struct ARGS {
 enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(
     // NOTE Any changes to this enum must be changed below in the str() function and the keywords hashmap
 
+    ARC_EOF,
     ARC_NONE,
-
     /* Types */
 
     ARC_INT_LIT,
@@ -189,7 +189,10 @@ const static std::unordered_map<astring, TokenKind> keywords( {
 
 inline astring str(TokenKind kind){
     
-    switch(kind){
+    switch(kind) {
+
+    case ARC_EOF:
+        return "EOF";
 
     case ARC_NONE:
         return "NONE";

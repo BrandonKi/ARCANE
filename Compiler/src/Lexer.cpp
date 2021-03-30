@@ -120,6 +120,7 @@ std::vector<Token, arena_allocator<Token>> Lexer::lex() {
     }
     if(args.lexOut)
         printTokens(args.verboseLexOut);  // true for verbose and false for succint
+    tokens.push_back(createToken(ARC_EOF, col, index));
     return std::move(tokens);   // not a big deal but there is no reason to make an extra copy
 }
 
