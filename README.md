@@ -5,6 +5,7 @@ ARCANE is an acronym for
 ARCANE Runs, Compiles, And Never Explodes
 
 A programming language built on a bytecode VM. (ARCVM)
+https://github.com/BrandonKi/ARCVM-V2
 
 C-like language but without direct memory access.
 
@@ -24,3 +25,5 @@ fn add(a : int, b : int): int {
 }
 ```
 Syntax Highlighting in VSCode: https://github.com/BrandonKi/arcane-syntax-highlighter
+
+TODO add information on how to build and run
