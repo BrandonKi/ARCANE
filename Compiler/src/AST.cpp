@@ -56,10 +56,56 @@ Block* AST::newBlockNode(SourcePos pos, std::vector<Statement*, arena_allocator<
     return ptr;
 }
 
+While_* AST::newWhileNode(SourcePos pos, Expr* expr, Block* block) {
+    PROFILE();
+    While_* ptr = reinterpret_cast<While_*>(allocator.allocate(sizeof(While_)));
+    allocator.construct(ptr, While_{{pos}, expr, block});
+    return ptr;
+}
+
+For_* AST::newForNode(SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
+    PROFILE();
+    For_* ptr = reinterpret_cast<For_*>(allocator.allocate(sizeof(For_)));
+    allocator.construct(ptr, For_{{pos}, decl, expr1, expr2, block});
+    return ptr;
+}
+
+If_* AST::newIfNode(SourcePos pos, Expr* expr, Block* block) {
+    PROFILE();
+    If_* ptr = reinterpret_cast<If_*>(allocator.allocate(sizeof(If_)));
+    allocator.construct(ptr, If_{{pos}, expr, block});
+    return ptr;
+}
+
+
 Ret* AST::newRetNode(SourcePos pos, Expr* expr) {
     PROFILE();
     Ret* ptr = reinterpret_cast<Ret*>(allocator.allocate(sizeof(Ret)));
     allocator.construct(ptr, Ret{{pos}, expr});
+    return ptr;
+}
+
+Statement* AST::newStatementNode_while(SourcePos pos, While_* while_) {
+    PROFILE();
+    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
+    allocator.construct(ptr, Statement{ {pos}, WHILE});
+    ptr->while_ = while_;
+    return ptr;
+}
+
+Statement* AST::newStatementNode_for(SourcePos pos, For_* for_) {
+    PROFILE();
+    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
+    allocator.construct(ptr, Statement{ {pos}, FOR});
+    ptr->for_ = for_;
+    return ptr;
+}
+
+Statement* AST::newStatementNode_if(SourcePos pos, If_* if_) {
+    PROFILE();
+    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
+    allocator.construct(ptr, Statement{ {pos}, IF});
+    ptr->if_ = if_;
     return ptr;
 }
 

@@ -56,7 +56,7 @@ File* Parser::parseFile() {
                 break;
         }
     }
-    // should never reach this point
+    // should never reach this point but return just in case
     return ast.newFileNode(startPos, imports, decls, functions, true);
 }
 
@@ -93,7 +93,7 @@ Block* Parser::parseBlock() {
     // statement
     while(nextToken()->kind != ARC_CLOSE_BRACE) 
         statements.push_back(parseStatement());
-    nextToken(); // go past the closed brace
+    // nextToken(); // go past the closed brace
     return new Block{startPos, statements};
 }
 
@@ -108,17 +108,41 @@ Statement* Parser::parseStatement() {
     // decl
     // expr
     switch (currentToken()->kind) {
-    case ARC_RET:
-    {
-        nextToken();
-        auto result = ast.newStatementNode_ret(startPos, ast.newRetNode(startPos, parseExpr()));
-        if(currentToken()->kind != ARC_SEMICOLON)
-            errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Expected semicolon"});
-        return result;
+        case ARC_WHILE:
+        {
+            nextToken();
+            auto expr = parseExpr();
+            auto block = parseBlock();
+            auto result = ast.newStatementNode_while(startPos, ast.newWhileNode(startPos, expr, block));
+            return result;
+            break;
+        }
+        case ARC_FOR:
         break;
-    }
-    default:
+        case ARC_IF:
+        break;        
+        case ARC_RET:
+        {
+            nextToken();
+            auto result = ast.newStatementNode_ret(startPos, ast.newRetNode(startPos, parseExpr()));
+            if(currentToken()->kind != ARC_SEMICOLON)
+                errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Expected semicolon"});
+            return result;
+            break;
+        }
+        case ARC_ID:
+            // can be decl or expr
+            if(peekNextToken()->kind == ARC_COLON || peekNextToken()->kind == ARC_INFER)
+                ast.newStatementNode_decl(startPos, parseDecl());
+            break;
+        case ARC_INT_LIT:
+        case ARC_FLOAT_LIT:
+        case ARC_STRING_LIT:
+        // this must be an expr
+        // can also start with a unary operator
         break;
+        default:
+            break;
     }
     return new Statement{};
 }
@@ -189,7 +213,7 @@ Expr* Parser::parseExpr() {
     /**
      * shunting yard algorithm
      */
-    while(currentToken()->kind != ARC_SEMICOLON) {
+    while(currentToken()->kind != ARC_SEMICOLON && currentToken()->kind != ARC_OPEN_BRACE) {
         if(currentToken()->kind == ARC_INT_LIT) {
             result.push_back(currentToken());
         }

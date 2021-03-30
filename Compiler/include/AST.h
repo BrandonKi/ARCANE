@@ -161,7 +161,13 @@ class AST {
         Import* newImportNode(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
         Function* newFunctionNode(SourcePos, std::vector<Type, arena_allocator<Type>>&, Type, Block*);
         Block* newBlockNode(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
+        While_* newWhileNode(SourcePos, Expr*, Block*);
+        For_* newForNode(SourcePos, Decl*, Expr*, Expr*, Block*);
+        If_* newIfNode(SourcePos, Expr*, Block*);
         Ret* newRetNode(SourcePos, Expr*);
+        Statement* newStatementNode_while(SourcePos, While_*);
+        Statement* newStatementNode_for(SourcePos, For_*);
+        Statement* newStatementNode_if(SourcePos, If_*);
         Statement* newStatementNode_ret(SourcePos, Ret*);
         Statement* newStatementNode_decl(SourcePos, Decl*);
         Statement* newStatementNode_expr(SourcePos, Expr*);
