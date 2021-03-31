@@ -69,16 +69,23 @@ Import* Parser::parseImport() {
 Function* Parser::parseFunction() {
     PROFILE();
     SourcePos startPos = currentToken()->pos;
+    std::vector<Type, arena_allocator<Type>> fn_args;
     expectToken(ARC_FN);
-    nextToken();    // id
+    astring id;
+    if(checkToken(ARC_ID))
+        id = *(currentToken()->data);
+    nextToken();
     expectToken(ARC_OPEN_PAREN);
     // parse func args
     expectToken(ARC_CLOSE_PAREN);
     expectToken(ARC_COLON);
-    nextToken();    // ret type
-    std::vector<Type, arena_allocator<Type>> args;
+    Type ret = tokenKind2Type(currentToken()->kind);
+    if(ret == -1)
+        errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Unknown return type"});
+    nextToken();
+    s_table.addFunction(id, fn_args, FUNCTION, ret);
     Block* block = parseBlock();
-    return ast.newFunctionNode(startPos, args, TYPE_I8, block);
+    return ast.newFunctionNode(startPos, fn_args, ret, block);
 }
 
 /**

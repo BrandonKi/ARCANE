@@ -43,4 +43,5 @@ void ErrorHandler::flush(){
     PROFILE();
     if(!buffer.empty())
         println(astrtostr(buffer));
+    buffer.clear();
 }

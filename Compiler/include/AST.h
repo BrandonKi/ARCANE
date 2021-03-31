@@ -50,6 +50,7 @@ struct Import : Node {
 };
 
 struct Function : Node {
+    //FIXME uuuhhh I don't have an ID here for some reason
     std::vector<Type, arena_allocator<Type>> args;
     Type type;
     Block* body;

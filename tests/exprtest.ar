@@ -1,2 +1,5 @@
-var : int;
-num : int = 1 * var + 4 - (3 % 6);
+fn main(): i32 {
+    for(i : i32 = 0; i < 100; i + 1;) {
+        ret 0;
+    }
+}

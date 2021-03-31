@@ -8,6 +8,7 @@ enum SymbolType {
 struct Symbol {
     SymbolType type; 
     Type resultType;
+    std::vector<Type, arena_allocator<Type>> args;
 };
 
 
@@ -31,6 +32,7 @@ class SymbolTable {
             >;
         SymbolTable();
         void addSymbol(astring&, SymbolType, Type);
+        void addFunction(astring&, std::vector<Type, arena_allocator<Type>>, SymbolType, Type); 
         bool has(astring&);
         bool scopeHas(astring&);
         SymbolType getKind(astring&);

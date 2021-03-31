@@ -23,6 +23,11 @@ void SymbolTable::addSymbol(astring& id, SymbolType kind, Type arc_type) {
     currentScope().insert(pair(id, Symbol{kind, arc_type}));
 }
 
+void SymbolTable::addFunction(astring& id, std::vector<Type, arena_allocator<Type>> args, SymbolType kind, Type arc_type) {
+    currentScope().insert(pair(id, Symbol{kind, arc_type, args}));
+}
+
+
 bool SymbolTable::has(astring& id) {
     for(hash_map& map : table)
         if(map.contains(id))
