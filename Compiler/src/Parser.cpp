@@ -69,13 +69,13 @@ Import* Parser::parseImport() {
 Function* Parser::parseFunction() {
     PROFILE();
     SourcePos startPos = currentToken()->pos;
+    expectToken(ARC_FN);
     nextToken();    // id
-    nextToken();    // open paren
+    expectToken(ARC_OPEN_PAREN);
     // parse func args
-    nextToken();    // close paren
-    nextToken();    // colon
+    expectToken(ARC_CLOSE_PAREN);
+    expectToken(ARC_COLON);
     nextToken();    // ret type
-    nextToken();    // open brace
     std::vector<Type, arena_allocator<Type>> args;
     Block* block = parseBlock();
     return ast.newFunctionNode(startPos, args, TYPE_I8, block);
@@ -91,7 +91,8 @@ Block* Parser::parseBlock() {
     std::vector<Statement*, arena_allocator<Statement*>> statements;
     // cases
     // statement
-    while(nextToken()->kind != ARC_CLOSE_BRACE) 
+    checkToken(ARC_OPEN_BRACE);
+    while(nextToken()->kind != ARC_CLOSE_BRACE)
         statements.push_back(parseStatement());
     // nextToken(); // go past the closed brace
     return new Block{startPos, statements};
@@ -110,7 +111,7 @@ Statement* Parser::parseStatement() {
     switch (currentToken()->kind) {
         case ARC_WHILE:
         {
-            nextToken();
+            expectToken(ARC_WHILE);
             auto expr = parseExpr();
             auto block = parseBlock();
             auto result = ast.newStatementNode_while(startPos, ast.newWhileNode(startPos, expr, block));
@@ -118,12 +119,33 @@ Statement* Parser::parseStatement() {
             break;
         }
         case ARC_FOR:
-        break;
+        {
+            expectToken(ARC_FOR);
+            expectToken(ARC_OPEN_PAREN);
+            auto decl = parseDecl();
+            expectToken(ARC_SEMICOLON);
+            auto expr1 = parseExpr();
+            expectToken(ARC_SEMICOLON);
+            auto expr2 = parseExpr();
+            expectToken(ARC_SEMICOLON);
+            expectToken(ARC_CLOSE_PAREN);
+            auto block = parseBlock();
+            auto result = ast.newStatementNode_for(startPos, ast.newForNode(startPos, decl, expr1, expr2, block));
+            return result;
+            break;
+        }
         case ARC_IF:
-        break;        
+        {
+            expectToken(ARC_IF);
+            auto expr = parseExpr();
+            auto block = parseBlock();
+            auto result = ast.newStatementNode_if(startPos, ast.newIfNode(startPos, expr, block));
+            return result;
+            break;
+        }    
         case ARC_RET:
         {
-            nextToken();
+            expectToken(ARC_RET);
             auto result = ast.newStatementNode_ret(startPos, ast.newRetNode(startPos, parseExpr()));
             if(currentToken()->kind != ARC_SEMICOLON)
                 errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Expected semicolon"});
@@ -179,7 +201,8 @@ Decl* Parser::parseDecl() {
                     nextToken();
                     nextToken();
                     auto result = ast.newDeclNode(startPos, id, type, parseExpr());
-                    // add symbol after parsing to avoid situations like this
+                    // add symbol to table after parsing to avoid situations like this
+                    // where a variable is used in it's own decl
                     // var := var + 1;
                     s_table.addSymbol(id, VARIABLE, tokenKind2Type(currentToken()->kind));
                     return result;
@@ -312,9 +335,40 @@ inline Token* Parser::peekNextToken() {
     return &tokens[index + 1];
 }
 
+// check if current token is something
+// does not increment
+inline bool Parser::checkToken(TokenKind kind) {
+    [[likely]] if(currentToken()->kind == kind)
+        return true;
+    errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Unexpected token"});
+    errorLog.flush();
+    return false;    
+}
+
+// TODO since this function doesn't exit
+// errors will propogate throughout the whole program
+// unless the return value is handled
+// maybe have a function that just exits when a unexpected token is found
+// or turn off syntax errors for the current block and try to recover
+//
+// expect the current token to be something otherwise syntax error
+//
+inline bool Parser::expectToken(TokenKind kind) {
+    [[likely]] if(checkToken(kind)) {
+        nextToken();
+        return true;
+    }
+    errorLog.push(ErrorMessage{FATAL, currentToken(), args.path, "Unexpected token"});
+    errorLog.flush();
+    nextToken();
+    return false;
+}
+
 inline Type Parser::tokenKind2Type(TokenKind tkn) {
     PROFILE();
     switch(tkn){
+        case ARC_INFER:
+            return TYPE_INFER;
         case ARC_I8:
             return TYPE_I8;
         case ARC_I16:

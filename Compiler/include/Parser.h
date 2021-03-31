@@ -25,10 +25,13 @@ class Parser{
         Token* currentToken();
         Token* nextToken();
         Token* peekNextToken();
+        bool checkToken(TokenKind);
+        bool expectToken(TokenKind);
+
 
         bool isOperator(TokenKind);
-        bool isUnaryOperator(TokenKind kind);
-        u8 precedence(TokenKind kind);
+        bool isUnaryOperator(TokenKind);
+        u8 precedence(TokenKind);
 
         Type tokenKind2Type(TokenKind);
 };
