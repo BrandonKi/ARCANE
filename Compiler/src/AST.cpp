@@ -42,10 +42,10 @@ Import* AST::newImportNode(SourcePos pos, astring& id, astring& filename) {
     return ptr;
 }
 
-Function* AST::newFunctionNode(SourcePos pos, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body) {
+Function* AST::newFunctionNode(SourcePos pos, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body, bool isMain) {
     PROFILE();
     Function* ptr = reinterpret_cast<Function*>(allocator.allocate(sizeof(Function)));
-    allocator.construct(ptr, Function{{pos}, argTypes, type, body});
+    allocator.construct(ptr, Function{{pos}, argTypes, type, body, isMain });
     return ptr;
 } 
 

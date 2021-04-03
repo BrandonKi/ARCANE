@@ -3,10 +3,10 @@ project(Arcane VERSION 0.1.0)
 
 set (CMAKE_CXX_STANDARD 20)
 
-
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2)
+
 
 set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Main.cpp
@@ -16,6 +16,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Lexer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/ErrorHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/SymbolTable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/BytecodeGen.cpp
 )
 
 
@@ -23,6 +24,10 @@ add_executable(ARCC ${SRC})
 
 target_compile_definitions(ARCC PRIVATE DEBUG_BUILD)
 
-target_include_directories(ARCC PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib)
+target_include_directories(ARCC 
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/include
+)
 
 # target_compile_options(ARCC PRIVATE "-W" "-Wall" "-Wextra" "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-newline-eof" "-Wno-exit-time-destructors" "-Wno-header-hygiene" "-Wno-global-constructors" "-Wno-nonportable-system-include-path")

@@ -52,8 +52,9 @@ struct Import : Node {
 struct Function : Node {
     //FIXME uuuhhh I don't have an ID here for some reason
     std::vector<Type, arena_allocator<Type>> args;
-    Type type;
+    Type return_type;
     Block* body;
+    bool isMain;
 };
 
 struct Block : Node {
@@ -71,11 +72,13 @@ struct For_ : Node {
     Expr* expr2;
     Block* block;
 };
+
 struct If_ : Node {
     Expr* expr;
     Block* block;
     // TODO add a vector of If_* for else if statements
 };
+
 struct Ret : Node {
     Expr* expr;
 };
@@ -120,7 +123,7 @@ struct Expr : Node {
             f64 val;
         } floatLiteral;
         struct {
-            astring* val;   //FIXME I don't like this too much
+            astring* val;
         } stringLiteral;
         struct {
             astring* val;
@@ -160,7 +163,7 @@ class AST {
         Project* newProjectNode(SourcePos, std::vector<File*, arena_allocator<File*>>&);
         File* newFileNode(SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, bool);
         Import* newImportNode(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        Function* newFunctionNode(SourcePos, std::vector<Type, arena_allocator<Type>>&, Type, Block*);
+        Function* newFunctionNode(SourcePos, std::vector<Type, arena_allocator<Type>>&, Type, Block*, bool);
         Block* newBlockNode(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
         While_* newWhileNode(SourcePos, Expr*, Block*);
         For_* newForNode(SourcePos, Decl*, Expr*, Expr*, Block*);

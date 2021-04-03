@@ -4,7 +4,7 @@
 /.vs
 /.idea
 /cmake-build-debug
-
+/out
 
 *.exe
 

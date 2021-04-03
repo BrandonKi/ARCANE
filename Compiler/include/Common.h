@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <filesystem>
 #include <thread>
+#include <fstream>
 
 #include <small_profiler.h>
 #include <pLog.h>

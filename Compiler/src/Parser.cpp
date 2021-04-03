@@ -13,7 +13,16 @@ Parser::Parser(std::vector<RawFile>& projectFiles) {  //TODO good candidate for 
 
 Project* Parser::parse() {
     PROFILE();
-    return parseProject();
+    Project* project = parseProject();
+	
+    BytecodeGen gen(project);
+    auto x = gen.genCode();
+
+    std::ofstream bin("bin.txt", std::ios::out | std::ios::binary);
+    bin.write(reinterpret_cast<char*> (x.data()), x.size());
+    bin.close();
+
+    return project;
 }
 
 Project* Parser::parseProject() {    //TODO another good candidate for multithreading
@@ -85,7 +94,7 @@ Function* Parser::parseFunction() {
     nextToken();
     s_table.addFunction(id, fn_args, FUNCTION, ret);
     Block* block = parseBlock();
-    return ast.newFunctionNode(startPos, fn_args, ret, block);
+    return ast.newFunctionNode(startPos, fn_args, ret, block, true);
 }
 
 /**
