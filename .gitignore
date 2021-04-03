@@ -1,6 +1,10 @@
-bin/*
-build/*
-.vscode/*
+/bin
+/build
+/.vscode
+/.vs
+/.idea
+/cmake-build-debug
+
 
 *.exe
 
