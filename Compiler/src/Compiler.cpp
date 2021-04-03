@@ -5,20 +5,19 @@ Compiler::Compiler() {
     /* Nothing to see here */
 }
 
-std::vector<u8> Compiler::compile() {
+std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     PROFILE();
-    std::vector<RawFile> projectFiles = getProjectFiles();
+    std::vector<RawFile, arena_allocator<RawFile>> projectFiles = getProjectFiles();
     Parser parser(projectFiles);
-    parser.parse();
+    Project *ast = parser.parse();
     
     //TODO convert to another IR for easier optimization and optimize step
 
     // CodeGenerator gen;
     // gen.generate(/* Whatever IR I decide on */); 
 
-    
-    std::vector<u8> temp;        //TODO replace in the future this is just so the code compiles and runs prerequisites
-    return temp;
+    BytecodeGen gen(ast);
+    return gen.genCode();
 }
 
 astring Compiler::readFile(astring filepath) {
@@ -31,10 +30,10 @@ astring Compiler::readFile(astring filepath) {
     return astring(buffer.str());
 }
 
-std::vector<RawFile> Compiler::getProjectFiles() {   // TODO refactor big time
+std::vector<RawFile, arena_allocator<RawFile>> Compiler::getProjectFiles() {   // TODO refactor big time
     PROFILE();
-    std::vector<RawFile> result;
-    std::vector<astring> projectFileNames;
+    std::vector<RawFile, arena_allocator<RawFile>> result;
+    std::vector<astring, arena_allocator<astring>> projectFileNames;
     if(!args.project){
         result.push_back(RawFile{args.path, readFile(args.path)});
     }
@@ -58,9 +57,9 @@ std::vector<RawFile> Compiler::getProjectFiles() {   // TODO refactor big time
     return result;
 }
 
-std::vector<astring> Compiler::parseProjectSpecFile(astring& filepath) {
+std::vector<astring, arena_allocator<astring>> Compiler::parseProjectSpecFile(astring& filepath) {
     PROFILE();
-    std::vector<astring> result;
+    std::vector<astring, arena_allocator<astring>> result;
     std::ifstream file(filepath);
     astring line;
     while(std::getline(file, line)){

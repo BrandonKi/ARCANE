@@ -1,6 +1,6 @@
 #include "Parser.h"
 
-Parser::Parser(std::vector<RawFile>& projectFiles) {  //TODO good candidate for multithreading
+Parser::Parser(std::vector<RawFile, arena_allocator<RawFile>>& projectFiles) {  //TODO good candidate for multithreading
     PROFILE();
     // std::thread worker([](){});
     // lex all the files
@@ -14,13 +14,6 @@ Parser::Parser(std::vector<RawFile>& projectFiles) {  //TODO good candidate for 
 Project* Parser::parse() {
     PROFILE();
     Project* project = parseProject();
-	
-    BytecodeGen gen(project);
-    auto x = gen.genCode();
-
-    std::ofstream bin("bin.txt", std::ios::out | std::ios::binary);
-    bin.write(reinterpret_cast<char*> (x.data()), x.size());
-    bin.close();
 
     return project;
 }
@@ -308,7 +301,7 @@ Expr* Parser::parseExpr() {
                 conversionStack.pop_back();
                 Expr* operand2 = conversionStack.back();
                 conversionStack.pop_back();
-                conversionStack.push_back(ast.newExprNode_binExpr(token->pos, token->kind, operand1, operand2));
+                conversionStack.push_back(ast.newExprNode_binExpr(token->pos, token->kind, operand2, operand1));
             }
         }
         else {

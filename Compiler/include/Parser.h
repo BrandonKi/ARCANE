@@ -3,7 +3,7 @@
 class Parser{
 
     public:
-        Parser(std::vector<RawFile>&);
+        Parser(std::vector<RawFile, arena_allocator<RawFile>>&);
         Project* parse();
 
     private:
@@ -27,7 +27,6 @@ class Parser{
         Token* peekNextToken();
         bool checkToken(TokenKind);
         bool expectToken(TokenKind);
-
 
         bool isOperator(TokenKind);
         bool isUnaryOperator(TokenKind);

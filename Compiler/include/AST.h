@@ -117,7 +117,7 @@ struct Expr : Node {
     ExprType type;
     union {
         struct {
-            u64 val;
+            i64 val;
         } intLiteral;
         struct {
             f64 val;

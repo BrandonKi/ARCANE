@@ -1,6 +1,6 @@
 [submodule "ARCVM"]
-	path = ARCVM
-	url = https://github.com/BrandonKi/ARCVM
+    path = ARCVM
+    url = https://github.com/BrandonKi/ARCVM
 [submodule "ARCVM-V2"]
-	path = ARCVM-V2
-	url = https://github.com/BrandonKi/ARCVM-V2.git
+    path = ARCVM-V2
+    url = https://github.com/BrandonKi/ARCVM-V2.git

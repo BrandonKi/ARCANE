@@ -13,7 +13,11 @@ int main(int argc, char* argv[]) {
     parseArgs(argc, argv);
 
     Compiler compiler;
-    compiler.compile();
+    auto code = compiler.compile();
+
+    std::ofstream bin("test.arcb", std::ios::out | std::ios::binary);
+    bin.write(reinterpret_cast<char*> (code.data()), code.size());
+    bin.close();
 }
 
 void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of the availible flags

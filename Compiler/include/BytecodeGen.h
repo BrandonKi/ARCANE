@@ -9,11 +9,11 @@ class BytecodeGen {
         ~BytecodeGen();
 
         std::vector<u8, arena_allocator<u8>> genCode();
-	
-	private:
+    
+    private:
         Project* ast_;
         std::vector<u8, arena_allocator<u8>> code_;
-        	
+            
         void genProject(Project *project);
         void genFile(const File*);
         void genImport(const Import*);
@@ -39,7 +39,7 @@ class BytecodeGen {
 
         void push64BitValue(const u64);
 
-	
+    
         void generateBootstrap();
 
 
