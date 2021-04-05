@@ -7,6 +7,10 @@ SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2)
 
+set(arcvm_include ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/include)
+set(arcvm_source
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/src/ARCVM.cpp
+)
 
 set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Main.cpp
@@ -17,8 +21,8 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/ErrorHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/SymbolTable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/BytecodeGen.cpp
+    ${arcvm_source}
 )
-
 
 add_executable(ARCC ${SRC})
 
@@ -27,7 +31,7 @@ target_compile_definitions(ARCC PRIVATE DEBUG_BUILD)
 target_include_directories(ARCC 
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/include
+    PRIVATE ${arcvm_include}
 )
 
 # target_compile_options(ARCC PRIVATE "-W" "-Wall" "-Wextra" "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-newline-eof" "-Wno-exit-time-destructors" "-Wno-header-hygiene" "-Wno-global-constructors" "-Wno-nonportable-system-include-path")
