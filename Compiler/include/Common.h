@@ -469,7 +469,7 @@ inline astring str(TokenKind kind){
     }
 }
 
-inline astring getStringRep(TokenKind kind){
+inline astring get_string_rep(TokenKind kind){
     
     switch(kind){
 
@@ -775,10 +775,10 @@ inline bool operator==(astring const & s1, astring const & s2)
            std::equal(s1.begin(), s1.end(), s2.begin());
 }
 
-inline void printToken(Token* t){
-    print(astrtostr("'" + (t->data == nullptr ? astring("") : *(t->data)) + "' " + getStringRep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
+inline void print_token(Token* t){
+    print(astrtostr("'" + (t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
 }
 
-inline void printTokenln(Token* t){
-    println(astrtostr("'" + astring(t->data == nullptr ? astring("") : *(t->data)) + "' " + getStringRep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
+inline void println_token(Token* t){
+    println(astrtostr("'" + astring(t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
 }

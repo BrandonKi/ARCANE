@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     std::ofstream bin("test.arcb", std::ios::out | std::ios::binary);
     bin.write(reinterpret_cast<char*> (code.data()), code.size());
     bin.close();
-    
+
     Arcvm VM;
     if(VM.load_program(reinterpret_cast<char*>(code.data()), code.size()) == false)
         return -1;

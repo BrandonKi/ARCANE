@@ -8,39 +8,39 @@ class BytecodeGen {
         BytecodeGen(Project*);
         ~BytecodeGen();
 
-        std::vector<u8, arena_allocator<u8>> genCode();
+        std::vector<u8, arena_allocator<u8>> gen_code();
     
     private:
         Project* ast_;
         std::vector<u8, arena_allocator<u8>> code_;
             
-        void genProject(Project *project);
-        void genFile(const File*);
-        void genImport(const Import*);
-        void genFunction(const Function*);
-        void genBlock(const Block*);
-        void genStatement(const Statement*);
-        void genWhile(const While_*);
-        void genFor(const For_*);
-        void genIf(const If_*);
-        void genRet(const Ret*);
-        void genDecl(const Decl*);
-        void genExpr(const Expr*);
+        void gen_project(Project *project);
+        void gen_file(const File*);
+        void gen_import(const Import*);
+        void gen_function(const Function*);
+        void gen_block(const Block*);
+        void gen_statement(const Statement*);
+        void gen_while(const While_*);
+        void gen_for(const For_*);
+        void gen_if(const If_*);
+        void gen_ret(const Ret*);
+        void gen_decl(const Decl*);
+        void gen_expr(const Expr*);
 
-        void genIntLit(const u64 val);
-        void genFloatLit(const f64 val);
-        void genStringLit(const astring* val);
-        void genID(const astring* id);
-        void genBin(const Expr *expr);
-        void genUnary(const Expr* expr);
+        void gen_int_lit(const u64 val);
+        void gen_float_lit(const f64 val);
+        void gen_string_lit(const astring* val);
+        void gen_id(const astring* id);
+        void gen_bin(const Expr *expr);
+        void gen_unary(const Expr* expr);
 
         void push(const u8);
         void push(const std::vector<u8, arena_allocator<u8>>&);
 
-        void push64BitValue(const u64);
+        void push_64bit_value(const u64);
 
     
-        void generateBootstrap();
+        void generate_bootstrap();
 
 
 };

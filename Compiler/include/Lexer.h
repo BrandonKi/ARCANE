@@ -17,12 +17,12 @@ class Lexer {
     public:
         Lexer(const astring&);
         std::vector<Token, arena_allocator<Token>> lex();
-        char currentChar();
-        char nextChar();
-        char prevChar();
-        void nextChar_noreturn();
-        void prevChar_noreturn();
-        char peekNextChar();
+        char current_char();
+        char next_char();
+        char prev_char();
+        void next_char_noreturn();
+        void prev_char_noreturn();
+        char peek_next_char();
 
     private:
         const astring data;
@@ -31,40 +31,40 @@ class Lexer {
         u32 line;
         u32 col;
 
-        void consumeComment();
+        void consume_comment();
 
-        Token lexNumberLit();
-        Token lexIdentifier();
-        Token lexString();
-        Token lexInterpolatedString();
-        Token lexColon();
-        Token lexAdd();
-        Token lexSub();
-        Token lexDiv();
-        Token lexMul();
-        Token lexMod();
-        Token lexOr();
-        Token lexAnd();
-        Token lexNot();
-        Token lexXor();
-        Token lexLesser(); 
-        Token lexGreater();
-        Token lexEqual();
+        Token lex_number_lit();
+        Token lex_identifier();
+        Token lex_string();
+        Token lex_interpolated_string();
+        Token lex_colon();
+        Token lex_add();
+        Token lex_sub();
+        Token lex_div();
+        Token lex_mul();
+        Token lex_mod();
+        Token lex_or();
+        Token lex_and();
+        Token lex_not();
+        Token lex_xor();
+        Token lex_lesser(); 
+        Token lex_greater();
+        Token lex_equal();
 
-        Token createToken(TokenKind, u32);
-        Token createToken(TokenKind, u32, u32);
-        Token createToken(TokenKind, u32, astring&);
-        Token createToken(TokenKind, u32, astring&&);
-        Token createToken(TokenKind, u32, u32, astring&);
-        Token createToken(TokenKind, u32, u32, astring&&);
+        Token create_token(TokenKind, u32);
+        Token create_token(TokenKind, u32, u32);
+        Token create_token(TokenKind, u32, astring&);
+        Token create_token(TokenKind, u32, astring&&);
+        Token create_token(TokenKind, u32, u32, astring&);
+        Token create_token(TokenKind, u32, u32, astring&&);
 
-        void printTokens(bool verbose);
+        void print_tokens(bool);
 
-        constexpr static inline bool isDigit(char c) noexcept {
+        constexpr static inline bool is_digit(const char c) noexcept {
             return c >= 48 && c <= 57;
         }
 
-        constexpr static inline bool isLetter(char c) noexcept {
+        constexpr static inline bool is_letter(const char c) noexcept {
             return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
         }
 

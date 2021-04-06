@@ -160,28 +160,28 @@ class AST {
         AST();
         ~AST();
 
-        Project* newProjectNode(SourcePos, std::vector<File*, arena_allocator<File*>>&);
-        File* newFileNode(SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, bool);
-        Import* newImportNode(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        Function* newFunctionNode(SourcePos, std::vector<Type, arena_allocator<Type>>&, Type, Block*, bool);
-        Block* newBlockNode(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
-        While_* newWhileNode(SourcePos, Expr*, Block*);
-        For_* newForNode(SourcePos, Decl*, Expr*, Expr*, Block*);
-        If_* newIfNode(SourcePos, Expr*, Block*);
-        Ret* newRetNode(SourcePos, Expr*);
-        Statement* newStatementNode_while(SourcePos, While_*);
-        Statement* newStatementNode_for(SourcePos, For_*);
-        Statement* newStatementNode_if(SourcePos, If_*);
-        Statement* newStatementNode_ret(SourcePos, Ret*);
-        Statement* newStatementNode_decl(SourcePos, Decl*);
-        Statement* newStatementNode_expr(SourcePos, Expr*);
-        Expr* newExprNode_intLiteral(SourcePos, u64);
-        Expr* newExprNode_floatLiteral(SourcePos, f64);
-        Expr* newExprNode_stringLiteral(SourcePos, astring&);
-        Expr* newExprNode_variable(SourcePos, astring*);
-        Expr* newExprNode_binExpr(SourcePos, TokenKind, Expr*, Expr*);
-        Expr* newExprNode_unaryExpr(SourcePos, TokenKind, Expr*);
-        Decl* newDeclNode(SourcePos, astring&, Type, Expr*);
+        Project* new_project_node(SourcePos, std::vector<File*, arena_allocator<File*>>&);
+        File* new_file_node(SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, bool);
+        Import* new_import_node(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
+        Function* new_function_node(SourcePos, std::vector<Type, arena_allocator<Type>>&, Type, Block*, bool);
+        Block* new_block_node(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
+        While_* new_while_node(SourcePos, Expr*, Block*);
+        For_* new_for_node(SourcePos, Decl*, Expr*, Expr*, Block*);
+        If_* new_if_node(SourcePos, Expr*, Block*);
+        Ret* new_ret_node(SourcePos, Expr*);
+        Statement* new_statement_node_while(SourcePos, While_*);
+        Statement* new_statement_node_for(SourcePos, For_*);
+        Statement* new_statement_node_if(SourcePos, If_*);
+        Statement* new_statement_node_ret(SourcePos, Ret*);
+        Statement* new_statement_node_decl(SourcePos, Decl*);
+        Statement* new_statement_node_expr(SourcePos, Expr*);
+        Expr* new_expr_node_int_literal(SourcePos, u64);
+        Expr* new_expr_node_float_literal(SourcePos, f64);
+        Expr* new_expr_node_string_literal(SourcePos, astring&);
+        Expr* new_expr_node_variable(SourcePos, astring*);
+        Expr* new_expr_node_bin_expr(SourcePos, TokenKind, Expr*, Expr*);
+        Expr* new_expr_node_unary_expr(SourcePos, TokenKind, Expr*);
+        Decl* new_decl_node(SourcePos, astring&, Type, Expr*);
 
 
 };

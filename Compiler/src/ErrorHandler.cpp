@@ -13,7 +13,7 @@ ErrorHandler::~ErrorHandler() {
 
 void ErrorHandler::push(ErrorMessage error) {
     PROFILE();
-    buffer += makePreamble(error);
+    buffer += make_preamble(error);
 
     switch(error.severity){
         case FATAL:
@@ -34,7 +34,7 @@ void ErrorHandler::push(ErrorMessage error) {
     //TODO output an arrow pointing to the token that caused the error on the next line
 }
 
-astring ErrorHandler::makePreamble(ErrorMessage& error){
+astring ErrorHandler::make_preamble(ErrorMessage& error){
     PROFILE();
     return error.filename + '[' + to_astring(error.token->pos.srcLine) + ", " + to_astring(error.token->pos.srcChar) + "] : ";
 }

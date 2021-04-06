@@ -12,148 +12,148 @@ BytecodeGen::~BytecodeGen() {
 
 }
 
-std::vector<u8, arena_allocator<u8>> BytecodeGen::genCode() {
-    genProject(ast_);
+std::vector<u8, arena_allocator<u8>> BytecodeGen::gen_code() {
+    gen_project(ast_);
     return code_;
 }
 
-void BytecodeGen::genProject(Project *project) {
+void BytecodeGen::gen_project(Project *project) {
     for(const auto* file : project->files) {
-        genFile(file);
+        gen_file(file);
     }
 }
 
-void BytecodeGen::genFile(const File *file) {
+void BytecodeGen::gen_file(const File *file) {
     
     if(file->isMain) {
-        generateBootstrap();
+        generate_bootstrap();
     }
 
     for(const auto *import : file->imports) {
-        genImport(import);
+        gen_import(import);
     }
     
     for (const auto *decl : file->decls) {
-        genDecl(decl);
+        gen_decl(decl);
     }
     
     for (const auto *function : file->functions) {
-        genFunction(function);
+        gen_function(function);
     }
 
 
 }
 
-void BytecodeGen::genImport(const Import *import) {
+void BytecodeGen::gen_import(const Import *import) {
     //TODO implement importing files/modules
 }
 
-void BytecodeGen::genFunction(const Function *function) {
+void BytecodeGen::gen_function(const Function *function) {
     // do something with args and return type
-    genBlock(function->body);
+    gen_block(function->body);
 }
 
-void BytecodeGen::genBlock(const Block *block) {
+void BytecodeGen::gen_block(const Block *block) {
     for(const auto *statement : block->statements) {
-        genStatement(statement);
+        gen_statement(statement);
     }
 }
 
-void BytecodeGen::genStatement(const Statement *statement) {
+void BytecodeGen::gen_statement(const Statement *statement) {
     switch(statement->type) {
         case WHILE:
-            genWhile(statement->while_);
+            gen_while(statement->while_);
             break;
         case FOR:
-            genFor(statement->for_);
+            gen_for(statement->for_);
             break;
         case IF:
-            genIf(statement->if_);
+            gen_if(statement->if_);
             break;
         case RET:
-            genRet(statement->ret);
+            gen_ret(statement->ret);
             break;
         case EXPRESSION:
-            genExpr(statement->expr);
+            gen_expr(statement->expr);
             break;
         case DECLARATION:
-            genDecl(statement->decl);
+            gen_decl(statement->decl);
             break;
     }
 }
 
-void BytecodeGen::genWhile(const While_* w) {
+void BytecodeGen::gen_while(const While_* w) {
     //TODO implement this
-    genExpr(w->expr);
-    genBlock(w->block);
+    gen_expr(w->expr);
+    gen_block(w->block);
 }
 
-void BytecodeGen::genFor(const For_* f) {
+void BytecodeGen::gen_for(const For_* f) {
     //TODO implement this
-    genDecl(f->decl);
-    genExpr(f->expr1);
-    genExpr(f->expr2);
-    genBlock(f->block);
+    gen_decl(f->decl);
+    gen_expr(f->expr1);
+    gen_expr(f->expr2);
+    gen_block(f->block);
 }
 
-void BytecodeGen::genIf(const If_* i) {
+void BytecodeGen::gen_if(const If_* i) {
     //TODO implement this
-    genExpr(i->expr);
-    genBlock(i->block);
+    gen_expr(i->expr);
+    gen_block(i->block);
 }
 
-void BytecodeGen::genRet(const Ret* r) {
+void BytecodeGen::gen_ret(const Ret* r) {
     //TODO implement this
-    genExpr(r->expr);
+    gen_expr(r->expr);
     push(vm::ret);
 }
 
-void BytecodeGen::genDecl(const Decl *d) {
+void BytecodeGen::gen_decl(const Decl *d) {
     //TODO implement this
-    genExpr(d->val);
+    gen_expr(d->val);
 }
 
-void BytecodeGen::genExpr(const Expr *e) {
+void BytecodeGen::gen_expr(const Expr *e) {
     //TODO implement this
     switch(e->type) {
         case EXPR_INT_LIT:
-            genIntLit(e->intLiteral.val);
+            gen_int_lit(e->intLiteral.val);
             break;
         case EXPR_FLOAT_LIT:
-            genFloatLit(e->floatLiteral.val);
+            gen_float_lit(e->floatLiteral.val);
             break;
         case EXPR_STRING_LIT:
-            genStringLit(e->stringLiteral.val);
+            gen_string_lit(e->stringLiteral.val);
             break;
         case EXPR_ID:
-            genID(e->stringLiteral.val);
+            gen_id(e->stringLiteral.val);
             break;
         case EXPR_BIN:
-            genBin(e);
+            gen_bin(e);
             break;
         case EXPR_UNARY:
-            genUnary(e);
+            gen_unary(e);
             break;
     }
 }
 
-void BytecodeGen::genIntLit(const u64 val) {
-    push64BitValue(val);
+void BytecodeGen::gen_int_lit(const u64 val) {
+    push_64bit_value(val);
 }
 
-void BytecodeGen::genFloatLit(const f64 val) {
+void BytecodeGen::gen_float_lit(const f64 val) {
     
 }
 
-void BytecodeGen::genStringLit(const astring *val) {
+void BytecodeGen::gen_string_lit(const astring *val) {
     
 }
 
-void BytecodeGen::genID(const astring* id) {
+void BytecodeGen::gen_id(const astring* id) {
     
 }
 
-void BytecodeGen::genBin(const Expr *expr) {
+void BytecodeGen::gen_bin(const Expr *expr) {
     switch(expr->binaryExpr.op) {
         case ARC_ADD_EQUAL:
             break;
@@ -188,38 +188,38 @@ void BytecodeGen::genBin(const Expr *expr) {
         case ARC_INFER:
             break;
         case ARC_ADD:
-            genExpr(expr->binaryExpr.left);
-            genExpr(expr->binaryExpr.right);
+            gen_expr(expr->binaryExpr.left);
+            gen_expr(expr->binaryExpr.right);
             push(vm::addu);
             break;
         case ARC_SUB:
-            genExpr(expr->binaryExpr.left);
-            genExpr(expr->binaryExpr.right);
+            gen_expr(expr->binaryExpr.left);
+            gen_expr(expr->binaryExpr.right);
             push(vm::subu);
             break;
         case ARC_DIV:
-            genExpr(expr->binaryExpr.left);
-            genExpr(expr->binaryExpr.right);
+            gen_expr(expr->binaryExpr.left);
+            gen_expr(expr->binaryExpr.right);
             push(vm::divu);
             break;
         case ARC_MUL:
-            genExpr(expr->binaryExpr.left);
-            genExpr(expr->binaryExpr.right);
+            gen_expr(expr->binaryExpr.left);
+            gen_expr(expr->binaryExpr.right);
             push(vm::mulu);
             break;
         case ARC_MOD:
-            genExpr(expr->binaryExpr.left);
-            genExpr(expr->binaryExpr.right);
+            gen_expr(expr->binaryExpr.left);
+            gen_expr(expr->binaryExpr.right);
             push(vm::modu);
             break;
         case ARC_BIN_OR:
-            genExpr(expr->binaryExpr.left);
-            genExpr(expr->binaryExpr.right);
+            gen_expr(expr->binaryExpr.left);
+            gen_expr(expr->binaryExpr.right);
             push(vm::oru);
             break;
         case ARC_BIN_AND:
-            genExpr(expr->binaryExpr.left);
-            genExpr(expr->binaryExpr.right);
+            gen_expr(expr->binaryExpr.left);
+            gen_expr(expr->binaryExpr.right);
             push(vm::andu);
             break;
         case ARC_LEFT_SHIFT:
@@ -243,7 +243,7 @@ void BytecodeGen::genBin(const Expr *expr) {
     }
 }
 
-void BytecodeGen::genUnary(const Expr* expr) {
+void BytecodeGen::gen_unary(const Expr* expr) {
     switch(expr->unaryExpr.op) {
         case ARC_NOT:
             break;
@@ -271,7 +271,7 @@ void BytecodeGen::push(const std::vector<u8, arena_allocator<u8>>& vec) {
     code_.insert(code_.end(), vec.begin(), vec.end());
 }
 
-void BytecodeGen::push64BitValue(const u64 val) {
+void BytecodeGen::push_64bit_value(const u64 val) {
     push(vm::push_value);
     code_.push_back(static_cast<u8>(val));
     code_.push_back(static_cast<u8>(val >> 8));
@@ -283,9 +283,9 @@ void BytecodeGen::push64BitValue(const u64 val) {
     code_.push_back(static_cast<u8>(val >> 56));
 }
 
-void BytecodeGen::generateBootstrap() {
+void BytecodeGen::generate_bootstrap() {
 
-    std::vector<u8, arena_allocator<u8>> vec = {
+    const std::vector<u8, arena_allocator<u8>> vec = {
         0xfa,
         0xca,
         0xde,
@@ -302,6 +302,4 @@ void BytecodeGen::generateBootstrap() {
     };
     
     push(vec);
-
-    
 }

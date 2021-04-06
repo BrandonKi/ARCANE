@@ -24,6 +24,6 @@ class ErrorHandler {
 
         astring buffer;
 
-        astring makePreamble(ErrorMessage& error);
+        astring make_preamble(ErrorMessage& error);
 
 };

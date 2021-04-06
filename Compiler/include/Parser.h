@@ -13,24 +13,24 @@ class Parser{
         AST ast;
         SymbolTable s_table;
 
-        Project* parseProject();
-        File* parseFile();
-        Import* parseImport();
-        Function* parseFunction();
-        Block* parseBlock();
-        Statement* parseStatement();
-        Decl* parseDecl();
-        Expr* parseExpr();
+        Project* parse_project();
+        File* parse_file();
+        Import* parse_import();
+        Function* parse_function();
+        Block* parse_block();
+        Statement* parse_statement();
+        Decl* parse_decl();
+        Expr* parse_expr();
 
-        Token* currentToken();
-        Token* nextToken();
-        Token* peekNextToken();
-        bool checkToken(TokenKind);
-        bool expectToken(TokenKind);
+        Token* current_token();
+        Token* next_token();
+        Token* peek_next_token();
+        bool check_token(TokenKind);
+        bool expect_token(TokenKind);
 
-        bool isOperator(TokenKind);
-        bool isUnaryOperator(TokenKind);
+        bool is_operator(TokenKind);
+        bool is_unary_operator(TokenKind);
         u8 precedence(TokenKind);
 
-        Type tokenKind2Type(TokenKind);
+        Type token_kind_to_type(TokenKind);
 };

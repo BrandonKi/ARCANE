@@ -7,7 +7,7 @@ Compiler::Compiler() {
 
 std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     PROFILE();
-    std::vector<RawFile, arena_allocator<RawFile>> projectFiles = getProjectFiles();
+    std::vector<RawFile, arena_allocator<RawFile>> projectFiles = get_project_files();
     Parser parser(projectFiles);
     Project *ast = parser.parse();
     
@@ -17,10 +17,10 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     // gen.generate(/* Whatever IR I decide on */); 
 
     BytecodeGen gen(ast);
-    return gen.genCode();
+    return gen.gen_code();
 }
 
-astring Compiler::readFile(astring filepath) {
+astring Compiler::read_file(astring filepath) {
     PROFILE();
     std::ifstream file;
     file.open(filepath);
@@ -30,24 +30,24 @@ astring Compiler::readFile(astring filepath) {
     return astring(buffer.str());
 }
 
-std::vector<RawFile, arena_allocator<RawFile>> Compiler::getProjectFiles() {   // TODO refactor big time
+std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {   // TODO refactor big time
     PROFILE();
     std::vector<RawFile, arena_allocator<RawFile>> result;
     std::vector<astring, arena_allocator<astring>> projectFileNames;
     if(!args.project){
-        result.push_back(RawFile{args.path, readFile(args.path)});
+        result.push_back(RawFile{args.path, read_file(args.path)});
     }
     else{
         for(const auto& file : std::filesystem::directory_iterator(args.path)){
             if(file.path().filename().string() == "ARProjSpec"){
                 astring path = strtoastr(file.path().string());
-                projectFileNames = parseProjectSpecFile(path);
+                projectFileNames = parse_project_spec_file(path);
             }
         }
         for(const auto& file : std::filesystem::directory_iterator(args.path)){
             for(astring& name : projectFileNames){
                 if(strtoastr(file.path().filename().string()) == name){
-                    result.push_back(RawFile{strtoastr(file.path().string()), readFile(strtoastr(file.path().string()))});
+                    result.push_back(RawFile{strtoastr(file.path().string()), read_file(strtoastr(file.path().string()))});
                     break;
                 }
             }
@@ -57,7 +57,7 @@ std::vector<RawFile, arena_allocator<RawFile>> Compiler::getProjectFiles() {   /
     return result;
 }
 
-std::vector<astring, arena_allocator<astring>> Compiler::parseProjectSpecFile(astring& filepath) {
+std::vector<astring, arena_allocator<astring>> Compiler::parse_project_spec_file(astring& filepath) {
     PROFILE();
     std::vector<astring, arena_allocator<astring>> result;
     std::ifstream file(filepath);

@@ -16,15 +16,15 @@ using hash_map =
     >;
 
 SymbolTable::SymbolTable() {
-    pushScope();
+    push_scope();
 }
 
-void SymbolTable::addSymbol(astring& id, SymbolType kind, Type arc_type) {
-    currentScope().insert(pair(id, Symbol{kind, arc_type}));
+void SymbolTable::add_symbol(astring& id, SymbolType kind, Type arc_type) {
+    current_scope().insert(pair(id, Symbol{kind, arc_type}));
 }
 
-void SymbolTable::addFunction(astring& id, std::vector<Type, arena_allocator<Type>> args, SymbolType kind, Type arc_type) {
-    currentScope().insert(pair(id, Symbol{kind, arc_type, args}));
+void SymbolTable::add_function(astring& id, std::vector<Type, arena_allocator<Type>> args, SymbolType kind, Type arc_type) {
+    current_scope().insert(pair(id, Symbol{kind, arc_type, args}));
 }
 
 
@@ -36,7 +36,7 @@ bool SymbolTable::has(astring& id) {
 }
 
 // check if element exists before calling function
-SymbolType SymbolTable::getKind(astring& id) {
+SymbolType SymbolTable::get_kind(astring& id) {
     for(hash_map& map : table) {
         auto result = map.find(id);
         if(result != map.end())
@@ -45,28 +45,28 @@ SymbolType SymbolTable::getKind(astring& id) {
     return VARIABLE;    // never get here
 }
 
-bool SymbolTable::scopeHas(astring& id) {
-    return currentScope().contains(id);
+bool SymbolTable::scope_has(astring& id) {
+    return current_scope().contains(id);
 }
 
-bool SymbolTable::isFunction(astring& id) {
+bool SymbolTable::is_function(astring& id) {
     // FIXME this searches for the symbol twice
-    return has(id) && getKind(id) == FUNCTION;
+    return has(id) && get_kind(id) == FUNCTION;
 }
 
-bool SymbolTable::isVariable(astring& id) {
+bool SymbolTable::is_variable(astring& id) {
     // FIXME this searches for the symbol twice
-    return has(id) && getKind(id) == VARIABLE;
+    return has(id) && get_kind(id) == VARIABLE;
 }
 
-hash_map& SymbolTable::currentScope() {
+hash_map& SymbolTable::current_scope() {
     return table.back();
 }
 
-void SymbolTable::pushScope() {
+void SymbolTable::push_scope() {
     table.push_back(hash_map{});
 }
 
-void SymbolTable::popScope() {
+void SymbolTable::pop_scope() {
     table.pop_back();
 }

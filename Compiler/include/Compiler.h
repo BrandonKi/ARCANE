@@ -7,10 +7,10 @@ class Compiler{
         std::vector<u8, arena_allocator<u8>> compile();
 
     private:
-        astring readFile(astring);
+        astring read_file(astring);
 
-        std::vector<RawFile, arena_allocator<RawFile>> getProjectFiles();
-        std::vector<astring, arena_allocator<astring>> parseProjectSpecFile(astring& file);
+        std::vector<RawFile, arena_allocator<RawFile>> get_project_files();
+        std::vector<astring, arena_allocator<astring>> parse_project_spec_file(astring&);
 
         void trim(astring&);
 

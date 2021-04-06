@@ -7,7 +7,7 @@ enum SymbolType {
 
 struct Symbol {
     SymbolType type; 
-    Type resultType;
+    Type result_type;
     std::vector<Type, arena_allocator<Type>> args;
 };
 
@@ -31,15 +31,15 @@ class SymbolTable {
                 >
             >;
         SymbolTable();
-        void addSymbol(astring&, SymbolType, Type);
-        void addFunction(astring&, std::vector<Type, arena_allocator<Type>>, SymbolType, Type); 
+        void add_symbol(astring&, SymbolType, Type);
+        void add_function(astring&, std::vector<Type, arena_allocator<Type>>, SymbolType, Type); 
         bool has(astring&);
-        bool scopeHas(astring&);
-        SymbolType getKind(astring&);
-        bool isFunction(astring&);
-        bool isVariable(astring&);
-        void pushScope();
-        void popScope();
+        bool scope_has(astring&);
+        SymbolType get_kind(astring&);
+        bool is_function(astring&);
+        bool is_variable(astring&);
+        void push_scope();
+        void pop_scope();
 
     private:
 
@@ -47,6 +47,6 @@ class SymbolTable {
         std::vector<hash_map, arena_allocator<hash_map>> table;
                 
         pair get(astring&);
-        hash_map& currentScope();
+        hash_map& current_scope();
 
 };
