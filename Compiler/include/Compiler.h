@@ -1,9 +1,13 @@
+#ifndef COMPILER_H
+#define COMPILER_H
+
 #include "Parser.h"
 
 class Compiler{
 
     public:
         Compiler();
+        ~Compiler();
         std::vector<u8, arena_allocator<u8>> compile();
 
     private:
@@ -15,3 +19,5 @@ class Compiler{
         void trim(astring&);
 
 };
+
+#endif

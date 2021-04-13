@@ -36,7 +36,7 @@ void ErrorHandler::push(ErrorMessage error) {
 
 astring ErrorHandler::make_preamble(ErrorMessage& error){
     PROFILE();
-    return error.filename + '[' + to_astring(error.token->pos.srcLine) + ", " + to_astring(error.token->pos.srcChar) + "] : ";
+    return error.filename + '[' + to_astring(error.token->pos.src_line) + ", " + to_astring(error.token->pos.src_char) + "] : ";
 }
 
 void ErrorHandler::flush(){

@@ -25,15 +25,15 @@ int main(int argc, char* argv[]) {
     std::cout << "Exited with code: " << VM.run();
 }
 
-void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of the availible flags
+void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of the available flags
     PROFILE();
     std::vector<astring> argList(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
     for(astring& str : argList){
         if(str == "--lex-out")
-            args.lexOut = true;
+            args.lex_out = true;
         else if(str == "--lex-out-v"){
-            args.lexOut = true;
-            args.verboseLexOut = true;
+            args.lex_out = true;
+            args.verbose_lex_out = true;
         }
         else if(str == "-O")
             args.optimize = true;

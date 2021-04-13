@@ -1,127 +1,127 @@
 #include "Lexer.h"
 
 Lexer::Lexer(const astring& filedata):
-    data(filedata), tokens(arena_allocator<Token>{}), index(0), line(1), col(1)
+    data_(filedata), tokens_(arena_allocator<Token>{}), index_(0), line_(1), col_(1)
 {
     PROFILE();
     // errorLog.push(ErrorMessage{FATAL, new Token{astring("100"), (TokenKind)0, 0, 0}, astring("filename.txt"), astring("invalid token")});
     // errorLog.flush();
-    tokens.reserve(100);
+    tokens_.reserve(100);
 }
 
 std::vector<Token, arena_allocator<Token>> Lexer::lex() {
     PROFILE();
 
-    while(index < data.size()) {
+    while(index_ < data_.size()) {
 
         switch(current_char()) {
             CASE_DIGIT:
-                tokens.push_back(lex_number_lit());
+                tokens_.push_back(lex_number_lit());
                 break;
             CASE_ID:
-                tokens.push_back(lex_identifier());
+                tokens_.push_back(lex_identifier());
                 break;
             case '\'':
             case '"': 
-                tokens.push_back(lex_string());
+                tokens_.push_back(lex_string());
                 break;
             case '`':   //TODO interpolated string literal is not trivial to tokenize
-                tokens.push_back(lex_interpolated_string());
+                tokens_.push_back(lex_interpolated_string());
                 break;
             case '{':
-                tokens.push_back(create_token(ARC_OPEN_BRACE, index));
+                tokens_.push_back(create_token(ARC_OPEN_BRACE, index_));
                 break;
             case '}':
-                tokens.push_back(create_token(ARC_CLOSE_BRACE, index));
+                tokens_.push_back(create_token(ARC_CLOSE_BRACE, index_));
                 break;
             case '[':
-                tokens.push_back(create_token(ARC_OPEN_BRACKET, index));
+                tokens_.push_back(create_token(ARC_OPEN_BRACKET, index_));
                 break;
             case ']':
-                tokens.push_back(create_token(ARC_CLOSE_BRACKET, index));
+                tokens_.push_back(create_token(ARC_CLOSE_BRACKET, index_));
                 break;
             case '(':
-                tokens.push_back(create_token(ARC_OPEN_PAREN, index));
+                tokens_.push_back(create_token(ARC_OPEN_PAREN, index_));
                 break;
             case ')':
-                tokens.push_back(create_token(ARC_CLOSE_PAREN, index));
+                tokens_.push_back(create_token(ARC_CLOSE_PAREN, index_));
                 break;
             case '.':
-                tokens.push_back(create_token(ARC_DOT, index));
+                tokens_.push_back(create_token(ARC_DOT, index_));
                 break;
             case ',':
-                tokens.push_back(create_token(ARC_COMMA, index));
+                tokens_.push_back(create_token(ARC_COMMA, index_));
                 break;
             case '?':
-                tokens.push_back(create_token(ARC_TERNARY, index));
+                tokens_.push_back(create_token(ARC_TERNARY, index_));
                 break;
             case ';':
-                tokens.push_back(create_token(ARC_SEMICOLON, index));
+                tokens_.push_back(create_token(ARC_SEMICOLON, index_));
                 break;
             case ':':
-                tokens.push_back(lex_colon());
+                tokens_.push_back(lex_colon());
                 break;
             case '@':
-                tokens.push_back(create_token(ARC_AT, index));
+                tokens_.push_back(create_token(ARC_AT, index_));
                 break;
             case '#':
-                tokens.push_back(create_token(ARC_HASH, index));
+                tokens_.push_back(create_token(ARC_HASH, index_));
                 break;
             case '$':
-                tokens.push_back(create_token(ARC_DOLLAR, index));
+                tokens_.push_back(create_token(ARC_DOLLAR, index_));
                 break;
             case '+':
-                tokens.push_back(lex_add());
+                tokens_.push_back(lex_add());
                 break;
             case '-':
-                tokens.push_back(lex_sub());
+                tokens_.push_back(lex_sub());
                 break;
             case '/':
                 if(peek_next_char() == '/' || peek_next_char() == '*')
                     consume_comment();
                 else
-                    tokens.push_back(lex_div());
+                    tokens_.push_back(lex_div());
                 break;
             case '*':
-                tokens.push_back(lex_mul());
+                tokens_.push_back(lex_mul());
                 break;
             case '%':
-                tokens.push_back(lex_mod());
+                tokens_.push_back(lex_mod());
                 break;
             case '|':
-                tokens.push_back(lex_or());
+                tokens_.push_back(lex_or());
                 break;
             case '&':
-                tokens.push_back(lex_and());
+                tokens_.push_back(lex_and());
                 break;
             case '!':
-                tokens.push_back(lex_not());
+                tokens_.push_back(lex_not());
                 break;
             case '^':
-                tokens.push_back(lex_xor());
+                tokens_.push_back(lex_xor());
                 break;
             case '<':
-                tokens.push_back(lex_lesser());
+                tokens_.push_back(lex_lesser());
                 break;
             case '>':
-                tokens.push_back(lex_greater());
+                tokens_.push_back(lex_greater());
                 break;
             case '=':
-                tokens.push_back(lex_equal());
+                tokens_.push_back(lex_equal());
                 break;
             case '\n':
-                line++;
-                col = 0;
+                line_++;
+                col_ = 0;
                 break;
             default:
                 break;
         }
             next_char_noreturn();
     }
-    if(args.lexOut)
-        print_tokens(args.verboseLexOut);  // true for verbose and false for succint
-    tokens.push_back(create_token(ARC_EOF, col, index));
-    return std::move(tokens);   // not a big deal but there is no reason to make an extra copy
+    if(args.lex_out)
+        print_tokens(args.verbose_lex_out);  // true for verbose and false for succinct
+    tokens_.push_back(create_token(ARC_EOF, col_, index_));
+    return std::move(tokens_);   // not a big deal but there is no reason to make an extra copy
 }
 
 
@@ -130,15 +130,15 @@ void Lexer::consume_comment() {
 
     if(next_char() == '*') {
         next_char_noreturn();
-        while(index < data.size() && !(current_char() == '*' && peek_next_char() == '/')){
+        while(index_ < data_.size() && !(current_char() == '*' && peek_next_char() == '/')){
             if(current_char() == '\n')
-                line++;
+                line_++;
             next_char_noreturn();
         }
         next_char_noreturn();
     }
     else{
-        while(index < data.size() &&  current_char() != '\n'){
+        while(index_ < data_.size() &&  current_char() != '\n'){
             next_char_noreturn();
         }
     }
@@ -146,23 +146,23 @@ void Lexer::consume_comment() {
 
 Token Lexer::lex_number_lit() {
     PROFILE();
-    astring& num = *new astring;
-    u32 startPos = index;
-    u32 currentCol = col;
-    bool isFloat = false;
-    bool isInt = true;
+    auto& num = *new astring;    //FIXME use arena alloc
+    const auto start_pos = index_;
+    const auto current_col = col_;
+    auto is_float = false;
+    auto is_int = true;
     if(peek_next_char() == 'x') {  //TODO implement hex literal lexing
         next_char_noreturn();
-        isInt = false;
-        isFloat = false;
+        is_int = false;
+        is_float = false;
     }
     while(is_digit(current_char())) {      //TODO refactor
         num.push_back(current_char());
 
         if(peek_next_char() == '.') {
             // if(isFloat) //TODO print error message because two "." are present in number literal
-            isFloat = true;
-            isInt = false;
+            is_float = true;
+            is_int = false;
 
             num.push_back(next_char());
         }
@@ -172,22 +172,22 @@ Token Lexer::lex_number_lit() {
 
     prev_char_noreturn();    // the above loop goes one char too far so decrement here
 
-    if(isInt)
-        return create_token(ARC_INT_LIT, currentCol, startPos, num);
-    else if(isFloat)
-        return create_token(ARC_FLOAT_LIT, currentCol, startPos, num);
+    if(is_int)
+        return create_token(ARC_INT_LIT, current_col, start_pos, num);
+    else if(is_float)
+        return create_token(ARC_FLOAT_LIT, current_col, start_pos, num);
     else {
         //TODO convert hex literal to int or float literal
-        return create_token(ARC_INT_LIT, currentCol, startPos, num);
+        return create_token(ARC_INT_LIT, current_col, start_pos, num);
     }
 }
 
 Token Lexer::lex_identifier() {
     PROFILE();
 
-    astring& id = *new astring;
-    u32 startPos = index;
-    u32 currentCol = col;
+    auto& id = *new astring; //FIXME use arena alloc
+    const auto start_pos = index_;
+    const auto current_col = col_;
 
     while(is_letter(current_char())  || is_digit(current_char())) {
         id.push_back(current_char());
@@ -197,24 +197,24 @@ Token Lexer::lex_identifier() {
     prev_char_noreturn();    // the above loop goes one char too far so decrement here
 
     if(keywords.find(id) != keywords.end())
-        return create_token(keywords.find(id)->second, currentCol, startPos);
-    return create_token(ARC_ID, currentCol, startPos, id);
+        return create_token(keywords.find(id)->second, current_col, start_pos);
+    return create_token(ARC_ID, current_col, start_pos, id);
 }
 
 Token Lexer::lex_string() {  //TODO escape sequences
     PROFILE();
 
-    u32 startPos = index;
+    const auto start_pos = index_;
 
-    astring& id = *new astring;
+    auto& id = *new astring; //FIXME use arena alloc
         
-    char end = current_char();
+    const auto end = current_char();
 
     while(next_char() != end) {
         id.push_back(current_char());
     }
 
-    return create_token(ARC_STRING_LIT, startPos, id);
+    return create_token(ARC_STRING_LIT, start_pos, id);
 }
 
 Token Lexer::lex_interpolated_string() {  //TODO implement interpolated strings
@@ -227,283 +227,288 @@ Token Lexer::lex_interpolated_string() {  //TODO implement interpolated strings
 Token Lexer::lex_colon() {
     PROFILE();
 
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
     
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_INFER, startCol, startPos);
+        return create_token(ARC_INFER, start_col, start_pos);
     }
     else
-        return create_token(ARC_COLON, startPos);
+        return create_token(ARC_COLON, start_pos);
 
 }
 
 inline Token Lexer::lex_add() {
     PROFILE();
 
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_ADD_EQUAL, startCol, startPos);
+        return create_token(ARC_ADD_EQUAL, start_col, start_pos);
     }
     else if(peek_next_char() == '+') {
         next_char_noreturn();
-        if(tokens.back().kind == ARC_ID)  // FIXME incorrectly lexes some cases for ex. "4++", "*++4", etc.
-            return create_token(ARC_POST_INCREMENT, startCol, startPos);
-        return create_token(ARC_PRE_INCREMENT, startCol, startPos);
+        if(tokens_.back().kind == ARC_ID)  // FIXME incorrectly lexes some cases for ex. "4++", "*++4", etc.
+            return create_token(ARC_POST_INCREMENT, start_col, start_pos);
+        return create_token(ARC_PRE_INCREMENT, start_col, start_pos);
     }
     else
-        return create_token(ARC_ADD, startPos);
+        return create_token(ARC_ADD, start_pos);
 }
 
 Token Lexer::lex_sub() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_SUB_EQUAL, startCol, startPos);
+        return create_token(ARC_SUB_EQUAL, start_col, start_pos);
     }
     else if(peek_next_char() == '-') {
         next_char_noreturn();
-        if(tokens.back().kind == ARC_ID)   // FIXME incorrectly lexes some cases for ex. "4--", "*--4", etc.
-            return create_token(ARC_POST_DECREMENT, startCol, startPos);
-        return create_token(ARC_PRE_DECREMENT, startCol, startPos);
+        if(tokens_.back().kind == ARC_ID)   // FIXME incorrectly lexes some cases for ex. "4--", "*--4", etc.
+            return create_token(ARC_POST_DECREMENT, start_col, start_pos);
+        return create_token(ARC_PRE_DECREMENT, start_col, start_pos);
     }
     else
-        return create_token(ARC_SUB, startPos);  // FIXME doesn't even attempt to parse a unary sub
+        return create_token(ARC_SUB, start_pos);  // FIXME doesn't even attempt to parse a unary sub
 }
 
 Token Lexer::lex_div() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_DIV_EQUAL, startCol, startPos);
+        return create_token(ARC_DIV_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_DIV, startPos);
+        return create_token(ARC_DIV, start_pos);
 }
 
 Token Lexer::lex_mul() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_MUL_EQUAL, startCol, startPos);
+        return create_token(ARC_MUL_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_MUL, startPos);
+        return create_token(ARC_MUL, start_pos);
 }
 
 Token Lexer::lex_mod() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_MOD_EQUAL, startCol, startPos);
+        return create_token(ARC_MOD_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_MOD, startPos);
+        return create_token(ARC_MOD, start_pos);
 }
 
 Token Lexer::lex_or() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_OR_EQUAL, startCol, startPos);
+        return create_token(ARC_OR_EQUAL, start_col, start_pos);
     }
     else if(peek_next_char() == '|'){
         next_char_noreturn();
-        return create_token(ARC_LOGICAL_OR, startCol, startPos);
+        return create_token(ARC_LOGICAL_OR, start_col, start_pos);
     }
     else
-        return create_token(ARC_BIN_OR, startPos);
+        return create_token(ARC_BIN_OR, start_pos);
 }
 
 Token Lexer::lex_and() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_AND_EQUAL, startCol, startPos);
+        return create_token(ARC_AND_EQUAL, start_col, start_pos);
     }
     else if(peek_next_char() == '&') {
         next_char_noreturn();
-        return create_token(ARC_LOGICAL_AND, startCol, startPos);
+        return create_token(ARC_LOGICAL_AND, start_col, start_pos);
     }
     else
-        return create_token(ARC_BIN_AND, startPos);
+        return create_token(ARC_BIN_AND, start_pos);
 }
 
 Token Lexer::lex_not() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_NOT_EQUAL, startCol, startPos);
+        return create_token(ARC_NOT_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_NOT, startPos);
+        return create_token(ARC_NOT, start_pos);
 }
 
 Token Lexer::lex_xor(){
     PROFILE();
 
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_XOR_EQUAL, startCol, startPos);
+        return create_token(ARC_XOR_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_XOR, startPos);
+        return create_token(ARC_XOR, start_pos);
 }
 
 Token Lexer::lex_lesser() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_LESSER_EQUAL, startCol, startPos);
+        return create_token(ARC_LESSER_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_LESSER, startPos);
+        return create_token(ARC_LESSER, start_pos);
 }
 
 Token Lexer::lex_greater() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_GREATER_EQUAL, startCol, startPos);
+        return create_token(ARC_GREATER_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_GREATER, startPos);
+        return create_token(ARC_GREATER, start_pos);
 }
 
 Token Lexer::lex_equal() {
     PROFILE();
     
-    u32 startPos = index;
-    u32 startCol = col;
+    const auto start_pos = index_;
+    const auto start_col = col_;
 
     if(peek_next_char() == '=') {
         next_char_noreturn();
-        return create_token(ARC_EQUAL, startCol, startPos);
+        return create_token(ARC_EQUAL, start_col, start_pos);
     }
     else
-        return create_token(ARC_ASSIGN, startPos);
+        return create_token(ARC_ASSIGN, start_pos);
 }
 
-inline char Lexer::current_char() {
+inline char Lexer::current_char() const {
     PROFILE();
-    return data[index];
+    return data_[index_];
 }
 
 inline char Lexer::next_char() {
     PROFILE();
-    col++;
-    return data[++index];
+    col_++;
+    return data_[++index_];
 }
 
 inline char Lexer::prev_char() {
     PROFILE();
-    col--;
-    return data[--index];
+    col_--;
+    return data_[--index_];
 }
 
 inline void Lexer::next_char_noreturn() {
     PROFILE();
-    col++;
-    index++;
+    col_++;
+    index_++;
 }
 
 inline void Lexer::prev_char_noreturn() {
     PROFILE();
-    col--;
-    index--;
+    col_--;
+    index_--;
 }
 
-inline char Lexer::peek_next_char() {
+inline char Lexer::peek_next_char() const {
     PROFILE();
-    return data[index+1];
+    return data_[index_+1];
 }
 
-inline Token Lexer::create_token(TokenKind kind, u32 startPos) {
+inline char Lexer::peek_prev_char() const {
+    PROFILE();
+    return data_[index_ - 1];
+}
+
+inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos) const {
     PROFILE();
     // Token* tkn = allocator.alloc<Token>();
     // *tkn = Token {kind, SourcePos{line, col, startPos, index}, nullptr};
-    return Token {kind, SourcePos{line, col, startPos, index}, nullptr};
+    return Token {kind, SourcePos{line_, col_, start_pos, index_}, nullptr};
 }
  
-inline Token Lexer::create_token(TokenKind kind, u32 currentCol, u32 startPos) {
+inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos) const {
     PROFILE();
     // Token* tkn = allocator.alloc<Token>();
     // *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
-    return Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
+    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, nullptr};
 }
 
-inline Token Lexer::create_token(TokenKind kind, u32 startPos, astring& val) {
+inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos, astring& val) const {
     PROFILE();
-    return create_token(kind, col, startPos, val);
+    return create_token(kind, col_, start_pos, val);
 }
 
-inline Token Lexer::create_token(TokenKind kind, u32 startPos, astring&& val) {
+inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos, astring&& val) const {
     PROFILE();
-    return create_token(kind, col, startPos, val);
+    return create_token(kind, col_, start_pos, val);
 }
 
 
-inline Token Lexer::create_token(TokenKind kind, u32 currentCol, u32 startPos, astring& val) {   //FIXME no reason to pass a string here
+inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, astring& val) const  {   //FIXME no reason to pass a string here
     PROFILE();
-    return Token {kind, SourcePos{line, currentCol, startPos, index}, &val};
+    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, &val};
 }
 
-inline Token Lexer::create_token(TokenKind kind, u32 currentCol, u32 startPos, astring&& val) {   //FIXME no reason to pass a string here
+inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, astring&& val) const  {   //FIXME no reason to pass a string here
     PROFILE();
     astring* val2 = new astring(val);   //FIXME temporary
-    return Token {kind, SourcePos{line, currentCol, startPos, index}, val2};
+    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, val2};
 }
 
-inline void Lexer::print_tokens(bool verbose) {
+inline void Lexer::print_tokens(const bool verbose) const {
     PROFILE();
     if(verbose)
-        for(Token tkn : tokens)
+        for(const auto& tkn : tokens_)
             println_token(&tkn);
     else{
-        for(Token tkn : tokens)
+        for(const auto& tkn : tokens_)
             if(tkn.data == nullptr)
                 println(astrtostr(str(tkn.kind) + ": " + get_string_rep(tkn.kind)));
             else

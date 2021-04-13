@@ -1,6 +1,10 @@
-#include "ByteCodeGen.h"
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
+
+#include "BytecodeGen.h"
 
 enum SymbolType {
+    NONE,
     VARIABLE,
     FUNCTION
 };
@@ -31,22 +35,23 @@ class SymbolTable {
                 >
             >;
         SymbolTable();
-        void add_symbol(astring&, SymbolType, Type);
-        void add_function(astring&, std::vector<Type, arena_allocator<Type>>, SymbolType, Type); 
-        bool has(astring&);
-        bool scope_has(astring&);
-        SymbolType get_kind(astring&);
-        bool is_function(astring&);
-        bool is_variable(astring&);
+        void add_symbol(const astring&, const SymbolType, const Type);
+        void add_function(const astring&, const std::vector<Type, arena_allocator<Type>>, const SymbolType, const Type); 
+        bool has(const astring&);
+        bool scope_has(const astring&);
+        SymbolType get_kind(const astring&);
+        bool is_function(const astring&);
+        bool is_variable(const astring&);
         void push_scope();
         void pop_scope();
 
     private:
 
-        hash_map global;
-        std::vector<hash_map, arena_allocator<hash_map>> table;
-                
+        hash_map global_;
+        std::vector<hash_map, arena_allocator<hash_map>> table_;
+        
         pair get(astring&);
         hash_map& current_scope();
-
 };
+
+#endif

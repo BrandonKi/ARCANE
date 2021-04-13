@@ -19,54 +19,50 @@ SymbolTable::SymbolTable() {
     push_scope();
 }
 
-void SymbolTable::add_symbol(astring& id, SymbolType kind, Type arc_type) {
+void SymbolTable::add_symbol(const astring& id, const SymbolType kind, const Type arc_type) {
     current_scope().insert(pair(id, Symbol{kind, arc_type}));
 }
 
-void SymbolTable::add_function(astring& id, std::vector<Type, arena_allocator<Type>> args, SymbolType kind, Type arc_type) {
-    current_scope().insert(pair(id, Symbol{kind, arc_type, args}));
+void SymbolTable::add_function(const astring& id, const std::vector<Type, arena_allocator<Type>> fn_args, const SymbolType kind, const Type arc_type) {
+    current_scope().insert(pair(id, Symbol{kind, arc_type, fn_args}));
 }
 
-
-bool SymbolTable::has(astring& id) {
-    for(hash_map& map : table)
-        if(map.contains(id))
-            return true;
-    return false;
+bool SymbolTable::has(const astring& id) {
+    return std::ranges::any_of(table_.cbegin(), table_.cend(), 
+        [&](const auto& map) {return map.contains(id);}
+    );
 }
 
-// check if element exists before calling function
-SymbolType SymbolTable::get_kind(astring& id) {
-    for(hash_map& map : table) {
+// return NONE if element does not exist
+SymbolType SymbolTable::get_kind(const astring& id) {
+    for(const auto& map : table_) {
         auto result = map.find(id);
         if(result != map.end())
             return result->second.type;
     }
-    return VARIABLE;    // never get here
+    return NONE;
 }
 
-bool SymbolTable::scope_has(astring& id) {
+bool SymbolTable::scope_has(const astring& id) {
     return current_scope().contains(id);
 }
 
-bool SymbolTable::is_function(astring& id) {
-    // FIXME this searches for the symbol twice
-    return has(id) && get_kind(id) == FUNCTION;
+bool SymbolTable::is_function(const astring& id) {
+    return get_kind(id) == FUNCTION;
 }
 
-bool SymbolTable::is_variable(astring& id) {
-    // FIXME this searches for the symbol twice
-    return has(id) && get_kind(id) == VARIABLE;
+bool SymbolTable::is_variable(const astring& id) {
+    return get_kind(id) == VARIABLE;
 }
 
 hash_map& SymbolTable::current_scope() {
-    return table.back();
+    return table_.back();
 }
 
 void SymbolTable::push_scope() {
-    table.push_back(hash_map{});
+    table_.emplace_back(hash_map{});
 }
 
 void SymbolTable::pop_scope() {
-    table.pop_back();
+    table_.pop_back();
 }

@@ -1,3 +1,6 @@
+#ifndef BYTECODE_GEN_H
+#define BYTECODE_GEN_H
+
 #include "AST.h"
 
 // include this to get the instructions
@@ -14,7 +17,7 @@ class BytecodeGen {
         Project* ast_;
         std::vector<u8, arena_allocator<u8>> code_;
             
-        void gen_project(Project *project);
+        void gen_project(const Project *project);
         void gen_file(const File*);
         void gen_import(const Import*);
         void gen_function(const Function*);
@@ -37,10 +40,12 @@ class BytecodeGen {
         void push(const u8);
         void push(const std::vector<u8, arena_allocator<u8>>&);
 
-        void push_64bit_value(const u64);
+        void push_64_bit_value(const u64);
 
     
         void generate_bootstrap();
 
 
 };
+
+#endif

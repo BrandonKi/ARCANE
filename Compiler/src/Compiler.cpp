@@ -13,9 +13,6 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     
     //TODO convert to another IR for easier optimization and optimize step
 
-    // CodeGenerator gen;
-    // gen.generate(/* Whatever IR I decide on */); 
-
     BytecodeGen gen(ast);
     return gen.gen_code();
 }

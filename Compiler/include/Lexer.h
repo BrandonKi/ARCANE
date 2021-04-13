@@ -1,3 +1,6 @@
+#ifndef LEXER_H
+#define LEXER_H
+
 #include "ErrorHandler.h"
 
 static ErrorHandler errorLog{};
@@ -15,21 +18,22 @@ class Lexer {
                     case 't':case 'u':case 'v':case 'w':case 'x':case 'y':case 'z':case '_'
 
     public:
-        Lexer(const astring&);
-        std::vector<Token, arena_allocator<Token>> lex();
-        char current_char();
-        char next_char();
-        char prev_char();
+        explicit Lexer(const astring&);
+        [[nodiscard]] std::vector<Token, arena_allocator<Token>> lex();
+        [[nodiscard]] char current_char() const;
+        [[nodiscard]] char next_char();
+        [[nodiscard]] char prev_char();
         void next_char_noreturn();
         void prev_char_noreturn();
-        char peek_next_char();
+        [[nodiscard]] char peek_next_char() const;
+        [[nodiscard]] char peek_prev_char() const;
 
     private:
-        const astring data;
-        std::vector<Token, arena_allocator<Token>> tokens;
-        u32 index;
-        u32 line;
-        u32 col;
+        const astring data_;
+        std::vector<Token, arena_allocator<Token>> tokens_;
+        u32 index_;
+        u32 line_;
+        u32 col_;
 
         void consume_comment();
 
@@ -51,14 +55,14 @@ class Lexer {
         Token lex_greater();
         Token lex_equal();
 
-        Token create_token(TokenKind, u32);
-        Token create_token(TokenKind, u32, u32);
-        Token create_token(TokenKind, u32, astring&);
-        Token create_token(TokenKind, u32, astring&&);
-        Token create_token(TokenKind, u32, u32, astring&);
-        Token create_token(TokenKind, u32, u32, astring&&);
+        [[nodiscard]] Token create_token(const TokenKind, const u32) const;
+        [[nodiscard]] Token create_token(const TokenKind, const u32, const u32) const;
+        [[nodiscard]] Token create_token(const TokenKind, const u32, astring&) const;
+        [[nodiscard]] Token create_token(const TokenKind, const u32, astring&&) const;
+        [[nodiscard]] Token create_token(const TokenKind, const u32, const u32, astring&) const;
+        [[nodiscard]] Token create_token(const TokenKind, const u32, const u32, astring&&) const;
 
-        void print_tokens(bool);
+        void print_tokens(const bool) const;
 
         constexpr static inline bool is_digit(const char c) noexcept {
             return c >= 48 && c <= 57;
@@ -69,3 +73,5 @@ class Lexer {
         }
 
 };
+
+#endif

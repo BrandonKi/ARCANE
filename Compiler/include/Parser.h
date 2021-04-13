@@ -1,17 +1,20 @@
+#ifndef PARSER_H
+#define PARSER_H
+
 #include "SymbolTable.h"
 
 class Parser{
 
     public:
-        Parser(std::vector<RawFile, arena_allocator<RawFile>>&);
+        explicit Parser(std::vector<RawFile, arena_allocator<RawFile>>&);
         Project* parse();
 
     private:
-        std::vector<LexedFile> data;
-        std::vector<Token, arena_allocator<Token>> tokens;
-        u64 index;
-        AST ast;
-        SymbolTable s_table;
+        std::vector<LexedFile> data_;
+        std::vector<Token, arena_allocator<Token>> tokens_;
+        u64 index_;
+        AST ast_;
+        SymbolTable s_table_;
 
         Project* parse_project();
         File* parse_file();
@@ -22,15 +25,18 @@ class Parser{
         Decl* parse_decl();
         Expr* parse_expr();
 
-        Token* current_token();
-        Token* next_token();
-        Token* peek_next_token();
-        bool check_token(TokenKind);
-        bool expect_token(TokenKind);
+        [[nodiscard]] Token* current_token();
+        [[nodiscard]] Token* next_token();
+        void next_token_noreturn();
+        [[nodiscard]] Token* peek_next_token();
+        bool check_token(const TokenKind);
+        bool expect_token(const TokenKind);
 
-        bool is_operator(TokenKind);
-        bool is_unary_operator(TokenKind);
-        u8 precedence(TokenKind);
+        bool is_operator(const TokenKind);
+        bool is_unary_operator(const TokenKind);
+        u8 precedence(const TokenKind);
 
-        Type token_kind_to_type(TokenKind);
+        Type token_kind_to_type(const TokenKind);
 };
+
+#endif

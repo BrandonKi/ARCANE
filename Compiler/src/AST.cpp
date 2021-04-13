@@ -3,7 +3,7 @@
 #define ARENA_ALLOCATOR__SIZE 5000
 
 AST::AST():
-    allocator() // arena allocator size is defined above
+    allocator_() // arena allocator size is defined above
 {
     PROFILE();
 }
@@ -15,190 +15,178 @@ AST::~AST() {
 //FIXME fix all of this absolute trash
 // at the moment we are making copies of the vectors and moving some and none of it is good
 
-Project* AST::new_project_node(SourcePos pos, std::vector<File*, arena_allocator<File*>>& files) {
+Project* AST::new_project_node(const SourcePos pos, std::vector<File*, arena_allocator<File*>>& files) {
     PROFILE();
-    Project* ptr = reinterpret_cast<Project*>(allocator.allocate(sizeof(Project)));
-    allocator.construct(ptr, Project{{pos}, files});
+    auto *ptr = reinterpret_cast<Project*>(allocator_.allocate(sizeof(Project)));
+    allocator_.construct(ptr, Project{{pos}, files});
     return ptr;
 }
 
 File* AST::new_file_node(
-        SourcePos pos,
+        const SourcePos pos,
         std::vector<Import*, arena_allocator<Import*>>& imports,
-        std::vector<Decl*, arena_allocator<Decl*>>&  decls,
+        std::vector<Decl*, arena_allocator<Decl*>>& decls,
         std::vector<Function*, arena_allocator<Function*>>& functions,
-        bool isMain
+        const bool is_main
     ) {
     PROFILE();
-    File* ptr = reinterpret_cast<File*>(allocator.allocate(sizeof(File)));
-    allocator.construct(ptr, File{{pos}, std::move(imports), std::move(decls), std::move(functions), isMain});
+    auto *ptr = reinterpret_cast<File*>(allocator_.allocate(sizeof(File)));
+    allocator_.construct(ptr, File{{pos}, std::move(imports), std::move(decls), std::move(functions), is_main});
     return ptr;
 }
 
-Import* AST::new_import_node(SourcePos pos, astring& id, astring& filename) {
+Import* AST::new_import_node(const SourcePos pos, astring& id, astring& filename) {
     PROFILE();
-    Import* ptr = reinterpret_cast<Import*>(allocator.allocate(sizeof(Import)));
-    allocator.construct(ptr, Import{{pos}, id, filename});
+    auto *ptr = reinterpret_cast<Import*>(allocator_.allocate(sizeof(Import)));
+    allocator_.construct(ptr, Import{{pos}, id, filename});
     return ptr;
 }
 
-Function* AST::new_function_node(SourcePos pos, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body, bool isMain) {
+Function* AST::new_function_node(const SourcePos pos, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body, bool isMain) {
     PROFILE();
-    Function* ptr = reinterpret_cast<Function*>(allocator.allocate(sizeof(Function)));
-    allocator.construct(ptr, Function{{pos}, argTypes, type, body, isMain });
+    auto *ptr = reinterpret_cast<Function*>(allocator_.allocate(sizeof(Function)));
+    allocator_.construct(ptr, Function{{pos}, argTypes, type, body, isMain });
     return ptr;
 } 
 
-Block* AST::new_block_node(SourcePos pos, std::vector<Statement*, arena_allocator<Statement*>>& statements) {
+Block* AST::new_block_node(const SourcePos pos, std::vector<Statement*, arena_allocator<Statement*>>& statements) {
     PROFILE();
-    Block* ptr = reinterpret_cast<Block*>(allocator.allocate(sizeof(Block)));
-    allocator.construct(ptr, Block{{pos}, statements});
+    auto *ptr = reinterpret_cast<Block*>(allocator_.allocate(sizeof(Block)));
+    allocator_.construct(ptr, Block{{pos}, statements});
     return ptr;
 }
 
-While_* AST::new_while_node(SourcePos pos, Expr* expr, Block* block) {
+While_* AST::new_while_node(const SourcePos pos, Expr* expr, Block* block) {
     PROFILE();
-    While_* ptr = reinterpret_cast<While_*>(allocator.allocate(sizeof(While_)));
-    allocator.construct(ptr, While_{{pos}, expr, block});
+    auto *ptr = reinterpret_cast<While_*>(allocator_.allocate(sizeof(While_)));
+    allocator_.construct(ptr, While_{{pos}, expr, block});
     return ptr;
 }
 
-For_* AST::new_for_node(SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
+For_* AST::new_for_node(const SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
     PROFILE();
-    For_* ptr = reinterpret_cast<For_*>(allocator.allocate(sizeof(For_)));
-    allocator.construct(ptr, For_{{pos}, decl, expr1, expr2, block});
+    auto *ptr = reinterpret_cast<For_*>(allocator_.allocate(sizeof(For_)));
+    allocator_.construct(ptr, For_{{pos}, decl, expr1, expr2, block});
     return ptr;
 }
 
-If_* AST::new_if_node(SourcePos pos, Expr* expr, Block* block) {
+If_* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block) {
     PROFILE();
-    If_* ptr = reinterpret_cast<If_*>(allocator.allocate(sizeof(If_)));
-    allocator.construct(ptr, If_{{pos}, expr, block});
+    auto *ptr = reinterpret_cast<If_*>(allocator_.allocate(sizeof(If_)));
+    allocator_.construct(ptr, If_{{pos}, expr, block});
     return ptr;
 }
 
 
-Ret* AST::new_ret_node(SourcePos pos, Expr* expr) {
+Ret* AST::new_ret_node(const SourcePos pos, Expr* expr) {
     PROFILE();
-    Ret* ptr = reinterpret_cast<Ret*>(allocator.allocate(sizeof(Ret)));
-    allocator.construct(ptr, Ret{{pos}, expr});
+    auto *ptr = reinterpret_cast<Ret*>(allocator_.allocate(sizeof(Ret)));
+    allocator_.construct(ptr, Ret{{pos}, expr});
     return ptr;
 }
 
-Statement* AST::new_statement_node_while(SourcePos pos, While_* while_) {
+Statement* AST::new_statement_node_while(const SourcePos pos, While_* while_) {
     PROFILE();
-    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
-    allocator.construct(ptr, Statement{ {pos}, WHILE});
+    auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
+    allocator_.construct(ptr, Statement{ {pos}, WHILE});
     ptr->while_ = while_;
     return ptr;
 }
 
-Statement* AST::new_statement_node_for(SourcePos pos, For_* for_) {
+Statement* AST::new_statement_node_for(const SourcePos pos, For_* for_) {
     PROFILE();
-    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
-    allocator.construct(ptr, Statement{ {pos}, FOR});
+    auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
+    allocator_.construct(ptr, Statement{ {pos}, FOR});
     ptr->for_ = for_;
     return ptr;
 }
 
-Statement* AST::new_statement_node_if(SourcePos pos, If_* if_) {
+Statement* AST::new_statement_node_if(const SourcePos pos, If_* if_) {
     PROFILE();
-    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
-    allocator.construct(ptr, Statement{ {pos}, IF});
+    auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
+    allocator_.construct(ptr, Statement{ {pos}, IF});
     ptr->if_ = if_;
     return ptr;
 }
 
-Statement* AST::new_statement_node_ret(SourcePos pos, Ret* ret) {
+Statement* AST::new_statement_node_ret(const SourcePos pos, Ret* ret) {
     PROFILE();
-    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
-    allocator.construct(ptr, Statement{ {pos}, RET});
+    auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
+    allocator_.construct(ptr, Statement{ {pos}, RET});
     ptr->ret = ret;
     return ptr;
 }
 
-Statement* AST::new_statement_node_decl(SourcePos pos, Decl* decl) {
+Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
     PROFILE();
-    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
-    allocator.construct(ptr, Statement{ {pos}, DECLARATION});
+    auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
+    allocator_.construct(ptr, Statement{ {pos}, DECLARATION});
     ptr->decl = decl;
     return ptr;
 }
 
-Statement* AST::new_statement_node_expr(SourcePos pos, Expr* expr) {
+Statement* AST::new_statement_node_expr(const SourcePos pos, Expr* expr) {
     PROFILE();
-    Statement* ptr = reinterpret_cast<Statement*>(allocator.allocate(sizeof(Statement)));
-    allocator.construct(ptr, Statement { {pos}, EXPRESSION});
+    auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
+    allocator_.construct(ptr, Statement { {pos}, EXPRESSION});
     ptr->expr = expr;
     return ptr;
 }
 
-Expr* AST::new_expr_node_int_literal(SourcePos pos, u64 intLiteral) {
+Expr* AST::new_expr_node_int_literal(const SourcePos pos, const u64 intLiteral) {
     PROFILE();
-    Expr* ptr = reinterpret_cast<Expr*>(allocator.allocate(sizeof(Expr)));
-    allocator.construct(ptr, Expr{{pos}, EXPR_INT_LIT});
-    ptr->intLiteral.val = intLiteral;
+    auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
+    allocator_.construct(ptr, Expr{{pos}, EXPR_INT_LIT});
+    ptr->int_literal.val = intLiteral;
     return ptr;
 }
 
-Expr* AST::new_expr_node_float_literal(SourcePos pos, f64 floatLiteral) {
+Expr* AST::new_expr_node_float_literal(const SourcePos pos, const f64 floatLiteral) {
     PROFILE();
-    Expr* ptr = reinterpret_cast<Expr*>(allocator.allocate(sizeof(Expr)));
-    allocator.construct(ptr, Expr{{pos}, EXPR_FLOAT_LIT});
-    ptr->floatLiteral.val = floatLiteral;
+    auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
+    allocator_.construct(ptr, Expr{{pos}, EXPR_FLOAT_LIT});
+    ptr->float_literal.val = floatLiteral;
     return ptr;
 }
 
-Expr* AST::new_expr_node_string_literal(SourcePos pos, astring& stringLiteral) {
+Expr* AST::new_expr_node_string_literal(const SourcePos pos, astring& string_literal) {
     PROFILE();
-    Expr* ptr = reinterpret_cast<Expr*>(allocator.allocate(sizeof(Expr)));
-    allocator.construct(ptr, Expr{{pos}, EXPR_STRING_LIT});
-    ptr->stringLiteral.val = &stringLiteral;
+    auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
+    allocator_.construct(ptr, Expr{{pos}, EXPR_STRING_LIT});
+    ptr->string_literal.val = &string_literal;
     return ptr;
 }
 
-Expr* AST::new_expr_node_variable(SourcePos pos, astring* id) {
+Expr* AST::new_expr_node_variable(const SourcePos pos, astring& id) {
     PROFILE();
-    Expr* ptr = reinterpret_cast<Expr*>(allocator.allocate(sizeof(Expr)));
-    allocator.construct(ptr, Expr{{pos}, EXPR_ID});
-    ptr->id.val = id;
+    auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
+    allocator_.construct(ptr, Expr{{pos}, EXPR_ID});
+    ptr->id.val = &id;
     return ptr;
 }
 
-Expr* AST::new_expr_node_bin_expr(SourcePos pos, TokenKind op, Expr* left, Expr* right) {
+Expr* AST::new_expr_node_bin_expr(const SourcePos pos, const TokenKind op, Expr* left, Expr* right) {
     PROFILE();
-    // Expr* ptr = allocator.alloc<Expr>();
-    // *ptr = Expr{{pos}, EXPR_BIN};
-    // Expr *ptr = new Expr{{pos}, EXPR_BIN};
-
-    // Expr *ptr = reinterpret_cast<Expr*>(allocator.allocate(sizeof(Expr)));  //FIXME gcc is the only one that supports 
-    // allocator.construct(ptr, SourcePos{pos}, EXPR_BIN);                     // contructing a struct that inherits from another struct in-place using contruct_at
-                                                                               // so I'll wait till it's a more common feature
-    Expr *ptr = new Expr{{pos}, EXPR_BIN};
-    ptr->binaryExpr.op = op;
-    ptr->binaryExpr.left = left;
-    ptr->binaryExpr.right = right;
+    auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
+    allocator_.construct(ptr, Expr{ {pos}, EXPR_BIN });
+    ptr->binary_expr.op = op;
+    ptr->binary_expr.left = left;
+    ptr->binary_expr.right = right;
     return ptr;
 }
 
-Expr* AST::new_expr_node_unary_expr(SourcePos pos, TokenKind op, Expr* expr) {
+Expr* AST::new_expr_node_unary_expr(const SourcePos pos, const TokenKind op, Expr* expr) {
     PROFILE();
-    // Expr* ptr = allocator.alloc<Expr>();
-    // *ptr = Expr{{pos}, EXPR_UNARY};
-    // Expr *ptr = new Expr{{pos}, EXPR_UNARY};
-    Expr *ptr = new Expr{{pos}, EXPR_UNARY};
-    ptr->unaryExpr.op = op;
-    ptr->unaryExpr.expr = expr;
+    auto* ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
+    allocator_.construct(ptr, Expr{ {pos}, EXPR_UNARY });
+    ptr->unary_expr.op = op;
+    ptr->unary_expr.expr = expr;
     return ptr;
 }
 
-Decl* AST::new_decl_node(SourcePos pos, astring& id, Type type, Expr* val) {
+Decl* AST::new_decl_node(const SourcePos pos, astring& id, Type type, Expr* val) {
     PROFILE(); 
-    // Decl* ptr = allocator.alloc<Decl>();
-    // size_t dataSize = id.size() + 1;
-    // char* data = allocator.alloc<char>(dataSize);
-    // memcpy_s(data, dataSize, id.c_str(), dataSize);
-    // *ptr = Decl{{pos}, data, type, val};
-    Decl *ptr = new Decl{{pos}, &id, type, val};
+    auto* ptr = reinterpret_cast<Decl*>(allocator_.allocate(sizeof(Decl)));
+    allocator_.construct(ptr, Decl{ {pos}, &id, type, val });
     return ptr;
 }

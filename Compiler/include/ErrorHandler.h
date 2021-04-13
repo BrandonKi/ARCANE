@@ -1,4 +1,6 @@
-//TODO include guards for all files
+#ifndef ERROR_HANDLER_H
+#define ERROR_HANDLER_H
+
 #include "Common.h"
 
 enum Severity{ FATAL, WARN, NOTE, MESSAGE };
@@ -27,3 +29,5 @@ class ErrorHandler {
         astring make_preamble(ErrorMessage& error);
 
 };
+
+#endif

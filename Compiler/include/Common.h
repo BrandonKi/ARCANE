@@ -1,3 +1,6 @@
+#ifndef COMMON_H
+#define COMMON_H
+
 #include <string>
 #include <cstdint>
 #include <fstream>
@@ -34,8 +37,8 @@ using astring = std::basic_string<char, std::char_traits<char>, arena_allocator<
 inline struct ARGS {
     astring path;
     astring output_path;
-    bool lexOut = false;
-    bool verboseLexOut = false;
+    bool lex_out = false;
+    bool verbose_lex_out = false;
     bool project = false;
     bool optimize = false;
 } args;
@@ -149,10 +152,10 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
 };
 
 struct SourcePos {
-    u32 srcLine;
-    u32 srcChar;
-    u32 startPos;
-    u32 endPos;
+    u32 src_line;
+    u32 src_char;
+    u32 start_pos;
+    u32 end_pos;
 };
 
 
@@ -174,7 +177,7 @@ struct LexedFile {
     std::vector<Token, arena_allocator<Token>> filedata;
 };
 
-const static std::unordered_map<astring, TokenKind> keywords( { 
+const inline std::unordered_map<astring, TokenKind> keywords( { 
 
     {"i8", ARC_I8}, {"i16", ARC_I16}, {"i32", ARC_I32}, {"i64", ARC_I64}, 
     {"u8", ARC_U8}, {"u16", ARC_U16}, {"u32", ARC_U32}, {"u64", ARC_U64}, 
@@ -188,7 +191,7 @@ const static std::unordered_map<astring, TokenKind> keywords( {
     
 });
 
-inline astring str(TokenKind kind){
+inline astring str(const TokenKind kind){
     
     switch(kind) {
 
@@ -469,7 +472,7 @@ inline astring str(TokenKind kind){
     }
 }
 
-inline astring get_string_rep(TokenKind kind){
+inline astring get_string_rep(const TokenKind kind){
     
     switch(kind){
 
@@ -769,16 +772,17 @@ inline long long astoll(astring& arg) {
     return std::stoll(std::string(arg));
 }
 
-inline bool operator==(astring const & s1, astring const & s2)
-{
+inline bool operator==(astring const & s1, astring const & s2) {
     return s1.length() == s2.length() &&
            std::equal(s1.begin(), s1.end(), s2.begin());
 }
 
-inline void print_token(Token* t){
-    print(astrtostr("'" + (t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
+inline void print_token(const Token* t){
+    print(astrtostr("'" + (t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.src_line) + ", " + to_astring(t->pos.src_char) + "] " + "[" + to_astring(t->pos.start_pos) + ", " + to_astring(t->pos.end_pos) + "]"));
 }
 
-inline void println_token(Token* t){
-    println(astrtostr("'" + astring(t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.srcLine) + ", " + to_astring(t->pos.srcChar) + "] " + "[" + to_astring(t->pos.startPos) + ", " + to_astring(t->pos.endPos) + "]"));
+inline void println_token(const Token* t){
+    println(astrtostr("'" + astring(t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.src_line) + ", " + to_astring(t->pos.src_char) + "] " + "[" + to_astring(t->pos.start_pos) + ", " + to_astring(t->pos.end_pos) + "]"));
 }
+
+#endif
