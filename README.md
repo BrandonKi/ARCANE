@@ -14,7 +14,7 @@ WIP
 # Sample Code
 
 ```zig
-fn main(): int{
+fn main(): int {
     i := 0;
     x : int = 5;
     result := add(i, x);
@@ -26,4 +26,15 @@ fn add(a : int, b : int): int {
 ```
 Syntax Highlighting in VSCode: https://github.com/BrandonKi/arcane-syntax-highlighter
 
-TODO add information on how to build and run
+## Build/Run
+
+```
+git clone https://github.com/BrandonKi/ARCANE
+cd ARCANE
+mkdir build
+cd build
+cmake ..
+ninja all
+cd ../bin
+./ARCC <filename>
+```
