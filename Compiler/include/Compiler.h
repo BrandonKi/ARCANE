@@ -7,7 +7,7 @@ class Compiler{
 
     public:
         Compiler();
-        ~Compiler();
+        ~Compiler() = default;
         std::vector<u8, arena_allocator<u8>> compile();
 
     private:

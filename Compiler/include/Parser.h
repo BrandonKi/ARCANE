@@ -32,8 +32,6 @@ class Parser{
         bool check_token(const TokenKind);
         bool expect_token(const TokenKind);
 
-        bool is_operator(const TokenKind);
-        bool is_unary_operator(const TokenKind);
         u8 precedence(const TokenKind);
 
         Type token_kind_to_type(const TokenKind);

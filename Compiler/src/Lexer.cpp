@@ -166,12 +166,14 @@ Token Lexer::lex_number_lit() {
 
             num.push_back(next_char());
         }
-
         next_char_noreturn();
     }
-
     prev_char_noreturn();    // the above loop goes one char too far so decrement here
-
+    // if the literal is negative figure that out here
+    if(tokens_.back().kind == ARC_NEGATE) {
+        tokens_.pop_back();
+        num = "-" + num;
+    }
     if(is_int)
         return create_token(ARC_INT_LIT, current_col, start_pos, num);
     else if(is_float)
@@ -271,12 +273,15 @@ Token Lexer::lex_sub() {
     }
     else if(peek_next_char() == '-') {
         next_char_noreturn();
-        if(tokens_.back().kind == ARC_ID)   // FIXME incorrectly lexes some cases for ex. "4--", "*--4", etc.
+        if(!tokens_.empty() && tokens_.back().kind == ARC_ID)   // FIXME incorrectly lexes some cases for ex. "4--", "*--4", etc.
             return create_token(ARC_POST_DECREMENT, start_col, start_pos);
         return create_token(ARC_PRE_DECREMENT, start_col, start_pos);
     }
-    else
+    else {
+        if(tokens_.empty() || is_operator(tokens_.back().kind) || is_keyword(tokens_.back().kind))
+            return create_token(ARC_NEGATE, start_pos);
         return create_token(ARC_SUB, start_pos);  // FIXME doesn't even attempt to parse a unary sub
+    }
 }
 
 Token Lexer::lex_div() {

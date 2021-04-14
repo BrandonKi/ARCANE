@@ -42,6 +42,11 @@ class BytecodeGen {
 
         void push_64_bit_value(const u64);
 
+        template <typename T>
+        void push_value(const T val) {
+            
+        }
+
     
         void generate_bootstrap();
 

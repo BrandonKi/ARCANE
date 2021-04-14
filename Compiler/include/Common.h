@@ -777,6 +777,20 @@ inline bool operator==(astring const & s1, astring const & s2) {
            std::equal(s1.begin(), s1.end(), s2.begin());
 }
 
+inline bool is_operator(const TokenKind kind) {
+    return kind >= ARC_ADD_EQUAL;  //FIXME this needs to change if the TokenKind enum changes
+}
+
+inline bool is_unary_operator(const TokenKind kind) {
+    return 
+        kind == ARC_NEGATE || kind == ARC_NOT || kind == ARC_PRE_INCREMENT || 
+        kind == ARC_POST_INCREMENT || kind == ARC_PRE_DECREMENT || kind == ARC_POST_DECREMENT;
+}
+
+inline bool is_keyword(const TokenKind kind) {
+    return keywords.find(get_string_rep(kind)) != keywords.end();
+}
+
 inline void print_token(const Token* t){
     print(astrtostr("'" + (t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.src_line) + ", " + to_astring(t->pos.src_char) + "] " + "[" + to_astring(t->pos.start_pos) + ", " + to_astring(t->pos.end_pos) + "]"));
 }

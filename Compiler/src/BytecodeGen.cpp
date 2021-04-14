@@ -190,37 +190,37 @@ void BytecodeGen::gen_bin(const Expr *expr) {
         case ARC_ADD:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::addu);
+            push(vm::adds);
             break;
         case ARC_SUB:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::subu);
+            push(vm::subs);
             break;
         case ARC_DIV:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::divu);
+            push(vm::divs);
             break;
         case ARC_MUL:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::mulu);
+            push(vm::muls);
             break;
         case ARC_MOD:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::modu);
+            push(vm::mods);
             break;
         case ARC_BIN_OR:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::oru);
+            push(vm::ors);
             break;
         case ARC_BIN_AND:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::andu);
+            push(vm::ands);
             break;
         case ARC_LEFT_SHIFT:
             break;
@@ -231,26 +231,26 @@ void BytecodeGen::gen_bin(const Expr *expr) {
         case ARC_LESSER:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::ltu);
+            push(vm::lts);
             break;
         case ARC_GREATER:
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::gtu);
+            push(vm::gts);
             break;
         case ARC_LOGICAL_OR:
             //FIXME for now bitwise or works fine because it
             // equivalent in most situations
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::oru);
+            push(vm::ors);
             break;
         case ARC_LOGICAL_AND:
             //FIXME for now bitwise or works fine because it
             // equivalent in most situations
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
-            push(vm::andu);
+            push(vm::ands);
             break;
         default:
             // not binary op
@@ -288,7 +288,7 @@ void BytecodeGen::push(const std::vector<u8, arena_allocator<u8>>& vec) {
 }
 
 void BytecodeGen::push_64_bit_value(const u64 val) {
-    push(vm::push_value);
+    push(vm::push_value_signed_64);
     code_.push_back(static_cast<u8>(val));
     code_.push_back(static_cast<u8>(val >> 8));
     code_.push_back(static_cast<u8>(val >> 16));

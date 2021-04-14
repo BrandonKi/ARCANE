@@ -431,18 +431,6 @@ inline Type Parser::token_kind_to_type(const TokenKind tkn) {
     return static_cast<Type>(-1);   // invalid value
 }
 
-bool Parser::is_operator(const TokenKind kind) {
-    PROFILE();
-    return kind >= 49;  //FIXME this needs to change if the TokenKind enum changes
-}
-
-bool Parser::is_unary_operator(const TokenKind kind) {
-    PROFILE();
-    return 
-        kind == ARC_NEGATE || kind == ARC_NOT || kind == ARC_PRE_INCREMENT || 
-        kind == ARC_POST_INCREMENT || kind == ARC_PRE_DECREMENT || kind == ARC_POST_DECREMENT;
-}
-
 u8 Parser::precedence(const TokenKind kind) {
     PROFILE();
 
