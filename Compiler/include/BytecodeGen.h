@@ -41,16 +41,67 @@ class BytecodeGen {
         void push(const std::vector<u8, arena_allocator<u8>>&);
 
         void push_64_bit_value(const u64);
-
-        template <typename T>
-        void push_value(const T val) {
-            
-        }
-
     
         void generate_bootstrap();
 
+        template<
+            typename T__,
+            typename std::enable_if<
+                std::is_integral<T__>::value || std::is_pointer<T__>::value || std::is_floating_point<T__>::value,
+                bool
+            >::type = true
+        >
+        void push_value(T__ val_) {
+            
+            using T_ =
+                typename std::conditional<
+                    std::is_same<T__, bool>::value,
+                    uint8_t,
+                    typename std::conditional<
+                        std::is_pointer<T__>::value,
+                        uintptr_t,
+                        T__
+                    >::type
+                >::type;
+            T_ val;
+            if constexpr (std::is_pointer<T__>::value)
+                val = reinterpret_cast<T_>(val_);
+            else
+                val = static_cast<T_>(val_);
+            
+            using type = 
+                typename std::conditional<
+                    std::is_signed<T_>::value,
+                    typename std::conditional<
+                        std::is_floating_point<T_>::value,
+                        typename std::conditional<
+                            std::is_same<float, T_>::value && sizeof(float) == 4,
+                            uint32_t,
+                            typename std::conditional<
+                                std::is_same<double, T_>::value && sizeof(double) == 8,
+                                uint64_t,
+                                void
+                            >::type
+                        >::type,
+                    T_
+                    >::type,
+                T_
+                >::type;
+            
+            static_assert(!std::is_same<void, type>::value, "Only 4 and 8 byte floating point types are supported");
+            auto raw_val = *std::bit_cast<type*>(&val);
+            // now that we are past all the templates we get to the actual code
+            // just pushing bytes into a vector
+            for (size_t i = 0; i < sizeof(type); ++i) {
+                code_.push_back(static_cast<unsigned char>((raw_val >> (i * 8)) & 0xff));
+            }
+        }
 
+        template<typename T, typename std::enable_if<std::is_integral<T>::value && std::is_signed<T>::value>::type>
+        void push_value(T val) {
+            auto new_val = static_cast<typename std::make_unsigned<T>::type>(val);
+            push_value(new_val);
+        }
 };
 
 #endif

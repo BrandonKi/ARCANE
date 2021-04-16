@@ -289,14 +289,7 @@ void BytecodeGen::push(const std::vector<u8, arena_allocator<u8>>& vec) {
 
 void BytecodeGen::push_64_bit_value(const u64 val) {
     push(vm::push_value_signed_64);
-    code_.push_back(static_cast<u8>(val));
-    code_.push_back(static_cast<u8>(val >> 8));
-    code_.push_back(static_cast<u8>(val >> 16));
-    code_.push_back(static_cast<u8>(val >> 24));
-    code_.push_back(static_cast<u8>(val >> 32));
-    code_.push_back(static_cast<u8>(val >> 40));
-    code_.push_back(static_cast<u8>(val >> 48));
-    code_.push_back(static_cast<u8>(val >> 56));
+    push_value(val);
 }
 
 void BytecodeGen::generate_bootstrap() {
