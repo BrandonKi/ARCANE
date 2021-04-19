@@ -1,9 +1,8 @@
+#ifndef ARENA_ALLOCATOR_H
+#define ARENA_ALLOCATOR_H
 
 #include <type_traits>
 #include <iostream>
-
-#ifndef ARENA_ALLOCATOR_H
-#define ARENA_ALLOCATOR_H
 
 #ifndef ARENA_ALLOCATOR_SIZE
 #define ARENA_ALLOCATOR_SIZE 1024
@@ -13,38 +12,44 @@ class internal_allocator_arena final {
 public:
 
     internal_allocator_arena() {
-        start = reinterpret_cast<char*>(::operator new(ARENA_ALLOCATOR_SIZE));
-        current = start;
-        end = start + ARENA_ALLOCATOR_SIZE;
+        start_ = static_cast<char*>(::operator new(ARENA_ALLOCATOR_SIZE));
+        current_ = start_;
+        end_ = start_ + ARENA_ALLOCATOR_SIZE;
 
-#       ifdef ARENA_ALLOC_DEBUG
+#ifdef ARENA_ALLOC_DEBUG
         std::cout << "new arena allocated\n";
-        #endif
+#endif
     }
 
+    // does not free arena on purpose
+    // the only instance of this class is global
+    ~internal_allocator_arena() = default;
+
     template<typename T>
-    constexpr T* alloc(size_t bytes) {
-        char* old_current = current;
-        current += bytes;
-        [[unlikely]] if (current >= end)      // fall back to the standard allocator if the buffer gets full
-            return reinterpret_cast<T*>(::operator new(bytes));
+    constexpr T* alloc(const size_t bytes) {
+        auto* old_current = current_;
+        current_ += bytes;
+        [[unlikely]] if (current_ >= end_)      // fall back to the standard allocator if the buffer gets full
+            return static_cast<T*>(::operator new(bytes));  // leaks all memory at the moment
         return reinterpret_cast<T*>(old_current);
     }
 
-    internal_allocator_arena(const internal_allocator_arena&) = delete;
-    internal_allocator_arena& operator = (const internal_allocator_arena&) = delete;
+    constexpr internal_allocator_arena(const internal_allocator_arena&) = delete;
+    constexpr internal_allocator_arena& operator = (const internal_allocator_arena&) = delete;
+    constexpr internal_allocator_arena(const internal_allocator_arena&&) = delete;
+    constexpr internal_allocator_arena& operator = (const internal_allocator_arena&&) = delete;
 
-    constexpr int debug() {
-        if (static_cast<int>(current - start) >= ARENA_ALLOCATOR_SIZE)
+    constexpr int debug() const {
+        if (static_cast<int>(current_ - start_) >= ARENA_ALLOCATOR_SIZE)
             return ARENA_ALLOCATOR_SIZE;
-        return static_cast<int>(current - start);
+        return static_cast<int>(current_ - start_);
     }
 
 private:
 
-    char* start;
-    char* current;
-    char* end;
+    char* start_;
+    char* current_;
+    char* end_;
 
 };
 
@@ -70,19 +75,22 @@ public:
     using propagate_on_container_swap = std::false_type;
     using is_always_equal = std::is_empty<arena_allocator>;
 
-    constexpr arena_allocator() {};
-    constexpr arena_allocator(const arena_allocator&) {};
+    constexpr arena_allocator() = default;
+    constexpr arena_allocator(const arena_allocator&) = default;
+    constexpr arena_allocator& operator = (const arena_allocator&) = default;
+    constexpr arena_allocator(arena_allocator&&) = default;
+    constexpr arena_allocator& operator = (arena_allocator&&) = default;
     ~arena_allocator() = default;
 
     template <class U>
-    constexpr arena_allocator(const arena_allocator<U>&) {}
+    explicit constexpr arena_allocator(const arena_allocator<U>&) {}
 
-    constexpr T* allocate(std::size_t n) noexcept {
+    constexpr T* allocate(const std::size_t n) noexcept {
         T* result = internal_state.alloc<T>(n * sizeof(T));
-        #ifdef ARENA_ALLOC_DEBUG
+#ifdef ARENA_ALLOC_DEBUG
         std::cout << '\n' << (n * sizeof(T)) << " bytes allocated\n";
         std::cout << internal_state.debug() << "/" << ARENA_ALLOCATOR_SIZE << " of arena being used\n";
-        #endif
+#endif
         return result;
     }
 

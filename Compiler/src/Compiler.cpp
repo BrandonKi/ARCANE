@@ -17,7 +17,7 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     return gen.gen_code();
 }
 
-astring Compiler::read_file(astring filepath) {
+astring Compiler::read_file(const astring& filepath) {
     PROFILE();
     std::ifstream file;
     file.open(filepath);
@@ -54,7 +54,7 @@ std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {  
     return result;
 }
 
-std::vector<astring, arena_allocator<astring>> Compiler::parse_project_spec_file(astring& filepath) {
+std::vector<astring, arena_allocator<astring>> Compiler::parse_project_spec_file(const astring& filepath) {
     PROFILE();
     std::vector<astring, arena_allocator<astring>> result;
     std::ifstream file(filepath);

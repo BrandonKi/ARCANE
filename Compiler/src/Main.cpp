@@ -3,14 +3,14 @@
 
 #include "Compiler.h"
 
-void parseArgs(int, char* argv[]);
+void parse_args(const int, const char* argv[]);
 
-int main(int argc, char* argv[]) {
+int main(const int argc, const char* argv[]) {
     PROFILE();
 
     init_pLog();        // init pLog lib
 
-    parseArgs(argc, argv);
+    parse_args(argc, argv);
 
     Compiler compiler;
     auto code = compiler.compile();
@@ -25,10 +25,10 @@ int main(int argc, char* argv[]) {
     std::cout << "Exited with code: " << VM.run();
 }
 
-void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of the available flags
+void parse_args(const int argc, const char* argv[]) {         //TODO implement the rest of the available flags
     PROFILE();
-    std::vector<astring> argList(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
-    for(astring& str : argList){
+    std::vector<astring> arg_list(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
+    for(const auto& str : arg_list){
         if(str == "--lex-out")
             args.lex_out = true;
         else if(str == "--lex-out-v"){
@@ -42,5 +42,5 @@ void parseArgs(int argc, char* argv[]) {         //TODO implement the rest of th
         //if(str == "-out")
     }
     args.output_path = "out.exe";
-    args.path = argList.back();
+    args.path = arg_list.back();
 }

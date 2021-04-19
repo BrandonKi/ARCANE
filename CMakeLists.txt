@@ -3,7 +3,10 @@ project(Arcane VERSION 0.1.0)
 
 set (CMAKE_CXX_STANDARD 20)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+cmake_policy(SET CMP0069 NEW)
+
+
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2)
 
@@ -33,5 +36,13 @@ target_include_directories(ARCC
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/lib
     PRIVATE ${arcvm_include}
 )
+# hmmm keep an eye on this
+if(${LTO})
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT result)
+    if(result)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    endif()
+endif()
 
 # target_compile_options(ARCC PRIVATE "-W" "-Wall" "-Wextra" "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-newline-eof" "-Wno-exit-time-destructors" "-Wno-header-hygiene" "-Wno-global-constructors" "-Wno-nonportable-system-include-path")

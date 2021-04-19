@@ -6,6 +6,8 @@
 /cmake-build-debug
 /out
 
+CMakeSettings.json
+
 *.exe
 
 profile.json

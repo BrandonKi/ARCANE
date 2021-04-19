@@ -138,11 +138,13 @@ void BytecodeGen::gen_expr(const Expr *e) {
 }
 
 void BytecodeGen::gen_int_lit(const u64 val) {
-    push_64_bit_value(val);
+    push(vm::push_value_signed_64);
+    push_value(val);
 }
 
 void BytecodeGen::gen_float_lit(const f64 val) {
-    
+    push(vm::push_value_float_64);
+    push_value(val);
 }
 
 void BytecodeGen::gen_string_lit(const astring *val) {
@@ -239,14 +241,14 @@ void BytecodeGen::gen_bin(const Expr *expr) {
             push(vm::gts);
             break;
         case ARC_LOGICAL_OR:
-            //FIXME for now bitwise or works fine because it
+            //FIXME for now bitwise or works fine because it's
             // equivalent in most situations
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
             push(vm::ors);
             break;
         case ARC_LOGICAL_AND:
-            //FIXME for now bitwise or works fine because it
+            //FIXME for now bitwise and works fine because it's
             // equivalent in most situations
             gen_expr(expr->binary_expr.left);
             gen_expr(expr->binary_expr.right);
@@ -285,11 +287,6 @@ void BytecodeGen::push(const u8 inst) {
 
 void BytecodeGen::push(const std::vector<u8, arena_allocator<u8>>& vec) {
     code_.insert(code_.end(), vec.begin(), vec.end());
-}
-
-void BytecodeGen::push_64_bit_value(const u64 val) {
-    push(vm::push_value_signed_64);
-    push_value(val);
 }
 
 void BytecodeGen::generate_bootstrap() {

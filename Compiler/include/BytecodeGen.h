@@ -51,7 +51,7 @@ class BytecodeGen {
                 bool
             >::type = true
         >
-        void push_value(T__ val_) {
+        constexpr inline void push_value(const T__ val_) {
             
             using T_ =
                 typename std::conditional<
@@ -89,16 +89,15 @@ class BytecodeGen {
                 >::type;
             
             static_assert(!std::is_same<void, type>::value, "Only 4 and 8 byte floating point types are supported");
-            auto raw_val = *std::bit_cast<type*>(&val);
-            // now that we are past all the templates we get to the actual code
+            auto raw_val = std::bit_cast<type>(val);
+            // now that we are past all the template stuff we get to the actual code
             // just pushing bytes into a vector
-            for (size_t i = 0; i < sizeof(type); ++i) {
+            for (size_t i = 0; i < sizeof(type); ++i)
                 code_.push_back(static_cast<unsigned char>((raw_val >> (i * 8)) & 0xff));
-            }
         }
 
         template<typename T, typename std::enable_if<std::is_integral<T>::value && std::is_signed<T>::value>::type>
-        void push_value(T val) {
+        constexpr inline void push_value(const T val) {
             auto new_val = static_cast<typename std::make_unsigned<T>::type>(val);
             push_value(new_val);
         }
