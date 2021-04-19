@@ -42,12 +42,12 @@ Import* AST::new_import_node(const SourcePos pos, astring& id, astring& filename
     return ptr;
 }
 
-Function* AST::new_function_node(const SourcePos pos, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body, bool isMain) {
+Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body, bool isMain) {
     PROFILE();
     auto *ptr = reinterpret_cast<Function*>(allocator_.allocate(sizeof(Function)));
-    allocator_.construct(ptr, Function{{pos}, argTypes, type, body, isMain });
+    allocator_.construct(ptr, Function{{pos}, id, argTypes, type, body, isMain });
     return ptr;
-} 
+}
 
 Block* AST::new_block_node(const SourcePos pos, std::vector<Statement*, arena_allocator<Statement*>>& statements) {
     PROFILE();

@@ -53,7 +53,7 @@ struct Import : Node {
 };
 
 struct Function : Node {
-    //FIXME uuuhhh I don't have an ID here for some reason
+    astring id;
     std::vector<Type, arena_allocator<Type>> args;
     Type return_type;
     Block* body;
@@ -166,7 +166,7 @@ class AST {
         Project* new_project_node(const SourcePos, std::vector<File*, arena_allocator<File*>>&);
         File* new_file_node(const SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
         Import* new_import_node(const SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        Function* new_function_node(const SourcePos, std::vector<Type, arena_allocator<Type>>&, Type, Block*, bool);
+        Function* new_function_node(const SourcePos, astring&, std::vector<Type, arena_allocator<Type>>&, Type, Block*, bool);
         Block* new_block_node(const SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
         While_* new_while_node(const SourcePos, Expr*, Block*);
         For_* new_for_node(const SourcePos, Decl*, Expr*, Expr*, Block*);

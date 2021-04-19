@@ -91,7 +91,7 @@ Function* Parser::parse_function() {
     next_token_noreturn();
     s_table_.add_function(id, fn_args, FUNCTION, ret);
     Block* block = parse_block();
-    return ast_.new_function_node(start_pos, fn_args, ret, block, true);
+    return ast_.new_function_node(start_pos, id, fn_args, ret, block, true);
 }
 
 /**
