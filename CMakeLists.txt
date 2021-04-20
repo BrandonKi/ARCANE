@@ -45,4 +45,10 @@ if(${LTO})
     endif()
 endif()
 
+if(MSVC)
+  target_compile_options(ARCC PRIVATE /W4 /WX)
+else()
+  target_compile_options(ARCC PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
+
 # target_compile_options(ARCC PRIVATE "-W" "-Wall" "-Wextra" "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-newline-eof" "-Wno-exit-time-destructors" "-Wno-header-hygiene" "-Wno-global-constructors" "-Wno-nonportable-system-include-path")

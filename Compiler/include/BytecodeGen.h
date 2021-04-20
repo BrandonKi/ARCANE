@@ -16,6 +16,7 @@ class BytecodeGen {
     private:
         Project* ast_;
         std::vector<u8, arena_allocator<u8>> code_;
+        
             
         void gen_project(const Project *project);
         void gen_file(const File*);

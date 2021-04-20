@@ -480,6 +480,6 @@ u8 Parser::precedence(const TokenKind kind) {
         case ARC_INFER:
             return 0;
         default:
-            return -1; // invalid value
+            return 0xff; // invalid value
     }
 }

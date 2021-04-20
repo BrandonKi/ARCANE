@@ -95,6 +95,8 @@ public:
     }
 
     constexpr void deallocate(T* p, std::size_t n) const noexcept {
+        static_cast<void>(p);
+        static_cast<void>(n);
         //::operator delete(p, n * sizeof(T));
     }
 

@@ -188,8 +188,9 @@ namespace pLog{
             if (!SetConsoleMode(hOut, dwMode))
                 return false;
             return true;
+        #else
+            return true;
         #endif
-        return true;
     }
 
     /**

@@ -45,6 +45,7 @@ void BytecodeGen::gen_file(const File *file) {
 }
 
 void BytecodeGen::gen_import(const Import *import) {
+    static_cast<void>(import);
     //TODO implement importing files/modules
 }
 
@@ -148,11 +149,11 @@ void BytecodeGen::gen_float_lit(const f64 val) {
 }
 
 void BytecodeGen::gen_string_lit(const astring *val) {
-    
+    static_cast<void>(val);
 }
 
 void BytecodeGen::gen_id(const astring* id) {
-    
+    static_cast<void>(id);
 }
 
 void BytecodeGen::gen_bin(const Expr *expr) {
