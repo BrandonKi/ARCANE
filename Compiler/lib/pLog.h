@@ -68,113 +68,113 @@
 
 namespace pLog{
 
-    static const std::string _pLog_preamble_ = "\033[";
+    static const std::string _pLog_preamble_("\033[");
 
     // Some macros share values with others
     // this is to give them more common names for ex. "gray/grey" instead of "bright black"
 
-    #ifdef PREFIX_MACROS
-    #define PL_CLEAR            "\033[0m"
-    #define PL_BOLD             "1;"
-    #define PL_FAINT            "2;"
-    #define PL_ITALICIZE        "3;"
-    #define PL_UNDERLINE        "4;"
-    #define PL_SLOW_BLINK       "5;"
-    #define PL_FAST_BLINK       "6;"
-    #define PL_REVERSE          "7;"
-    #define PL_CONCEAL          "8;"
-    #define PL_STRIKETHROUGH    "9;"
-    #define PL_DEFAULT_FONT     "10;"
-    #define PL_ALT_FONT_1       "11;"
-    #define PL_ALT_FONT_2       "12;"
-    #define PL_ALT_FONT_3       "13;"
-    #define PL_ALT_FONT_4       "14;"
-    #define PL_ALT_FONT_5       "15;"
-    #define PL_ALT_FONT_6       "16;"
-    #define PL_ALT_FONT_7       "17;"
-    #define PL_ALT_FONT_8       "18;"
-    #define PL_ALT_FONT_9       "19;"
-    #define PL_FRAKTUR          "20;"
+    #ifdef PLOG_PREFIX
+    constexpr auto PL_CLEAR = "\033[0m";
+    constexpr auto PL_BOLD = "1;";
+    constexpr auto PL_FAINT = "2;";
+    constexpr auto PL_ITALICIZE = "3;";
+    constexpr auto PL_UNDERLINE = "4;";
+    constexpr auto PL_SLOW_BLINK = "5;";
+    constexpr auto PL_FAST_BLINK = "6;";
+    constexpr auto PL_REVERSE = "7;";
+    constexpr auto PL_CONCEAL = "8;";
+    constexpr auto PL_STRIKETHROUGH = "9;";
+    constexpr auto PL_DEFAULT_FONT = "10;";
+    constexpr auto PL_ALT_FONT_1 = "11;";
+    constexpr auto PL_ALT_FONT_2 = "12;";
+    constexpr auto PL_ALT_FONT_3 = "13;";
+    constexpr auto PL_ALT_FONT_4 = "14;";
+    constexpr auto PL_ALT_FONT_5 = "15;";
+    constexpr auto PL_ALT_FONT_6 = "16;";
+    constexpr auto PL_ALT_FONT_7 = "17;";
+    constexpr auto PL_ALT_FONT_8 = "18;";
+    constexpr auto PL_ALT_FONT_9 = "19;";
+    constexpr auto PL_FRAKTUR = "20;";
 
-    #define PL_BLACK            "30;"
-    #define PL_RED              "31;"
-    #define PL_GREEN            "32;"
-    #define PL_YELLOW           "33;"
-    #define PL_BLUE             "34;"
-    #define PL_PINK             "35;"
-    #define PL_MAGENTA          "35;"
-    #define PL_CYAN             "36;"
-    #define PL_WHITE            "37"
+    constexpr auto PL_BLACK = "30;";
+    constexpr auto PL_RED = "31;";
+    constexpr auto PL_GREEN = "32;";
+    constexpr auto PL_YELLOW = "33;";
+    constexpr auto PL_BLUE = "34;";
+    constexpr auto PL_PINK = "35;";
+    constexpr auto PL_MAGENTA = "35;";
+    constexpr auto PL_CYAN = "36;";
+    constexpr auto PL_WHITE = "37";
 
-    #define PL_FRAME            "51;"
-    #define PL_ENCIRCLE         "52;"
-    #define PL_OVERLINE         "53;"
+    constexpr auto PL_FRAME = "51;";
+    constexpr auto PL_ENCIRCLE = "52;";
+    constexpr auto PL_OVERLINE = "53;";
 
-    #define PL_BRIGHT_BLACK     "90;"
-    #define PL_GRAY             "90;"
-    #define PL_GREY             "90;"
-    #define PL_BRIGHT_RED       "91;"
-    #define PL_BRIGHT_GREEN     "92;"
-    #define PL_BRIGHT_YELLOW    "93;"
-    #define PL_BRIGHT_BLUE      "94;"
-    #define PL_BRIGHT_PINK      "95;"
-    #define PL_BRIGHT_MAGENTA   "95;"
-    #define PL_BRIGHT_CYAN      "96;"
-    #define PL_BRIGHT_WHITE     "97;"
+    constexpr auto PL_BRIGHT_BLACK = "90;";
+    constexpr auto PL_GRAY = "90;";
+    constexpr auto PL_GREY = "90;";
+    constexpr auto PL_BRIGHT_RED = "91;";
+    constexpr auto PL_BRIGHT_GREEN = "92;";
+    constexpr auto PL_BRIGHT_YELLOW = "93;";
+    constexpr auto PL_BRIGHT_BLUE = "94;";
+    constexpr auto PL_BRIGHT_PINK = "95;";
+    constexpr auto PL_BRIGHT_MAGENTA = "95;";
+    constexpr auto PL_BRIGHT_CYAN = "96;";
+    constexpr auto PL_BRIGHT_WHITE = "97;";
     #else
-    #define CLEAR               "\033[0m"
-    #define BOLD                "1;"
-    #define FAINT               "2;"
-    #define ITALICIZE           "3;"
-    #define UNDERLINE           "4;"
-    #define SLOW_BLINK          "5;"
-    #define FAST_BLINK          "6;"
-    #define REVERSE             "7;"
-    #define CONCEAL             "8;"
-    #define STRIKETHROUGH       "9;"
-    #define DEFAULT_FONT        "10;"
-    #define ALT_FONT_1          "11;"
-    #define ALT_FONT_2          "12;"
-    #define ALT_FONT_3          "13;"
-    #define ALT_FONT_4          "14;"
-    #define ALT_FONT_5          "15;"
-    #define ALT_FONT_6          "16;"
-    #define ALT_FONT_7          "17;"
-    #define ALT_FONT_8          "18;"
-    #define ALT_FONT_9          "19;"
-    #define FRAKTUR             "20;"
+    constexpr auto CLEAR = "\033[0m";
+    constexpr auto BOLD = "1;";
+    constexpr auto FAINT = "2;";
+    constexpr auto ITALICIZE = "3;";
+    constexpr auto UNDERLINE = "4;";
+    constexpr auto SLOW_BLINK = "5;";
+    constexpr auto FAST_BLINK = "6;";
+    constexpr auto REVERSE = "7;";
+    constexpr auto CONCEAL = "8;";
+    constexpr auto STRIKETHROUGH = "9;";
+    constexpr auto DEFAULT_FONT = "10;";
+    constexpr auto ALT_FONT_1 = "11;";
+    constexpr auto ALT_FONT_2 = "12;";
+    constexpr auto ALT_FONT_3 = "13;";
+    constexpr auto ALT_FONT_4 = "14;";
+    constexpr auto ALT_FONT_5 = "15;";
+    constexpr auto ALT_FONT_6 = "16;";
+    constexpr auto ALT_FONT_7 = "17;";
+    constexpr auto ALT_FONT_8 = "18;";
+    constexpr auto ALT_FONT_9 = "19;";
+    constexpr auto FRAKTUR = "20;";
 
-    #define BLACK               "30;"
-    #define RED                 "31;"
-    #define GREEN               "32;"
-    #define YELLOW              "33;"
-    #define BLUE                "34;"
-    #define PINK                "35;"
-    #define MAGENTA             "35;"
-    #define CYAN                "36;"
-    #define WHITE               "37"
+    constexpr auto BLACK = "30;";
+    constexpr auto RED = "31;";
+    constexpr auto GREEN = "32;";
+    constexpr auto YELLOW = "33;";
+    constexpr auto BLUE = "34;";
+    constexpr auto PINK = "35;";
+    constexpr auto MAGENTA = "35;";
+    constexpr auto CYAN = "36;";
+    constexpr auto WHITE = "37";
 
-    #define FRAME               "51;"
-    #define ENCIRCLE            "52;"
-    #define OVERLINE            "53;"
+    constexpr auto FRAME = "51;";
+    constexpr auto ENCIRCLE = "52;";
+    constexpr auto OVERLINE = "53;";
 
-    #define BRIGHT_BLACK        "90;"
-    #define GRAY                "90;"
-    #define GREY                "90;"
-    #define BRIGHT_RED          "91;"
-    #define BRIGHT_GREEN        "92;"
-    #define BRIGHT_YELLOW       "93;"
-    #define BRIGHT_BLUE         "94;"
-    #define BRIGHT_PINK         "95;"
-    #define BRIGHT_MAGENTA      "95;"
-    #define BRIGHT_CYAN         "96;"
-    #define BRIGHT_WHITE        "97;"
+    constexpr auto BRIGHT_BLACK = "90;";
+    constexpr auto GRAY = "90;";
+    constexpr auto GREY = "90;";
+    constexpr auto BRIGHT_RED = "91;";
+    constexpr auto BRIGHT_GREEN = "92;";
+    constexpr auto BRIGHT_YELLOW = "93;";
+    constexpr auto BRIGHT_BLUE = "94;";
+    constexpr auto BRIGHT_PINK = "95;";
+    constexpr auto BRIGHT_MAGENTA = "95;";
+    constexpr auto BRIGHT_CYAN = "96;";
+    constexpr auto BRIGHT_WHITE = "97;";
     #endif
 
     /**
      * @brief Initializes pLog. This is mostly for windows platforms but should be called anyway.
-     * 
-     * @return a bool representing whether or not pLog could be initialized 
+     *
+     * @return a bool representing whether or not pLog could be initialized
      */
     inline bool init_pLog(){
         #ifdef _WIN32
@@ -195,20 +195,20 @@ namespace pLog{
 
     /**
      * @brief return a string representing rgb value
-     * 
+     *
      * @param r value for red (0 - 255)
      * @param g value for green (0 - 255)
      * @param b value for blue (0 - 255)
      * @return formatted string representing rgb value
      */
-    inline std::string rgb(uint8_t r, uint8_t g, uint8_t b){
+    inline std::string rgb(const uint8_t r, const uint8_t g, const uint8_t b){
         return "38;2;" + std::to_string(+r) + ';' + std::to_string(+g) + ';' + std::to_string(+b) + ';';
     }
 
     /**
      * @brief return string representing a color to set background to
-     * 
-     * @param color color to set background to can 
+     *
+     * @param color color to set background to can
      * be a predefined color macro or rgb() string
      * @return formatted string representing background color
      */
@@ -220,7 +220,7 @@ namespace pLog{
 
     /**
      * @brief return string representing a color to set background to from r, g, b values
-     * 
+     *
      * @param r value for red (0 - 255)
      * @param g value for green (0 - 255)
      * @param b value for blue (0 - 255)
@@ -232,38 +232,38 @@ namespace pLog{
 
     /**
      * @brief base case function for unpacking var args
-     * 
+     *
      * @return an empty string
      */
-    inline std::string fstring(){ 
+    inline std::string fstring(){
         return std::string("");
     }
 
     /**
-     * @brief helper function for unpacking var args
-     * this function takes all var args which are assumed to be valid ansii args 
-     * and combines them into a single string 
-     * 
+     * @brief Helper function for unpacking var args.
+     * This function takes all var args which are assumed to be valid ansii args
+     * and combines them into a single string .
+     *
      * @param var1 first arg in var args
      * @param var2 var args
-     * @return all args combined into a single string 
+     * @return all args combined into a single string
      */
-    template <typename T, typename... Types> 
-    inline std::string fstring(T var1, Types... var2){     
-        return std::move(std::string(var1) + fstring(var2...)); 
+    template <typename T, typename... Types>
+    inline std::string fstring(T var1, Types... var2){
+        return std::move(std::string(var1) + fstring(var2...));
     }
 
     /**
      * @brief function called to correctly format a string with all args given
      * for ex. fmt("test", UNDERLINE, RED, ...)
-     * 
+     *
      * @param str base string to add ansii escape args onto
-     * @param var2 any amount of ansii escape args
+     * @param modifiers any amount of ansii escape args
      * @return base string with ansii escape args added onto it
      */
-    template <typename T, typename... Types> 
-    inline std::string fmt(T str, Types... var2){
-        std::string&& color = fstring(var2...);
+    template <typename T, typename... Types>
+    inline std::string fmt(T str, Types... modifiers){
+        std::string&& color = fstring(modifiers...);
         if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
             return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR;
         else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
@@ -271,11 +271,11 @@ namespace pLog{
         else
             return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::to_string(str) + CLEAR;
     }
-    
+
 
     /**
      * @brief print string to the console
-     * 
+     *
      * @param str string to print
      */
     inline void print(const std::string& str){
@@ -284,7 +284,7 @@ namespace pLog{
 
     /**
      * @overload
-     * 
+     *
      * @param str string to print
      */
     inline void print(const std::string&& str = ""){
@@ -293,79 +293,79 @@ namespace pLog{
 
     /**
      * @brief print string to the console with specified format as a string
-     * 
+     *
      * @param str string to print
      * @param fmt format to use
      */
     inline void print(const std::string& str, const std::string& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str;
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
     /**
      * @overload
-     * 
+     *
      * @param str string to print
      * @param fmt format to use
      */
     inline void print(const std::string& str, const std::string&& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str;
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
     /**
      * @overload
-     * 
+     *
      * @param str string to print
      * @param fmt format to use
      */
     inline void print(const std::string&& str, const std::string& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str;
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
     /**
      * @overload
-     * 
+     *
      * @param str string to print
      * @param fmt format to use
      */
     inline void print(const std::string&& str, const std::string&& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str;
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
     /**
      * @brief wrapper of print() that unpacks var args and formats them automatically
-     * 
-     * @param var1 base string
-     * @param var2 list of ansii escape args
+     *
+     * @param str base string
+     * @param modifiers list of ansii escape args
      */
-    template <typename T, typename... Types> 
-    void print(T var1, Types... var2){
+    template <typename T, typename... Types>
+    void print(T str, Types... modifiers){
         if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
-            print(std::string("") + var1, fstring(var2...));
+            print(std::string("") + str, fstring(modifiers...));
         else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
-            print(std::string(var1), fstring(var2...));
+            print(std::string(str), fstring(modifiers...));
         else
-            print(std::to_string(var1), fstring(var2...));
+            print(std::to_string(str), fstring(modifiers...));
     }
 
     /**
      * @brief print a string to the console with a newline at the end
-     * 
+     *
      * @param str string to print
      */
     inline void println(const std::string& str = ""){
@@ -374,7 +374,7 @@ namespace pLog{
 
     /**
      * @overload
-     * 
+     *
      * @param str string to print
      */
     inline void println(const std::string&& str){
@@ -382,73 +382,76 @@ namespace pLog{
     }
 
     /**
-     * @brief print a string with the specified format 
+     * @brief print a string with the specified format
      * to the console with a newline at the end
-     * 
+     *
      * @param str string to print
      */
     inline void println(const std::string& str, const std::string& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str;
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
     /**
      * @overload
-     * 
-     * 
+     *
+     *
      * @param str string to print
+     * @param fmt format to use
      */
     inline void println(const std::string& str, const std::string&& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str;
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
     /**
      * @overload
-     * 
+     *
      * @param str string to print
+     * @param fmt format to use
      */
     inline void println(const std::string&& str, const std::string& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str << '\n';
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR << '\n';
         }
     }
 
     /**
      * @overload
-     * 
+     *
      * @param str string to print
+     * @param fmt format to use
      */
     inline void println(const std::string&& str, const std::string&& fmt){
-        if(fmt == "")
+        if(fmt.empty())
             std::cout << str << '\n';
-        else{
+        else {
             std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR << '\n';
         }
     }
 
     /**
      * @brief wrapper of println() that unpacks var args and formats them automatically
-     * 
-     * @param var1 base string
-     * @param var2 list of ansii escape args
+     *
+     * @param str base string
+     * @param modifiers list of ansii escape args
      */
-    template <typename T, typename... Types> 
-    void println(T var1, Types... var2){ 
+    template <typename T, typename... Types>
+    void println(T str, Types... modifiers){
         if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
-            println(std::string("") + var1, fstring(var2...));
+            println(std::string("") + str, fstring(modifiers...));
         else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
-            println(std::string(var1), fstring(var2...));
+            println(std::string(str), fstring(modifiers...));
         else
-            println(std::to_string(var1), fstring(var2...));
-    }   
+            println(std::to_string(str), fstring(modifiers...));
+    }
 }
 #endif
