@@ -3,7 +3,7 @@
 using vm = Arcvm;
 
 BytecodeGen::BytecodeGen(Project *ast):
-    ast_(ast), code_()
+    ast_(ast), code_(), variable_table_(), local_variable_counter()
 {
 
 }
@@ -51,7 +51,14 @@ void BytecodeGen::gen_import(const Import *import) {
 
 void BytecodeGen::gen_function(const Function *function) {
     // do something with args and return type
+    push(vm::allocate_locals);
+    push(0x00); // FIXME this is just temporary. add another step to count local vars
+    auto index = code_.size() - 1;
     gen_block(function->body);
+    push(vm::deallocate_locals);
+    push(static_cast<u8>(local_variable_counter));
+    code_[index] = static_cast<u8>(local_variable_counter);
+    local_variable_counter = 0;
 }
 
 void BytecodeGen::gen_block(const Block *block) {
@@ -111,7 +118,11 @@ void BytecodeGen::gen_ret(const Ret* r) {
 
 void BytecodeGen::gen_decl(const Decl *d) {
     //TODO implement this
+    ++local_variable_counter;
+    variable_table_.insert_or_assign(*(d->id), local_variable_counter);  // FIXME add a local var "counter" 
     gen_expr(d->val);
+    push(vm::set_local);
+    push(static_cast<u8>(local_variable_counter));    // local var counter
 }
 
 void BytecodeGen::gen_expr(const Expr *e) {
@@ -127,7 +138,7 @@ void BytecodeGen::gen_expr(const Expr *e) {
             gen_string_lit(e->string_literal.val);
             break;
         case EXPR_ID:
-            gen_id(e->string_literal.val);
+            gen_id(e->id.val);
             break;
         case EXPR_BIN:
             gen_bin(e);
@@ -153,7 +164,15 @@ void BytecodeGen::gen_string_lit(const astring *val) {
 }
 
 void BytecodeGen::gen_id(const astring* id) {
-    static_cast<void>(id);
+    // this is only for non assignable values
+    // for ex. it would not be for "val = 1 + 1;"
+
+    // if function
+    // do something
+    // otherwise do this
+    auto local_var_index = variable_table_.at(*id);
+    push(vm::load_local);   // assume we are loading a local variable and not a function arg
+    push(static_cast<u8>(local_var_index));
 }
 
 void BytecodeGen::gen_bin(const Expr *expr) {
@@ -187,7 +206,16 @@ void BytecodeGen::gen_bin(const Expr *expr) {
         case ARC_EQUAL:
             break;
         case ARC_ASSIGN:
+        {
+            if(expr->binary_expr.left->type != EXPR_ID)
+                (void)1; // FIXME error here
+            auto index = variable_table_.at(*(expr->binary_expr.left->id.val));
+            // TODO add error case if id is not found
+            gen_expr(expr->binary_expr.right);
+            push(vm::set_local);
+            push(static_cast<u8>(index));
             break;
+        }
         case ARC_INFER:
             break;
         case ARC_ADD:

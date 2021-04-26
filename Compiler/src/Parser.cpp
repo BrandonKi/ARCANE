@@ -168,7 +168,9 @@ Statement* Parser::parse_statement() {
         case ARC_ID:
             // can be decl or expr
             if(peek_next_token()->kind == ARC_COLON || peek_next_token()->kind == ARC_INFER)
-                ast_.new_statement_node_decl(start_pos, parse_decl());
+                return ast_.new_statement_node_decl(start_pos, parse_decl());
+            else if(peek_next_token()->kind == ARC_ASSIGN)
+                return ast_.new_statement_node_expr(start_pos, parse_expr());
             break;
         case ARC_INT_LIT:
         case ARC_FLOAT_LIT:

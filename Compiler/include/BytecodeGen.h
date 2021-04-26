@@ -16,6 +16,9 @@ class BytecodeGen {
     private:
         Project* ast_;
         std::vector<u8, arena_allocator<u8>> code_;
+        std::unordered_map<astring, int> variable_table_;
+
+        int local_variable_counter;
         
             
         void gen_project(const Project *project);

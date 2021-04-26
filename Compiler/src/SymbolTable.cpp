@@ -15,7 +15,9 @@ using hash_map =
         >
     >;
 
-SymbolTable::SymbolTable() {
+SymbolTable::SymbolTable():
+    global_(), table_()
+{
     push_scope();
 }
 

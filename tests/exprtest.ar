@@ -1,4 +1,6 @@
 
 fn main(): i32 {
-    ret -9 + 6 * (5 + 4 - 1);
+    var : int = 10;
+    var2 : int = var * 10;
+    ret var2 + -9 + 6 * (5 + var - 1);
 }

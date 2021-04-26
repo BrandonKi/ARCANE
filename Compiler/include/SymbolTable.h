@@ -34,6 +34,7 @@ class SymbolTable {
                     >
                 >
             >;
+        
         SymbolTable();
         void add_symbol(const astring&, const SymbolType, const Type);
         void add_function(const astring&, const std::vector<Type, arena_allocator<Type>>, const SymbolType, const Type); 
