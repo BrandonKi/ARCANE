@@ -51,18 +51,20 @@
 
 #ifdef NO_PROFILE
 #define PROFILE()
+#define PROFILE_SCOPE(x) PROFILE()
 #else
 #define PROFILE() small_profiler::internal_scoped_profiler _small_profiler_temp_{__FUNCTION__}
+#define PROFILE_SCOPE(x) small_profiler::internal_scoped_profiler _small_profiler_temp_{x}
 namespace small_profiler {
 
     inline unsigned long long get_pid() {
-		#if defined(__linux__)
-			return getpid();
-		#elif defined(_WIN32)
-			return GetCurrentProcessId();
-        #else
-			return static_cast<unsigned long long>(-1);
-		#endif
+#if defined(__linux__)
+        return getpid();
+#elif defined(_WIN32)
+        return GetCurrentProcessId();
+#else
+        return static_cast<unsigned long long>(-1);
+#endif
     }
 
     class internal_stream_wrapper {
@@ -93,7 +95,7 @@ namespace small_profiler {
         explicit internal_scoped_profiler(std::string name_p) :
             name_(std::move(name_p)), begin_(std::chrono::high_resolution_clock::now())
         {
-        	
+
         }
 
         ~internal_scoped_profiler() {

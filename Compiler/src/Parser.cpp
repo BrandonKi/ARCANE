@@ -39,7 +39,7 @@ File* Parser::parse_file() {
     std::vector<Import*, arena_allocator<Import*>> imports;
     std::vector<Decl*, arena_allocator<Decl*>> decls;
     std::vector<Function*, arena_allocator<Function*>> functions;
-    for(; index_ < tokens_.size(); index_++) {  
+    for(; index_ < tokens_.size(); ++index_) {
         switch(current_token()->kind) {
             case ARC_IMPORT:
                 println("import statement");

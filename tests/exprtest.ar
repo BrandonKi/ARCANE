@@ -1,6 +1,6 @@
 
 fn main(): i32 {
-    var : int = 10;
-    var2 : int = var * 10;
+    var : i32 = 10;
+    var2 : i32 = var * 10;
     ret var2 + -9 + 6 * (5 + var - 1);
 }
