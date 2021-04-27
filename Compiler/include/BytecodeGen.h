@@ -22,8 +22,8 @@ class BytecodeGen {
         int local_variable_counter;
         
             
-        void gen_project(const Project *project);
-        void gen_file(const File*);
+        void gen_project(Project *project);
+        void gen_file(File*);
         void gen_import(const Import*);
         void gen_function(const Function*);
         void gen_block(const Block*);

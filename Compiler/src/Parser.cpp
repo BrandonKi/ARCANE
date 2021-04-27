@@ -87,7 +87,9 @@ Function* Parser::parse_function() {
     next_token_noreturn();
     s_table_.add_function(id, fn_args, FUNCTION, ret);
     Block* block = parse_block();
-    return ast_.new_function_node(start_pos, id, fn_args, ret, block, true);
+    if(id == "main" && ret == TYPE_I32)
+        return ast_.new_function_node(start_pos, id, fn_args, ret, block, true);
+    return ast_.new_function_node(start_pos, id, fn_args, ret, block, false);
 }
 
 /**
@@ -254,15 +256,18 @@ Expr* Parser::parse_expr() {
             result.push_back(current_token());
         }
         else if(current_token()->kind == ARC_ID) {    //TODO differentiate between functions and variables
-            if(!s_table_.has(*(current_token()->data)))
+            auto id = *(current_token()->data);
+            if(!s_table_.has(id)) {
                 errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Unknown identifier"});
+                std::exit(-1);
+            }
             // if not function call
-            if(peek_next_token()->kind != ARC_OPEN_PAREN)
+            if(peek_next_token()->kind != ARC_OPEN_PAREN && s_table_.get_kind(id) == VARIABLE)
                 result.push_back(current_token());
             else {
                 //TODO add support for function args
                 // right now just skip over the parens
-                next_token_noreturn();
+                expect_token(ARC_OPEN_PAREN);
                 next_token_noreturn();
             }
         }

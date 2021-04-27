@@ -1,3 +1,7 @@
+fn add(): i32 {
+    ret 0;
+}
+
 
 fn main(): i32 {
     var : i32 = 10;

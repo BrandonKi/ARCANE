@@ -18,18 +18,26 @@ std::vector<u8, arena_allocator<u8>> BytecodeGen::gen_code() {
     return code_;
 }
 
-void BytecodeGen::gen_project(const Project *project) {
+void BytecodeGen::gen_project(Project *project) {
     PROFILE();
-    for(const auto* file : project->files) {
+    for(auto* file : project->files) {
         gen_file(file);
     }
 }
 
-void BytecodeGen::gen_file(const File *file) {
+void BytecodeGen::gen_file(File *file) {
     PROFILE();
     if(file->is_main) {
         generate_bootstrap();
-    }
+
+        auto& functions = file->functions;
+        for(auto i = 0; i < functions.size(); ++i)
+            if(functions[i]->is_main) {
+                auto main = functions[i];
+                functions.erase(functions.begin() + i);
+                functions.insert(functions.begin(), main);
+            }
+   }
 
     for(const auto *import : file->imports) {
         gen_import(import);
