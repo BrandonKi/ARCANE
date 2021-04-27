@@ -87,7 +87,6 @@ namespace small_profiler {
 
     inline internal_stream_wrapper file;
     inline auto program_start = std::chrono::high_resolution_clock::now();
-    inline unsigned long long tid_counter = 0;
 
     class internal_scoped_profiler {
     public:
@@ -101,7 +100,9 @@ namespace small_profiler {
             const auto end = std::chrono::high_resolution_clock::now();
 
             const auto pid = small_profiler::get_pid();
-            const auto tid = tid_counter++;
+            std::stringstream ss;
+            ss << std::this_thread::get_id();
+            const auto tid = std::stoull(ss.str());
             const auto ts = std::chrono::duration_cast<std::chrono::microseconds>(begin_ - program_start).count();
             const auto dur = std::chrono::duration_cast<std::chrono::microseconds>(end - begin_).count();
             const auto* ph = "X";

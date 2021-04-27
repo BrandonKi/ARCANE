@@ -16,7 +16,6 @@
 #include <pLog.h>
 #define ARENA_ALLOCATOR_SIZE 1000000   /// FIXME 1 mb but change in the future depending on # of files, size, etc.
 #include <arena_alloc.h>
-#include <non_own_ptr.h>
 
 
 using namespace pLog;

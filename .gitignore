@@ -9,5 +9,6 @@
 CMakeSettings.json
 
 *.exe
+*.o
 
 profile.json

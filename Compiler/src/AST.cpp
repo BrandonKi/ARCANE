@@ -15,14 +15,14 @@ AST::~AST() {
 //FIXME fix all of this absolute trash
 // at the moment we are making copies of the vectors and moving some and none of it is good
 
-Project* AST::new_project_node(const SourcePos pos, std::vector<File*, arena_allocator<File*>>& files) {
+[[nodiscard]] Project* AST::new_project_node(const SourcePos pos, std::vector<File*, arena_allocator<File*>>& files) {
     PROFILE();
     auto *ptr = reinterpret_cast<Project*>(allocator_.allocate(sizeof(Project)));
     allocator_.construct(ptr, Project{{pos}, files});
     return ptr;
 }
 
-File* AST::new_file_node(
+[[nodiscard]] File* AST::new_file_node(
         const SourcePos pos,
         std::vector<Import*, arena_allocator<Import*>>& imports,
         std::vector<Decl*, arena_allocator<Decl*>>& decls,
@@ -35,42 +35,42 @@ File* AST::new_file_node(
     return ptr;
 }
 
-Import* AST::new_import_node(const SourcePos pos, astring& id, astring& filename) {
+[[nodiscard]] Import* AST::new_import_node(const SourcePos pos, astring& id, astring& filename) {
     PROFILE();
     auto *ptr = reinterpret_cast<Import*>(allocator_.allocate(sizeof(Import)));
     allocator_.construct(ptr, Import{{pos}, id, filename});
     return ptr;
 }
 
-Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<Type, arena_allocator<Type>>& argTypes, Type type, Block* body, bool isMain) {
+[[nodiscard]] Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<Type, arena_allocator<Type>>& arg_types, Type type, Block* body, const bool is_main) {
     PROFILE();
     auto *ptr = reinterpret_cast<Function*>(allocator_.allocate(sizeof(Function)));
-    allocator_.construct(ptr, Function{{pos}, id, argTypes, type, body, isMain });
+    allocator_.construct(ptr, Function{{pos}, id, arg_types, type, body, is_main });
     return ptr;
 }
 
-Block* AST::new_block_node(const SourcePos pos, std::vector<Statement*, arena_allocator<Statement*>>& statements) {
+[[nodiscard]] Block* AST::new_block_node(const SourcePos pos, std::vector<Statement*, arena_allocator<Statement*>>& statements) {
     PROFILE();
     auto *ptr = reinterpret_cast<Block*>(allocator_.allocate(sizeof(Block)));
     allocator_.construct(ptr, Block{{pos}, statements});
     return ptr;
 }
 
-While_* AST::new_while_node(const SourcePos pos, Expr* expr, Block* block) {
+[[nodiscard]] While_* AST::new_while_node(const SourcePos pos, Expr* expr, Block* block) {
     PROFILE();
     auto *ptr = reinterpret_cast<While_*>(allocator_.allocate(sizeof(While_)));
     allocator_.construct(ptr, While_{{pos}, expr, block});
     return ptr;
 }
 
-For_* AST::new_for_node(const SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
+[[nodiscard]] For_* AST::new_for_node(const SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
     PROFILE();
     auto *ptr = reinterpret_cast<For_*>(allocator_.allocate(sizeof(For_)));
     allocator_.construct(ptr, For_{{pos}, decl, expr1, expr2, block});
     return ptr;
 }
 
-If_* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block) {
+[[nodiscard]] If_* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block) {
     PROFILE();
     auto *ptr = reinterpret_cast<If_*>(allocator_.allocate(sizeof(If_)));
     allocator_.construct(ptr, If_{{pos}, expr, block});
@@ -78,14 +78,14 @@ If_* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block) {
 }
 
 
-Ret* AST::new_ret_node(const SourcePos pos, Expr* expr) {
+[[nodiscard]] Ret* AST::new_ret_node(const SourcePos pos, Expr* expr) {
     PROFILE();
     auto *ptr = reinterpret_cast<Ret*>(allocator_.allocate(sizeof(Ret)));
     allocator_.construct(ptr, Ret{{pos}, expr});
     return ptr;
 }
 
-Statement* AST::new_statement_node_while(const SourcePos pos, While_* while_) {
+[[nodiscard]] Statement* AST::new_statement_node_while(const SourcePos pos, While_* while_) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, WHILE});
@@ -93,7 +93,7 @@ Statement* AST::new_statement_node_while(const SourcePos pos, While_* while_) {
     return ptr;
 }
 
-Statement* AST::new_statement_node_for(const SourcePos pos, For_* for_) {
+[[nodiscard]] Statement* AST::new_statement_node_for(const SourcePos pos, For_* for_) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, FOR});
@@ -101,7 +101,7 @@ Statement* AST::new_statement_node_for(const SourcePos pos, For_* for_) {
     return ptr;
 }
 
-Statement* AST::new_statement_node_if(const SourcePos pos, If_* if_) {
+[[nodiscard]] Statement* AST::new_statement_node_if(const SourcePos pos, If_* if_) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, IF});
@@ -109,7 +109,7 @@ Statement* AST::new_statement_node_if(const SourcePos pos, If_* if_) {
     return ptr;
 }
 
-Statement* AST::new_statement_node_ret(const SourcePos pos, Ret* ret) {
+[[nodiscard]] Statement* AST::new_statement_node_ret(const SourcePos pos, Ret* ret) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, RET});
@@ -125,7 +125,7 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
     return ptr;
 }
 
-Statement* AST::new_statement_node_expr(const SourcePos pos, Expr* expr) {
+[[nodiscard]] Statement* AST::new_statement_node_expr(const SourcePos pos, Expr* expr) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement { {pos}, EXPRESSION});
@@ -133,23 +133,23 @@ Statement* AST::new_statement_node_expr(const SourcePos pos, Expr* expr) {
     return ptr;
 }
 
-Expr* AST::new_expr_node_int_literal(const SourcePos pos, const u64 intLiteral) {
+[[nodiscard]] Expr* AST::new_expr_node_int_literal(const SourcePos pos, const u64 int_literal) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_INT_LIT});
-    ptr->int_literal.val = intLiteral;
+    ptr->int_literal.val = int_literal;
     return ptr;
 }
 
-Expr* AST::new_expr_node_float_literal(const SourcePos pos, const f64 floatLiteral) {
+[[nodiscard]] Expr* AST::new_expr_node_float_literal(const SourcePos pos, const f64 float_literal) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_FLOAT_LIT});
-    ptr->float_literal.val = floatLiteral;
+    ptr->float_literal.val = float_literal;
     return ptr;
 }
 
-Expr* AST::new_expr_node_string_literal(const SourcePos pos, astring& string_literal) {
+[[nodiscard]] Expr* AST::new_expr_node_string_literal(const SourcePos pos, astring& string_literal) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_STRING_LIT});
@@ -157,7 +157,7 @@ Expr* AST::new_expr_node_string_literal(const SourcePos pos, astring& string_lit
     return ptr;
 }
 
-Expr* AST::new_expr_node_variable(const SourcePos pos, astring& id) {
+[[nodiscard]] Expr* AST::new_expr_node_variable(const SourcePos pos, astring& id) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_ID});
@@ -165,7 +165,7 @@ Expr* AST::new_expr_node_variable(const SourcePos pos, astring& id) {
     return ptr;
 }
 
-Expr* AST::new_expr_node_bin_expr(const SourcePos pos, const TokenKind op, Expr* left, Expr* right) {
+[[nodiscard]] Expr* AST::new_expr_node_bin_expr(const SourcePos pos, const TokenKind op, Expr* left, Expr* right) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{ {pos}, EXPR_BIN });
@@ -175,7 +175,7 @@ Expr* AST::new_expr_node_bin_expr(const SourcePos pos, const TokenKind op, Expr*
     return ptr;
 }
 
-Expr* AST::new_expr_node_unary_expr(const SourcePos pos, const TokenKind op, Expr* expr) {
+[[nodiscard]] Expr* AST::new_expr_node_unary_expr(const SourcePos pos, const TokenKind op, Expr* expr) {
     PROFILE();
     auto* ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{ {pos}, EXPR_UNARY });
@@ -184,7 +184,7 @@ Expr* AST::new_expr_node_unary_expr(const SourcePos pos, const TokenKind op, Exp
     return ptr;
 }
 
-Decl* AST::new_decl_node(const SourcePos pos, astring& id, Type type, Expr* val) {
+[[nodiscard]] Decl* AST::new_decl_node(const SourcePos pos, astring& id, const Type type, Expr* val) {
     PROFILE(); 
     auto* ptr = reinterpret_cast<Decl*>(allocator_.allocate(sizeof(Decl)));
     allocator_.construct(ptr, Decl{ {pos}, &id, type, val });
