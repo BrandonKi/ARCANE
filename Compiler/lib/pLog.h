@@ -257,9 +257,9 @@ namespace pLog{
      * @brief function called to correctly format a string with all args given
      * for ex. fmt("test", UNDERLINE, RED, ...)
      *
-     * @param str base string to add ansii escape args onto
-     * @param modifiers any amount of ansii escape args
-     * @return base string with ansii escape args added onto it
+     * @param str base string to add ansi escape args onto
+     * @param modifiers any amount of ansi escape args
+     * @return base string with ansi escape args added onto it
      */
     template <typename T, typename... Types>
     inline std::string fmt(T str, Types... modifiers){
@@ -351,7 +351,7 @@ namespace pLog{
      * @brief wrapper of print() that unpacks var args and formats them automatically
      *
      * @param str base string
-     * @param modifiers list of ansii escape args
+     * @param modifiers list of ansi escape args
      */
     template <typename T, typename... Types>
     void print(T str, Types... modifiers){
@@ -386,6 +386,7 @@ namespace pLog{
      * to the console with a newline at the end
      *
      * @param str string to print
+     * @param fmt format string
      */
     inline void println(const std::string& str, const std::string& fmt){
         if(fmt.empty())
@@ -442,7 +443,7 @@ namespace pLog{
      * @brief wrapper of println() that unpacks var args and formats them automatically
      *
      * @param str base string
-     * @param modifiers list of ansii escape args
+     * @param modifiers list of ansi escape args
      */
     template <typename T, typename... Types>
     void println(T str, Types... modifiers){

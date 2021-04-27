@@ -46,13 +46,9 @@ File* Parser::parse_file() {
                 imports.push_back(parse_import());
                 break;
             case ARC_FN:
-                println("function start");
-                std::cout.flush();
                 functions.push_back(parse_function());
-                println("function end");
                 break;
             case ARC_ID:
-                println("decl start");
                 decls.push_back(parse_decl());
                 break;
             case ARC_EOF:   // placed at the end of each file by the lexer

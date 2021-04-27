@@ -3,7 +3,7 @@
 
 #include "ErrorHandler.h"
 
-static ErrorHandler errorLog{};
+static inline ErrorHandler errorLog{};
 
 class Lexer {
 
@@ -37,23 +37,23 @@ class Lexer {
 
         void consume_comment();
 
-        Token lex_number_lit();
-        Token lex_identifier();
-        Token lex_string();
-        Token lex_interpolated_string();
-        Token lex_colon();
-        Token lex_add();
-        Token lex_sub();
-        Token lex_div();
-        Token lex_mul();
-        Token lex_mod();
-        Token lex_or();
-        Token lex_and();
-        Token lex_not();
-        Token lex_xor();
-        Token lex_lesser(); 
-        Token lex_greater();
-        Token lex_equal();
+        [[nodiscard]] Token lex_number_lit();
+        [[nodiscard]] Token lex_identifier();
+        [[nodiscard]] Token lex_string();
+        [[nodiscard]] Token lex_interpolated_string();
+        [[nodiscard]] Token lex_colon();
+        [[nodiscard]] Token lex_add();
+        [[nodiscard]] Token lex_sub();
+        [[nodiscard]] Token lex_div();
+        [[nodiscard]] Token lex_mul();
+        [[nodiscard]] Token lex_mod();
+        [[nodiscard]] Token lex_or();
+        [[nodiscard]] Token lex_and();
+        [[nodiscard]] Token lex_not();
+        [[nodiscard]] Token lex_xor();
+        [[nodiscard]] Token lex_lesser();
+        [[nodiscard]] Token lex_greater();
+        [[nodiscard]] Token lex_equal();
 
         [[nodiscard]] Token create_token(const TokenKind, const u32) const;
         [[nodiscard]] Token create_token(const TokenKind, const u32, const u32) const;
@@ -64,11 +64,11 @@ class Lexer {
 
         void print_tokens(const bool) const;
 
-        constexpr static inline bool is_digit(const char c) noexcept {
+        [[nodiscard]] constexpr static inline bool is_digit(const char c) noexcept {
             return c >= 48 && c <= 57;
         }
 
-        constexpr static inline bool is_letter(const char c) noexcept {
+        [[nodiscard]] constexpr static inline bool is_letter(const char c) noexcept {
             return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
         }
 

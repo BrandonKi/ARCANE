@@ -5,14 +5,13 @@ set (CMAKE_CXX_STANDARD 20)
 
 cmake_policy(SET CMP0069 NEW)
 
-
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2)
 
 set(arcvm_include ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/include)
 set(arcvm_source
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/src/ARCVM.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/src/Arcvm.cpp
 )
 
 set(SRC
@@ -46,9 +45,7 @@ if(${LTO})
 endif()
 
 if(MSVC)
-  target_compile_options(ARCC PRIVATE /W4 /WX)
+  target_compile_options(ARCC PRIVATE /W3 /WX)
 else()
   target_compile_options(ARCC PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
-
-# target_compile_options(ARCC PRIVATE "-W" "-Wall" "-Wextra" "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-newline-eof" "-Wno-exit-time-destructors" "-Wno-header-hygiene" "-Wno-global-constructors" "-Wno-nonportable-system-include-path")

@@ -13,18 +13,20 @@ BytecodeGen::~BytecodeGen() {
 }
 
 std::vector<u8, arena_allocator<u8>> BytecodeGen::gen_code() {
+    PROFILE();
     gen_project(ast_);
     return code_;
 }
 
 void BytecodeGen::gen_project(const Project *project) {
+    PROFILE();
     for(const auto* file : project->files) {
         gen_file(file);
     }
 }
 
 void BytecodeGen::gen_file(const File *file) {
-    
+    PROFILE();
     if(file->is_main) {
         generate_bootstrap();
     }
@@ -45,11 +47,13 @@ void BytecodeGen::gen_file(const File *file) {
 }
 
 void BytecodeGen::gen_import(const Import *import) {
+    PROFILE();
     static_cast<void>(import);
     //TODO implement importing files/modules
 }
 
 void BytecodeGen::gen_function(const Function *function) {
+    PROFILE();
     // do something with args and return type
     push(vm::allocate_locals);
     push(0x00); // FIXME this is just temporary. add another step to count local vars
@@ -62,12 +66,14 @@ void BytecodeGen::gen_function(const Function *function) {
 }
 
 void BytecodeGen::gen_block(const Block *block) {
+    PROFILE();
     for(const auto *statement : block->statements) {
         gen_statement(statement);
     }
 }
 
 void BytecodeGen::gen_statement(const Statement *statement) {
+    PROFILE();
     switch(statement->type) {
         case WHILE:
             gen_while(statement->while_);
@@ -91,12 +97,14 @@ void BytecodeGen::gen_statement(const Statement *statement) {
 }
 
 void BytecodeGen::gen_while(const While_* w) {
+    PROFILE();
     //TODO implement this
     gen_expr(w->expr);
     gen_block(w->block);
 }
 
 void BytecodeGen::gen_for(const For_* f) {
+    PROFILE();
     //TODO implement this
     gen_decl(f->decl);
     gen_expr(f->expr1);
@@ -105,18 +113,21 @@ void BytecodeGen::gen_for(const For_* f) {
 }
 
 void BytecodeGen::gen_if(const If_* i) {
+    PROFILE();
     //TODO implement this
     gen_expr(i->expr);
     gen_block(i->block);
 }
 
 void BytecodeGen::gen_ret(const Ret* r) {
+    PROFILE();
     //TODO implement this
     gen_expr(r->expr);
     push(vm::ret);
 }
 
 void BytecodeGen::gen_decl(const Decl *d) {
+    PROFILE();
     //TODO implement this
     ++local_variable_counter;
     variable_table_.insert_or_assign(*(d->id), local_variable_counter);  // FIXME add a local var "counter" 
@@ -126,6 +137,7 @@ void BytecodeGen::gen_decl(const Decl *d) {
 }
 
 void BytecodeGen::gen_expr(const Expr *e) {
+    PROFILE();
     //TODO implement this
     switch(e->type) {
         case EXPR_INT_LIT:
@@ -150,32 +162,37 @@ void BytecodeGen::gen_expr(const Expr *e) {
 }
 
 void BytecodeGen::gen_int_lit(const u64 val) {
+    PROFILE();
     push(vm::push_value_signed_64);
     push_value(val);
 }
 
 void BytecodeGen::gen_float_lit(const f64 val) {
+    PROFILE();
     push(vm::push_value_float_64);
     push_value(val);
 }
 
 void BytecodeGen::gen_string_lit(const astring *val) {
+    PROFILE();
     static_cast<void>(val);
 }
 
 void BytecodeGen::gen_id(const astring* id) {
+    PROFILE();
     // this is only for non assignable values
     // for ex. it would not be for "val = 1 + 1;"
 
     // if function
     // do something
     // otherwise do this
-    auto local_var_index = variable_table_.at(*id);
+    const auto local_var_index = variable_table_.at(*id);
     push(vm::load_local);   // assume we are loading a local variable and not a function arg
     push(static_cast<u8>(local_var_index));
 }
 
 void BytecodeGen::gen_bin(const Expr *expr) {
+    PROFILE();
     switch(expr->binary_expr.op) {
         case ARC_ADD_EQUAL:
             break;
@@ -209,7 +226,7 @@ void BytecodeGen::gen_bin(const Expr *expr) {
         {
             if(expr->binary_expr.left->type != EXPR_ID)
                 (void)1; // FIXME error here
-            auto index = variable_table_.at(*(expr->binary_expr.left->id.val));
+            const auto index = variable_table_.at(*(expr->binary_expr.left->id.val));
             // TODO add error case if id is not found
             gen_expr(expr->binary_expr.right);
             push(vm::set_local);
@@ -291,6 +308,7 @@ void BytecodeGen::gen_bin(const Expr *expr) {
 }
 
 void BytecodeGen::gen_unary(const Expr* expr) {
+    PROFILE();
     switch(expr->unary_expr.op) {
         case ARC_NOT:
             break;
@@ -311,14 +329,17 @@ void BytecodeGen::gen_unary(const Expr* expr) {
 }
 
 void BytecodeGen::push(const u8 inst) {
+    PROFILE();
     code_.push_back(inst);
 }
 
 void BytecodeGen::push(const std::vector<u8, arena_allocator<u8>>& vec) {
+    PROFILE();
     code_.insert(code_.end(), vec.begin(), vec.end());
 }
 
 void BytecodeGen::generate_bootstrap() {
+    PROFILE();
 
     const std::vector<u8, arena_allocator<u8>> vec = {
         0xfa,

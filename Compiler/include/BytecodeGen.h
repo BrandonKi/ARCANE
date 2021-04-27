@@ -8,7 +8,7 @@
 
 class BytecodeGen {
     public:
-        BytecodeGen(Project*);
+        explicit BytecodeGen(Project*);
         ~BytecodeGen();
 
         std::vector<u8, arena_allocator<u8>> gen_code();
@@ -17,6 +17,7 @@ class BytecodeGen {
         Project* ast_;
         std::vector<u8, arena_allocator<u8>> code_;
         std::unordered_map<astring, int> variable_table_;
+        std::unordered_map<astring, int> function_table_;
 
         int local_variable_counter;
         

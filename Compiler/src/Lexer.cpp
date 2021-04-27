@@ -423,7 +423,7 @@ Token Lexer::lex_equal() {
     
     const auto start_pos = index_;
     const auto start_col = col_;
-
+    
     if(peek_next_char() == '=') {
         next_char_noreturn();
         return create_token(ARC_EQUAL, start_col, start_pos);
@@ -433,41 +433,34 @@ Token Lexer::lex_equal() {
 }
 
 inline char Lexer::current_char() const {
-    PROFILE();
     return data_[index_];
 }
 
 inline char Lexer::next_char() {
-    PROFILE();
     col_++;
     return data_[++index_];
 }
 
 inline char Lexer::prev_char() {
-    PROFILE();
     col_--;
     return data_[--index_];
 }
 
 inline void Lexer::next_char_noreturn() {
-    PROFILE();
     col_++;
     index_++;
 }
 
 inline void Lexer::prev_char_noreturn() {
-    PROFILE();
     col_--;
     index_--;
 }
 
 inline char Lexer::peek_next_char() const {
-    PROFILE();
     return data_[index_+1];
 }
 
 inline char Lexer::peek_prev_char() const {
-    PROFILE();
     return data_[index_ - 1];
 }
 
@@ -508,7 +501,6 @@ inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, co
 }
 
 inline void Lexer::print_tokens(const bool verbose) const {
-    PROFILE();
     if(verbose)
         for(const auto& tkn : tokens_)
             println_token(&tkn);

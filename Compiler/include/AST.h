@@ -163,28 +163,28 @@ class AST {
         AST();
         ~AST();
 
-        Project* new_project_node(const SourcePos, std::vector<File*, arena_allocator<File*>>&);
-        File* new_file_node(const SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
-        Import* new_import_node(const SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        Function* new_function_node(const SourcePos, astring&, std::vector<Type, arena_allocator<Type>>&, Type, Block*, bool);
-        Block* new_block_node(const SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
-        While_* new_while_node(const SourcePos, Expr*, Block*);
-        For_* new_for_node(const SourcePos, Decl*, Expr*, Expr*, Block*);
-        If_* new_if_node(const SourcePos, Expr*, Block*);
-        Ret* new_ret_node(const SourcePos, Expr*);
-        Statement* new_statement_node_while(const SourcePos, While_*);
-        Statement* new_statement_node_for(const SourcePos, For_*);
-        Statement* new_statement_node_if(const SourcePos, If_*);
-        Statement* new_statement_node_ret(const SourcePos, Ret*);
-        Statement* new_statement_node_decl(const SourcePos, Decl*);
-        Statement* new_statement_node_expr(const SourcePos, Expr*);
-        Expr* new_expr_node_int_literal(const SourcePos, const u64);
-        Expr* new_expr_node_float_literal(const SourcePos, const f64);
-        Expr* new_expr_node_string_literal(const SourcePos, astring&);
-        Expr* new_expr_node_variable(const SourcePos, astring&);
-        Expr* new_expr_node_bin_expr(const SourcePos, const TokenKind, Expr*, Expr*);
-        Expr* new_expr_node_unary_expr(const SourcePos, const TokenKind, Expr*);
-        Decl* new_decl_node(const SourcePos, astring&, Type, Expr*);
+        [[nodiscard]] Project* new_project_node(const SourcePos, std::vector<File*, arena_allocator<File*>>&);
+        [[nodiscard]] File* new_file_node(const SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
+        [[nodiscard]] Import* new_import_node(const SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
+        [[nodiscard]] Function* new_function_node(const SourcePos, astring&, std::vector<Type, arena_allocator<Type>>&, Type, Block*, const bool);
+        [[nodiscard]] Block* new_block_node(const SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
+        [[nodiscard]] While_* new_while_node(const SourcePos, Expr*, Block*);
+        [[nodiscard]] For_* new_for_node(const SourcePos, Decl*, Expr*, Expr*, Block*);
+        [[nodiscard]] If_* new_if_node(const SourcePos, Expr*, Block*);
+        [[nodiscard]] Ret* new_ret_node(const SourcePos, Expr*);
+        [[nodiscard]] Statement* new_statement_node_while(const SourcePos, While_*);
+        [[nodiscard]] Statement* new_statement_node_for(const SourcePos, For_*);
+        [[nodiscard]] Statement* new_statement_node_if(const SourcePos, If_*);
+        [[nodiscard]] Statement* new_statement_node_ret(const SourcePos, Ret*);
+        [[nodiscard]] Statement* new_statement_node_decl(const SourcePos, Decl*);
+        [[nodiscard]] Statement* new_statement_node_expr(const SourcePos, Expr*);
+        [[nodiscard]] Expr* new_expr_node_int_literal(const SourcePos, const u64);
+        [[nodiscard]] Expr* new_expr_node_float_literal(const SourcePos, const f64);
+        [[nodiscard]] Expr* new_expr_node_string_literal(const SourcePos, astring&);
+        [[nodiscard]] Expr* new_expr_node_variable(const SourcePos, astring&);
+        [[nodiscard]] Expr* new_expr_node_bin_expr(const SourcePos, const TokenKind, Expr*, Expr*);
+        [[nodiscard]] Expr* new_expr_node_unary_expr(const SourcePos, const TokenKind, Expr*);
+        [[nodiscard]] Decl* new_decl_node(const SourcePos, astring&, const Type, Expr*);
 
 
 };
