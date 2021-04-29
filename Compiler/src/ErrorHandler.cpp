@@ -36,6 +36,8 @@ void ErrorHandler::push(ErrorMessage error) {
 
 astring ErrorHandler::make_preamble(ErrorMessage& error){
     PROFILE();
+    if(error.token == nullptr)
+        return error.filename + " : ";
     return error.filename + '[' + to_astring(error.token->pos.src_line) + ", " + to_astring(error.token->pos.src_char) + "] : ";
 }
 

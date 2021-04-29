@@ -30,13 +30,17 @@ void BytecodeGen::gen_file(File *file) {
     if(file->is_main) {
         generate_bootstrap();
 
+        // move the main function to the beginning so it gets called first
         auto& functions = file->functions;
-        for(auto i = 0; i < functions.size(); ++i)
-            if(functions[i]->is_main) {
-                auto main = functions[i];
-                functions.erase(functions.begin() + i);
-                functions.insert(functions.begin(), main);
-            }
+
+        auto it = std::find_if(functions.cbegin(), functions.cend(), [](auto* fn){ return fn->is_main;});
+        if(it == functions.end()) {
+            errorLog.push({FATAL, nullptr, args.path, "could not find main function"});
+            std::exit(-1);
+        }
+        auto main = *it;
+        functions.erase(it);
+        functions.insert(functions.begin(), main);
    }
 
     for(const auto *import : file->imports) {
