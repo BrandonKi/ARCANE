@@ -267,8 +267,10 @@ Expr* Parser::parse_expr() {
             else {
                 //TODO add support for function args
                 // right now just skip over the parens
+                auto* fn_call = current_token();
                 expect_token(ARC_OPEN_PAREN);
                 next_token_noreturn();
+                result.push_back(fn_call);
             }
         }
         else if(is_operator(current_token()->kind)) {  //TODO support unary operators also

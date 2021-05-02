@@ -6,5 +6,6 @@ fn add(): i32 {
 fn main(): i32 {
     var : i32 = 10;
     var2 : i32 = var * 10;
+    // var3 : i32 = add();
     ret var2 + -9 + 6 * (5 + var - 1);
 }

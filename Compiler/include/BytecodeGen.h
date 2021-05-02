@@ -6,48 +6,56 @@
 // include this to get the instructions
 #include "Arcvm.h" 
 
+using code_block = std::vector<u8, arena_allocator<u8>>;
+struct bc_context {
+    code_block& code;
+    // other stuff needed to generate code
+};
+
 class BytecodeGen {
+
+
     public:
+    
         explicit BytecodeGen(Project*);
         ~BytecodeGen();
 
-        std::vector<u8, arena_allocator<u8>> gen_code();
-    
+        code_block gen_code();
+
     private:
+    
         Project* ast_;
-        std::vector<u8, arena_allocator<u8>> code_;
+        code_block code_;
         std::unordered_map<astring, int> variable_table_;
-        std::unordered_map<astring, int> function_table_;
+        std::unordered_map<astring, code_block> function_table_;
 
         int local_variable_counter;
         
-            
-        void gen_project(Project *project);
-        void gen_file(File*);
-        void gen_import(const Import*);
-        void gen_function(const Function*);
-        void gen_block(const Block*);
-        void gen_statement(const Statement*);
-        void gen_while(const While_*);
-        void gen_for(const For_*);
-        void gen_if(const If_*);
-        void gen_ret(const Ret*);
-        void gen_decl(const Decl*);
-        void gen_expr(const Expr*);
+        
+        code_block gen_project(Project *project);
+        std::vector<code_block, arena_allocator<code_block>> gen_file(File*);
+        void gen_import(bc_context&, const Import*);
+        void gen_function(bc_context&, const Function*);
+        void gen_block(bc_context&, const Block*);
+        void gen_statement(bc_context&, const Statement*);
+        void gen_while(bc_context&, const While_*);
+        void gen_for(bc_context&, const For_*);
+        void gen_if(bc_context&, const If_*);
+        void gen_ret(bc_context&, const Ret*);
+        void gen_decl(bc_context&, const Decl*);
+        void gen_expr(bc_context&, const Expr*);
 
-        void gen_int_lit(const u64 val);
-        void gen_float_lit(const f64 val);
-        void gen_string_lit(const astring* val);
-        void gen_id(const astring* id);
-        void gen_bin(const Expr *expr);
-        void gen_unary(const Expr* expr);
+        void gen_int_lit(bc_context&, const u64 val);
+        void gen_float_lit(bc_context&, const f64 val);
+        void gen_string_lit(bc_context&, const astring* val);
+        void gen_id(bc_context&, const astring* id);
+        void gen_bin(bc_context&, const Expr *expr);
+        void gen_unary(bc_context&, const Expr* expr);
 
-        void push(const u8);
-        void push(const std::vector<u8, arena_allocator<u8>>&);
+        void push(code_block&, const u8);
+        void push(code_block&, const code_block&);
 
-        void push_64_bit_value(const u64);
-    
-        void generate_bootstrap();
+        void generate_bootstrap(bc_context&);
 
         template<
             typename T__,
@@ -56,7 +64,7 @@ class BytecodeGen {
                 bool
             >::type = true
         >
-        constexpr inline void push_value(const T__ val_) {
+        constexpr inline void push_value(code_block& code, const T__ val_) {
             
             using T_ =
                 typename std::conditional<
@@ -98,13 +106,13 @@ class BytecodeGen {
             // now that we are past all the template stuff we get to the actual code
             // just pushing bytes into a vector
             for (size_t i = 0; i < sizeof(type); ++i)
-                code_.push_back(static_cast<unsigned char>((raw_val >> (i * 8)) & 0xff));
+                code.push_back(static_cast<unsigned char>((raw_val >> (i * 8)) & 0xff));
         }
 
         template<typename T, typename std::enable_if<std::is_integral<T>::value && std::is_signed<T>::value>::type>
-        constexpr inline void push_value(const T val) {
+        constexpr inline void push_value(code_block& code, const T val) {
             auto new_val = static_cast<typename std::make_unsigned<T>::type>(val);
-            push_value(new_val);
+            push_value(code, new_val);
         }
 };
 
