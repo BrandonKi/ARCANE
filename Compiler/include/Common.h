@@ -799,4 +799,12 @@ inline void println_token(const Token* t){
     println(astrtostr("'" + astring(t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string_rep(t->kind) + " [" + to_astring(t->pos.src_line) + ", " + to_astring(t->pos.src_char) + "] " + "[" + to_astring(t->pos.start_pos) + ", " + to_astring(t->pos.end_pos) + "]"));
 }
 
+[[nodiscard]] constexpr inline bool is_digit(const char c) noexcept {
+    return c >= 48 && c <= 57;
+}
+
+[[nodiscard]] constexpr inline bool is_letter(const char c) noexcept {
+    return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
+}
+
 #endif
