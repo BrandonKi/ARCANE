@@ -64,14 +64,6 @@ class Lexer {
 
         void print_tokens(const bool) const;
 
-        [[nodiscard]] constexpr static inline bool is_digit(const char c) noexcept {
-            return c >= 48 && c <= 57;
-        }
-
-        [[nodiscard]] constexpr static inline bool is_letter(const char c) noexcept {
-            return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95;
-        }
-
 };
 
 #endif

@@ -1,18 +1,18 @@
 #ifndef BYTECODE_GEN_H
 #define BYTECODE_GEN_H
 
-#include "AST.h"
+#include "BytecodeLinker.h"
 
 // include this to get the instructions
 #include "Arcvm.h" 
 
 using code_block = std::vector<u8, arena_allocator<u8>>;
 struct bc_context {
-    code_block& code;
+    code_block code;
     // other stuff needed to generate code
 };
 
-class BytecodeGen {
+class BytecodeGen final {
 
 
     public:
@@ -26,6 +26,8 @@ class BytecodeGen {
     
         Project* ast_;
         code_block code_;
+
+        // use arena allocator for these
         std::unordered_map<astring, int> variable_table_;
         std::unordered_map<astring, code_block> function_table_;
 
@@ -33,7 +35,7 @@ class BytecodeGen {
         
         
         code_block gen_project(Project *project);
-        std::vector<code_block, arena_allocator<code_block>> gen_file(File*);
+        std::vector<linkable_function, arena_allocator<linkable_function>> gen_file(File*);
         void gen_import(bc_context&, const Import*);
         void gen_function(bc_context&, const Function*);
         void gen_block(bc_context&, const Block*);
@@ -53,7 +55,8 @@ class BytecodeGen {
         void gen_unary(bc_context&, const Expr* expr);
 
         void push(code_block&, const u8);
-        void push(code_block&, const code_block&);
+        void push_block(code_block&, const code_block&);
+        void push_string(code_block&, const astring&);
 
         void generate_bootstrap(bc_context&);
 

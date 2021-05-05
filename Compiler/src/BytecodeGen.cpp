@@ -19,37 +19,36 @@ code_block BytecodeGen::gen_code() {
 
 code_block BytecodeGen::gen_project(Project *project) {
     PROFILE();
-    std::vector<std::vector<code_block, arena_allocator<code_block>>> files;
+    std::vector<std::vector<linkable_function, arena_allocator<linkable_function>>> segmented_files;
     for(auto* file : project->files) {
-        files.push_back(gen_file(file));
+        segmented_files.push_back(gen_file(file));
     }
 
+    BytecodeLinker linker;
+    linker.link_file(segmented_files.back());
+
     // right now only one file is supported or else everything breaks
-    code_block code;
-    for(const auto& block : files[0])
-        push(code, block);
-    return code;
+    std::vector<code_block, arena_allocator<code_block>> generated_files;
+    for(const auto& file : segmented_files) {
+        generated_files.push_back(code_block{});
+        for(const auto& function : file)
+            push_block(generated_files.back(), function.code);
+    }
+
+    return generated_files[0];
 }
-
-std::vector<code_block, arena_allocator<code_block>> BytecodeGen::gen_file(File *file) {
+// FIXME a good amount of data is being duplicated here
+// the function_table_ and result of this function 
+// both have their own copies of every function in every file
+// kinda urgent that this is fixed
+std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::gen_file(File *file) {
     PROFILE();
-    std::vector<code_block, arena_allocator<code_block>> file_blocks;
+    std::vector<linkable_function, arena_allocator<linkable_function>> file_blocks;
     if(file->is_main) {
-        file_blocks.push_back(code_block{});
-        bc_context bootstrap_ctx = bc_context{file_blocks.back()};
+        function_table_.insert_or_assign("0__BOOTSTRAP__0", code_block{});
+        bc_context bootstrap_ctx = bc_context{function_table_.at("0__BOOTSTRAP__0")};
         generate_bootstrap(bootstrap_ctx);
-
-        // move the main function to the beginning so it gets called first
-        auto& functions = file->functions;
-
-        auto it = std::find_if(functions.cbegin(), functions.cend(), [](auto* fn){ return fn->is_main;});
-        if(it == functions.end()) {
-            errorLog.push({FATAL, nullptr, args.path, "could not find main function"});
-            std::exit(-1);
-        }
-        auto main = *it;
-        functions.erase(it);
-        functions.insert(functions.begin(), main);
+        file_blocks.push_back(linkable_function{new astring{"0__BOOTSTRAP__0"}, bootstrap_ctx.code});
    }
 
     for(const auto *import : file->imports) {
@@ -60,14 +59,30 @@ std::vector<code_block, arena_allocator<code_block>> BytecodeGen::gen_file(File 
         // gen_decl(ctx, decl);
     }
     
+
+    // move the main function after the bootstrap section so it gets called first
+    auto& functions = file->functions;
+
+    auto it = std::find_if(functions.cbegin(), functions.cend(), [](auto* fn){ return fn->is_main;});
+    if(it == functions.end()) {
+        errorLog.push({FATAL, nullptr, args.path, "could not find main function"});
+        std::exit(-1);
+    }
+    auto main = *it;
+    functions.erase(it);
+    functions.insert(functions.begin(), main);
+
     for (const auto *function : file->functions) {
-        file_blocks.push_back(code_block{});
-        bc_context ctx = bc_context{file_blocks.back()};
+        // because we use insert_or_assign ou can redefine functions
+        // this should probably change in the future
+        function_table_.insert_or_assign(function->id, code_block{});
+        bc_context ctx = bc_context{function_table_.at(function->id)};
         gen_function(ctx, function);
+        file_blocks.push_back(linkable_function{&function->id, ctx.code});
     }
 
+    // TODO LINK THE SHIT TOGETHER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return file_blocks;
-
 }
 
 void BytecodeGen::gen_import(bc_context& ctx, const Import *import) {
@@ -78,10 +93,8 @@ void BytecodeGen::gen_import(bc_context& ctx, const Import *import) {
 
 void BytecodeGen::gen_function(bc_context& ctx, const Function *function) {
     PROFILE();
-    // function_table_.insert(function->id, );
-    // do something with args and return type
     push(ctx.code, vm::allocate_locals);
-    push(ctx.code, 0x00); // FIXME this is just temporary. add another step to count local vars
+    push(ctx.code, 0x00);
     auto index = ctx.code.size() - 1;
     gen_block(ctx, function->body);
     push(ctx.code, vm::deallocate_locals);
@@ -217,20 +230,9 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
         push(ctx.code, static_cast<u8>(local_var_index));
     }
     else if(function_table_.contains(*id)) {
-
-        // map <string, code for the function>
-        // this may be the best idea so far
-        // however control flow will need to be explicity tracked since we are splitting everything up
-        // it shouldn't be too much of an issue though and may even be easier to optimize
-        // especially naive inlining 
-
-
-        // with this idea we will generate code for each function individually which will mean we can do this concurrently
-        // sadly the overhead of a thread is more expensive then generating code for these small files
-        
-        // in conclusion this is the strategy I will probably end up doing
-        // however it will also require me to rewrite the push_value function
-        // because it works on a static vector
+        push(ctx.code, vm::call_short);
+        push_string(ctx.code, *id);
+        push(ctx.code, '\0');
     }
     else {
         errorLog.push({FATAL, nullptr, args.path, "how the fuck did you manage to get this error"});
@@ -381,9 +383,14 @@ void BytecodeGen::push(code_block& code, const u8 inst) {
     code.push_back(inst);
 }
 
-void BytecodeGen::push(code_block& code, const code_block& vec) {
+void BytecodeGen::push_block(code_block& code, const code_block& vec) {
     PROFILE();
     code.insert(code.end(), vec.begin(), vec.end());
+}
+
+void BytecodeGen::push_string(code_block& code, const astring& str) {
+    PROFILE();
+    code.insert(code.end(), str.begin(), str.end());
 }
 
 void BytecodeGen::generate_bootstrap(bc_context& ctx) {
@@ -405,5 +412,5 @@ void BytecodeGen::generate_bootstrap(bc_context& ctx) {
         vm::exit,
     };
     
-    push(ctx.code, vec);
+    push_block(ctx.code, vec);
 }

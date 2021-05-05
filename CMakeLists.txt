@@ -23,6 +23,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/ErrorHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/SymbolTable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/BytecodeGen.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/BytecodeLinker.cpp
     ${arcvm_source}
 )
 
