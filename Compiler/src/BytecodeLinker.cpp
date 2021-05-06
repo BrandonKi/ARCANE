@@ -16,8 +16,12 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
                 char *raw_fn_name = reinterpret_cast<char*>(&(function.code.data()[i+1]));
                 auto fn_name = astring(raw_fn_name);
                 auto a = function_table_.at(fn_name);
-                function.code[i+1] = 0x00;
-                function.code[i+2] = static_cast<u8>(a) -1;
+
+                // only one character function names work at the moment
+                // this is because the address of every function changes if I have extra characters in the bytecode
+
+                function.code[i+1] = 0x00;                      // number of local variables
+                function.code[i+2] = static_cast<u8>(a) -1;     // address
             }
             else if(function.code[i] == vm::push_string) {
                 // move past the string literal part

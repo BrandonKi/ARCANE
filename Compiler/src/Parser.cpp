@@ -265,11 +265,12 @@ Expr* Parser::parse_expr() {
             if(peek_next_token()->kind != ARC_OPEN_PAREN && s_table_.get_kind(id) == VARIABLE)
                 result.push_back(current_token());
             else {
-                //TODO add support for function args
+                //TODO add support for function args 
                 // right now just skip over the parens
                 auto* fn_call = current_token();
-                expect_token(ARC_OPEN_PAREN);
                 next_token_noreturn();
+                expect_token(ARC_OPEN_PAREN);
+                check_token(ARC_CLOSE_PAREN);
                 result.push_back(fn_call);
             }
         }
