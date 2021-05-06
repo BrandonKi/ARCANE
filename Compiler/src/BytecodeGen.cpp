@@ -60,17 +60,6 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
     }
     
 
-    // move the main function after the bootstrap section so it gets called first
-    auto& functions = file->functions;
-
-    auto it = std::find_if(functions.cbegin(), functions.cend(), [](auto* fn){ return fn->is_main;});
-    if(it == functions.end()) {
-        errorLog.push({FATAL, nullptr, args.path, "could not find main function"});
-        std::exit(-1);
-    }
-    auto main = *it;
-    functions.erase(it);
-    functions.insert(functions.begin(), main);
 
     for (const auto *function : file->functions) {
         // because we use insert_or_assign ou can redefine functions
@@ -80,6 +69,18 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
         gen_function(ctx, function);
         file_blocks.push_back(linkable_function{&function->id, ctx.code});
     }
+
+    // move the main function after the bootstrap section so it gets called first
+    auto& functions = file_blocks;
+
+    auto it = std::find_if(functions.cbegin(), functions.cend(), [](const auto& fn){ return *fn.name == "main";});
+    if(it == functions.end()) {
+        errorLog.push({FATAL, nullptr, args.path, "could not find main function"});
+        std::exit(-1);
+    }
+    auto main = *it;
+    functions.erase(it);
+    functions.insert(functions.begin()+1, main);
 
     // TODO LINK THE SHIT TOGETHER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return file_blocks;
@@ -94,11 +95,12 @@ void BytecodeGen::gen_import(bc_context& ctx, const Import *import) {
 void BytecodeGen::gen_function(bc_context& ctx, const Function *function) {
     PROFILE();
     push(ctx.code, vm::allocate_locals);
-    push(ctx.code, 0x00);
+    push(ctx.code, 0x00);   // placeholder for amount of local vars to allocate
     auto index = ctx.code.size() - 1;
     gen_block(ctx, function->body);
     push(ctx.code, vm::deallocate_locals);
     push(ctx.code, static_cast<u8>(local_variable_counter));
+    // replace the placeholder value
     ctx.code[index] = static_cast<u8>(local_variable_counter);
     local_variable_counter = 0;
 }

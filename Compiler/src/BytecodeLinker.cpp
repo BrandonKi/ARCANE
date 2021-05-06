@@ -16,10 +16,12 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
                 char *raw_fn_name = reinterpret_cast<char*>(&(function.code.data()[i+1]));
                 auto fn_name = astring(raw_fn_name);
                 auto a = function_table_.at(fn_name);
+                function.code[i+1] = 0x00;
+                function.code[i+2] = static_cast<u8>(a) -1;
             }
             else if(function.code[i] == vm::push_string) {
                 // move past the string literal part
-                // in case someone put vm::call_short in their string
+                // in case someone put the vm::call_short byte in their string
             }
         }
     }
