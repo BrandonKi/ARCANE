@@ -288,39 +288,86 @@ void BytecodeGen::gen_bin(bc_context& ctx, const Expr *expr) {
         case ARC_INFER:
             break;
         case ARC_ADD:
-            gen_expr(ctx, expr->binary_expr.left);
-            gen_expr(ctx, expr->binary_expr.right);
-            push(ctx.code, vm::adds);
+            if(expr->type == ARC_F64) { 
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::addf);
+            }
+            else if(expr->type == ARC_I64) {
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::adds);
+            }
             break;
         case ARC_SUB:
-            gen_expr(ctx, expr->binary_expr.left);
-            gen_expr(ctx, expr->binary_expr.right);
-            push(ctx.code, vm::subs);
+            if(expr->type == ARC_F64) { 
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::subf);
+            }
+            else if(expr->type == ARC_I64) {
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::subs);
+            }
             break;
         case ARC_DIV:
-            gen_expr(ctx, expr->binary_expr.left);
-            gen_expr(ctx, expr->binary_expr.right);
-            push(ctx.code, vm::divs);
+            if(expr->type == ARC_F64) { 
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::divf);
+            }
+            else if(expr->type == ARC_I64) {
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::divs);
+            }
             break;
         case ARC_MUL:
-            gen_expr(ctx, expr->binary_expr.left);
-            gen_expr(ctx, expr->binary_expr.right);
-            push(ctx.code, vm::muls);
+            if(expr->type == ARC_F64) { 
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::mulf);
+            }
+            else if(expr->type == ARC_I64) {
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::muls);
+            }
             break;
         case ARC_MOD:
-            gen_expr(ctx, expr->binary_expr.left);
-            gen_expr(ctx, expr->binary_expr.right);
-            push(ctx.code, vm::mods);
+            if(expr->type == ARC_F64) { 
+                // no mod for floats :(
+            }
+            else if(expr->type == ARC_I64) {
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::mods);
+            }
             break;
         case ARC_BIN_OR:
-            gen_expr(ctx, expr->binary_expr.left);
-            gen_expr(ctx, expr->binary_expr.right);
-            push(ctx.code, vm::ors);
+            if(expr->type == ARC_F64) { 
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::oru);    // FIXME I feel like this will break
+            }
+            else if(expr->type == ARC_I64) {
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::ors);
+            }
             break;
         case ARC_BIN_AND:
-            gen_expr(ctx, expr->binary_expr.left);
-            gen_expr(ctx, expr->binary_expr.right);
-            push(ctx.code, vm::ands);
+            if(expr->type == ARC_F64) { 
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::andu);    // FIXME I feel like this will break
+            }
+            else if(expr->type == ARC_I64) {
+                gen_expr(ctx, expr->binary_expr.left);
+                gen_expr(ctx, expr->binary_expr.right);
+                push(ctx.code, vm::ands);
+            }
             break;
         case ARC_LEFT_SHIFT:
             break;
