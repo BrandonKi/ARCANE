@@ -14,14 +14,15 @@ WIP
 # Sample Code
 
 ```zig
+fn add(a : int, b : int): int {
+    ret a + b;
+}
+
 fn main(): int {
     i := 0;
     x : int = 5;
     result := add(i, x);
     ret result;
-}
-fn add(a : int, b : int): int {
-    ret a + b;
 }
 ```
 Syntax Highlighting in VSCode: https://github.com/BrandonKi/arcane-syntax-highlighter
