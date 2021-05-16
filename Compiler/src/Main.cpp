@@ -16,13 +16,13 @@ int main(const int argc, const char* argv[]) {
     auto code = compiler.compile();
 
     std::ofstream bin("test.arcb", std::ios::out | std::ios::binary);
-    bin.write(reinterpret_cast<char*> (code.data()), code.size());
+    bin.write(std::bit_cast<char*> (code.data()), code.size());
     bin.close();
 
-    Arcvm VM;
-    if(VM.load_program(reinterpret_cast<char*>(code.data()), code.size()) == false)
+    Arcvm vm;
+    if(vm.load_program(std::bit_cast<char*>(code.data()), code.size()) == false)
         return -1;
-    std::cout << "Exited with code: " << VM.run();
+    std::cout << "Exited with code: " << vm.run();
 }
 
 void parse_args(const int argc, const char* argv[]) {         //TODO implement the rest of the available flags

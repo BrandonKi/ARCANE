@@ -288,15 +288,28 @@ void BytecodeGen::gen_bin(bc_context& ctx, const Expr *expr) {
         case ARC_INFER:
             break;
         case ARC_ADD:
-            if(expr->type == ARC_F64) { 
-                gen_expr(ctx, expr->binary_expr.left);
-                gen_expr(ctx, expr->binary_expr.right);
-                push(ctx.code, vm::addf);
-            }
-            else if(expr->type == ARC_I64) {
-                gen_expr(ctx, expr->binary_expr.left);
-                gen_expr(ctx, expr->binary_expr.right);
-                push(ctx.code, vm::adds);
+            switch(expr->binary_expr.left->type) {
+                case ARC_F64:
+                    gen_expr(ctx, expr->binary_expr.left);
+                    gen_expr(ctx, expr->binary_expr.right);
+                    push(ctx.code, vm::addf);
+                    break;
+                case ARC_I8:
+                case ARC_I16:
+                case ARC_I32:
+                case ARC_I64:
+                    gen_expr(ctx, expr->binary_expr.left);
+                    gen_expr(ctx, expr->binary_expr.right);
+                    push(ctx.code, vm::adds);
+                    break;
+                case ARC_U8:
+                case ARC_U16:
+                case ARC_U32:
+                case ARC_U64:
+                    gen_expr(ctx, expr->binary_expr.left);
+                    gen_expr(ctx, expr->binary_expr.right);
+                    push(ctx.code, vm::addu);
+                    break;
             }
             break;
         case ARC_SUB:

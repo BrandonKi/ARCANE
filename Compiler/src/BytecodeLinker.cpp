@@ -10,7 +10,7 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
     this->update_function_table(functions);
     auto code = code_block{};
     for(auto& function : functions) {
-        for(auto i = 0; i < function.code.size(); ++i) {
+        for(u32 i = 0; i < function.code.size(); ++i) {
             // TODO this is_letter check has a high chance of breaking
             if(function.code[i] == vm::call_short && is_letter(function.code[i+1])) {
                 char *raw_fn_name = reinterpret_cast<char*>(&(function.code.data()[i+1]));

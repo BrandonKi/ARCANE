@@ -34,12 +34,11 @@ Project* Parser::parse_project() {    //TODO another good candidate for multithr
 File* Parser::parse_file() {
     PROFILE();
     // reset the class wide index variable to zero
-    index_ = 0;
     const SourcePos start_pos = current_token()->pos;
     std::vector<Import*, arena_allocator<Import*>> imports;
     std::vector<Decl*, arena_allocator<Decl*>> decls;
     std::vector<Function*, arena_allocator<Function*>> functions;
-    for(; index_ < tokens_.size(); ++index_) {
+    for(index_ = 0; index_ < tokens_.size(); ++index_) {
         switch(current_token()->kind) {
             case ARC_IMPORT:
                 println("import statement");
@@ -215,7 +214,7 @@ Decl* Parser::parse_decl() {
                     next_token_noreturn();
                     auto *result = ast_.new_decl_node(start_pos, id, type, parse_expr());
                     // add symbol to table after parsing to avoid situations like this
-                    // where a variable is used in it's own decl
+                    // where a variable is used in it's own declaration
                     // var := var + 1;
                     s_table_.add_symbol(id, VARIABLE, token_kind_to_type(current_token()->kind));
                     return result;
@@ -342,7 +341,7 @@ Expr* Parser::parse_expr() {
 
 inline Token* Parser::current_token() {
     PROFILE();
-    return &tokens_[index_];
+    return &tokens_[static_cast<u32>(index_)];
 }
 
 inline Token* Parser::next_token() {
@@ -352,7 +351,7 @@ inline Token* Parser::next_token() {
         errorLog.flush();
     }
 
-    return &tokens_[++index_];
+    return &tokens_[static_cast<u32>(++index_)];
 }
 
 inline void Parser::next_token_noreturn() {
@@ -370,7 +369,7 @@ inline Token* Parser::peek_next_token() {
         errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Reached EOF while parsing"});
         errorLog.flush();
     }
-    return &tokens_[index_ + 1];
+    return &tokens_[static_cast<u32>(index_ + 1)];
 }
 
 // check if current token is something

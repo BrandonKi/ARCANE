@@ -118,6 +118,7 @@ enum ExprType {
 
 struct Expr : Node {
     ExprType type;
+    TokenKind result_type;
     union {
         struct {
             i64 val;
