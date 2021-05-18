@@ -1,5 +1,3 @@
-Old version is in the deprecated branch
-
 # ARCANE
 ARCANE is an acronym for
 ARCANE Runs, Compiles, And Never Explodes
