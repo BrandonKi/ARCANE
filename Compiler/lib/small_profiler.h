@@ -49,12 +49,15 @@
 #define PROFILE_OUTPUT_FILE "profile.json"
 #endif
 
+#define CONCAT(a, b) CONCAT_(a, b)
+#define CONCAT_(a, b) a ## b
+
 #ifdef NO_PROFILE
 #define PROFILE()
-#define PROFILE_SCOPE(x) PROFILE()
+#define PROFILE(x) PROFILE()
 #else
-#define PROFILE() small_profiler::internal_scoped_profiler _small_profiler_temp_{__FUNCTION__}
-#define PROFILE_SCOPE(x) small_profiler::internal_scoped_profiler _small_profiler_temp_{x}
+#define PROFILE() small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__){__FUNCTION__}
+#define PROFILE_SCOPE(x) small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__){x}
 namespace small_profiler {
 
     inline unsigned long long get_pid() {
