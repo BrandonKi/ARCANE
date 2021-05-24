@@ -12,4 +12,8 @@ CMakeSettings.json
 *.exe
 *.o
 
+# profiler files
 profile.json
+
+# compiler output files
+*.arcb
