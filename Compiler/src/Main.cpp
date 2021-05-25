@@ -8,8 +8,6 @@ void parse_args(const int, const char* argv[]);
 int main(const int argc, const char* argv[]) {
     PROFILE();
 
-    init_pLog();        // init pLog lib
-
     parse_args(argc, argv);
 
     Compiler compiler;
@@ -47,6 +45,7 @@ void parse_args(const int argc, const char* argv[]) {         //TODO implement t
             args.output_path = arg_list[++i];
         }
     }
-    args.output_path = "out.arcb";
+    if(args.output_path.empty())
+        args.output_path = "out.arcb";
     args.path = arg_list.back();
 }
