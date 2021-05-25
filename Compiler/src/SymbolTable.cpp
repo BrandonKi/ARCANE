@@ -21,11 +21,11 @@ SymbolTable::SymbolTable():
     push_scope();
 }
 
-void SymbolTable::add_symbol(const astring& id, const SymbolType kind, const Type arc_type) {
+void SymbolTable::add_symbol(const astring& id, const SymbolType kind, const type_handle arc_type) {
     current_scope().insert(pair(id, Symbol{kind, arc_type}));
 }
 
-void SymbolTable::add_function(const astring& id, const std::vector<Type, arena_allocator<Type>> fn_args, const SymbolType kind, const Type arc_type) {
+void SymbolTable::add_function(const astring& id, const std::vector<type_handle, arena_allocator<type_handle>> fn_args, const SymbolType kind, const type_handle arc_type) {
     current_scope().insert(pair(id, Symbol{kind, arc_type, fn_args}));
 }
 

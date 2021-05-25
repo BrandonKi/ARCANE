@@ -1,7 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include "ErrorHandler.h"
+#include "TypeManager.h"
 
 static inline ErrorHandler errorLog{};
 

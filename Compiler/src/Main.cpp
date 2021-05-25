@@ -22,7 +22,7 @@ int main(const int argc, const char* argv[]) {
     Arcvm vm;
     if(!vm.load_program(std::bit_cast<char*>(code.data()), code.size()))
         return -1;
-    std::cout << "Exited with code: " << vm.run();
+    std::cout << "Exited with code: " << vm.run() << '\n';
 }
 
 void parse_args(const int argc, const char* argv[]) {         //TODO implement the rest of the available flags

@@ -34,7 +34,7 @@ class Parser{
 
         u8 precedence(const TokenKind);
 
-        Type token_kind_to_type(const TokenKind);
+        type_handle token_kind_to_type(const TokenKind);
 };
 
 #endif

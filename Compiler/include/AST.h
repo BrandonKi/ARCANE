@@ -13,23 +13,6 @@ struct Statement;
 struct Expr;
 struct Decl;
 
-enum Type {
-    TYPE_INFER,
-    TYPE_I8,
-    TYPE_I16,
-    TYPE_I32,
-    TYPE_I64,
-    TYPE_U8,
-    TYPE_U16,
-    TYPE_U32,
-    TYPE_U64,
-    TYPE_F32,
-    TYPE_F64,
-    TYPE_STRUCT,
-    TYPE_STRING,
-    TYPE_ARR,
-};
-
 struct Node {
     SourcePos pos;
 };
@@ -54,8 +37,8 @@ struct Import : Node {
 
 struct Function : Node {
     astring id;
-    std::vector<Type, arena_allocator<Type>> args;
-    Type return_type;
+    std::vector<type_handle, arena_allocator<type_handle>> args;
+    type_handle return_type;
     Block* body;
     bool is_main;
 };
@@ -118,7 +101,7 @@ enum ExprType {
 
 struct Expr : Node {
     ExprType type;
-    TokenKind result_type;
+    type_handle result_type;
     union {
         struct {
             i64 val;
@@ -147,7 +130,7 @@ struct Expr : Node {
 
 struct Decl : Node {
     astring* id;
-    Type type;
+    type_handle type;
     Expr* val;
 };
 
@@ -167,7 +150,7 @@ class AST {
         [[nodiscard]] Project* new_project_node(const SourcePos, std::vector<File*, arena_allocator<File*>>&);
         [[nodiscard]] File* new_file_node(const SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
         [[nodiscard]] Import* new_import_node(const SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        [[nodiscard]] Function* new_function_node(const SourcePos, astring&, std::vector<Type, arena_allocator<Type>>&, Type, Block*, const bool);
+        [[nodiscard]] Function* new_function_node(const SourcePos, astring&, std::vector<type_handle, arena_allocator<type_handle>>&, type_handle, Block*, const bool);
         [[nodiscard]] Block* new_block_node(const SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
         [[nodiscard]] While_* new_while_node(const SourcePos, Expr*, Block*);
         [[nodiscard]] For_* new_for_node(const SourcePos, Decl*, Expr*, Expr*, Block*);
@@ -185,7 +168,7 @@ class AST {
         [[nodiscard]] Expr* new_expr_node_variable(const SourcePos, astring&);
         [[nodiscard]] Expr* new_expr_node_bin_expr(const SourcePos, const TokenKind, Expr*, Expr*);
         [[nodiscard]] Expr* new_expr_node_unary_expr(const SourcePos, const TokenKind, Expr*);
-        [[nodiscard]] Decl* new_decl_node(const SourcePos, astring&, const Type, Expr*);
+        [[nodiscard]] Decl* new_decl_node(const SourcePos, astring&, const type_handle, Expr*);
 
 
 };

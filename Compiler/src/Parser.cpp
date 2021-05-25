@@ -70,7 +70,7 @@ Import* Parser::parse_import() {
 Function* Parser::parse_function() {
     PROFILE();
     const SourcePos start_pos = current_token()->pos;
-    std::vector<Type, arena_allocator<Type>> fn_args;
+    std::vector<type_handle, arena_allocator<type_handle>> fn_args;
     expect_token(ARC_FN);
     astring id;
     if(check_token(ARC_ID))
@@ -80,7 +80,7 @@ Function* Parser::parse_function() {
     // parse func args
     expect_token(ARC_CLOSE_PAREN);
     expect_token(ARC_COLON);
-    Type ret = token_kind_to_type(current_token()->kind);
+    type_handle ret = token_kind_to_type(current_token()->kind);
     if(ret == -1)
         errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Unknown return type"});
     next_token_noreturn();
@@ -186,11 +186,11 @@ Decl* Parser::parse_decl() {
     const SourcePos start_pos = current_token()->pos;
     astring& id = *(current_token()->data);
     if(peek_next_token()->kind == ARC_INFER) {
-        s_table_.add_symbol(id, VARIABLE, TYPE_INFER);
+        s_table_.add_symbol(id, VARIABLE, TYPE_UNKNOWN);
     }
     else if(next_token()->kind == ARC_COLON) {
         next_token_noreturn();
-        const Type type = token_kind_to_type(current_token()->kind);
+        const type_handle type = token_kind_to_type(current_token()->kind);
         switch(current_token()->kind) {
             case ARC_I8:
             case ARC_I16:
@@ -401,11 +401,11 @@ inline bool Parser::expect_token(const TokenKind kind) {
     return false;
 }
 
-inline Type Parser::token_kind_to_type(const TokenKind tkn) {
+inline type_handle Parser::token_kind_to_type(const TokenKind tkn) {
     PROFILE();
     switch(tkn){
         case ARC_INFER:
-            return TYPE_INFER;
+            return TYPE_UNKNOWN;
         case ARC_I8:
             return TYPE_I8;
         case ARC_I16:
@@ -426,14 +426,8 @@ inline Type Parser::token_kind_to_type(const TokenKind tkn) {
             return TYPE_F32;
         case ARC_F64:
             return TYPE_F64;
-        case ARC_STRUCT:
-            return TYPE_STRUCT;
-        case ARC_STR:
-            return TYPE_STRING;
-        case ARC_ARR:
-            return TYPE_ARR;
     }
-    return static_cast<Type>(-1);   // invalid value
+    return static_cast<type_handle>(0);   // invalid value
 }
 
 u8 Parser::precedence(const TokenKind kind) {

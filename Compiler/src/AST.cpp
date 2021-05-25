@@ -42,7 +42,7 @@ AST::~AST() {
     return ptr;
 }
 
-[[nodiscard]] Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<Type, arena_allocator<Type>>& arg_types, Type type, Block* body, const bool is_main) {
+[[nodiscard]] Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<type_handle, arena_allocator<type_handle>>& arg_types, type_handle type, Block* body, const bool is_main) {
     PROFILE();
     auto *ptr = reinterpret_cast<Function*>(allocator_.allocate(sizeof(Function)));
     allocator_.construct(ptr, Function{{pos}, id, arg_types, type, body, is_main });
@@ -184,7 +184,7 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
     return ptr;
 }
 
-[[nodiscard]] Decl* AST::new_decl_node(const SourcePos pos, astring& id, const Type type, Expr* val) {
+[[nodiscard]] Decl* AST::new_decl_node(const SourcePos pos, astring& id, const type_handle type, Expr* val) {
     PROFILE(); 
     auto* ptr = reinterpret_cast<Decl*>(allocator_.allocate(sizeof(Decl)));
     allocator_.construct(ptr, Decl{ {pos}, &id, type, val });

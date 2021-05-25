@@ -277,7 +277,7 @@ void BytecodeGen::gen_bin(bc_context& ctx, const Expr *expr) {
         case ARC_ASSIGN:
         {
             if(expr->binary_expr.left->type != EXPR_ID)
-                (void)1; // FIXME error here
+                (void)1; // FIXME error here, also this shouldn't even be an issue at this stage
             const auto index = variable_table_.at(*(expr->binary_expr.left->id.val));
             // TODO add error case if id is not found
             gen_expr(ctx, expr->binary_expr.right);
@@ -287,96 +287,96 @@ void BytecodeGen::gen_bin(bc_context& ctx, const Expr *expr) {
         }
         case ARC_INFER:
             break;
-        case ARC_ADD:
-            switch(expr->binary_expr.left->type) {
-                case ARC_F64:
+        case ARC_ADD:   // TODO fix all the types plz
+            switch(expr->result_type) {
+                case TYPE_F64:
                     gen_expr(ctx, expr->binary_expr.left);
                     gen_expr(ctx, expr->binary_expr.right);
                     push(ctx.code, vm::addf);
                     break;
-                case ARC_I8:
-                case ARC_I16:
-                case ARC_I32:
-                case ARC_I64:
+                case TYPE_I8:
+                case TYPE_I16:
+                case TYPE_I32:
+                case TYPE_I64:
                     gen_expr(ctx, expr->binary_expr.left);
                     gen_expr(ctx, expr->binary_expr.right);
                     push(ctx.code, vm::adds);
                     break;
-                case ARC_U8:
-                case ARC_U16:
-                case ARC_U32:
-                case ARC_U64:
+                case TYPE_U8:
+                case TYPE_U16:
+                case TYPE_U32:
+                case TYPE_U64:
                     gen_expr(ctx, expr->binary_expr.left);
                     gen_expr(ctx, expr->binary_expr.right);
                     push(ctx.code, vm::addu);
                     break;
             }
             break;
-        case ARC_SUB:
-            if(expr->type == ARC_F64) { 
+        case ARC_SUB:   // TODO all these types are just plain incorrect :(
+            if(expr->result_type == TYPE_F64) { 
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::subf);
             }
-            else if(expr->type == ARC_I64) {
+            else if(expr->result_type == TYPE_I64) {
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::subs);
             }
             break;
         case ARC_DIV:
-            if(expr->type == ARC_F64) { 
+            if(expr->result_type == TYPE_F64) { 
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::divf);
             }
-            else if(expr->type == ARC_I64) {
+            else if(expr->result_type == TYPE_I64) {
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::divs);
             }
             break;
         case ARC_MUL:
-            if(expr->type == ARC_F64) { 
+            if(expr->result_type == TYPE_F64) { 
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::mulf);
             }
-            else if(expr->type == ARC_I64) {
+            else if(expr->result_type == TYPE_I64) {
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::muls);
             }
             break;
         case ARC_MOD:
-            if(expr->type == ARC_F64) { 
+            if(expr->result_type == TYPE_F64) { 
                 // no mod for floats :(
             }
-            else if(expr->type == ARC_I64) {
+            else if(expr->result_type == TYPE_I64) {
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::mods);
             }
             break;
         case ARC_BIN_OR:
-            if(expr->type == ARC_F64) { 
+            if(expr->result_type == TYPE_F64) { 
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::oru);    // FIXME I feel like this will break
             }
-            else if(expr->type == ARC_I64) {
+            else if(expr->result_type == TYPE_I64) {
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::ors);
             }
             break;
         case ARC_BIN_AND:
-            if(expr->type == ARC_F64) { 
+            if(expr->result_type == TYPE_F64) { 
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::andu);    // FIXME I feel like this will break
             }
-            else if(expr->type == ARC_I64) {
+            else if(expr->result_type == TYPE_I64) {
                 gen_expr(ctx, expr->binary_expr.left);
                 gen_expr(ctx, expr->binary_expr.right);
                 push(ctx.code, vm::ands);

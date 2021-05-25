@@ -6,8 +6,9 @@ BytecodeLinker::BytecodeLinker() {
 
 }
 
+// FIXE honestly this whole thing is a mess
 code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_allocator<linkable_function>>& functions) {
-    this->update_function_table(functions);
+    update_function_table(functions);
     auto code = code_block{};
     for(auto& function : functions) {
         for(u32 i = 0; i < function.code.size(); ++i) {
