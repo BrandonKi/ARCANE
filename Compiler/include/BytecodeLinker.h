@@ -1,4 +1,4 @@
-#include "AST.h"
+#include "TypeInference.h"
 
 // include to get access to instructions
 #include "Arcvm.h"

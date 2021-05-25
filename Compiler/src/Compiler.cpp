@@ -10,6 +10,9 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     std::vector<RawFile, arena_allocator<RawFile>> projectFiles = get_project_files();
     Parser parser(projectFiles);
     Project *ast = parser.parse();
+
+    TypeInference ti(ast);
+    ti.start();
     
     //TODO convert to another IR for easier optimization and optimize step
 
@@ -17,6 +20,7 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     return gen.gen_code();
 }
 
+// FIXME this uses the std allocator
 astring Compiler::read_file(const astring& filepath) {
     PROFILE();
     std::ifstream file;

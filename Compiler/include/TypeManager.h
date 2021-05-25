@@ -54,6 +54,8 @@ enum PrimitiveTypeHandles : int {
 
 class TypeManager {
 
+    struct Function;
+
 public:
     TypeManager();
 
@@ -61,9 +63,12 @@ public:
     type_handle get_type_handle(const astring&);
     Type get_type(type_handle);
 
+
     void add_alias(const astring&, const astring&);
 
-    void define_operator();
+    void define_operator(TokenKind, type_handle, type_handle, Function*);
+    bool operator_exists(TokenKind, type_handle, type_handle);
+    type_handle get_operator_result_type(TokenKind, type_handle, type_handle);
 
 private:
     // initialized with language primitives
@@ -80,5 +85,7 @@ private:
         {"f32", 4},
         {"f64", 8},
     };
-
 };
+
+// create single global instance of class
+static TypeManager type_manager;

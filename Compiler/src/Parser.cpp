@@ -186,7 +186,11 @@ Decl* Parser::parse_decl() {
     const SourcePos start_pos = current_token()->pos;
     astring& id = *(current_token()->data);
     if(peek_next_token()->kind == ARC_INFER) {
+        next_token_noreturn();
+        next_token_noreturn();
+        auto *result = ast_.new_decl_node(start_pos, id, TYPE_UNKNOWN, parse_expr());
         s_table_.add_symbol(id, VARIABLE, TYPE_UNKNOWN);
+        return result;
     }
     else if(next_token()->kind == ARC_COLON) {
         next_token_noreturn();

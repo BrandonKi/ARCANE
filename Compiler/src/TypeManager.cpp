@@ -1,5 +1,8 @@
 #include "TypeManager.h"
 
+// forward declare Function
+struct Function;
+
 TypeManager::TypeManager() {
 
 }
@@ -26,6 +29,15 @@ void TypeManager::add_alias(const astring& alias, const astring& original) {
 
 }
 
-void TypeManager::define_operator() {
+void TypeManager::define_operator(TokenKind op, type_handle lhs, type_handle rhs, Function* impl) {
+    // Function needs to be forward declared
+    // otherwise we run into the circular dependency mess :(
+}
 
+bool TypeManager::operator_exists(TokenKind op, type_handle lhs, type_handle rhs) {
+    return true;    //TODO actually implement this
+}
+
+type_handle TypeManager::get_operator_result_type(TokenKind op, type_handle lhs, type_handle rhs) {
+    return TYPE_I64;    // TODO actually implement this
 }
