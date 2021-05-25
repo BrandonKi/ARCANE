@@ -8,9 +8,8 @@
  * 
  * @example 
  * 
- * // Call init_pLog before using any functions. 
- * // This is only needed on Windows, but should be called just in case.
- * init_pLog();
+ * // check the value of pLog_err to see if the current terminal/console supports virtual terminal processing
+ * // This is only needed on Windows, but should be checked just in case
  * 
  * println("test", UNDERLINE, BOLD, RED);
  * 
@@ -455,4 +454,7 @@ namespace pLog{
             println(std::to_string(str), fstring(modifiers...));
     }
 }
+
+inline auto pLog_err = pLog::init_pLog();
+
 #endif
