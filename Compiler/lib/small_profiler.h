@@ -53,8 +53,8 @@
 #define CONCAT_(a, b) a ## b
 
 #ifdef NO_PROFILE
-#define PROFILE()
-#define PROFILE(x) PROFILE()
+#define PROFILE() (static_cast<void>(0))
+#define PROFILE_SCOPE(x) PROFILE()
 #else
 #define PROFILE() small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__){__FUNCTION__}
 #define PROFILE_SCOPE(x) small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__){x}
