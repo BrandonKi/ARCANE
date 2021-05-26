@@ -1,15 +1,18 @@
 #include "BytecodeGen.h"
 
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
 using vm = Arcvm;
 
 BytecodeGen::BytecodeGen(Project *ast):
     ast_(ast), code_(), variable_table_(), local_variable_counter()
 {
-
+    PROFILE();
 }
 
 BytecodeGen::~BytecodeGen() {
-
+    PROFILE();
 }
 
 code_block BytecodeGen::gen_code() {
@@ -75,7 +78,7 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
 
     auto it = std::find_if(functions.cbegin(), functions.cend(), [](const auto& fn){ return *fn.name == "main";});
     if(it == functions.end()) {
-        errorLog.push({FATAL, nullptr, args.path, "could not find main function"});
+        error_log.push({FATAL, nullptr, args.path, "could not find main function"});
         std::exit(-1);
     }
     auto main = *it;
@@ -237,8 +240,8 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
         push(ctx.code, '\0');
     }
     else {
-        errorLog.push({FATAL, nullptr, args.path, "how the fuck did you manage to get this error"});
-        errorLog.flush();
+        error_log.push({FATAL, nullptr, args.path, "how the fuck did you manage to get this error"});
+        error_log.flush();
         std::exit(-1);
     }
 }

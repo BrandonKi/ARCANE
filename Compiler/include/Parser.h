@@ -12,9 +12,10 @@ class Parser{
     private:
         std::vector<LexedFile> data_;
         std::vector<Token, arena_allocator<Token>> tokens_;
-        u64 index_;
+        u64 index_ = 0;
         AST ast_;
         SymbolTable s_table_;
+        astring current_filename_;
 
         Project* parse_project();
         File* parse_file();

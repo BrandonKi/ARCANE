@@ -3,8 +3,6 @@
 
 #include "TypeManager.h"
 
-static inline ErrorHandler errorLog{};
-
 class Lexer {
 
     #define CASE_DIGIT case '0': case '1': case '2': case '3': case '4': case '5': \
@@ -18,7 +16,7 @@ class Lexer {
                     case 't':case 'u':case 'v':case 'w':case 'x':case 'y':case 'z':case '_'
 
     public:
-        explicit Lexer(const astring&);
+        Lexer(const astring&, const astring&);
         [[nodiscard]] std::vector<Token, arena_allocator<Token>> lex();
         [[nodiscard]] char current_char() const;
         [[nodiscard]] char next_char();
@@ -29,6 +27,7 @@ class Lexer {
         [[nodiscard]] char peek_prev_char() const;
 
     private:
+        const astring filename_;
         const astring data_;
         std::vector<Token, arena_allocator<Token>> tokens_;
         u32 index_;

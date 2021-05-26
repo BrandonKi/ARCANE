@@ -1,22 +1,28 @@
 #include "TypeInference.h"
 
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
 TypeInference::TypeInference(Project* ast):
     ast_(ast)
 {
-
+    PROFILE();
 }
 
 void TypeInference::start() {
+    PROFILE();
     analyze_project(ast_);
 }
 
 void TypeInference::analyze_project(Project* project) {
+    PROFILE();
     for (auto* file : ast_->files) {
         analyze_file(file);
     }
 }
 
 void TypeInference::analyze_file(File* file) {
+    PROFILE();
     for (auto* decl : file->decls) {
         analyze_decl(decl);
     }
@@ -27,6 +33,7 @@ void TypeInference::analyze_file(File* file) {
 }
 
 void TypeInference::analyze_function(Function* function) {
+    PROFILE();
     for (auto* stmnt : function->body->statements) {
         switch(stmnt->type) {
             case WHILE:
@@ -50,6 +57,7 @@ void TypeInference::analyze_function(Function* function) {
 }
 
 void TypeInference::analyze_decl(Decl* decl) {
+    PROFILE();
     analyze_expr(decl->val);
 
     // if we have to infer the type
@@ -65,7 +73,7 @@ void TypeInference::analyze_decl(Decl* decl) {
 }
 
 type_handle TypeInference::analyze_expr(Expr* expr) {
-    
+    PROFILE();
     switch(expr->type) {
         case EXPR_INT_LIT:
             expr->result_type = TYPE_I64;

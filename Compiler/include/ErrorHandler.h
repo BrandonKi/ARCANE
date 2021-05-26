@@ -19,6 +19,7 @@ class ErrorHandler {
         ErrorHandler();
         ~ErrorHandler();
 
+        void exit(ErrorMessage);
         void push(ErrorMessage);
         void flush();
 
@@ -27,7 +28,10 @@ class ErrorHandler {
         astring buffer;
 
         astring make_preamble(ErrorMessage& error);
+        astring create_graphic(ErrorMessage& error);
 
-};
+        std::vector<astring, arena_allocator<astring>> read_file_by_line(const astring& filepath);
+
+    };
 
 #endif

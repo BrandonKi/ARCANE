@@ -1,15 +1,16 @@
 #include "Parser.h"
 
-Parser::Parser(std::vector<RawFile, arena_allocator<RawFile>>& project_files):
-	index_(0)
-{  //TODO good candidate for multithreading
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
+Parser::Parser(std::vector<RawFile, arena_allocator<RawFile>>& project_files) {
+    //TODO good candidate for multithreading
     PROFILE();
     // std::thread worker([](){});
     // lex all the files
     for(const auto& rf: project_files){
-        std::cout << rf.filepath << '\n';
-        Lexer lexer(rf.filedata);
-        data_.push_back(LexedFile{rf.filepath, lexer.lex()});
+        Lexer lexer(rf.filename, rf.filedata);
+        data_.push_back(LexedFile{rf.filepath, rf.filename, lexer.lex()});
     } 
 }
 
@@ -26,6 +27,7 @@ Project* Parser::parse_project() {    //TODO another good candidate for multithr
     for(const auto& lf : data_) {
         // update/reset member variables for each file
         tokens_ = lf.filedata;
+        current_filename_ = lf.filename;
         files.push_back(parse_file());
     }
     return ast_.new_project_node(SourcePos{}, files);
@@ -82,7 +84,7 @@ Function* Parser::parse_function() {
     expect_token(ARC_COLON);
     type_handle ret = token_kind_to_type(current_token()->kind);
     if(ret == -1)
-        errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Unknown return type"});
+        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unknown return type"});
     next_token_noreturn();
     s_table_.add_function(id, fn_args, FUNCTION, ret);
     Block* block = parse_block();
@@ -158,7 +160,7 @@ Statement* Parser::parse_statement() {
             expect_token(ARC_RET);
             auto *result = ast_.new_statement_node_ret(start_pos, ast_.new_ret_node(start_pos, parse_expr()));
             if(current_token()->kind != ARC_SEMICOLON)
-                errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Expected semicolon"});
+                error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Expected semicolon"});
             return result;
             break;
         }
@@ -225,18 +227,18 @@ Decl* Parser::parse_decl() {
                 }
                 else {
                     //TODO syntax error here
-                    errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "INVALID TOKEN"});
+                    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "INVALID TOKEN"});
                 }
                 break;
             default:
                 //TODO syntax error here
-                errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "INVALID TOKEN"});
+                error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "INVALID TOKEN"});
                 break;
         }
     }
     else {
         //TODO syntax error here
-        errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "INVALID TOKEN"});
+        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "INVALID TOKEN"});
     }
     return new Decl{};
 }
@@ -261,8 +263,7 @@ Expr* Parser::parse_expr() {
         else if(current_token()->kind == ARC_ID) {    //TODO differentiate between functions and variables
             auto id = *(current_token()->data);
             if(!s_table_.has(id)) {
-                errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Unknown identifier"});
-                std::exit(-1);
+                error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unknown identifier"});
             }
             // if not function call
             if(peek_next_token()->kind != ARC_OPEN_PAREN && s_table_.get_kind(id) == VARIABLE)
@@ -295,7 +296,7 @@ Expr* Parser::parse_expr() {
                 result.push_back(stack.back());
                 stack.pop_back();
                 if(stack.empty()){
-                    errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Extra closing parentheses"});
+                    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Extra closing parentheses"});
                 }
             }
             stack.pop_back();
@@ -351,8 +352,7 @@ inline Token* Parser::current_token() {
 inline Token* Parser::next_token() {
     PROFILE();
     if(index_ + 1 >= tokens_.size()) {
-        errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Reached EOF while parsing"});
-        errorLog.flush();
+        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Reached EOF while parsing"});
     }
 
     return &tokens_[static_cast<u32>(++index_)];
@@ -361,8 +361,7 @@ inline Token* Parser::next_token() {
 inline void Parser::next_token_noreturn() {
     PROFILE();
     if (index_ + 1 >= tokens_.size()) {
-        errorLog.push(ErrorMessage{ FATAL, current_token(), args.path, "Reached EOF while parsing" });
-        errorLog.flush();
+        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Reached EOF while parsing" });
     }
     ++index_;
 }
@@ -370,8 +369,7 @@ inline void Parser::next_token_noreturn() {
 inline Token* Parser::peek_next_token() {
     PROFILE();
     if(index_ + 1 >= tokens_.size()) {
-        errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Reached EOF while parsing"});
-        errorLog.flush();
+        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Reached EOF while parsing"});
     }
     return &tokens_[static_cast<u32>(index_ + 1)];
 }
@@ -379,11 +377,11 @@ inline Token* Parser::peek_next_token() {
 // check if current token is something
 // does not increment
 inline bool Parser::check_token(const TokenKind kind) {
+    PROFILE();
     [[likely]] if(current_token()->kind == kind)
         return true;
-    errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Unexpected token"});
-    errorLog.flush();
-    return false;    
+    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unexpected token"});
+    return false;
 }
 
 // TODO since this function doesn't exit
@@ -395,12 +393,12 @@ inline bool Parser::check_token(const TokenKind kind) {
 // expect the current token to be something otherwise syntax error
 //
 inline bool Parser::expect_token(const TokenKind kind) {
+    PROFILE();
     [[likely]] if(check_token(kind)) {
         next_token_noreturn();
         return true;
     }
-    errorLog.push(ErrorMessage{FATAL, current_token(), args.path, "Unexpected token"});
-    errorLog.flush();
+    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unexpected token"});
     next_token_noreturn();
     return false;
 }

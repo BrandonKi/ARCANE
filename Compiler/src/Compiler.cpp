@@ -1,5 +1,8 @@
 #include "Compiler.h"
 
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
 Compiler::Compiler() {
     PROFILE();
     /* Nothing to see here */
@@ -20,22 +23,12 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     return gen.gen_code();
 }
 
-// FIXME this uses the std allocator
-astring Compiler::read_file(const astring& filepath) {
-    PROFILE();
-    std::ifstream file;
-    file.open(filepath);
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    file.close();
-    return astring(buffer.str());
-}
-
 std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {   // TODO refactor big time
     PROFILE();
     std::vector<RawFile, arena_allocator<RawFile>> result;
     std::vector<astring, arena_allocator<astring>> projectFileNames;
     if(!args.project){
+        //TODO find an easy way to get file name
         result.push_back(RawFile{args.path, read_file(args.path)});
     }
     else{
@@ -48,7 +41,11 @@ std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {  
         for(const auto& file : std::filesystem::directory_iterator(args.path)){
             for(astring& name : projectFileNames){
                 if(strtoastr(file.path().filename().string()) == name){
-                    result.push_back(RawFile{strtoastr(file.path().string()), read_file(strtoastr(file.path().string()))});
+                    result.push_back(RawFile{
+                        strtoastr(file.path().string()),
+                        strtoastr(file.path().filename().string()),
+                        read_file(strtoastr(file.path().string()))
+                    });
                     break;
                 }
             }
@@ -69,6 +66,17 @@ std::vector<astring, arena_allocator<astring>> Compiler::parse_project_spec_file
             result.push_back(line);
     }
     return result;
+}
+
+// FIXME this uses the std allocator
+[[nodiscard]] astring Compiler::read_file(const astring& filepath) {
+    PROFILE();
+    std::ifstream file;
+    file.open(filepath);
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    file.close();
+    return astring(buffer.str());
 }
 
 void Compiler::trim(astring& str) {  //TODO move this function to a different file

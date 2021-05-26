@@ -1,5 +1,8 @@
 #include "AST.h"
 
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
 #define ARENA_ALLOCATOR__SIZE 5000
 
 AST::AST():
@@ -133,7 +136,7 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
     return ptr;
 }
 
-[[nodiscard]] Expr* AST::new_expr_node_int_literal(const SourcePos pos, const u64 int_literal) {
+[[nodiscard]] Expr* AST::new_expr_node_int_literal(const SourcePos pos, const i64 int_literal) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_INT_LIT});

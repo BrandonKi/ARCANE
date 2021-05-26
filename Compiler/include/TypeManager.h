@@ -86,6 +86,3 @@ private:
         {"f64", 8},
     };
 };
-
-// create single global instance of class
-static TypeManager type_manager;

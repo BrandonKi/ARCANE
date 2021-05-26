@@ -1,11 +1,13 @@
 #include "Lexer.h"
 
-Lexer::Lexer(const astring& filedata):
-    data_(filedata), tokens_(arena_allocator<Token>{}), index_(0), line_(1), col_(1)
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
+Lexer::Lexer(const astring& filename, const astring& filedata):
+    filename_(filename), data_(filedata), tokens_(arena_allocator<Token>{}),
+    index_(0), line_(1), col_(1)
 {
     PROFILE();
-    // errorLog.push(ErrorMessage{FATAL, new Token{astring("100"), (TokenKind)0, 0, 0}, astring("filename.txt"), astring("invalid token")});
-    // errorLog.flush();
     tokens_.reserve(100);
 }
 
@@ -209,7 +211,8 @@ Token Lexer::lex_string() {  //TODO escape sequences
     const auto start_pos = index_;
 
     auto& id = *new astring; //FIXME use arena alloc
-        
+
+    // current_char is either " or '
     const auto end = current_char();
 
     while(next_char() != end) {
@@ -220,10 +223,15 @@ Token Lexer::lex_string() {  //TODO escape sequences
 }
 
 Token Lexer::lex_interpolated_string() {  //TODO implement interpolated strings
-    // errorLog.push(ErrorMessage{FATAL, lexString(), args.path, astring("interpolated strings are not implemented yet stop trying to use them >.>")});
-    // errorLog.flush();
-    std::exit(-1);
-    // return new Token{};
+    PROFILE();
+    // FIXME
+    const auto start_pos = index_;
+    const auto start_col = col_;
+
+    while(next_char() != '`');
+    auto tkn = create_token(ARC_STRING_LIT, start_col, start_pos);
+    error_log.exit(ErrorMessage{FATAL, &tkn, filename_, astring("interpolated strings are not implemented yet")});
+    return Token{};
 }
 
 Token Lexer::lex_colon() {
@@ -466,15 +474,11 @@ inline char Lexer::peek_prev_char() const {
 
 inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos) const {
     PROFILE();
-    // Token* tkn = allocator.alloc<Token>();
-    // *tkn = Token {kind, SourcePos{line, col, startPos, index}, nullptr};
     return Token {kind, SourcePos{line_, col_, start_pos, index_}, nullptr};
 }
  
 inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos) const {
     PROFILE();
-    // Token* tkn = allocator.alloc<Token>();
-    // *tkn = Token {kind, SourcePos{line, currentCol, startPos, index}, nullptr};
     return Token {kind, SourcePos{line_, current_col, start_pos, index_}, nullptr};
 }
 
@@ -488,7 +492,6 @@ inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos, astr
     return create_token(kind, col_, start_pos, val);
 }
 
-
 inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, astring& val) const  {   //FIXME no reason to pass a string here
     PROFILE();
     return Token {kind, SourcePos{line_, current_col, start_pos, index_}, &val};
@@ -496,11 +499,12 @@ inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, co
 
 inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, astring&& val) const  {   //FIXME no reason to pass a string here
     PROFILE();
-    astring* val2 = new astring(val);   //FIXME temporary
+    auto* val2 = new astring(val);   //FIXME temporary
     return Token {kind, SourcePos{line_, current_col, start_pos, index_}, val2};
 }
 
 inline void Lexer::print_tokens(const bool verbose) const {
+    PROFILE();
     if(verbose)
         for(const auto& tkn : tokens_)
             println_token(&tkn);

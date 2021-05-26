@@ -167,13 +167,13 @@ struct Token {
 
 struct RawFile {
     astring filepath;
-    // astring filename;
+    astring filename;
     astring filedata;
 };
 
 struct LexedFile {
     astring filepath;
-    // astring filename;
+    astring filename;
     std::vector<Token, arena_allocator<Token>> filedata;
 };
 

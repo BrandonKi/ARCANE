@@ -1,13 +1,17 @@
 #include "BytecodeLinker.h"
 
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
 using vm = Arcvm;
 
 BytecodeLinker::BytecodeLinker() {
-
+    PROFILE();
 }
 
 // FIXE honestly this whole thing is a mess
 code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_allocator<linkable_function>>& functions) {
+    PROFILE();
     update_function_table(functions);
     auto code = code_block{};
     for(auto& function : functions) {
@@ -35,6 +39,7 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
 }
 
 void BytecodeLinker::update_function_table(std::vector<linkable_function, arena_allocator<linkable_function>>& functions) {
+    PROFILE();
     u64 location = 0;
     for(auto& function : functions) {
         function_table_.insert_or_assign(*function.name, location);
