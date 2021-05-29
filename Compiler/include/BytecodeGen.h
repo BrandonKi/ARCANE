@@ -30,6 +30,7 @@ class BytecodeGen final {
         // use arena allocator for these
         std::unordered_map<astring, int> variable_table_;
         std::unordered_map<astring, code_block> function_table_;
+        std::vector<Arg, arena_allocator<Arg>> function_args_;
 
         int local_variable_counter;
         
@@ -59,6 +60,7 @@ class BytecodeGen final {
         void push_string(code_block&, const astring&);
 
         void generate_bootstrap(bc_context&);
+        bool is_function_arg(astring);
 
         template<
             typename T__,

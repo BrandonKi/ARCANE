@@ -29,7 +29,7 @@ void SymbolTable::add_symbol(const astring& id, const SymbolType kind, const typ
     current_scope().insert(pair(id, Symbol{kind, arc_type}));
 }
 
-void SymbolTable::add_function(const astring& id, const std::vector<type_handle, arena_allocator<type_handle>> fn_args, const SymbolType kind, const type_handle arc_type) {
+void SymbolTable::add_function(const astring& id, const std::vector<Arg, arena_allocator<Arg>> fn_args, const SymbolType kind, const type_handle arc_type) {
     PROFILE();
     current_scope().insert(pair(id, Symbol{kind, arc_type, fn_args}));
 }
@@ -51,6 +51,19 @@ SymbolType SymbolTable::get_kind(const astring& id) {
     }
     return NONE;
 }
+
+// return the type of the symbol
+// if the symbol is a function then the result is the return type
+type_handle SymbolTable::get_type(const astring& id) {
+    PROFILE();
+    for(const auto& map : table_) {
+        auto result = map.find(id);
+        if(result != map.end())
+            return result->second.result_type;
+    }
+    return TYPE_UNKNOWN;
+}
+
 
 bool SymbolTable::scope_has(const astring& id) {
     PROFILE();

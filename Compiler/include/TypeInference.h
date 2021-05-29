@@ -12,6 +12,7 @@ public:
 
 private:
     Project* ast_;
+    astring current_filename_;
 
     void analyze_project(Project*);
     void analyze_file(File*);

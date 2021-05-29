@@ -7,13 +7,12 @@ void parse_args(const int, const char* argv[]);
 
 int main(const int argc, const char* argv[]) {
     PROFILE();
-
     parse_args(argc, argv);
 
     Compiler compiler;
     auto code = compiler.compile();
 
-    auto raw_binary = std::bit_cast<char*> (code.data());
+    auto* raw_binary = std::bit_cast<char*> (code.data());
     std::ofstream bin(args.output_path, std::ios::out | std::ios::binary);
     bin.write(raw_binary, code.size());
     bin.close();

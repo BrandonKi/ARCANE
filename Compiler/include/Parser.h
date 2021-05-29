@@ -1,10 +1,13 @@
 #ifndef PARSER_H
 #define PARSER_H
+#include <string>
+#include <iostream>
 
 #include "SymbolTable.h"
 
-class Parser{
+using namespace std::string_literals;
 
+class Parser {
     public:
         explicit Parser(std::vector<RawFile, arena_allocator<RawFile>>&);
         Project* parse();
@@ -21,6 +24,7 @@ class Parser{
         File* parse_file();
         Import* parse_import();
         Function* parse_function();
+        std::vector<Arg, arena_allocator<Arg>> parse_fn_args();
         Block* parse_block();
         Statement* parse_statement();
         Decl* parse_decl();

@@ -23,6 +23,7 @@ void TypeInference::analyze_project(Project* project) {
 
 void TypeInference::analyze_file(File* file) {
     PROFILE();
+    current_filename_ = file->name;
     for (auto* decl : file->decls) {
         analyze_decl(decl);
     }
@@ -62,6 +63,9 @@ void TypeInference::analyze_decl(Decl* decl) {
 
     // if we have to infer the type
     if(decl->type == TYPE_UNKNOWN) {
+        if(decl->val->result_type == TYPE_UNKNOWN) {
+            error_log.exit(ErrorMessage{FATAL, decl->val->pos, current_filename_, "cannot infer type of expression"});
+        }
         decl->type = decl->val->result_type;
     }
     // types don't match
@@ -87,8 +91,8 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
             break;
         case EXPR_BIN:
         {
-            auto lhs_type = analyze_expr(expr->binary_expr.left);
-            auto rhs_type = analyze_expr(expr->binary_expr.right);
+            const auto lhs_type = analyze_expr(expr->binary_expr.left);
+            const auto rhs_type = analyze_expr(expr->binary_expr.right);
             if(!type_manager.operator_exists(expr->binary_expr.op, lhs_type, rhs_type)) {
                 // TODO error
                 // operator between two types does not exist

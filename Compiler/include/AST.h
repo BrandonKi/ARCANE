@@ -21,7 +21,8 @@ struct Project : Node {
     std::vector<File*, arena_allocator<File*>> files;
 };
 
-struct File : Node{
+struct File : Node {
+    astring name;
     std::vector<Import*, arena_allocator<Import*>> imports;
     std::vector<Decl*, arena_allocator<Decl*>> decls;
     std::vector<Function*, arena_allocator<Function*>> functions;
@@ -35,9 +36,14 @@ struct Import : Node {
     // std::vector<Function*> functions;
 };
 
+struct Arg : Node {
+    astring id;
+    type_handle type;
+};
+
 struct Function : Node {
     astring id;
-    std::vector<type_handle, arena_allocator<type_handle>> args;
+    std::vector<Arg, arena_allocator<Arg>> args;
     type_handle return_type;
     Block* body;
     bool is_main;
@@ -148,9 +154,9 @@ class AST {
         ~AST();
 
         [[nodiscard]] Project* new_project_node(SourcePos, std::vector<File*, arena_allocator<File*>>&);
-        [[nodiscard]] File* new_file_node(SourcePos, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
+        [[nodiscard]] File* new_file_node(SourcePos, astring, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
         [[nodiscard]] Import* new_import_node(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        [[nodiscard]] Function* new_function_node(SourcePos, astring&, std::vector<type_handle, arena_allocator<type_handle>>&, type_handle, Block*, const bool);
+        [[nodiscard]] Function* new_function_node(SourcePos, astring&, std::vector<Arg, arena_allocator<Arg>>&, type_handle, Block*, const bool);
         [[nodiscard]] Block* new_block_node(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
         [[nodiscard]] While_* new_while_node(SourcePos, Expr*, Block*);
         [[nodiscard]] For_* new_for_node(SourcePos, Decl*, Expr*, Expr*, Block*);
@@ -162,12 +168,12 @@ class AST {
         [[nodiscard]] Statement* new_statement_node_ret(SourcePos, Ret*);
         [[nodiscard]] Statement* new_statement_node_decl(SourcePos, Decl*);
         [[nodiscard]] Statement* new_statement_node_expr(SourcePos, Expr*);
-        [[nodiscard]] Expr* new_expr_node_int_literal(SourcePos, i64);
-        [[nodiscard]] Expr* new_expr_node_float_literal(SourcePos, f64);
-        [[nodiscard]] Expr* new_expr_node_string_literal(SourcePos, astring&);
-        [[nodiscard]] Expr* new_expr_node_variable(SourcePos, astring&);
-        [[nodiscard]] Expr* new_expr_node_bin_expr(SourcePos, TokenKind, Expr*, Expr*);
-        [[nodiscard]] Expr* new_expr_node_unary_expr(SourcePos, TokenKind, Expr*);
+        [[nodiscard]] Expr* new_expr_node_int_literal(SourcePos, i64, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_float_literal(SourcePos, f64, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_string_literal(SourcePos, astring&,  type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_variable(SourcePos, astring&, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_bin_expr(SourcePos, TokenKind, Expr*, Expr*, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_unary_expr(SourcePos, TokenKind, Expr*, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Decl* new_decl_node(SourcePos, astring&, type_handle, Expr*);
 
 

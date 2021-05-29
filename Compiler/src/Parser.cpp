@@ -11,7 +11,7 @@ Parser::Parser(std::vector<RawFile, arena_allocator<RawFile>>& project_files) {
     for(const auto& rf: project_files){
         Lexer lexer(rf.filename, rf.filedata);
         data_.push_back(LexedFile{rf.filepath, rf.filename, lexer.lex()});
-    } 
+    }
 }
 
 Project* Parser::parse() {
@@ -35,7 +35,6 @@ Project* Parser::parse_project() {    //TODO another good candidate for multithr
 
 File* Parser::parse_file() {
     PROFILE();
-    // reset the class wide index variable to zero
     const SourcePos start_pos = current_token()->pos;
     std::vector<Import*, arena_allocator<Import*>> imports;
     std::vector<Decl*, arena_allocator<Decl*>> decls;
@@ -53,14 +52,14 @@ File* Parser::parse_file() {
                 decls.push_back(parse_decl());
                 break;
             case ARC_EOF:   // placed at the end of each file by the lexer
-                return ast_.new_file_node(start_pos, imports, decls, functions, true);
+                return ast_.new_file_node(start_pos, current_filename_, imports, decls, functions, true);
                 break;
             default:
                 break;
         }
     }
     // should never reach this point but return just in case
-    return ast_.new_file_node(start_pos, imports, decls, functions, true);
+    return ast_.new_file_node(start_pos, current_filename_, imports, decls, functions, true);
 }
 
 Import* Parser::parse_import() {
@@ -72,25 +71,38 @@ Import* Parser::parse_import() {
 Function* Parser::parse_function() {
     PROFILE();
     const SourcePos start_pos = current_token()->pos;
-    std::vector<type_handle, arena_allocator<type_handle>> fn_args;
     expect_token(ARC_FN);
-    astring id;
-    if(check_token(ARC_ID))
-        id = *(current_token()->data);
+    check_token(ARC_ID);
+    auto id = *(current_token()->data);
     next_token_noreturn();
     expect_token(ARC_OPEN_PAREN);
-    // parse func args
+    auto fn_args = parse_fn_args();
     expect_token(ARC_CLOSE_PAREN);
     expect_token(ARC_COLON);
     type_handle ret = token_kind_to_type(current_token()->kind);
     if(ret == -1)
-        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unknown return type"});
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown return type"});
     next_token_noreturn();
     s_table_.add_function(id, fn_args, FUNCTION, ret);
     Block* block = parse_block();
     if(id == "main" && ret == TYPE_I32)
         return ast_.new_function_node(start_pos, id, fn_args, ret, block, true);
     return ast_.new_function_node(start_pos, id, fn_args, ret, block, false);
+}
+
+// TODO improve syntax error messages for this function
+std::vector<Arg, arena_allocator<Arg>> Parser::parse_fn_args() {
+    std::vector<Arg, arena_allocator<Arg>> result;
+    for(int i = 0; current_token()->kind == ARC_ID; ++i) {
+        auto id = *(current_token()->data);
+        auto pos = current_token()->pos;
+        next_token_noreturn();
+        expect_token(ARC_COLON);
+        result.push_back(Arg{{pos}, id, token_kind_to_type(current_token()->kind)});
+        s_table_.add_symbol(id, VARIABLE, result.back().type);
+        next_token_noreturn();
+    }
+    return result;
 }
 
 /**
@@ -160,7 +172,7 @@ Statement* Parser::parse_statement() {
             expect_token(ARC_RET);
             auto *result = ast_.new_statement_node_ret(start_pos, ast_.new_ret_node(start_pos, parse_expr()));
             if(current_token()->kind != ARC_SEMICOLON)
-                error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Expected semicolon"});
+                error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Expected semicolon"});
             return result;
             break;
         }
@@ -227,18 +239,18 @@ Decl* Parser::parse_decl() {
                 }
                 else {
                     //TODO syntax error here
-                    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "INVALID TOKEN"});
+                    error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "INVALID TOKEN"});
                 }
                 break;
             default:
                 //TODO syntax error here
-                error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "INVALID TOKEN"});
+                error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "INVALID TOKEN"});
                 break;
         }
     }
     else {
         //TODO syntax error here
-        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "INVALID TOKEN"});
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "INVALID TOKEN"});
     }
     return new Decl{};
 }
@@ -262,8 +274,9 @@ Expr* Parser::parse_expr() {
         }
         else if(current_token()->kind == ARC_ID) {    //TODO differentiate between functions and variables
             auto id = *(current_token()->data);
+
             if(!s_table_.has(id)) {
-                error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unknown identifier"});
+                error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown identifier"});
             }
             // if not function call
             if(peek_next_token()->kind != ARC_OPEN_PAREN && s_table_.get_kind(id) == VARIABLE)
@@ -296,7 +309,7 @@ Expr* Parser::parse_expr() {
                 result.push_back(stack.back());
                 stack.pop_back();
                 if(stack.empty()){
-                    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Extra closing parentheses"});
+                    error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Extra closing parentheses"});
                 }
             }
             stack.pop_back();
@@ -334,7 +347,7 @@ Expr* Parser::parse_expr() {
                     conversion_stack.push_back(ast_.new_expr_node_int_literal(token->pos, astoll(*(token->data))));
                     break;
                 case ARC_ID:
-                    conversion_stack.push_back(ast_.new_expr_node_variable(token->pos, *(token->data)));
+                    conversion_stack.push_back(ast_.new_expr_node_variable(token->pos, *(token->data), s_table_.get_type(*(token->data))));
                     break;
             }
             
@@ -352,7 +365,7 @@ inline Token* Parser::current_token() {
 inline Token* Parser::next_token() {
     PROFILE();
     if(index_ + 1 >= tokens_.size()) {
-        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Reached EOF while parsing"});
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Reached EOF while parsing"});
     }
 
     return &tokens_[static_cast<u32>(++index_)];
@@ -361,7 +374,7 @@ inline Token* Parser::next_token() {
 inline void Parser::next_token_noreturn() {
     PROFILE();
     if (index_ + 1 >= tokens_.size()) {
-        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Reached EOF while parsing" });
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Reached EOF while parsing" });
     }
     ++index_;
 }
@@ -369,7 +382,7 @@ inline void Parser::next_token_noreturn() {
 inline Token* Parser::peek_next_token() {
     PROFILE();
     if(index_ + 1 >= tokens_.size()) {
-        error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Reached EOF while parsing"});
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Reached EOF while parsing"});
     }
     return &tokens_[static_cast<u32>(index_ + 1)];
 }
@@ -380,7 +393,7 @@ inline bool Parser::check_token(const TokenKind kind) {
     PROFILE();
     [[likely]] if(current_token()->kind == kind)
         return true;
-    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unexpected token"});
+    error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unexpected token"});
     return false;
 }
 
@@ -398,7 +411,7 @@ inline bool Parser::expect_token(const TokenKind kind) {
         next_token_noreturn();
         return true;
     }
-    error_log.exit(ErrorMessage{FATAL, current_token(), current_filename_, "Unexpected token"});
+    error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unexpected token"});
     next_token_noreturn();
     return false;
 }

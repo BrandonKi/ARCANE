@@ -6,7 +6,7 @@ extern TypeManager type_manager;
 using vm = Arcvm;
 
 BytecodeGen::BytecodeGen(Project *ast):
-    ast_(ast), code_(), variable_table_(), local_variable_counter()
+    ast_(ast), code_(), variable_table_(), function_table_(), function_args_(), local_variable_counter()
 {
     PROFILE();
 }
@@ -78,7 +78,7 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
 
     auto it = std::find_if(functions.cbegin(), functions.cend(), [](const auto& fn){ return *fn.name == "main";});
     if(it == functions.end()) {
-        error_log.push({FATAL, nullptr, args.path, "could not find main function"});
+        error_log.push({FATAL, INVALID_SRC_POS, args.path, "could not find main function"});
         std::exit(-1);
     }
     auto main = *it;
@@ -97,6 +97,8 @@ void BytecodeGen::gen_import(bc_context& ctx, const Import *import) {
 
 void BytecodeGen::gen_function(bc_context& ctx, const Function *function) {
     PROFILE();
+    // FIXME unnecessary copy
+    function_args_ = function->args;
     push(ctx.code, vm::allocate_locals);
     push(ctx.code, 0x00);   // placeholder for amount of local vars to allocate
     auto index = ctx.code.size() - 1;
@@ -234,13 +236,17 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
         push(ctx.code, vm::load_local);   // assume we are loading a local variable and not a function arg
         push(ctx.code, static_cast<u8>(local_var_index));
     }
+    else if(is_function_arg(*id)) {
+        // TODO implement this plz
+        println("YOOOOOOOOOOOO", RED);
+    }
     else if(function_table_.contains(*id)) {
         push(ctx.code, vm::call_short);
         push_string(ctx.code, *id);
         push(ctx.code, '\0');
     }
     else {
-        error_log.push({FATAL, nullptr, args.path, "how the fuck did you manage to get this error"});
+        error_log.push({FATAL, INVALID_SRC_POS, args.path, "how the fuck did you manage to get this error"});
         error_log.flush();
         std::exit(-1);
     }
@@ -478,4 +484,11 @@ void BytecodeGen::generate_bootstrap(bc_context& ctx) {
     };
     
     push_block(ctx.code, vec);
+}
+
+bool BytecodeGen::is_function_arg(astring id) {
+    auto result = std::find_if(function_args_.cbegin(), function_args_.cend(), [&](auto& arg){
+        return arg.id == id;
+    });
+    return result != function_args_.end();
 }

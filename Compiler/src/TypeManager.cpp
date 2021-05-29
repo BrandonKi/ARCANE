@@ -26,7 +26,7 @@ type_handle TypeManager::get_type_handle(const astring& name) {
     return -1;
 }
 
-Type TypeManager::get_type(type_handle handle) {
+Type TypeManager::get_type(const type_handle handle) {
     PROFILE();
     return type_table[handle];
 }
@@ -37,7 +37,7 @@ void TypeManager::add_alias(const astring& alias, const astring& original) {
 
 void TypeManager::define_operator(TokenKind op, type_handle lhs, type_handle rhs, Function* impl) {
     PROFILE();
-    // Function needs to be forward declared
+    // the Function type needs to be forward declared
     // otherwise we run into the circular dependency mess :(
 }
 
