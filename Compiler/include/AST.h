@@ -101,6 +101,7 @@ enum ExprType {
     EXPR_FLOAT_LIT,
     EXPR_STRING_LIT,
     EXPR_ID,
+    EXPR_FN_CALL,
     EXPR_BIN,
     EXPR_UNARY
 };
@@ -121,6 +122,11 @@ struct Expr : Node {
         struct {
             astring* val;
         } id;
+        struct {
+            astring* val;
+            u32 argc;
+            Expr** args;
+        } fn_call;
         struct {
             TokenKind op;   // op is expected to be a valid operator
             Expr* left;

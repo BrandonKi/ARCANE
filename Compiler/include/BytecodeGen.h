@@ -61,6 +61,7 @@ class BytecodeGen final {
 
         void generate_bootstrap(bc_context&);
         bool is_function_arg(astring);
+        i64 get_function_arg_index(astring);
 
         template<
             typename T__,

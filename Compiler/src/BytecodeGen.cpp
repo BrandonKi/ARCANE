@@ -228,9 +228,6 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
     // this is only for non assignable values
     // for ex. it would not be for "val = 1 + 1;"
 
-    // if function
-    // do something
-    // otherwise do this
     if(variable_table_.contains(*id)) {
         const auto local_var_index = variable_table_.at(*id);
         push(ctx.code, vm::load_local);   // assume we are loading a local variable and not a function arg
@@ -238,7 +235,10 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
     }
     else if(is_function_arg(*id)) {
         // TODO implement this plz
-        println("YOOOOOOOOOOOO", RED);
+        auto index = get_function_arg_index(*id);
+        push(ctx.code, vm::load_arg);
+        push(ctx.code, static_cast<u8>(index));
+        println("function calling with args isn't supported", RED);
     }
     else if(function_table_.contains(*id)) {
         push(ctx.code, vm::call_short);
@@ -491,4 +491,10 @@ bool BytecodeGen::is_function_arg(astring id) {
         return arg.id == id;
     });
     return result != function_args_.end();
+}
+
+i64 BytecodeGen::get_function_arg_index(astring id) {
+    return std::distance(function_args_.cbegin(), std::find_if(function_args_.cbegin(), function_args_.cend(), [&](auto& arg){
+        return arg.id == id;
+    }));
 }

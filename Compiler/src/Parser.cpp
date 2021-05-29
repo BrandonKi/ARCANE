@@ -259,6 +259,11 @@ Decl* Parser::parse_decl() {
  * expects the current token to be the first token in the expression
  */
 Expr* Parser::parse_expr() {
+    auto result = parse_expr_0();
+    return parse_expr_1(result);
+}
+
+std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
     PROFILE();
     std::vector<Token*, arena_allocator<Token*>> result;
     std::vector<Token*, arena_allocator<Token*>> stack;
@@ -287,6 +292,14 @@ Expr* Parser::parse_expr() {
                 auto* fn_call = current_token();
                 next_token_noreturn();
                 expect_token(ARC_OPEN_PAREN);
+                while(current_token()->kind != ARC_CLOSE_PAREN) {
+                    //FIXME calling parse_expr here would be ideal
+                    // however I would need to 'unpack' the Expr* that is returned
+                    // into just raw tokens
+                    //parse_expr();
+                    result.push_back(current_token());
+                    next_token_noreturn();
+                }
                 check_token(ARC_CLOSE_PAREN);
                 result.push_back(fn_call);
             }
@@ -321,10 +334,13 @@ Expr* Parser::parse_expr() {
         result.push_back(stack.back());
         stack.pop_back();
     }
+    return result;
+}
 
-    /**
-     * convert the vector of Tokens into a Expr tree
-     */
+/**
+ * convert the vector of Tokens into a Expr tree
+ */
+Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) {
     std::vector<Expr*, arena_allocator<Expr*>> conversion_stack;
     for(auto *tkn : result) {
         Token* token = tkn;
@@ -347,6 +363,12 @@ Expr* Parser::parse_expr() {
                     conversion_stack.push_back(ast_.new_expr_node_int_literal(token->pos, astoll(*(token->data))));
                     break;
                 case ARC_ID:
+                    if(s_table_.get_kind(*(token->data)) == FUNCTION) {
+                        while(conversion_stack.size() > 1) {
+                            // TODO empty the conversion stack into a function call expression
+                            // then everything should work
+                        }
+                    }
                     conversion_stack.push_back(ast_.new_expr_node_variable(token->pos, *(token->data), s_table_.get_type(*(token->data))));
                     break;
             }

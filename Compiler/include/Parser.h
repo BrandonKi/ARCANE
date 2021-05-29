@@ -29,6 +29,9 @@ class Parser {
         Statement* parse_statement();
         Decl* parse_decl();
         Expr* parse_expr();
+        std::vector<Token*, arena_allocator<Token*>> parse_expr_0();
+        Expr* parse_expr_1(std::vector<Token*, arena_allocator<Token*>>);
+
 
         [[nodiscard]] Token* current_token();
         [[nodiscard]] Token* next_token();
