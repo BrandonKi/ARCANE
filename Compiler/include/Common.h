@@ -158,6 +158,9 @@ struct SourcePos {
     u32 end_pos;
 };
 
+// useful for creating error messages
+#define INVALID_SRC_POS SourcePos{0, 0, 0, 0}
+
 
 struct Token {
     TokenKind kind;

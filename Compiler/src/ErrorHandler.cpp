@@ -44,20 +44,20 @@ void ErrorHandler::push(ErrorMessage error) {
 
 astring ErrorHandler::make_preamble(ErrorMessage& error){
     PROFILE();
-    if(error.token == nullptr)
-        return error.filename + " : ";
-    return error.filename + '[' + to_astring(error.token->pos.src_line) + ", " + to_astring(error.token->pos.src_char) + "] : ";
+    if(error.src_pos.src_line == 0)
+        return strtoastr(fmt(astrtostr(error.filename), BLUE)) + " : ";
+    return strtoastr(fmt(astrtostr(error.filename + '[' + to_astring(error.src_pos.src_line) + ", " + to_astring(error.src_pos.src_char) + "]"), BLUE)) + " : ";
 }
 
 astring ErrorHandler::create_graphic(ErrorMessage& error) {
     astring result;
 
-    auto filepath = args.path + "\\\\" + error.filename;
-    auto src = read_file_by_line(filepath);
+    const auto filepath = args.path + "\\\\" + error.filename;
+    const auto src = read_file_by_line(filepath);
 
-    auto line_num = error.token->pos.src_line;
-    auto line_pos = error.token->pos.src_char;
-    auto length = error.token->pos.end_pos - error.token->pos.start_pos;
+    const auto line_num = error.src_pos.src_line;
+    const auto line_pos = error.src_pos.src_char;
+    const auto length = error.src_pos.end_pos - error.src_pos.start_pos;
 
     auto line_num_string = std::to_string(line_num);
     result.append(4 - line_num_string.size(), ' ');

@@ -139,7 +139,7 @@ void Lexer::consume_comment() {
         }
         next_char_noreturn();
     }
-    else{
+    else {
         while(index_ < data_.size() &&  current_char() != '\n'){
             next_char_noreturn();
         }
@@ -230,7 +230,7 @@ Token Lexer::lex_interpolated_string() {  //TODO implement interpolated strings
 
     while(next_char() != '`');
     auto tkn = create_token(ARC_STRING_LIT, start_col, start_pos);
-    error_log.exit(ErrorMessage{FATAL, &tkn, filename_, astring("interpolated strings are not implemented yet")});
+    error_log.exit(ErrorMessage{FATAL, tkn.pos, filename_, astring("interpolated strings are not implemented yet")});
     return Token{};
 }
 

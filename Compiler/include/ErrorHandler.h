@@ -7,7 +7,7 @@ enum Severity{ FATAL, WARN, NOTE, MESSAGE };
 
 struct ErrorMessage { 
     Severity severity;
-    Token* token;
+    SourcePos src_pos;
     astring filename;
     astring message;
 };
