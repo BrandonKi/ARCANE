@@ -297,6 +297,7 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
                     // however I would need to 'unpack' the Expr* that is returned
                     // into just raw tokens
                     //parse_expr();
+                    // UPDATE just call parse_expr_0()
                     result.push_back(current_token());
                     next_token_noreturn();
                 }
@@ -364,10 +365,12 @@ Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) 
                     break;
                 case ARC_ID:
                     if(s_table_.get_kind(*(token->data)) == FUNCTION) {
+                        conversion_stack.size() - 2;
                         while(conversion_stack.size() > 1) {
                             // TODO empty the conversion stack into a function call expression
                             // then everything should work
                         }
+                        // ast_.new_function_call_node();
                     }
                     conversion_stack.push_back(ast_.new_expr_node_variable(token->pos, *(token->data), s_table_.get_type(*(token->data))));
                     break;

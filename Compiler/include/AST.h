@@ -178,6 +178,7 @@ class AST {
         [[nodiscard]] Expr* new_expr_node_float_literal(SourcePos, f64, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Expr* new_expr_node_string_literal(SourcePos, astring&,  type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Expr* new_expr_node_variable(SourcePos, astring&, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_fn_call(SourcePos, astring&, u32, Expr**, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Expr* new_expr_node_bin_expr(SourcePos, TokenKind, Expr*, Expr*, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Expr* new_expr_node_unary_expr(SourcePos, TokenKind, Expr*, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Decl* new_decl_node(SourcePos, astring&, type_handle, Expr*);

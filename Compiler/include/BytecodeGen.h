@@ -35,7 +35,7 @@ class BytecodeGen final {
         int local_variable_counter;
         
         
-        code_block gen_project(Project *project);
+        code_block gen_project(Project*);
         std::vector<linkable_function, arena_allocator<linkable_function>> gen_file(File*);
         void gen_import(bc_context&, const Import*);
         void gen_function(bc_context&, const Function*);
@@ -48,12 +48,13 @@ class BytecodeGen final {
         void gen_decl(bc_context&, const Decl*);
         void gen_expr(bc_context&, const Expr*);
 
-        void gen_int_lit(bc_context&, const u64 val);
-        void gen_float_lit(bc_context&, const f64 val);
-        void gen_string_lit(bc_context&, const astring* val);
-        void gen_id(bc_context&, const astring* id);
-        void gen_bin(bc_context&, const Expr *expr);
-        void gen_unary(bc_context&, const Expr* expr);
+        void gen_int_lit(bc_context&, const u64);
+        void gen_float_lit(bc_context&, const f64);
+        void gen_string_lit(bc_context&, const astring*);
+        void gen_id(bc_context&, const astring*);
+        void gen_fn_call(bc_context&, const Expr *);
+        void gen_bin(bc_context&, const Expr*);
+        void gen_unary(bc_context&, const Expr*);
 
         void push(code_block&, const u8);
         void push_block(code_block&, const code_block&);
