@@ -197,6 +197,9 @@ void BytecodeGen::gen_expr(bc_context& ctx, const Expr *e) {
         case EXPR_ID:
             gen_id(ctx, e->id.val);
             break;
+        case EXPR_FN_CALL:
+            gen_fn_call(ctx, e);
+            break;
         case EXPR_BIN:
             gen_bin(ctx, e);
             break;
@@ -238,19 +241,40 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
         auto index = get_function_arg_index(*id);
         push(ctx.code, vm::load_arg);
         push(ctx.code, static_cast<u8>(index));
-        println("function calling with args isn't supported", RED);
     }
     else if(function_table_.contains(*id)) {
+        println("THIS PATH SHOULD NOT BE HIT", RED);
         push(ctx.code, vm::call_short);
         push_string(ctx.code, *id);
         push(ctx.code, '\0');
     }
     else {
-        error_log.push({FATAL, INVALID_SRC_POS, args.path, "how the fuck did you manage to get this error"});
-        error_log.flush();
-        std::exit(-1);
+        error_log.exit({FATAL, INVALID_SRC_POS, args.path, "how did you manage to get this error"});
     }
 }
+
+void BytecodeGen::gen_fn_call(bc_context& ctx, const Expr *expr) {
+    PROFILE();
+    auto val = expr->fn_call.val;
+    auto argc = expr->fn_call.argc;
+    auto args = expr->fn_call.args;
+
+    for(auto i = 0; i < argc; ++i) {
+        gen_expr(ctx, args[i]);
+    }
+
+    if(function_table_.contains(*val)) {
+        push(ctx.code, vm::call_short);
+        push_string(ctx.code, *val);
+        push(ctx.code, '\0');
+    }
+    else {
+        // TODO error here I guess
+        // "can't find function"
+    }
+
+}
+
 
 void BytecodeGen::gen_bin(bc_context& ctx, const Expr *expr) {
     PROFILE();

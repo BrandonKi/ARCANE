@@ -169,6 +169,17 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
     return ptr;
 }
 
+[[nodiscard]] Expr* AST::new_expr_node_fn_call(const SourcePos pos, astring& id, u32 argc, Expr** argv, type_handle type) {
+    PROFILE();
+    auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
+    allocator_.construct(ptr, Expr{{pos}, EXPR_FN_CALL, type});
+    ptr->fn_call.val = &id;
+    ptr->fn_call.argc = argc;
+    ptr->fn_call.args = argv;
+    return ptr;
+}
+
+
 [[nodiscard]] Expr* AST::new_expr_node_bin_expr(const SourcePos pos, const TokenKind op, Expr* left, Expr* right, type_handle type) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
