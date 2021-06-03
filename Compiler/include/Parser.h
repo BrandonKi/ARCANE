@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include "SymbolTable.h"
+#include "BytecodeGen.h"
 
 using namespace std::string_literals;
 

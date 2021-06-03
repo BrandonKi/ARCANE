@@ -274,10 +274,10 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
     while(current_token()->kind != ARC_SEMICOLON &&
             current_token()->kind != ARC_OPEN_BRACE &&
                 current_token()->kind != ARC_COMMA) {
-        if(current_token()->kind == ARC_INT_LIT) {
+        if(current_token()->kind == ARC_INT_LIT || current_token()->kind == ARC_FLOAT_LIT) {
             result.push_back(current_token());
         }
-        else if(current_token()->kind == ARC_ID) {    //TODO differentiate between functions and variables
+        else if(current_token()->kind == ARC_ID) {
             auto id = *(current_token()->data);
 
             if(!s_table_.has(id)) {
@@ -298,7 +298,8 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
                     // into just raw tokens
                     //parse_expr();
                     // UPDATE just call parse_expr_0()
-                    result.push_back(current_token());
+                    auto arg_expr = parse_expr_0();
+                    result.insert(result.end(), arg_expr.begin(), arg_expr.end());
                     next_token_noreturn();
                 }
                 check_token(ARC_CLOSE_PAREN);
@@ -344,10 +345,9 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
 Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) {
     std::vector<Expr*, arena_allocator<Expr*>> conversion_stack;
     for(auto *tkn : result) {
-        Token* token = tkn;
-        if(is_operator(token->kind)) {
-            if(is_unary_operator(token->kind)) {
-                conversion_stack.push_back(ast_.new_expr_node_unary_expr(token->pos, token->kind, conversion_stack.back()));
+        if(is_operator(tkn->kind)) {
+            if(is_unary_operator(tkn->kind)) {
+                conversion_stack.push_back(ast_.new_expr_node_unary_expr(tkn->pos, tkn->kind, conversion_stack.back()));
                 conversion_stack.pop_back();
             }
             else {
@@ -355,24 +355,34 @@ Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) 
                 conversion_stack.pop_back();
                 Expr* operand2 = conversion_stack.back();
                 conversion_stack.pop_back();
-                conversion_stack.push_back(ast_.new_expr_node_bin_expr(token->pos, token->kind, operand2, operand1));
+                conversion_stack.push_back(ast_.new_expr_node_bin_expr(tkn->pos, tkn->kind, operand2, operand1));
             }
         }
         else {
+            auto& tkn_data = *(tkn->data);
             switch(tkn->kind) {
                 case ARC_INT_LIT:
-                    conversion_stack.push_back(ast_.new_expr_node_int_literal(token->pos, astoll(*(token->data))));
+                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, astoll(tkn_data)));
+                    break;
+                case ARC_FLOAT_LIT:
+                    conversion_stack.push_back(ast_.new_expr_node_float_literal(tkn->pos, astod(tkn_data)));
                     break;
                 case ARC_ID:
-                    if(s_table_.get_kind(*(token->data)) == FUNCTION) {
-                        conversion_stack.size() - 2;
-                        while(conversion_stack.size() > 1) {
-                            // TODO empty the conversion stack into a function call expression
-                            // then everything should work
+                    if(s_table_.is_function(tkn_data)) {
+                        auto ret_type = s_table_.get_type(tkn_data);
+                        auto num_args = s_table_.get_num_args(tkn_data);
+                        auto args = new Expr*[num_args];
+                        for(u32 i = 0; i < num_args; ++i) {
+                            args[i] = conversion_stack.back();
+                            conversion_stack.pop_back();
                         }
-                        // ast_.new_function_call_node();
+                        auto node = ast_.new_expr_node_fn_call(tkn->pos, tkn_data, num_args, args, ret_type);
+                        conversion_stack.push_back(node);
                     }
-                    conversion_stack.push_back(ast_.new_expr_node_variable(token->pos, *(token->data), s_table_.get_type(*(token->data))));
+                    else {
+                        auto node = ast_.new_expr_node_variable(tkn->pos, tkn_data, s_table_.get_type(tkn_data));
+                        conversion_stack.push_back(node);
+                    }
                     break;
             }
             
@@ -467,7 +477,7 @@ inline type_handle Parser::token_kind_to_type(const TokenKind tkn) {
         case ARC_F64:
             return TYPE_F64;
     }
-    return static_cast<type_handle>(0);   // invalid value
+    return static_cast<type_handle>(-1);   // invalid value
 }
 
 u8 Parser::precedence(const TokenKind kind) {

@@ -33,8 +33,14 @@ void TypeInference::analyze_file(File* file) {
     }
 }
 
+void TypeInference::update_symbol_table(std::vector<Arg, arena_allocator<Arg>>& args) {
+    for(const auto& arg : args)
+        s_table_.add_symbol(arg.id, VARIABLE, arg.type);
+}
+
 void TypeInference::analyze_function(Function* function) {
     PROFILE();
+    update_symbol_table(function->args);
     for (auto* stmnt : function->body->statements) {
         switch(stmnt->type) {
             case WHILE:
@@ -44,6 +50,7 @@ void TypeInference::analyze_function(Function* function) {
             case IF:
                 break;
             case RET:
+                analyze_ret(stmnt->ret, function->return_type);
                 break;
             case EXPRESSION:
                 analyze_expr(stmnt->expr);
@@ -54,6 +61,20 @@ void TypeInference::analyze_function(Function* function) {
             default:
                 break;
         }
+    }
+}
+
+void TypeInference::analyze_ret(Ret* ret, type_handle ret_type) {
+    PROFILE();
+    analyze_expr(ret->expr);
+
+    if(ret->expr->result_type != ret_type) {
+        auto err = strtoastr(
+            "type of expression does not match function return type\n"
+            "expected:    " + fmt(astrtostr(type_manager.get_type(ret_type).name), BRIGHT_BLUE, UNDERLINE) + "\n"
+            "instead got: " + fmt(astrtostr(type_manager.get_type(ret->expr->result_type).name), BRIGHT_BLUE, UNDERLINE)
+            );
+        error_log.exit(ErrorMessage{FATAL, ret->expr->pos, current_filename_, err});
     }
 }
 
@@ -70,10 +91,11 @@ void TypeInference::analyze_decl(Decl* decl) {
     }
     // types don't match
     if (decl->type != decl->val->result_type) {
-        // TODO error here
-        // types don't match
-        // example,  var : i32 = 1.1;
+        error_log.exit(ErrorMessage{FATAL, decl->val->pos, current_filename_, "type of expression does not match type of declaration"});
     }
+
+    s_table_.add_symbol(*(decl->id), VARIABLE, decl->type);
+
 }
 
 type_handle TypeInference::analyze_expr(Expr* expr) {
@@ -88,7 +110,15 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
         case EXPR_STRING_LIT:
             break;
         case EXPR_ID:
+        {
+            auto type = s_table_.get_type(*(expr->id.val));
+
+            if(type == TYPE_UNKNOWN) 
+                error_log.exit(ErrorMessage{FATAL, expr->pos, current_filename_, "cannot infer type of expression"});
+            
+            expr->result_type = type;
             break;
+        }
         case EXPR_BIN:
         {
             const auto lhs_type = analyze_expr(expr->binary_expr.left);

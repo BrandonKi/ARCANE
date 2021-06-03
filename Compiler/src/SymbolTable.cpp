@@ -64,6 +64,17 @@ type_handle SymbolTable::get_type(const astring& id) {
     return TYPE_UNKNOWN;
 }
 
+// assumes id is a function
+u32 SymbolTable::get_num_args(const astring& id) {
+    PROFILE();
+    for(const auto& map : table_) {
+        auto result = map.find(id);
+        if(result != map.end())
+            return static_cast<u32>(result->second.args.size());
+    }
+    return 0;
+}
+
 
 bool SymbolTable::scope_has(const astring& id) {
     PROFILE();

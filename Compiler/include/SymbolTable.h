@@ -1,7 +1,7 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
-#include "BytecodeGen.h"
+#include "AST.h"
 
 enum SymbolType {
     NONE,
@@ -42,6 +42,7 @@ class SymbolTable {
         bool scope_has(const astring&);
         SymbolType get_kind(const astring&);
         type_handle get_type(const astring&);
+        u32 get_num_args(const astring&);
         bool is_function(const astring&);
         bool is_variable(const astring&);
         void push_scope();

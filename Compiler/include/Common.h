@@ -771,8 +771,12 @@ inline astring to_astring(T arg) {
     return astring(std::to_string(arg));
 }
 
-inline long long astoll(astring& arg) {
+inline i64 astoll(astring& arg) {
     return std::stoll(std::string(arg));
+}
+
+inline f64 astod(astring& arg) {
+    return std::stod(std::string(arg));
 }
 
 inline bool operator==(astring const & s1, astring const & s2) {

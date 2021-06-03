@@ -78,14 +78,12 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
 
     auto it = std::find_if(functions.cbegin(), functions.cend(), [](const auto& fn){ return *fn.name == "main";});
     if(it == functions.end()) {
-        error_log.push({FATAL, INVALID_SRC_POS, args.path, "could not find main function"});
-        std::exit(-1);
+        error_log.exit({FATAL, INVALID_SRC_POS, args.path, "could not find main function"});
     }
     auto main = *it;
     functions.erase(it);
     functions.insert(functions.begin()+1, main);
 
-    // TODO LINK THE SHIT TOGETHER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return file_blocks;
 }
 
@@ -231,7 +229,7 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
     // this is only for non assignable values
     // for ex. it would not be for "val = 1 + 1;"
 
-    if(variable_table_.contains(*id)) {
+    if(is_variable(*id)) {
         const auto local_var_index = variable_table_.at(*id);
         push(ctx.code, vm::load_local);   // assume we are loading a local variable and not a function arg
         push(ctx.code, static_cast<u8>(local_var_index));
@@ -242,7 +240,7 @@ void BytecodeGen::gen_id(bc_context& ctx, const astring* id) {
         push(ctx.code, vm::load_arg);
         push(ctx.code, static_cast<u8>(index));
     }
-    else if(function_table_.contains(*id)) {
+    else if(is_function(*id)) {
         println("THIS PATH SHOULD NOT BE HIT", RED);
         push(ctx.code, vm::call_short);
         push_string(ctx.code, *id);
@@ -259,7 +257,7 @@ void BytecodeGen::gen_fn_call(bc_context& ctx, const Expr *expr) {
     auto argc = expr->fn_call.argc;
     auto args = expr->fn_call.args;
 
-    for(auto i = 0; i < argc; ++i) {
+    for(u32 i = 0; i < argc; ++i) {
         gen_expr(ctx, args[i]);
     }
 
@@ -510,14 +508,22 @@ void BytecodeGen::generate_bootstrap(bc_context& ctx) {
     push_block(ctx.code, vec);
 }
 
-bool BytecodeGen::is_function_arg(astring id) {
+bool BytecodeGen::is_variable(const astring& id) {
+    return variable_table_.contains(id);
+}
+
+bool BytecodeGen::is_function(const astring& id) {
+    return function_table_.contains(id);
+}
+
+bool BytecodeGen::is_function_arg(const astring& id) {
     auto result = std::find_if(function_args_.cbegin(), function_args_.cend(), [&](auto& arg){
         return arg.id == id;
     });
     return result != function_args_.end();
 }
 
-i64 BytecodeGen::get_function_arg_index(astring id) {
+i64 BytecodeGen::get_function_arg_index(const astring& id) {
     return std::distance(function_args_.cbegin(), std::find_if(function_args_.cbegin(), function_args_.cend(), [&](auto& arg){
         return arg.id == id;
     }));

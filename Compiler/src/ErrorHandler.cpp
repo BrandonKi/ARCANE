@@ -50,6 +50,11 @@ astring ErrorHandler::make_preamble(ErrorMessage& error){
 }
 
 astring ErrorHandler::create_graphic(ErrorMessage& error) {
+
+    // invalid position
+    if(error.src_pos.src_line == 0)
+        return "";
+
     astring result;
 
     const auto filepath = args.path + "\\\\" + error.filename;
