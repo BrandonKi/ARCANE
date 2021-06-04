@@ -37,6 +37,8 @@
 #include <chrono>
 #include <string>
 #include <sstream>
+#include <vector>
+#include <array>
 
 #if defined(__linux__)
 #include <sys/types.h>
@@ -50,44 +52,65 @@
 #endif
 
 #define CONCAT(a, b) CONCAT_(a, b)
-#define CONCAT_(a, b) a ## b
+#define CONCAT_(a, b) a##b
 
 #ifdef NO_PROFILE
-#define PROFILE() (static_cast<void>(0))
-#define PROFILE_SCOPE(x) PROFILE()
+    #define PROFILE() (static_cast<void>(0))
+    #define PROFILE_SCOPE(x) PROFILE()
 #else
-#define PROFILE() small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__){__FUNCTION__}
-#define PROFILE_SCOPE(x) small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__){x}
+    #define PROFILE() \
+        small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__) { __FUNCTION__ }
+    #define PROFILE_SCOPE(x) \
+        small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__) { x }
+
 namespace small_profiler {
 
     inline unsigned long long get_pid() {
-#if defined(__linux__)
+        #if defined(__linux__)
         return getpid();
-#elif defined(_WIN32)
+        #elif defined(_WIN32)
         return GetCurrentProcessId();
-#else
+        #else
         return static_cast<unsigned long long>(-1);
-#endif
+        #endif
     }
+
+    struct scope_info {
+        const std::string name;
+        const std::array<long long, 5> data;
+    };
 
     class internal_stream_wrapper {
     public:
-        std::stringstream stream{ PROFILE_OUTPUT_FILE };
+        std::stringstream stream{PROFILE_OUTPUT_FILE};
+        std::vector<scope_info> scope_table{};
 
         internal_stream_wrapper() {
             stream << "{ \"traceEvents\": [";
         }
+
         ~internal_stream_wrapper() {
+
+            for (const auto &entry : scope_table) {
+                const auto line = std::string(
+                                      R"({ "pid":)") +
+                                  std::to_string(entry.data[0]) + std::string(R"(, "tid":)") + std::to_string(entry.data[1]) +
+                                  std::string(R"(, "ts":)") + std::to_string(entry.data[2]) + std::string(R"(, "dur":)") + std::to_string(entry.data[3]) +
+                                  std::string(R"(, "ph":"X", "name":")") + entry.name +
+                                  std::string(R"(", "args":{ "ms":)") + std::to_string(entry.data[4]) + std::string("} },");
+                stream << line;
+            }
+
             stream.seekp(-1, std::ios_base::end);
             stream << "]}";
-            std::ofstream out{ PROFILE_OUTPUT_FILE };
+            std::ofstream out{PROFILE_OUTPUT_FILE};
             out << stream.str();
         }
 
-        internal_stream_wrapper(const internal_stream_wrapper&) = delete;
-        internal_stream_wrapper& operator = (const internal_stream_wrapper&) = delete;
-        internal_stream_wrapper(const internal_stream_wrapper&&) = delete;
-        internal_stream_wrapper& operator = (internal_stream_wrapper&&) = delete;
+        internal_stream_wrapper(const internal_stream_wrapper &) = delete;
+        internal_stream_wrapper &operator=(const internal_stream_wrapper &) = delete;
+        internal_stream_wrapper(const internal_stream_wrapper &&) = delete;
+        internal_stream_wrapper &operator=(internal_stream_wrapper &&) = delete;
     };
 
     inline internal_stream_wrapper file;
@@ -95,8 +118,8 @@ namespace small_profiler {
 
     class internal_scoped_profiler {
     public:
-        explicit internal_scoped_profiler(std::string name_p) :
-            name_(std::move(name_p)), begin_(std::chrono::high_resolution_clock::now())
+        explicit internal_scoped_profiler(std::string name_p):
+            name_(std::move(name_p)), begin_(std::move(std::chrono::high_resolution_clock::now()))
         {
 
         }
@@ -104,28 +127,21 @@ namespace small_profiler {
         ~internal_scoped_profiler() {
             const auto end = std::chrono::high_resolution_clock::now();
 
-            const auto pid = small_profiler::get_pid();
+            const auto pid = static_cast<long long>(small_profiler::get_pid());
             std::stringstream ss;
             ss << std::this_thread::get_id();
-            const auto tid = std::stoull(ss.str());
+            const auto tid = static_cast<long long>(std::stoull(ss.str()));
             const auto ts = std::chrono::duration_cast<std::chrono::microseconds>(begin_ - program_start).count();
             const auto dur = std::chrono::duration_cast<std::chrono::microseconds>(end - begin_).count();
-            const auto* ph = "X";
             const auto args = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin_).count();
 
-            const auto line = std::string(
-                R"({ "pid":)") + std::to_string(pid) + std::string(R"(, "tid":)") + std::to_string(tid) +
-                std::string(R"(, "ts":)") + std::to_string(ts) + std::string(R"(, "dur":)") + std::to_string(dur) +
-                std::string(R"(, "ph":")") + std::string(ph) + std::string(R"(", "name":")") + name_ +
-                std::string(R"(", "args":{ "ms":)") + std::to_string(args) + std::string("} },"
-                );
-            file.stream << line;
+            file.scope_table.emplace_back(std::move(scope_info{std::move(name_), std::move(std::array<long long, 5>{pid, tid, ts, dur, args})}));
         }
 
-        internal_scoped_profiler(const internal_scoped_profiler&) = default;
-        internal_scoped_profiler& operator = (const internal_scoped_profiler&) = default;
-        internal_scoped_profiler(internal_scoped_profiler&&) = default;
-        internal_scoped_profiler& operator = (internal_scoped_profiler&&) = default;
+        internal_scoped_profiler(const internal_scoped_profiler &) = default;
+        internal_scoped_profiler &operator=(const internal_scoped_profiler &) = default;
+        internal_scoped_profiler(internal_scoped_profiler &&) = default;
+        internal_scoped_profiler &operator=(internal_scoped_profiler &&) = default;
 
     private:
         std::string name_;
