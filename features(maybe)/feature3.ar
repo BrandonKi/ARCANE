@@ -1,0 +1,16 @@
+
+fn add(lhs: i64, rhs: i64): i64 {
+    ret lhs + rhs;
+}
+
+// inline self in all call sites
+[[inline]]
+// inlines all callees
+[[flatten]]
+fn sub(lhs: i64, rhs: i64): i64 {
+    ret add(lhs, -rhs);
+}
+
+fn main(): i32 {
+    ret 
+}
