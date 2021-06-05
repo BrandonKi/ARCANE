@@ -69,6 +69,7 @@ std::vector<astring, arena_allocator<astring>> Compiler::parse_project_spec_file
 }
 
 // FIXME this uses the std allocator
+// FIXME redundant copies
 [[nodiscard]] astring Compiler::read_file(const astring& filepath) {
     PROFILE();
     std::ifstream file;

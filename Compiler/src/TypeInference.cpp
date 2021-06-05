@@ -68,9 +68,9 @@ void TypeInference::analyze_ret(Ret* ret, type_handle ret_type) {
     PROFILE();
     analyze_expr(ret->expr);
 
-    if(ret->expr->result_type != ret_type) {
+    if(ret->expr->result_type != ret_type && !type_manager.conversion_exists(ret->expr->result_type, ret_type)) {
         auto err = strtoastr(
-            "type of expression does not match function return type\n"
+            "type of expression does not match function return type and could not find a valid conversion\n"
             "expected:    " + fmt(astrtostr(type_manager.get_type(ret_type).name), BRIGHT_BLUE, UNDERLINE) + "\n"
             "instead got: " + fmt(astrtostr(type_manager.get_type(ret->expr->result_type).name), BRIGHT_BLUE, UNDERLINE)
             );
@@ -123,9 +123,20 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
         {
             const auto lhs_type = analyze_expr(expr->binary_expr.left);
             const auto rhs_type = analyze_expr(expr->binary_expr.right);
+
             if(!type_manager.operator_exists(expr->binary_expr.op, lhs_type, rhs_type)) {
-                // TODO error
-                // operator between two types does not exist
+                // construct error message
+                auto err = strtoastr(
+                    "operator does not exist between these types (" + 
+                    fmt(astrtostr(type_manager.get_type(lhs_type).name), BRIGHT_BLUE, UNDERLINE) + " " +
+                    astrtostr(get_string(expr->binary_expr.op)) + " " +
+                    fmt(astrtostr(type_manager.get_type(rhs_type).name), BRIGHT_BLUE, UNDERLINE) + ")"
+                );
+                auto left_expr = expr->binary_expr.left;
+                auto right_expr = expr->binary_expr.right;
+
+                auto pos = SourcePos{left_expr->pos.src_line, left_expr->pos.src_char, left_expr->pos.start_pos, right_expr->pos.end_pos};
+                error_log.exit(ErrorMessage{FATAL, pos, current_filename_, err});
             }
             expr->result_type = type_manager.get_operator_result_type(expr->binary_expr.op, lhs_type, rhs_type);
             break;

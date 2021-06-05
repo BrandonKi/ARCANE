@@ -511,7 +511,7 @@ inline void Lexer::print_tokens(const bool verbose) const {
     else{
         for(const auto& tkn : tokens_)
             if(tkn.data == nullptr)
-                println(astrtostr(str(tkn.kind) + ": " + get_string_rep(tkn.kind)));
+                println(astrtostr(str(tkn.kind) + ": " + get_string(tkn.kind)));
             else
                 println(astrtostr(str(tkn.kind) + ": " + *(tkn.data)));
     }

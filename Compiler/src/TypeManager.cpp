@@ -43,10 +43,45 @@ void TypeManager::define_operator(TokenKind op, type_handle lhs, type_handle rhs
 
 bool TypeManager::operator_exists(TokenKind op, type_handle lhs, type_handle rhs) {
     PROFILE();
-    return true;    //TODO actually implement this
+    auto sub_table = operator_table[lhs];
+    auto result = std::find_if(sub_table.cbegin(), sub_table.cend(), [=](const auto& element) {
+        return element.op == op && element.rhs == rhs;
+    });
+    if(result == sub_table.end())
+        return false;
+    return true;
+}
+
+Function* TypeManager::get_operator_impl(TokenKind op, type_handle lhs, type_handle rhs) {
+    PROFILE();
+    return nullptr;    // TODO actually implement this
 }
 
 type_handle TypeManager::get_operator_result_type(TokenKind op, type_handle lhs, type_handle rhs) {
     PROFILE();
     return TYPE_I64;    // TODO actually implement this
+}
+
+void TypeManager::define_conversion(type_handle, type_handle, Function*) {
+    PROFILE();
+}
+
+bool TypeManager::conversion_exists(type_handle lhs, type_handle rhs) {
+    PROFILE();
+    auto sub_table = conversion_table[lhs];
+    auto result = std::find_if(sub_table.cbegin(), sub_table.cend(), [=](const auto& element) {
+        return element.target_type == rhs;
+    });
+    if(result == sub_table.end())
+        return false;
+    return true;
+}
+
+Function* get_conversion_impl(type_handle, type_handle) {
+    return nullptr;
+}
+
+type_handle TypeManager::get_conversion_result_type(type_handle, type_handle) {
+    PROFILE();
+    return TYPE_I64;
 }
