@@ -258,12 +258,12 @@ Decl* Parser::parse_decl() {
 /**
  * expects the current token to be the first token in the expression
  */
-Expr* Parser::parse_expr() {
-    auto result = parse_expr_0();
+Expr* Parser::parse_expr(bool stop_at_paren) {
+    auto result = parse_expr_0(stop_at_paren);
     return parse_expr_1(result);
 }
 
-std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
+std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0(bool stop_at_paren) {
     PROFILE();
     std::vector<Token*, arena_allocator<Token*>> result;
     std::vector<Token*, arena_allocator<Token*>> stack;
@@ -271,9 +271,10 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
     /**
      * shunting yard algorithm
      */
+    auto paren_count = 0;
     while(current_token()->kind != ARC_SEMICOLON &&
             current_token()->kind != ARC_OPEN_BRACE &&
-                current_token()->kind != ARC_COMMA) {
+            current_token()->kind != ARC_COMMA) {
         if(current_token()->kind == ARC_INT_LIT || current_token()->kind == ARC_FLOAT_LIT) {
             result.push_back(current_token());
         }
@@ -287,18 +288,11 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
             if(peek_next_token()->kind != ARC_OPEN_PAREN && s_table_.get_kind(id) == VARIABLE)
                 result.push_back(current_token());
             else {
-                //TODO add support for function args 
-                // right now just skip over the parens
                 auto* fn_call = current_token();
                 next_token_noreturn();
                 expect_token(ARC_OPEN_PAREN);
                 while(current_token()->kind != ARC_CLOSE_PAREN) {
-                    //FIXME calling parse_expr here would be ideal
-                    // however I would need to 'unpack' the Expr* that is returned
-                    // into just raw tokens
-                    //parse_expr();
-                    // UPDATE just call parse_expr_0()
-                    auto arg_expr = parse_expr_0();
+                    auto arg_expr = parse_expr_0(true);
                     result.insert(result.end(), arg_expr.begin(), arg_expr.end());
                     next_token_noreturn();
                 }
@@ -308,18 +302,25 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0() {
         }
         else if(is_operator(current_token()->kind)) {  //TODO support unary operators also
                 while ((!stack.empty()) && (is_operator(stack.back()->kind)) && 
-                            ((precedence(stack.back()->kind) > precedence(current_token()->kind)) || 
-                                (precedence(stack.back()->kind) == precedence(current_token()->kind))) && 
-                                    (stack.back()->kind != ARC_OPEN_PAREN)) {
+                        ((precedence(stack.back()->kind) > precedence(current_token()->kind)) || 
+                        (precedence(stack.back()->kind) == precedence(current_token()->kind))) && 
+                        (stack.back()->kind != ARC_OPEN_PAREN)) {
                     result.push_back(stack.back());
                     stack.pop_back();
                 }
                 stack.push_back(current_token());
             }
         else if(current_token()->kind == ARC_OPEN_PAREN) {
+            ++paren_count;
             stack.push_back(current_token());
         }
         else if(current_token()->kind == ARC_CLOSE_PAREN) {
+            // if we reach a close paren without a open paren while parsing a function call
+            // stop parsing the expr and continue
+            if(stop_at_paren && --paren_count == -1) {
+                prev_token_noreturn();
+                break;
+            }
             while(stack.back()->kind != ARC_OPEN_PAREN) {
                 result.push_back(stack.back());
                 stack.pop_back();
@@ -412,6 +413,14 @@ inline void Parser::next_token_noreturn() {
         error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Reached EOF while parsing" });
     }
     ++index_;
+}
+
+inline void Parser::prev_token_noreturn() {
+    PROFILE();
+    if (index_ + 1 >= tokens_.size()) {
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Reached EOF while parsing" });
+    }
+    --index_;
 }
 
 inline Token* Parser::peek_next_token() {

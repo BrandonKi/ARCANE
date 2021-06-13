@@ -28,14 +28,15 @@ class Parser {
         Block* parse_block();
         Statement* parse_statement();
         Decl* parse_decl();
-        Expr* parse_expr();
-        std::vector<Token*, arena_allocator<Token*>> parse_expr_0();
+        Expr* parse_expr(bool stop_at_paren = false);
+        std::vector<Token*, arena_allocator<Token*>> parse_expr_0(bool stop_at_paren = false);
         Expr* parse_expr_1(std::vector<Token*, arena_allocator<Token*>>);
 
 
         [[nodiscard]] Token* current_token();
         [[nodiscard]] Token* next_token();
         void next_token_noreturn();
+        void prev_token_noreturn();
         [[nodiscard]] Token* peek_next_token();
         bool check_token(const TokenKind);
         bool expect_token(const TokenKind);

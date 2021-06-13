@@ -25,12 +25,12 @@ int main(const int argc, const char* argv[]) {
 
 void parse_args(const int argc, const char* argv[]) {         //TODO implement the rest of the available flags
     PROFILE();
-    std::vector<astring> arg_list(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
-    for(auto i = 0; i < arg_list.size(); ++i){
+    std::vector<std::string_view> arg_list(argv, argv + argc);    //TODO delete this temporary parser and write a good cmd arg parser
+    for(auto i = 0; i < arg_list.size(); ++i) {
         const auto& str = arg_list[i];
         if(str == "--lex-out")
             args.lex_out = true;
-        else if(str == "--lex-out-v"){
+        else if(str == "--lex-out-v") {
             args.lex_out = true;
             args.verbose_lex_out = true;
         }
