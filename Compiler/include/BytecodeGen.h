@@ -7,10 +7,6 @@
 #include "Arcvm.h" 
 
 using code_block = std::vector<u8, arena_allocator<u8>>;
-struct bc_context {
-    code_block code;
-    // other stuff needed to generate code
-};
 
 class BytecodeGen final {
 
@@ -37,34 +33,36 @@ class BytecodeGen final {
         
         code_block gen_project(Project*);
         std::vector<linkable_function, arena_allocator<linkable_function>> gen_file(File*);
-        void gen_import(bc_context&, const Import*);
-        void gen_function(bc_context&, const Function*);
-        void gen_block(bc_context&, const Block*);
-        void gen_statement(bc_context&, const Statement*);
-        void gen_while(bc_context&, const While_*);
-        void gen_for(bc_context&, const For_*);
-        void gen_if(bc_context&, const If_*);
-        void gen_ret(bc_context&, const Ret*);
-        void gen_decl(bc_context&, const Decl*);
-        void gen_expr(bc_context&, const Expr*);
+        void gen_import(code_block&, const Import*);
+        void gen_function(code_block&, const Function*);
+        void gen_block(code_block&, const Block*);
+        void gen_statement(code_block&, const Statement*);
+        void gen_while(code_block&, const While_*);
+        void gen_for(code_block&, const For_*);
+        void gen_if(code_block&, const If_*);
+        void gen_ret(code_block&, const Ret*);
+        void gen_decl(code_block&, const Decl*);
+        void gen_expr(code_block&, const Expr*);
 
-        void gen_int_lit(bc_context&, const u64);
-        void gen_float_lit(bc_context&, const f64);
-        void gen_string_lit(bc_context&, const astring*);
-        void gen_id(bc_context&, const astring*);
-        void gen_fn_call(bc_context&, const Expr *);
-        void gen_bin(bc_context&, const Expr*);
-        void gen_unary(bc_context&, const Expr*);
+        void gen_int_lit(code_block&, const u64);
+        void gen_float_lit(code_block&, const f64);
+        void gen_string_lit(code_block&, const astring*);
+        void gen_id(code_block&, const astring*);
+        void gen_fn_call(code_block&, const Expr *);
+        void gen_bin(code_block&, const Expr*);
+        void gen_unary(code_block&, const Expr*);
 
         void push(code_block&, const u8);
         void push_block(code_block&, const code_block&);
         void push_string(code_block&, const astring&);
 
-        void generate_bootstrap(bc_context&);
+        void generate_bootstrap(code_block&);
         bool is_variable(const astring&);
         bool is_function(const astring&);
         bool is_function_arg(const astring&);
         i64 get_function_arg_index(const astring&);
+
+        void deallocate_local_vars(code_block&, u64);
 
         template<
             typename T__,
