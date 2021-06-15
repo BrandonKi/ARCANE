@@ -27,20 +27,20 @@ std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {  
     PROFILE();
     std::vector<RawFile, arena_allocator<RawFile>> result;
     std::vector<astring, arena_allocator<astring>> projectFileNames;
-    if(!args.project){
+    if(!args.project) {
         //TODO find an easy way to get file name
-        result.push_back(RawFile{args.path, read_file(args.path)});
+        result.push_back(RawFile{args.path, args.path, read_file(args.path)});
     }
-    else{
-        for(const auto& file : std::filesystem::directory_iterator(args.path)){
-            if(file.path().filename().string() == "ARProjSpec"){
+    else {
+        for(const auto& file : std::filesystem::directory_iterator(args.path)) {
+            if(file.path().filename().string() == "arproj") {
                 astring path = strtoastr(file.path().string());
                 projectFileNames = parse_project_spec_file(path);
             }
         }
-        for(const auto& file : std::filesystem::directory_iterator(args.path)){
-            for(astring& name : projectFileNames){
-                if(strtoastr(file.path().filename().string()) == name){
+        for(const auto& file : std::filesystem::directory_iterator(args.path)) {
+            for(astring& name : projectFileNames) {
+                if(strtoastr(file.path().filename().string()) == name) {
                     result.push_back(RawFile{
                         strtoastr(file.path().string()),
                         strtoastr(file.path().filename().string()),
