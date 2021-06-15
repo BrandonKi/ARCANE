@@ -6,7 +6,7 @@ extern TypeManager type_manager;
 using vm = Arcvm;
 
 BytecodeGen::BytecodeGen(Project *ast):
-    ast_(ast), code_(), variable_table_(), function_table_(), function_args_(), local_variable_counter()
+    ast_(ast), code_(), variable_table_(), function_table_(), fn_info_stack_()
 {
     PROFILE();
 }
@@ -95,14 +95,11 @@ void BytecodeGen::gen_import(code_block& code, const Import *import) {
 
 void BytecodeGen::gen_function(code_block& code, const Function *function) {
     PROFILE();
-    local_variable_counter = 0;
-    // FIXME unnecessary copy
-    function_args_ = function->args;
+    auto index = code.size() + 1;
+    fn_info_stack_.push_back(fn_info{index, 0, function->args});
     push(code, vm::allocate_locals);
     push(code, 0x00);   // placeholder for amount of local vars to allocate
-    auto index = code.size() - 1;
     gen_block(code, function->body);
-    deallocate_local_vars(code, index);
 }
 
 void BytecodeGen::gen_block(code_block& code, const Block *block) {
@@ -163,17 +160,20 @@ void BytecodeGen::gen_ret(code_block& code, const Ret* r) {
     PROFILE();
     //TODO implement this
     gen_expr(code, r->expr);
+    auto index = fn_info_stack_.back().local_var_index;
+    deallocate_local_vars(code, index);
     push(code, vm::ret);
 }
 
 void BytecodeGen::gen_decl(code_block& code, const Decl *d) {
     PROFILE();
     //TODO implement this
-    ++local_variable_counter;
-    variable_table_.insert_or_assign(*(d->id), local_variable_counter);
+    auto& var_counter = fn_info_stack_.back().local_var_count;
+    ++var_counter;
+    variable_table_.insert_or_assign(*(d->id), var_counter);
     gen_expr(code, d->val);
     push(code, vm::set_local);
-    push(code, static_cast<u8>(local_variable_counter));    // local var counter
+    push(code, static_cast<u8>(var_counter));    // local var counter
 }
 
 void BytecodeGen::gen_expr(code_block& code, const Expr *e) {
@@ -488,11 +488,7 @@ void BytecodeGen::generate_bootstrap(code_block& code) {
         0x00,
         vm::call_short,
         0x00,
-        0x0a,
-        0x00,
-        0x00,
-        0x00,
-        0x00,
+        0x06,
         vm::exit,
     };
     
@@ -500,29 +496,37 @@ void BytecodeGen::generate_bootstrap(code_block& code) {
 }
 
 bool BytecodeGen::is_variable(const astring& id) {
+    PROFILE();
     return variable_table_.contains(id);
 }
 
 bool BytecodeGen::is_function(const astring& id) {
+    PROFILE();
     return function_table_.contains(id);
 }
 
 bool BytecodeGen::is_function_arg(const astring& id) {
-    auto result = std::find_if(function_args_.cbegin(), function_args_.cend(), [&](auto& arg){
+    PROFILE();
+    const auto& fn_args = fn_info_stack_.back().function_args; 
+    auto result = std::find_if(fn_args.cbegin(), fn_args.cend(), [&](auto& arg){
         return arg.id == id;
     });
-    return result != function_args_.end();
+    return result != fn_args.end();
 }
 
 i64 BytecodeGen::get_function_arg_index(const astring& id) {
-    return std::distance(function_args_.cbegin(), std::find_if(function_args_.cbegin(), function_args_.cend(), [&](auto& arg){
+    PROFILE();
+    const auto& fn_args = fn_info_stack_.back().function_args; 
+    return std::distance(fn_args.cbegin(), std::find_if(fn_args.cbegin(), fn_args.cend(), [&](auto& arg){
         return arg.id == id;
     }));
 }
 
 void BytecodeGen::deallocate_local_vars(code_block& code, u64 index) {
+    PROFILE();
+    auto& var_counter = fn_info_stack_.back().local_var_count;
     push(code, vm::deallocate_locals);
-    push(code, static_cast<u8>(local_variable_counter));
+    push(code, static_cast<u8>(var_counter));
     // replace the placeholder value
-    code[index] = static_cast<u8>(local_variable_counter);
+    code[index] = static_cast<u8>(var_counter);
 }

@@ -25,8 +25,8 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
                 // only one character function names work at the moment
                 // this is because the address of every function changes if I have extra characters in the bytecode
 
-                function.code[i+1] = 0x00;                      // number of local variables
-                function.code[i+2] = static_cast<u8>(a) -1;     // address
+                function.code[i+1] = 0x01;                      // number of parameters
+                function.code[i+2] = static_cast<u8>(a) - 3;     // address
             }
             else if(function.code[i] == vm::push_string) {
                 // move past the string literal part
