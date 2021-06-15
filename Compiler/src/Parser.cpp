@@ -388,7 +388,6 @@ Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) 
             }
             
         }
-        println_token(tkn);
     }
     return conversion_stack.back();
 }

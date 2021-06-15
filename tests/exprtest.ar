@@ -1,7 +1,12 @@
 
+fn b(yo : i64): i64 {
+    var := yo;
+    ret var;
+}
+
 fn a(yo : i64): i64 {
     var := yo;
-    ret yo;
+    ret b(var);
 }
 
 fn main(): i32 {
