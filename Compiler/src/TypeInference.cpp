@@ -76,6 +76,14 @@ void TypeInference::analyze_ret(Ret* ret, type_handle ret_type) {
             );
         error_log.exit(ErrorMessage{FATAL, ret->expr->pos, current_filename_, err});
     }
+    else if(ret->expr->result_type != ret_type && type_manager.conversion_exists(ret->expr->result_type, ret_type)) {
+        auto err = strtoastr(
+            "implicit conversion from " + fmt(astrtostr(type_manager.get_type(ret_type).name), BRIGHT_BLUE, UNDERLINE) +
+            " to " +
+            fmt(astrtostr(type_manager.get_type(ret->expr->result_type).name), BRIGHT_BLUE, UNDERLINE)
+            );
+        error_log.push(ErrorMessage{WARN, ret->expr->pos, current_filename_, err});
+    }
 }
 
 void TypeInference::analyze_decl(Decl* decl) {
