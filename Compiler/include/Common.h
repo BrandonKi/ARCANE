@@ -14,12 +14,9 @@
 
 #include <small_profiler.h>
 #include <pLog.h>
-#define ARENA_ALLOCATOR_SIZE 10000   /// FIXME 1 mb but change in the future depending on # of files, size, etc.
 #include <arena_alloc.h>
 
-
 using namespace pLog;
-
 
 using i8  = int8_t;
 using i16 = int16_t;
@@ -471,7 +468,7 @@ inline astring str(const TokenKind kind){
         return "POST_DECREMENT";
 
     default:
-        return "";    
+        return "";
     }
 }
 

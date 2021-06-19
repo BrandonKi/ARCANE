@@ -11,6 +11,10 @@ Compiler::Compiler() {
 std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     PROFILE();
     std::vector<RawFile, arena_allocator<RawFile>> projectFiles = get_project_files();
+    //TODO do some heuristics to pick a size for the arena
+    auto size = projectFiles[0].filedata.size() * 100;
+    set_arena_alloc_size(size);
+    
     Parser parser(projectFiles);
     Project *ast = parser.parse();
 
