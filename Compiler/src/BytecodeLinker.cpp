@@ -9,7 +9,8 @@ BytecodeLinker::BytecodeLinker() {
     PROFILE();
 }
 
-// FIXE honestly this whole thing is a mess
+// FIXME honestly this whole thing is a mess
+// TODO rewrite the whole linker and possibly move it into it's own project
 code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_allocator<linkable_function>>& functions) {
     PROFILE();
     update_function_table(functions);
@@ -25,7 +26,7 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
                 // only one character function names work at the moment
                 // this is because the address of every function changes if I have extra characters in the bytecode
 
-                function.code[i+1] = 0x01;                      // number of parameters
+                function.code[i+1] = static_cast<u8>(function.args.size());       // number of parameters
                 function.code[i+2] = static_cast<u8>(a) - 3;     // address
             }
             else if(function.code[i] == vm::push_string) {

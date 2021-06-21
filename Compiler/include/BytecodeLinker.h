@@ -7,6 +7,7 @@ using code_block = std::vector<u8, arena_allocator<u8>>;
 
 struct linkable_function {
     const astring* name;
+    std::vector<Arg, arena_allocator<Arg>> args;
     code_block code;
 };
 

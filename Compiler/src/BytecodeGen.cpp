@@ -51,7 +51,7 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
         function_table_.insert_or_assign("0__BOOTSTRAP__0", code_block{});
         code_block bootstrap_code = function_table_.at("0__BOOTSTRAP__0");
         generate_bootstrap(bootstrap_code);
-        file_blocks.push_back(linkable_function{new astring{"0__BOOTSTRAP__0"}, bootstrap_code});
+        file_blocks.push_back(linkable_function{new astring{"0__BOOTSTRAP__0"}, {}, bootstrap_code});
    }
 
     for(const auto *import : file->imports) {
@@ -70,7 +70,7 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
         function_table_.insert_or_assign(function->id, code_block{});
         code_block code = function_table_.at(function->id);
         gen_function(code, function);
-        file_blocks.push_back(linkable_function{&function->id, code});
+        file_blocks.push_back(linkable_function{&function->id, function->args, code});
     }
 
     // move the main function after the bootstrap section so it gets called first

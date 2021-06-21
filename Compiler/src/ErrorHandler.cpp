@@ -94,7 +94,7 @@ astring ErrorHandler::create_graphic(ErrorMessage& error) {
             break;
     }
     result.append(strtoastr(temp));
-    return result;
+    return result + '\n';
 }
 
 void ErrorHandler::flush() {
