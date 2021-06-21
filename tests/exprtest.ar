@@ -1,16 +1,11 @@
 
-fn b(yo : i64): i64 {
-    var := yo;
-    ret var;
+fn add(a : int, b : int): int {
+    ret a + b;
 }
 
-fn a(yo : i64): i64 {
-    var := yo;
-    ret b(var);
-}
-
-fn main(): i32 {
-    var : i64 = 10;
-    var1 := a(var);
-    ret var1;
+fn main(): int {
+    i := 0;
+    x : i64 = 5;
+    result := add(i, x);
+    ret result;
 }

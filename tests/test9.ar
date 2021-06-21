@@ -1,9 +1,10 @@
-
-fn main(): int {
-    sum: int = add(10, 12);  
-    ret sum;
+fn add(a : int, b : int): int {
+    ret a + b;
 }
 
-fn add(op1: int, op2: int): int {
-    ret op1 + op2;
+fn main(): int {
+    i := 0;
+    x : int = 5;
+    result := add(i, x);
+    ret result;
 }
