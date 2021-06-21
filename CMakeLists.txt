@@ -48,7 +48,22 @@ if(${LTO})
 endif()
 
 if(MSVC)
-  target_compile_options(ARCC PRIVATE /W3 /WX)
+    target_compile_options(ARCC PRIVATE 
+        /W3 
+        /Wall 
+        # # C5045 Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified
+        /wd5045
+        # # C5039 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. Undefined behavior may occur if this function throws an exception.
+        /wd5039
+        # # C4668 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
+        /wd4668
+
+        /wd5027
+        /wd4626
+        /wd4820
+        /wd4061
+        /wd4062
+    )
 else()
-  target_compile_options(ARCC PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(ARCC PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
