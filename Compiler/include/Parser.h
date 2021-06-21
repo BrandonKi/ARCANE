@@ -39,6 +39,7 @@ class Parser {
         void prev_token_noreturn();
         [[nodiscard]] Token* peek_next_token();
         bool check_token(const TokenKind);
+        void verify_token(const TokenKind);
         bool expect_token(const TokenKind);
 
         u8 precedence(const TokenKind);

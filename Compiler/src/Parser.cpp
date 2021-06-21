@@ -72,7 +72,7 @@ Function* Parser::parse_function() {
     PROFILE();
     const SourcePos start_pos = current_token()->pos;
     expect_token(ARC_FN);
-    check_token(ARC_ID);
+    verify_token(ARC_ID);
     auto id = *(current_token()->data);
     next_token_noreturn();
     expect_token(ARC_OPEN_PAREN);
@@ -101,6 +101,8 @@ std::vector<Arg, arena_allocator<Arg>> Parser::parse_fn_args() {
         result.push_back(Arg{{pos}, id, token_kind_to_type(current_token()->kind)});
         s_table_.add_symbol(id, VARIABLE, result.back().type);
         next_token_noreturn();
+        if(check_token(ARC_COMMA))
+           next_token_noreturn();
     }
     return result;
 }
@@ -115,7 +117,7 @@ Block* Parser::parse_block() {
     std::vector<Statement*, arena_allocator<Statement*>> statements;
     // cases
     // statement
-    check_token(ARC_OPEN_BRACE);
+    verify_token(ARC_OPEN_BRACE);
     while(next_token()->kind != ARC_CLOSE_BRACE)
         statements.push_back(parse_statement());
     // nextToken(); // go past the closed brace
@@ -296,7 +298,7 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0(bool stop_at_p
                     result.insert(result.end(), arg_expr.begin(), arg_expr.end());
                     next_token_noreturn();
                 }
-                check_token(ARC_CLOSE_PAREN);
+                verify_token(ARC_CLOSE_PAREN);
                 result.push_back(fn_call);
             }
         }
@@ -436,9 +438,19 @@ inline bool Parser::check_token(const TokenKind kind) {
     PROFILE();
     [[likely]] if(current_token()->kind == kind)
         return true;
-    error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unexpected token"});
     return false;
 }
+
+// check if current token is something
+// does not increment
+inline void Parser::verify_token(const TokenKind kind) {
+    PROFILE();
+    [[likely]] if(current_token()->kind == kind)
+        return;
+    error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unexpected token"});
+}
+
+
 
 // TODO since this function doesn't exit
 // errors will propagate throughout the whole program
