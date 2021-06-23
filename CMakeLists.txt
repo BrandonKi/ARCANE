@@ -63,6 +63,7 @@ if(MSVC)
         /wd4820
         /wd4061
         /wd4062
+        /wd4623
     )
 else()
     target_compile_options(ARCC PRIVATE -Wall -Wextra -pedantic -Werror)

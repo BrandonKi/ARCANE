@@ -46,10 +46,10 @@ AST::~AST() {
     return ptr;
 }
 
-[[nodiscard]] Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<Arg, arena_allocator<Arg>>& args, type_handle type, Block* body, const bool is_main) {
+[[nodiscard]] Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<Arg, arena_allocator<Arg>>& fn_args, type_handle type, Block* body, const bool is_main) {
     PROFILE();
     auto *ptr = reinterpret_cast<Function*>(allocator_.allocate(sizeof(Function)));
-    allocator_.construct(ptr, Function{{pos}, id, args, type, body, is_main });
+    allocator_.construct(ptr, Function{{pos}, id, fn_args, type, body, is_main });
     return ptr;
 }
 
@@ -140,7 +140,7 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
 [[nodiscard]] Expr* AST::new_expr_node_int_literal(const SourcePos pos, const i64 int_literal, type_handle type) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
-    allocator_.construct(ptr, Expr{{pos}, EXPR_INT_LIT});
+    allocator_.construct(ptr, Expr{{pos}, EXPR_INT_LIT, type});
     ptr->int_literal.val = int_literal;
     return ptr;
 }
@@ -148,7 +148,7 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
 [[nodiscard]] Expr* AST::new_expr_node_float_literal(const SourcePos pos, const f64 float_literal, type_handle type) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
-    allocator_.construct(ptr, Expr{{pos}, EXPR_FLOAT_LIT});
+    allocator_.construct(ptr, Expr{{pos}, EXPR_FLOAT_LIT, type});
     ptr->float_literal.val = float_literal;
     return ptr;
 }
@@ -156,7 +156,7 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
 [[nodiscard]] Expr* AST::new_expr_node_string_literal(const SourcePos pos, astring& string_literal, type_handle type) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
-    allocator_.construct(ptr, Expr{{pos}, EXPR_STRING_LIT});
+    allocator_.construct(ptr, Expr{{pos}, EXPR_STRING_LIT, type});
     ptr->string_literal.val = &string_literal;
     return ptr;
 }

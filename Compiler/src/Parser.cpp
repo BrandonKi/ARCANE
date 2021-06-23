@@ -374,12 +374,12 @@ Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) 
                     if(s_table_.is_function(tkn_data)) {
                         auto ret_type = s_table_.get_type(tkn_data);
                         auto num_args = s_table_.get_num_args(tkn_data);
-                        auto args = new Expr*[num_args];
+                        auto fn_args = new Expr*[num_args];
                         for(u32 i = 0; i < num_args; ++i) {
-                            args[i] = conversion_stack.back();
+                            fn_args[i] = conversion_stack.back();
                             conversion_stack.pop_back();
                         }
-                        auto node = ast_.new_expr_node_fn_call(tkn->pos, tkn_data, num_args, args, ret_type);
+                        auto node = ast_.new_expr_node_fn_call(tkn->pos, tkn_data, num_args, fn_args, ret_type);
                         conversion_stack.push_back(node);
                     }
                     else {

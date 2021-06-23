@@ -16,7 +16,7 @@ void TypeInference::start() {
 
 void TypeInference::analyze_project(Project* project) {
     PROFILE();
-    for (auto* file : ast_->files) {
+    for (auto* file : project->files) {
         analyze_file(file);
     }
 }
@@ -33,8 +33,8 @@ void TypeInference::analyze_file(File* file) {
     }
 }
 
-void TypeInference::update_symbol_table(std::vector<Arg, arena_allocator<Arg>>& args) {
-    for(const auto& arg : args)
+void TypeInference::update_symbol_table(std::vector<Arg, arena_allocator<Arg>>& fn_args) {
+    for(const auto& arg : fn_args)
         s_table_.add_symbol(arg.id, VARIABLE, arg.type);
 }
 

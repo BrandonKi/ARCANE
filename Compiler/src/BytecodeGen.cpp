@@ -55,10 +55,12 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
    }
 
     for(const auto *import : file->imports) {
+        static_cast<void>(import);
         // gen_import(ctx, import);
     }
     
     for (const auto *decl : file->decls) {
+        static_cast<void>(decl);
         // gen_decl(ctx, decl);
     }
     
@@ -89,6 +91,7 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
 
 void BytecodeGen::gen_import(code_block& code, const Import *import) {
     PROFILE();
+    static_cast<void>(code);
     static_cast<void>(import);
     //TODO implement importing files/modules
 }
@@ -204,7 +207,7 @@ void BytecodeGen::gen_expr(code_block& code, const Expr *e) {
     }
 }
 
-void BytecodeGen::gen_int_lit(code_block& code, const u64 val) {
+void BytecodeGen::gen_int_lit(code_block& code, const i64 val) {
     PROFILE();
     push(code, vm::push_value_signed_64);
     push_value(code, val);
@@ -218,6 +221,7 @@ void BytecodeGen::gen_float_lit(code_block& code, const f64 val) {
 
 void BytecodeGen::gen_string_lit(code_block& code, const astring *val) {
     PROFILE();
+    static_cast<void>(code);
     static_cast<void>(val);
 }
 
@@ -246,10 +250,10 @@ void BytecodeGen::gen_fn_call(code_block& code, const Expr *expr) {
     PROFILE();
     auto val = expr->fn_call.val;
     auto argc = expr->fn_call.argc;
-    auto args = expr->fn_call.args;
+    auto argv = expr->fn_call.args;
 
     for(u32 i = 0; i < argc; ++i) {
-        gen_expr(code, args[i]);
+        gen_expr(code, argv[i]);
     }
 
     if(function_table_.contains(*val)) {
@@ -443,6 +447,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
 
 void BytecodeGen::gen_unary(code_block& code, const Expr* expr) {
     PROFILE();
+    static_cast<void>(code);
     switch(expr->unary_expr.op) {
         case ARC_NOT:
             break;
@@ -474,6 +479,7 @@ void BytecodeGen::push_block(code_block& code, const code_block& vec) {
 
 void BytecodeGen::push_string(code_block& code, const astring& str) {
     PROFILE();
+    #pragma warning(suppress : 4365)
     code.insert(code.end(), str.begin(), str.end());
 }
 

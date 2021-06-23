@@ -30,7 +30,7 @@ class BytecodeGen final {
         code_block code_;
 
         // use arena allocator for these
-        std::unordered_map<astring, int> variable_table_;
+        std::unordered_map<astring, u32> variable_table_;
         std::unordered_map<astring, code_block> function_table_;
         std::vector<fn_info, arena_allocator<fn_info>> fn_info_stack_;        
         
@@ -47,7 +47,7 @@ class BytecodeGen final {
         void gen_decl(code_block&, const Decl*);
         void gen_expr(code_block&, const Expr*);
 
-        void gen_int_lit(code_block&, const u64);
+        void gen_int_lit(code_block&, const i64);
         void gen_float_lit(code_block&, const f64);
         void gen_string_lit(code_block&, const astring*);
         void gen_id(code_block&, const astring*);
