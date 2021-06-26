@@ -11,12 +11,14 @@
 #include <filesystem>
 #include <thread>
 #include <fstream>
+#include <string_view>
 
 #include <small_profiler.h>
 #include <pLog.h>
 #include <arena_alloc.h>
 
 using namespace pLog;
+using namespace std::literals::string_view_literals;
 
 using i8  = int8_t;
 using i16 = int16_t;
@@ -29,11 +31,9 @@ using u64 = uint64_t;
 using f32 = float;
 using f64 = double;
 
-using astring = std::basic_string<char, std::char_traits<char>, arena_allocator<char>>;
-
 inline struct ARGS {
-    astring path;
-    astring output_path;
+    std::string path;
+    std::string output_path;
     bool lex_out = false;
     bool verbose_lex_out = false;
     bool project = false;
@@ -162,22 +162,22 @@ struct SourcePos {
 struct Token {
     TokenKind kind;
     SourcePos pos;
-    astring* data;
+    std::string_view data;
 };
 
 struct RawFile {
-    astring filepath;
-    astring filename;
-    astring filedata;
+    std::string filepath;
+    std::string filename;
+    std::string filedata;
 };
 
 struct LexedFile {
-    astring filepath;
-    astring filename;
+    std::string filepath;
+    std::string filename;
     std::vector<Token, arena_allocator<Token>> filedata;
 };
 
-const inline std::unordered_map<astring, TokenKind> keywords( { 
+const inline std::unordered_map<std::string_view, TokenKind> keywords( { 
 
     {"i8", ARC_I8}, {"i16", ARC_I16}, {"i32", ARC_I32}, {"i64", ARC_I64}, 
     {"u8", ARC_U8}, {"u16", ARC_U16}, {"u32", ARC_U32}, {"u64", ARC_U64}, 
@@ -191,7 +191,7 @@ const inline std::unordered_map<astring, TokenKind> keywords( {
     
 });
 
-inline astring str(const TokenKind kind){
+inline std::string TokenKind2String(const TokenKind kind){
     
     switch(kind) {
 
@@ -472,7 +472,7 @@ inline astring str(const TokenKind kind){
     }
 }
 
-inline astring get_string(const TokenKind kind){
+inline std::string get_string(const TokenKind kind){
     
     switch(kind){
 
@@ -747,36 +747,7 @@ inline astring get_string(const TokenKind kind){
     }
 }
 
-inline astring strtoastr(std::string& str) {
-    return astring(str);
-}
-
-inline astring strtoastr(std::string&& str) {
-    return astring(str);
-}
-
-inline std::string astrtostr(astring& str) {
-    return std::string(str);
-}
-
-inline std::string astrtostr(astring&& str) {
-    return std::string(str);
-}
-
-template <typename T>
-inline astring to_astring(T arg) {
-    return astring(std::to_string(arg));
-}
-
-inline i64 astoll(astring& arg) {
-    return std::stoll(std::string(arg));
-}
-
-inline f64 astod(astring& arg) {
-    return std::stod(std::string(arg));
-}
-
-inline bool operator==(astring const & s1, astring const & s2) {
+inline bool operator==(std::string const & s1, std::string const & s2) {
     return s1.length() == s2.length() &&
            std::equal(s1.begin(), s1.end(), s2.begin());
 }
@@ -796,11 +767,11 @@ inline bool is_keyword(const TokenKind kind) {
 }
 
 inline void print_token(const Token* t){
-    print(astrtostr("'" + (t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string(t->kind) + " [" + to_astring(t->pos.src_line) + ", " + to_astring(t->pos.src_char) + "] " + "[" + to_astring(t->pos.start_pos) + ", " + to_astring(t->pos.end_pos) + "]"));
+    print("'" + (t->data == nullptr ? "" : std::string(t->data)) + "' " + get_string(t->kind) + " [" + std::to_string(t->pos.src_line) + ", " + std::to_string(t->pos.src_char) + "] " + "[" + std::to_string(t->pos.start_pos) + ", " + std::to_string(t->pos.end_pos) + "]");
 }
 
 inline void println_token(const Token* t){
-    println(astrtostr("'" + astring(t->data == nullptr ? astring("") : *(t->data)) + "' " + get_string(t->kind) + " [" + to_astring(t->pos.src_line) + ", " + to_astring(t->pos.src_char) + "] " + "[" + to_astring(t->pos.start_pos) + ", " + to_astring(t->pos.end_pos) + "]"));
+    println("'" + std::string(t->data == nullptr ? "" : std::string(t->data)) + "' " + get_string(t->kind) + " [" + std::to_string(t->pos.src_line) + ", " + std::to_string(t->pos.src_char) + "] " + "[" + std::to_string(t->pos.start_pos) + ", " + std::to_string(t->pos.end_pos) + "]");
 }
 
 [[nodiscard]] constexpr inline bool is_digit(const char c) noexcept {

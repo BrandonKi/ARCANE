@@ -18,7 +18,7 @@ class Parser {
         u64 index_ = 0;
         AST ast_;
         SymbolTable s_table_;
-        astring current_filename_;
+        std::string current_filename_;
 
         Project* parse_project();
         File* parse_file();

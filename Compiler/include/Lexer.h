@@ -16,7 +16,7 @@ class Lexer {
                     case 't':case 'u':case 'v':case 'w':case 'x':case 'y':case 'z':case '_'
 
     public:
-        Lexer(const astring&, const astring&);
+        Lexer(const std::string&, const char*, size_t);
         [[nodiscard]] std::vector<Token, arena_allocator<Token>> lex();
         [[nodiscard]] char current_char() const;
         [[nodiscard]] char next_char();
@@ -27,8 +27,9 @@ class Lexer {
         [[nodiscard]] char peek_prev_char() const;
 
     private:
-        const astring filename_;
-        const astring data_;
+        const std::string filename_;
+        const char * data_;
+        size_t data_size;
         std::vector<Token, arena_allocator<Token>> tokens_;
         u32 index_;
         u32 line_;
@@ -56,10 +57,8 @@ class Lexer {
 
         [[nodiscard]] Token create_token(const TokenKind, const u32) const;
         [[nodiscard]] Token create_token(const TokenKind, const u32, const u32) const;
-        [[nodiscard]] Token create_token(const TokenKind, const u32, astring&) const;
-        [[nodiscard]] Token create_token(const TokenKind, const u32, astring&&) const;
-        [[nodiscard]] Token create_token(const TokenKind, const u32, const u32, astring&) const;
-        [[nodiscard]] Token create_token(const TokenKind, const u32, const u32, astring&&) const;
+        [[nodiscard]] Token create_token(const TokenKind, const u32, std::string_view) const;
+        [[nodiscard]] Token create_token(const TokenKind, const u32, const u32, std::string_view) const;
 
         void print_tokens(const bool) const;
 

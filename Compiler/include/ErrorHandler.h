@@ -8,8 +8,8 @@ enum Severity{ FATAL, WARN, NOTE, MESSAGE };
 struct ErrorMessage { 
     Severity severity;
     SourcePos src_pos;
-    astring filename;
-    astring message;
+    std::string filename;
+    std::string message;
 };
 
 class ErrorHandler {
@@ -25,12 +25,12 @@ class ErrorHandler {
 
     private:
 
-        astring buffer;
+        std::string buffer;
 
-        astring make_preamble(ErrorMessage& error);
-        astring create_graphic(ErrorMessage& error);
+        std::string make_preamble(ErrorMessage& error);
+        std::string create_graphic(ErrorMessage& error);
 
-        std::vector<astring, arena_allocator<astring>> read_file_by_line(const astring& filepath);
+        std::vector<std::string, arena_allocator<std::string>> read_file_by_line(const std::string& filepath);
 
     };
 

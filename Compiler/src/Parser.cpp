@@ -9,8 +9,8 @@ Parser::Parser(std::vector<RawFile, arena_allocator<RawFile>>& project_files) {
     // std::thread worker([](){});
     // lex all the files
     for(const auto& rf: project_files){
-        Lexer lexer(rf.filename, rf.filedata);
-        data_.push_back(LexedFile{rf.filepath, rf.filename, lexer.lex()});
+        Lexer lexer(rf.filename, rf.filedata.c_str(), rf.filedata.size());
+        data_.push_back(LexedFile{ rf.filepath, rf.filename, lexer.lex() });
     }
 }
 
@@ -73,7 +73,7 @@ Function* Parser::parse_function() {
     const SourcePos start_pos = current_token()->pos;
     expect_token(ARC_FN);
     verify_token(ARC_ID);
-    auto id = *(current_token()->data);
+    auto id = std::string(current_token()->data);
     next_token_noreturn();
     expect_token(ARC_OPEN_PAREN);
     auto fn_args = parse_fn_args();
@@ -94,7 +94,7 @@ Function* Parser::parse_function() {
 std::vector<Arg, arena_allocator<Arg>> Parser::parse_fn_args() {
     std::vector<Arg, arena_allocator<Arg>> result;
     for(int i = 0; current_token()->kind == ARC_ID; ++i) {
-        auto id = *(current_token()->data);
+        auto id = std::string(current_token()->data);
         auto pos = current_token()->pos;
         next_token_noreturn();
         expect_token(ARC_COLON);
@@ -200,7 +200,7 @@ Statement* Parser::parse_statement() {
 Decl* Parser::parse_decl() {
     PROFILE();
     const SourcePos start_pos = current_token()->pos;
-    astring& id = *(current_token()->data);
+    std::string id = std::string(current_token()->data);
     if(peek_next_token()->kind == ARC_INFER) {
         next_token_noreturn();
         next_token_noreturn();
@@ -252,7 +252,7 @@ Decl* Parser::parse_decl() {
     }
     else {
         //TODO syntax error here
-        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "INVALID TOKEN"});
+         error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "INVALID TOKEN"});
     }
     return new Decl{};
 }
@@ -281,7 +281,7 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0(bool stop_at_p
             result.push_back(current_token());
         }
         else if(current_token()->kind == ARC_ID) {
-            auto id = *(current_token()->data);
+            auto id = std::string(current_token()->data);
 
             if(!s_table_.has(id)) {
                 error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown identifier"});
@@ -362,13 +362,13 @@ Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) 
             }
         }
         else {
-            auto& tkn_data = *(tkn->data);
+            auto tkn_data = std::string(tkn->data);
             switch(tkn->kind) {
                 case ARC_INT_LIT:
-                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, astoll(tkn_data)));
+                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, std::stoll(tkn_data)));
                     break;
                 case ARC_FLOAT_LIT:
-                    conversion_stack.push_back(ast_.new_expr_node_float_literal(tkn->pos, astod(tkn_data)));
+                    conversion_stack.push_back(ast_.new_expr_node_float_literal(tkn->pos, std::stod(tkn_data)));
                     break;
                 case ARC_ID:
                     if(s_table_.is_function(tkn_data)) {

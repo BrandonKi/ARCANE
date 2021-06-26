@@ -51,7 +51,7 @@ std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::
         function_table_.insert_or_assign("0__BOOTSTRAP__0", code_block{});
         code_block bootstrap_code = function_table_.at("0__BOOTSTRAP__0");
         generate_bootstrap(bootstrap_code);
-        file_blocks.push_back(linkable_function{new astring{"0__BOOTSTRAP__0"}, {}, bootstrap_code});
+        file_blocks.push_back(linkable_function{new std::string{"0__BOOTSTRAP__0"}, {}, bootstrap_code});
    }
 
     for(const auto *import : file->imports) {
@@ -219,13 +219,13 @@ void BytecodeGen::gen_float_lit(code_block& code, const f64 val) {
     push_value(code, val);
 }
 
-void BytecodeGen::gen_string_lit(code_block& code, const astring *val) {
+void BytecodeGen::gen_string_lit(code_block& code, const std::string *val) {
     PROFILE();
     static_cast<void>(code);
     static_cast<void>(val);
 }
 
-void BytecodeGen::gen_id(code_block& code, const astring* id) {
+void BytecodeGen::gen_id(code_block& code, const std::string* id) {
     PROFILE();
     // this is only for non assignable values
     // for ex. it would not be for "val = 1 + 1;"
@@ -477,7 +477,7 @@ void BytecodeGen::push_block(code_block& code, const code_block& vec) {
     code.insert(code.end(), vec.begin(), vec.end());
 }
 
-void BytecodeGen::push_string(code_block& code, const astring& str) {
+void BytecodeGen::push_string(code_block& code, const std::string& str) {
     PROFILE();
     #pragma warning(suppress : 4365)
     code.insert(code.end(), str.begin(), str.end());
@@ -501,17 +501,17 @@ void BytecodeGen::generate_bootstrap(code_block& code) {
     push_block(code, vec);
 }
 
-bool BytecodeGen::is_variable(const astring& id) {
+bool BytecodeGen::is_variable(const std::string& id) {
     PROFILE();
     return variable_table_.contains(id);
 }
 
-bool BytecodeGen::is_function(const astring& id) {
+bool BytecodeGen::is_function(const std::string& id) {
     PROFILE();
     return function_table_.contains(id);
 }
 
-bool BytecodeGen::is_function_arg(const astring& id) {
+bool BytecodeGen::is_function_arg(const std::string& id) {
     PROFILE();
     const auto& fn_args = fn_info_stack_.back().function_args; 
     auto result = std::find_if(fn_args.cbegin(), fn_args.cend(), [&](auto& arg){
@@ -520,7 +520,7 @@ bool BytecodeGen::is_function_arg(const astring& id) {
     return result != fn_args.end();
 }
 
-i64 BytecodeGen::get_function_arg_index(const astring& id) {
+i64 BytecodeGen::get_function_arg_index(const std::string& id) {
     PROFILE();
     const auto& fn_args = fn_info_stack_.back().function_args; 
     return std::distance(fn_args.cbegin(), std::find_if(fn_args.cbegin(), fn_args.cend(), [&](auto& arg){

@@ -22,7 +22,7 @@ struct Project : Node {
 };
 
 struct File : Node {
-    astring name;
+    std::string name;
     std::vector<Import*, arena_allocator<Import*>> imports;
     std::vector<Decl*, arena_allocator<Decl*>> decls;
     std::vector<Function*, arena_allocator<Function*>> functions;
@@ -30,19 +30,19 @@ struct File : Node {
 };
 
 struct Import : Node {
-    astring id;
-    astring filename;
+    std::string id;
+    std::string filename;
     // std::vector<Decl*> decls;
     // std::vector<Function*> functions;
 };
 
 struct Arg : Node {
-    astring id;
+    std::string id;
     type_handle type;
 };
 
 struct Function : Node {
-    astring id;
+    std::string id;
     std::vector<Arg, arena_allocator<Arg>> args;
     type_handle return_type;
     Block* body;
@@ -117,13 +117,13 @@ struct Expr : Node {
             f64 val;
         } float_literal;
         struct {
-            astring* val;
+            std::string* val;
         } string_literal;
         struct {
-            astring* val;
+            std::string* val;
         } id;
         struct {
-            astring* val;
+            std::string* val;
             u32 argc;
             Expr** args;
         } fn_call;
@@ -141,7 +141,7 @@ struct Expr : Node {
 };
 
 struct Decl : Node {
-    astring* id;
+    std::string* id;
     type_handle type;
     Expr* val;
 };
@@ -160,9 +160,9 @@ class AST {
         ~AST();
 
         [[nodiscard]] Project* new_project_node(SourcePos, std::vector<File*, arena_allocator<File*>>&);
-        [[nodiscard]] File* new_file_node(SourcePos, astring, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
-        [[nodiscard]] Import* new_import_node(SourcePos, astring&, astring&);    // TODO add a way to keep track of imported symbols
-        [[nodiscard]] Function* new_function_node(SourcePos, astring&, std::vector<Arg, arena_allocator<Arg>>&, type_handle, Block*, const bool);
+        [[nodiscard]] File* new_file_node(SourcePos, std::string, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
+        [[nodiscard]] Import* new_import_node(SourcePos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
+        [[nodiscard]] Function* new_function_node(SourcePos, std::string&, std::vector<Arg, arena_allocator<Arg>>&, type_handle, Block*, const bool);
         [[nodiscard]] Block* new_block_node(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
         [[nodiscard]] While_* new_while_node(SourcePos, Expr*, Block*);
         [[nodiscard]] For_* new_for_node(SourcePos, Decl*, Expr*, Expr*, Block*);
@@ -176,12 +176,12 @@ class AST {
         [[nodiscard]] Statement* new_statement_node_expr(SourcePos, Expr*);
         [[nodiscard]] Expr* new_expr_node_int_literal(SourcePos, i64, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Expr* new_expr_node_float_literal(SourcePos, f64, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_string_literal(SourcePos, astring&,  type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_variable(SourcePos, astring&, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_fn_call(SourcePos, astring&, u32, Expr**, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_string_literal(SourcePos, std::string&,  type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_variable(SourcePos, std::string&, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_fn_call(SourcePos, std::string&, u32, Expr**, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Expr* new_expr_node_bin_expr(SourcePos, TokenKind, Expr*, Expr*, type_handle type = TYPE_UNKNOWN);
         [[nodiscard]] Expr* new_expr_node_unary_expr(SourcePos, TokenKind, Expr*, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Decl* new_decl_node(SourcePos, astring&, type_handle, Expr*);
+        [[nodiscard]] Decl* new_decl_node(SourcePos, std::string&, type_handle, Expr*);
 
 
 };

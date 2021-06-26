@@ -20,7 +20,7 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
             // TODO this is_letter check has a high chance of breaking
             if(function.code[i] == vm::call_short && is_letter(reinterpret<char>(function.code[i+1]))) {
                 char *raw_fn_name = reinterpret_cast<char*>(&(function.code.data()[i+1]));
-                auto fn_name = astring(raw_fn_name);
+                auto fn_name = std::string(raw_fn_name);
                 auto a = function_table_.at(fn_name);
 
                 // only one character function names work at the moment

@@ -30,8 +30,8 @@ class BytecodeGen final {
         code_block code_;
 
         // use arena allocator for these
-        std::unordered_map<astring, u32> variable_table_;
-        std::unordered_map<astring, code_block> function_table_;
+        std::unordered_map<std::string, u32> variable_table_;
+        std::unordered_map<std::string, code_block> function_table_;
         std::vector<fn_info, arena_allocator<fn_info>> fn_info_stack_;        
         
         code_block gen_project(Project*);
@@ -49,21 +49,21 @@ class BytecodeGen final {
 
         void gen_int_lit(code_block&, const i64);
         void gen_float_lit(code_block&, const f64);
-        void gen_string_lit(code_block&, const astring*);
-        void gen_id(code_block&, const astring*);
+        void gen_string_lit(code_block&, const std::string*);
+        void gen_id(code_block&, const std::string*);
         void gen_fn_call(code_block&, const Expr *);
         void gen_bin(code_block&, const Expr*);
         void gen_unary(code_block&, const Expr*);
 
         void push(code_block&, const u8);
         void push_block(code_block&, const code_block&);
-        void push_string(code_block&, const astring&);
+        void push_string(code_block&, const std::string&);
 
         void generate_bootstrap(code_block&);
-        bool is_variable(const astring&);
-        bool is_function(const astring&);
-        bool is_function_arg(const astring&);
-        i64 get_function_arg_index(const astring&);
+        bool is_variable(const std::string&);
+        bool is_function(const std::string&);
+        bool is_function_arg(const std::string&);
+        i64 get_function_arg_index(const std::string&);
 
         void deallocate_local_vars(code_block&, u64);
 

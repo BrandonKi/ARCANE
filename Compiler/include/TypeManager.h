@@ -9,7 +9,7 @@
 //  
 // or alternatively we can hold more information about each type
 // Type {
-//      astring name;
+//      std::string name;
 //      u64 size;
 //      // TODO add aggregate support
 //  }
@@ -33,7 +33,7 @@
 using type_handle = i32;
 
 struct Type {
-    astring name;
+    std::string name;
     u64 size;
     // TODO add aggregate support
 };
@@ -60,12 +60,12 @@ class TypeManager {
 public:
     TypeManager();
 
-    type_handle add_type(const astring&);
-    type_handle get_type_handle(const astring&);
+    type_handle add_type(const std::string&);
+    type_handle get_type_handle(const std::string&);
     Type get_type(type_handle);
 
 
-    void add_alias(const astring&, const astring&);
+    void add_alias(const std::string&, const std::string&);
 
     // TODO operator functions
     void define_operator(TokenKind, type_handle, type_handle, Function*);

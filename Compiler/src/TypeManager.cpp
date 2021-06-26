@@ -10,7 +10,7 @@ TypeManager::TypeManager() {
     PROFILE();
 }
 
-type_handle TypeManager::add_type(const astring& name) {
+type_handle TypeManager::add_type(const std::string& name) {
     PROFILE();
     // TODO actually support adding more types
     // this is just placeholder
@@ -18,7 +18,7 @@ type_handle TypeManager::add_type(const astring& name) {
     return static_cast<type_handle>(type_table.size() - 1);
 }
 
-type_handle TypeManager::get_type_handle(const astring& name) {
+type_handle TypeManager::get_type_handle(const std::string& name) {
     PROFILE();
     for(size_t i = 0; i < type_table.size(); ++i) //FIXME if this is a common operation then consider a hash table
         if(type_table[i].name == name)
@@ -31,7 +31,7 @@ Type TypeManager::get_type(const type_handle handle) {
     return type_table[static_cast<size_t>(handle)];
 }
 
-void TypeManager::add_alias(const astring& alias, const astring& original) {
+void TypeManager::add_alias(const std::string& alias, const std::string& original) {
     PROFILE();
     static_cast<void>(alias);
     static_cast<void>(original);

@@ -6,13 +6,13 @@
 using code_block = std::vector<u8, arena_allocator<u8>>;
 
 struct linkable_function {
-    const astring* name;
+    const std::string* name;
     std::vector<Arg, arena_allocator<Arg>> args;
     code_block code;
 };
 
 struct linkable_file {
-    const astring* name;
+    const std::string* name;
     code_block code;
 };
 
@@ -24,5 +24,5 @@ class BytecodeLinker final {
         void update_function_table(std::vector<linkable_function, arena_allocator<linkable_function>>&);
 
     private:
-        std::unordered_map<astring, u64> function_table_;
+        std::unordered_map<std::string, u64> function_table_;
 };

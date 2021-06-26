@@ -12,7 +12,7 @@ public:
 
 private:
     Project* ast_;
-    astring current_filename_;
+    std::string current_filename_;
     SymbolTable s_table_;
 
     void analyze_project(Project*);

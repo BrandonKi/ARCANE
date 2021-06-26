@@ -20,31 +20,31 @@ struct Symbol {
 class SymbolTable {
     public:
 
-        using pair = std::pair<astring, Symbol>;
+        using pair = std::pair<std::string, Symbol>;
         using hash_map =
             std::unordered_map<
-                astring,
+                std::string,
                 Symbol,
-                std::hash<astring>,
-                std::equal_to<astring>,
+                std::hash<std::string>,
+                std::equal_to<std::string>,
                 arena_allocator<
                     std::pair<
-                        const astring,
+                        const std::string,
                         Symbol
                     >
                 >
             >;
         
         SymbolTable();
-        void add_symbol(const astring&, const SymbolType, const type_handle);
-        void add_function(const astring&, const std::vector<Arg, arena_allocator<Arg>>, const SymbolType, const type_handle); 
-        bool has(const astring&);
-        bool scope_has(const astring&);
-        SymbolType get_kind(const astring&);
-        type_handle get_type(const astring&);
-        u32 get_num_args(const astring&);
-        bool is_function(const astring&);
-        bool is_variable(const astring&);
+        void add_symbol(const std::string, const SymbolType, const type_handle);
+        void add_function(const std::string, const std::vector<Arg, arena_allocator<Arg>>, const SymbolType, const type_handle); 
+        bool has(const std::string&);
+        bool scope_has(const std::string&);
+        SymbolType get_kind(const std::string&);
+        type_handle get_type(const std::string&);
+        u32 get_num_args(const std::string&);
+        bool is_function(const std::string&);
+        bool is_variable(const std::string&);
         void push_scope();
         void pop_scope();
 
@@ -53,7 +53,7 @@ class SymbolTable {
         hash_map global_;
         std::vector<hash_map, arena_allocator<hash_map>> table_;
         
-        pair get(astring&);
+        pair get(std::string&);
         hash_map& current_scope();
 };
 

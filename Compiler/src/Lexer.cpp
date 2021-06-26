@@ -3,8 +3,8 @@
 extern ErrorHandler error_log;
 extern TypeManager type_manager;
 
-Lexer::Lexer(const astring& filename, const astring& filedata):
-    filename_(filename), data_(filedata), tokens_(arena_allocator<Token>{}),
+Lexer::Lexer(const std::string& filename, const char* filedata, size_t filedata_size):
+    filename_(filename), data_(filedata), data_size(filedata_size), tokens_(arena_allocator<Token>{}),
     index_(0), line_(1), col_(1)
 {
     PROFILE();
@@ -14,7 +14,7 @@ Lexer::Lexer(const astring& filename, const astring& filedata):
 std::vector<Token, arena_allocator<Token>> Lexer::lex() {
     PROFILE();
 
-    while(index_ < data_.size()) {
+    while(index_ < data_size) {
 
         switch(current_char()) {
             CASE_DIGIT:
@@ -132,7 +132,7 @@ void Lexer::consume_comment() {
 
     if(next_char() == '*') {
         next_char_noreturn();
-        while(index_ < data_.size() && !(current_char() == '*' && peek_next_char() == '/')){
+        while(index_ < data_size && !(current_char() == '*' && peek_next_char() == '/')){
             if(current_char() == '\n')
                 line_++;
             next_char_noreturn();
@@ -140,7 +140,7 @@ void Lexer::consume_comment() {
         next_char_noreturn();
     }
     else {
-        while(index_ < data_.size() &&  current_char() != '\n'){
+        while(index_ < data_size &&  current_char() != '\n'){
             next_char_noreturn();
         }
     }
@@ -148,7 +148,6 @@ void Lexer::consume_comment() {
 
 Token Lexer::lex_number_lit() {
     PROFILE();
-    auto& num = *new astring;    //FIXME use arena alloc
     const auto start_pos = index_;
     const auto current_col = col_;
     auto is_float = false;
@@ -159,46 +158,43 @@ Token Lexer::lex_number_lit() {
         is_float = false;
     }
     while(is_digit(current_char())) {      //TODO refactor
-        num.push_back(current_char());
-
         if(peek_next_char() == '.') {
             // if(isFloat) //TODO print error message because two "." are present in number literal
             is_float = true;
             is_int = false;
-
-            num.push_back(next_char());
         }
         next_char_noreturn();
     }
+
+    std::string_view literal{ data_ + start_pos, index_ - start_pos };
+
     prev_char_noreturn();    // the above loop goes one char too far so decrement here
-    // if the literal is negative figure that out here
-    if(tokens_.back().kind == ARC_NEGATE) {
-        tokens_.pop_back();
-        num = "-" + num;
-    }
+
     if(is_int)
-        return create_token(ARC_INT_LIT, current_col, start_pos, num);
+        return create_token(ARC_INT_LIT, current_col, start_pos, literal);
     else if(is_float)
-        return create_token(ARC_FLOAT_LIT, current_col, start_pos, num);
+        return create_token(ARC_FLOAT_LIT, current_col, start_pos, literal);
     else {
         //TODO convert hex literal to int or float literal
-        return create_token(ARC_INT_LIT, current_col, start_pos, num);
+        return create_token(ARC_INT_LIT, current_col, start_pos, literal);
     }
 }
 
 Token Lexer::lex_identifier() {
     PROFILE();
 
-    auto& id = *new astring; //FIXME use arena alloc
     const auto start_pos = index_;
     const auto current_col = col_;
 
     while(is_letter(current_char())  || is_digit(current_char())) {
-        id.push_back(current_char());
         next_char_noreturn();
     }
 
-    prev_char_noreturn();    // the above loop goes one char too far so decrement here
+    // prev_char_noreturn();    // the above loop goes one char too far so decrement here
+
+    std::string_view id { data_ + start_pos, index_ - start_pos };
+
+    prev_char_noreturn();
 
     if(keywords.find(id) != keywords.end())
         return create_token(keywords.find(id)->second, current_col, start_pos);
@@ -210,16 +206,13 @@ Token Lexer::lex_string() {  //TODO escape sequences
 
     const auto start_pos = index_;
 
-    auto& id = *new astring; //FIXME use arena alloc
-
     // current_char is either " or '
     const auto end = current_char();
 
-    while(next_char() != end) {
-        id.push_back(current_char());
-    }
+    while(next_char() != end) { }
 
-    return create_token(ARC_STRING_LIT, start_pos, id);
+    std::string_view literal { data_ + start_pos, index_ - start_pos };
+    return create_token(ARC_STRING_LIT, start_pos, literal);
 }
 
 Token Lexer::lex_interpolated_string() {  //TODO implement interpolated strings
@@ -230,7 +223,7 @@ Token Lexer::lex_interpolated_string() {  //TODO implement interpolated strings
 
     while(next_char() != '`');
     auto tkn = create_token(ARC_STRING_LIT, start_col, start_pos);
-    error_log.exit(ErrorMessage{FATAL, tkn.pos, filename_, astring("interpolated strings are not implemented yet")});
+    error_log.exit(ErrorMessage{FATAL, tkn.pos, filename_, std::string("interpolated strings are not implemented yet")});
     return Token{};
 }
 
@@ -474,33 +467,22 @@ inline char Lexer::peek_prev_char() const {
 
 inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos) const {
     PROFILE();
-    return Token {kind, SourcePos{line_, col_, start_pos, index_}, nullptr};
+    return Token {kind, SourcePos{line_, col_, start_pos, index_}, std::string_view{}};
 }
  
 inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos) const {
     PROFILE();
-    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, nullptr};
+    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, std::string_view{}};
 }
 
-inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos, astring& val) const {
+inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos, std::string_view val) const {
     PROFILE();
     return create_token(kind, col_, start_pos, val);
 }
 
-inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos, astring&& val) const {
+inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, std::string_view val) const  {   //FIXME no reason to pass a string here
     PROFILE();
-    return create_token(kind, col_, start_pos, val);
-}
-
-inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, astring& val) const  {   //FIXME no reason to pass a string here
-    PROFILE();
-    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, &val};
-}
-
-inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, astring&& val) const  {   //FIXME no reason to pass a string here
-    PROFILE();
-    auto* val2 = new astring(val);   //FIXME temporary
-    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, val2};
+    return Token {kind, SourcePos{line_, current_col, start_pos, index_}, val};
 }
 
 inline void Lexer::print_tokens(const bool verbose) const {
@@ -508,11 +490,11 @@ inline void Lexer::print_tokens(const bool verbose) const {
     if(verbose)
         for(const auto& tkn : tokens_)
             println_token(&tkn);
-    else{
+    else {
         for(const auto& tkn : tokens_)
             if(tkn.data == nullptr)
-                println(astrtostr(str(tkn.kind) + ": " + get_string(tkn.kind)));
+                println(TokenKind2String(tkn.kind) + ": " + get_string(tkn.kind));
             else
-                println(astrtostr(str(tkn.kind) + ": " + *(tkn.data)));
+                println(TokenKind2String(tkn.kind) + ": " + std::string(tkn.data));
     }
 }

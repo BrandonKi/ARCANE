@@ -27,7 +27,7 @@ AST::~AST() {
 
 [[nodiscard]] File* AST::new_file_node(
         const SourcePos pos,
-        const astring name,
+        const std::string name,
         std::vector<Import*, arena_allocator<Import*>>& imports,
         std::vector<Decl*, arena_allocator<Decl*>>& decls,
         std::vector<Function*, arena_allocator<Function*>>& functions,
@@ -39,14 +39,14 @@ AST::~AST() {
     return ptr;
 }
 
-[[nodiscard]] Import* AST::new_import_node(const SourcePos pos, astring& id, astring& filename) {
+[[nodiscard]] Import* AST::new_import_node(const SourcePos pos, std::string& id, std::string& filename) {
     PROFILE();
     auto *ptr = reinterpret_cast<Import*>(allocator_.allocate(sizeof(Import)));
     allocator_.construct(ptr, Import{{pos}, id, filename});
     return ptr;
 }
 
-[[nodiscard]] Function* AST::new_function_node(const SourcePos pos, astring& id, std::vector<Arg, arena_allocator<Arg>>& fn_args, type_handle type, Block* body, const bool is_main) {
+[[nodiscard]] Function* AST::new_function_node(const SourcePos pos, std::string& id, std::vector<Arg, arena_allocator<Arg>>& fn_args, type_handle type, Block* body, const bool is_main) {
     PROFILE();
     auto *ptr = reinterpret_cast<Function*>(allocator_.allocate(sizeof(Function)));
     allocator_.construct(ptr, Function{{pos}, id, fn_args, type, body, is_main });
@@ -153,27 +153,29 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
     return ptr;
 }
 
-[[nodiscard]] Expr* AST::new_expr_node_string_literal(const SourcePos pos, astring& string_literal, type_handle type) {
+[[nodiscard]] Expr* AST::new_expr_node_string_literal(const SourcePos pos, std::string& string_literal, type_handle type) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_STRING_LIT, type});
-    ptr->string_literal.val = &string_literal;
+    ptr->string_literal.val = new std::string(string_literal);
     return ptr;
 }
 
-[[nodiscard]] Expr* AST::new_expr_node_variable(const SourcePos pos, astring& id, type_handle type) {
+[[nodiscard]] Expr* AST::new_expr_node_variable(const SourcePos pos, std::string& id, type_handle type) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_ID, type});
-    ptr->id.val = &id;
+    // FIXME
+    ptr->id.val = new std::string(id);
     return ptr;
 }
 
-[[nodiscard]] Expr* AST::new_expr_node_fn_call(const SourcePos pos, astring& id, u32 argc, Expr** argv, type_handle type) {
+[[nodiscard]] Expr* AST::new_expr_node_fn_call(const SourcePos pos, std::string& id, u32 argc, Expr** argv, type_handle type) {
     PROFILE();
     auto *ptr = reinterpret_cast<Expr*>(allocator_.allocate(sizeof(Expr)));
     allocator_.construct(ptr, Expr{{pos}, EXPR_FN_CALL, type});
-    ptr->fn_call.val = &id;
+    // FIXME
+    ptr->fn_call.val = new std::string(id);
     ptr->fn_call.argc = argc;
     ptr->fn_call.args = argv;
     return ptr;
@@ -199,9 +201,10 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
     return ptr;
 }
 
-[[nodiscard]] Decl* AST::new_decl_node(const SourcePos pos, astring& id, const type_handle type, Expr* val) {
+[[nodiscard]] Decl* AST::new_decl_node(const SourcePos pos, std::string& id, const type_handle type, Expr* val) {
     PROFILE(); 
     auto* ptr = reinterpret_cast<Decl*>(allocator_.allocate(sizeof(Decl)));
-    allocator_.construct(ptr, Decl{ {pos}, &id, type, val });
+    // FIXME
+    allocator_.construct(ptr, Decl{ {pos}, new std::string(id), type, val });
     return ptr;
 }
