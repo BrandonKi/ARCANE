@@ -77,10 +77,10 @@ void TypeInference::analyze_ret(Ret* ret, type_handle ret_type) {
     }
     else if(ret->expr->result_type != ret_type && type_manager.conversion_exists(ret->expr->result_type, ret_type)) {
         auto err = 
-            "implicit conversion from " + fmt(type_manager.get_type(ret_type).name, BRIGHT_BLUE, UNDERLINE) +
+            "implicit conversion from " + fmt(type_manager.get_type(ret->expr->result_type).name, BRIGHT_BLUE, UNDERLINE) +
             " to " +
-            fmt(type_manager.get_type(ret->expr->result_type).name, BRIGHT_BLUE, UNDERLINE);
-
+            fmt(type_manager.get_type(ret_type).name, BRIGHT_BLUE, UNDERLINE);
+        
         error_log.push(ErrorMessage{WARN, ret->expr->pos, current_filename_, err});
     }
 }
