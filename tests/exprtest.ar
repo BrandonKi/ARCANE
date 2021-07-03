@@ -1,9 +1,9 @@
 
-fn cast(a : i64): i32 {
+fn cast(a : i64) i32 {
     ret a;
 }
 
-fn main(): i64 {
+fn main() i64 {
     i : i32 = cast(10);
     ret i;
 }
