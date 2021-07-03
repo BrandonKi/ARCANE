@@ -1,5 +1,5 @@
 
-fn add(lhs: i64, rhs: i64): i64 {
+fn add(lhs: i64, rhs: i64) i64 {
     ret lhs + rhs;
 }
 
@@ -7,10 +7,10 @@ fn add(lhs: i64, rhs: i64): i64 {
 [[inline]]
 // inlines all callees
 [[flatten]]
-fn sub(lhs: i64, rhs: i64): i64 {
+fn sub(lhs: i64, rhs: i64) i64 {
     ret add(lhs, -rhs);
 }
 
-fn main(): i32 {
+fn main() i32 {
     ret 
 }
