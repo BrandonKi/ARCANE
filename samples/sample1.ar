@@ -3,6 +3,6 @@ x : int = 5;
 
 result := add(i, x);
 
-fn add(a : int, b : int): int {
+fn add(a : int, b : int) int {
     ret a + b;
 }

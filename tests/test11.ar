@@ -1,11 +1,11 @@
 
 var : int = 10;
 
-fn main(): int {
+fn main() int {
     globalTest();
     ret var;
 }
 
-fn globalTest(): void{
+fn globalTest() void{
     var++;
 }

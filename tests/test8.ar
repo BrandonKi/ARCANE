@@ -1,5 +1,5 @@
 
-fn main(): int{
+fn main() int{
     if(3 < 2){
         ret 1;
     }

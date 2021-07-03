@@ -1,5 +1,5 @@
 
-fn main(): int{
+fn main() int {
     i : int = 10;
     while(i != 0){
         i--;

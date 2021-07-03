@@ -1,5 +1,5 @@
 
-fn main():int{
+fn main() int {
     str1: string = "Hello";
     str2: string = 'World!';
     ret str1 + " " + str2;

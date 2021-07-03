@@ -78,7 +78,6 @@ Function* Parser::parse_function() {
     expect_token(ARC_OPEN_PAREN);
     auto fn_args = parse_fn_args();
     expect_token(ARC_CLOSE_PAREN);
-    expect_token(ARC_COLON);
     type_handle ret = token_kind_to_type(current_token()->kind);
     if(ret == -1)
         error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown return type"});

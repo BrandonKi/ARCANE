@@ -12,11 +12,11 @@ WIP
 # Sample Code
 
 ```zig
-fn add(a : int, b : int): int {
+fn add(a : int, b : int) int {
     ret a + b;
 }
 
-fn main(): int {
+fn main() int {
     i := 0;
     x : int = 5;
     result := add(i, x);

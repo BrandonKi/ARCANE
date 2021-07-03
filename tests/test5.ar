@@ -1,5 +1,5 @@
 
-fn main(): int{
+fn main() int {
     var1 : int = 80 / 4 + 1 - 6;
     var2 : int = 90 * (90 - 80);
     ret var1 + var2;

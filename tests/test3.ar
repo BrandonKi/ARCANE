@@ -1,5 +1,5 @@
 
-fn main(): int {
+fn main() int {
     var : int = 0; 
     ret var;
 }

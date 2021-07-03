@@ -1,19 +1,19 @@
 
-fn cast(a : i64): i32 {
+fn cast(a : i64) i32 {
     ret a;
 }
 
-fn main(): i64 {
+fn main() i64 {
     i : i32 = cast(10);
     ret i;
 }
 
 
-// fn add(a : int, b : int): int {
+// fn add(a : int, b : int) int {
 //     ret a + b;
 // }
 
-// fn main(): int {
+// fn main() int {
 //     i := 0;
 //     x : i64 = 5;
 //     result := add(i, x);
