@@ -254,7 +254,7 @@ inline Token Lexer::lex_add() {
     }
     else if(peek_next_char() == '+') {
         next_char_noreturn();
-        if(tokens_.back().kind == ARC_ID)  // FIXME incorrectly lexes some cases for ex. "4++", "*++4", etc.
+        if(tokens_.back().kind == ARC_ID)
             return create_token(ARC_POST_INCREMENT, start_col, start_pos);
         return create_token(ARC_PRE_INCREMENT, start_col, start_pos);
     }
