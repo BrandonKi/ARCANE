@@ -7,11 +7,11 @@ cmake_policy(SET CMP0069 NEW)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM)
 
-set(arcvm_include ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/include)
+set(arcvm_include ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/include)
 set(arcvm_source
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM-V2/src/Arcvm.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/main.cpp
 )
 
 set(SRC
