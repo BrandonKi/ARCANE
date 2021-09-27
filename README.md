@@ -3,7 +3,7 @@ ARCANE is an acronym for
 ARCANE Runs, Compiles, And Never Explodes
 
 A programming language built on a bytecode VM. (ARCVM)
-https://github.com/BrandonKi/ARCVM-V2
+https://github.com/BrandonKi/ARCVM
 
 C-like language but without direct memory access.
 
