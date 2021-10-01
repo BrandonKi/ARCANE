@@ -1,3 +1,6 @@
+// keeping this around as a reference for now
+//TODO remove me in the future
+
 #include "BytecodeLinker.h"
 
 extern ErrorHandler error_log;

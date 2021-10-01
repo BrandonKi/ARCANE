@@ -1,3 +1,6 @@
+// keeping this around as a reference for now
+//TODO remove me in the future
+
 #include "TypeInference.h"
 
 // include to get access to instructions

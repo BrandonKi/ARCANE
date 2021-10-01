@@ -11,7 +11,9 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM)
 
 set(arcvm_include ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/include)
 set(arcvm_source
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRGenerator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRInterpreter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRPrinter.cpp
 )
 
 set(SRC

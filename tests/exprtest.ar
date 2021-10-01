@@ -1,14 +1,7 @@
 
-fn cast(a : i64) i32 {
-    x := 1;
-    ret a;
+fn main() int {
+    ret 0;
 }
-
-fn main() i64 {
-    i : i32 = cast(10);
-    ret i;
-}
-
 
 // fn add(a : int, b : int) int {
 //     ret a + b;
