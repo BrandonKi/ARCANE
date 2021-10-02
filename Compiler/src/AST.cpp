@@ -60,64 +60,64 @@ AST::~AST() {
     return ptr;
 }
 
-[[nodiscard]] While_* AST::new_while_node(const SourcePos pos, Expr* expr, Block* block) {
+[[nodiscard]] WhileStmnt* AST::new_while_node(const SourcePos pos, Expr* expr, Block* block) {
     PROFILE();
-    auto *ptr = reinterpret_cast<While_*>(allocator_.allocate(sizeof(While_)));
-    allocator_.construct(ptr, While_{{pos}, expr, block});
+    auto *ptr = reinterpret_cast<WhileStmnt*>(allocator_.allocate(sizeof(WhileStmnt)));
+    allocator_.construct(ptr, WhileStmnt{{pos}, expr, block});
     return ptr;
 }
 
-[[nodiscard]] For_* AST::new_for_node(const SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
+[[nodiscard]] ForStmnt* AST::new_for_node(const SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
     PROFILE();
-    auto *ptr = reinterpret_cast<For_*>(allocator_.allocate(sizeof(For_)));
-    allocator_.construct(ptr, For_{{pos}, decl, expr1, expr2, block});
+    auto *ptr = reinterpret_cast<ForStmnt*>(allocator_.allocate(sizeof(ForStmnt)));
+    allocator_.construct(ptr, ForStmnt{{pos}, decl, expr1, expr2, block});
     return ptr;
 }
 
-[[nodiscard]] If_* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block) {
+[[nodiscard]] IfStmnt* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block) {
     PROFILE();
-    auto *ptr = reinterpret_cast<If_*>(allocator_.allocate(sizeof(If_)));
-    allocator_.construct(ptr, If_{{pos}, expr, block});
+    auto *ptr = reinterpret_cast<IfStmnt*>(allocator_.allocate(sizeof(IfStmnt)));
+    allocator_.construct(ptr, IfStmnt{{pos}, expr, block});
     return ptr;
 }
 
 
-[[nodiscard]] Ret* AST::new_ret_node(const SourcePos pos, Expr* expr) {
+[[nodiscard]] RetStmnt* AST::new_ret_node(const SourcePos pos, Expr* expr) {
     PROFILE();
-    auto *ptr = reinterpret_cast<Ret*>(allocator_.allocate(sizeof(Ret)));
-    allocator_.construct(ptr, Ret{{pos}, expr});
+    auto *ptr = reinterpret_cast<RetStmnt*>(allocator_.allocate(sizeof(RetStmnt)));
+    allocator_.construct(ptr, RetStmnt{{pos}, expr});
     return ptr;
 }
 
-[[nodiscard]] Statement* AST::new_statement_node_while(const SourcePos pos, While_* while_) {
+[[nodiscard]] Statement* AST::new_statement_node_while(const SourcePos pos, WhileStmnt* while_stmnt) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, WHILE});
-    ptr->while_ = while_;
+    ptr->while_stmnt = while_stmnt;
     return ptr;
 }
 
-[[nodiscard]] Statement* AST::new_statement_node_for(const SourcePos pos, For_* for_) {
+[[nodiscard]] Statement* AST::new_statement_node_for(const SourcePos pos, ForStmnt* for_stmnt) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, FOR});
-    ptr->for_ = for_;
+    ptr->for_stmnt = for_stmnt;
     return ptr;
 }
 
-[[nodiscard]] Statement* AST::new_statement_node_if(const SourcePos pos, If_* if_) {
+[[nodiscard]] Statement* AST::new_statement_node_if(const SourcePos pos, IfStmnt* if_stmnt) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, IF});
-    ptr->if_ = if_;
+    ptr->if_stmnt = if_stmnt;
     return ptr;
 }
 
-[[nodiscard]] Statement* AST::new_statement_node_ret(const SourcePos pos, Ret* ret) {
+[[nodiscard]] Statement* AST::new_statement_node_ret(const SourcePos pos, RetStmnt* ret_stmnt) {
     PROFILE();
     auto *ptr = reinterpret_cast<Statement*>(allocator_.allocate(sizeof(Statement)));
     allocator_.construct(ptr, Statement{ {pos}, RET});
-    ptr->ret = ret;
+    ptr->ret_stmnt = ret_stmnt;
     return ptr;
 }
 
@@ -202,7 +202,7 @@ Statement* AST::new_statement_node_decl(const SourcePos pos, Decl* decl) {
 }
 
 [[nodiscard]] Decl* AST::new_decl_node(const SourcePos pos, std::string& id, const type_handle type, Expr* val) {
-    PROFILE(); 
+    PROFILE();
     auto* ptr = reinterpret_cast<Decl*>(allocator_.allocate(sizeof(Decl)));
     // FIXME
     allocator_.construct(ptr, Decl{ {pos}, new std::string(id), type, val });

@@ -53,25 +53,25 @@ struct Block : Node {
     std::vector<Statement*, arena_allocator<Statement*>> statements;
 };
 
-struct While_ : Node {
+struct WhileStmnt : Node {
     Expr* expr;
     Block* block;
 };
 
-struct For_ : Node {
+struct ForStmnt : Node {
     Decl* decl;
     Expr* expr1;
     Expr* expr2;
     Block* block;
 };
 
-struct If_ : Node {
+struct IfStmnt : Node {
     Expr* expr;
     Block* block;
     // TODO add a vector of If_* for else if statements
 };
 
-struct Ret : Node {
+struct RetStmnt : Node {
     Expr* expr;
 };
 
@@ -87,10 +87,10 @@ enum StatementType {
 struct Statement : Node {
     StatementType type;
     union {
-        While_* while_;
-        For_* for_;
-        If_* if_;
-        Ret* ret;
+        WhileStmnt* while_stmnt;
+        ForStmnt* for_stmnt;
+        IfStmnt* if_stmnt;
+        RetStmnt* ret_stmnt;
         Expr* expr;
         Decl* decl;
     };
@@ -154,7 +154,7 @@ class AST {
         // for now we emulate a polymorphic allocator by manually allocating bytes for each type
         arena_allocator<u8> allocator_;
 
-    
+
     public:
         AST();
         ~AST();
@@ -164,14 +164,14 @@ class AST {
         [[nodiscard]] Import* new_import_node(SourcePos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
         [[nodiscard]] Function* new_function_node(SourcePos, std::string&, std::vector<Arg, arena_allocator<Arg>>&, type_handle, Block*, const bool);
         [[nodiscard]] Block* new_block_node(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
-        [[nodiscard]] While_* new_while_node(SourcePos, Expr*, Block*);
-        [[nodiscard]] For_* new_for_node(SourcePos, Decl*, Expr*, Expr*, Block*);
-        [[nodiscard]] If_* new_if_node(SourcePos, Expr*, Block*);
-        [[nodiscard]] Ret* new_ret_node(SourcePos, Expr*);
-        [[nodiscard]] Statement* new_statement_node_while(SourcePos, While_*);
-        [[nodiscard]] Statement* new_statement_node_for(SourcePos, For_*);
-        [[nodiscard]] Statement* new_statement_node_if(SourcePos, If_*);
-        [[nodiscard]] Statement* new_statement_node_ret(SourcePos, Ret*);
+        [[nodiscard]] WhileStmnt* new_while_node(SourcePos, Expr*, Block*);
+        [[nodiscard]] ForStmnt* new_for_node(SourcePos, Decl*, Expr*, Expr*, Block*);
+        [[nodiscard]] IfStmnt* new_if_node(SourcePos, Expr*, Block*);
+        [[nodiscard]] RetStmnt* new_ret_node(SourcePos, Expr*);
+        [[nodiscard]] Statement* new_statement_node_while(SourcePos, WhileStmnt*);
+        [[nodiscard]] Statement* new_statement_node_for(SourcePos, ForStmnt*);
+        [[nodiscard]] Statement* new_statement_node_if(SourcePos, IfStmnt*);
+        [[nodiscard]] Statement* new_statement_node_ret(SourcePos, RetStmnt*);
         [[nodiscard]] Statement* new_statement_node_decl(SourcePos, Decl*);
         [[nodiscard]] Statement* new_statement_node_expr(SourcePos, Expr*);
         [[nodiscard]] Expr* new_expr_node_int_literal(SourcePos, i64, type_handle type = TYPE_UNKNOWN);

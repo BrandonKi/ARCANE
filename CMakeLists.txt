@@ -9,7 +9,10 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM)
 
-set(arcvm_include ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/include)
+set(arcvm_include 
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/lib
+)
 set(arcvm_source
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRGenerator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRInterpreter.cpp
@@ -25,7 +28,6 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/ErrorHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/SymbolTable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/BytecodeGen.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/BytecodeLinker.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/TypeManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/TypeInference.cpp
     ${arcvm_source}

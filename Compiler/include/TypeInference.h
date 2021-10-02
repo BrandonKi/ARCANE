@@ -19,7 +19,7 @@ private:
     void analyze_file(File*);
     void update_symbol_table(std::vector<Arg, arena_allocator<Arg>>&);
     void analyze_function(Function*);
-    void analyze_ret(Ret*, type_handle);
+    void analyze_ret(RetStmnt*, type_handle);
     void analyze_decl(Decl*);
     type_handle analyze_expr(Expr*);
 };

@@ -23,8 +23,8 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     
     //TODO convert to another IR for easier optimization and optimize step
 
-    BytecodeGen gen(ast);
-    return gen.gen_code();
+    BytecodeGen gen();
+    return gen.gen_project(ast);
 }
 
 std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {   // TODO refactor big time

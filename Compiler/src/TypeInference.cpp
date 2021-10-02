@@ -50,7 +50,7 @@ void TypeInference::analyze_function(Function* function) {
             case IF:
                 break;
             case RET:
-                analyze_ret(stmnt->ret, function->return_type);
+                analyze_ret(stmnt->ret_stmnt, function->return_type);
                 break;
             case EXPRESSION:
                 analyze_expr(stmnt->expr);
@@ -64,24 +64,24 @@ void TypeInference::analyze_function(Function* function) {
     }
 }
 
-void TypeInference::analyze_ret(Ret* ret, type_handle ret_type) {
+void TypeInference::analyze_ret(RetStmnt* ret_stmnt, type_handle ret_type) {
     PROFILE();
-    analyze_expr(ret->expr);
+    analyze_expr(ret_stmnt->expr);
 
-    if(ret->expr->result_type != ret_type && !type_manager.conversion_exists(ret->expr->result_type, ret_type)) {
+    if(ret_stmnt->expr->result_type != ret_type && !type_manager.conversion_exists(ret_stmnt->expr->result_type, ret_type)) {
         auto err = 
             "type of expression does not match function return type and could not find a valid conversion\n"
             "expected:    " + fmt(type_manager.get_type(ret_type).name, BRIGHT_BLUE, UNDERLINE) + "\n"
-            "instead got: " + fmt(type_manager.get_type(ret->expr->result_type).name, BRIGHT_BLUE, UNDERLINE);
-        error_log.exit(ErrorMessage{FATAL, ret->expr->pos, current_filename_, err});
+            "instead got: " + fmt(type_manager.get_type(ret_stmnt->expr->result_type).name, BRIGHT_BLUE, UNDERLINE);
+        error_log.exit(ErrorMessage{FATAL, ret_stmnt->expr->pos, current_filename_, err});
     }
-    else if(ret->expr->result_type != ret_type && type_manager.conversion_exists(ret->expr->result_type, ret_type)) {
+    else if(ret_stmnt->expr->result_type != ret_type && type_manager.conversion_exists(ret_stmnt->expr->result_type, ret_type)) {
         auto err = 
-            "implicit conversion from " + fmt(type_manager.get_type(ret->expr->result_type).name, BRIGHT_BLUE, UNDERLINE) +
+            "implicit conversion from " + fmt(type_manager.get_type(ret_stmnt->expr->result_type).name, BRIGHT_BLUE, UNDERLINE) +
             " to " +
             fmt(type_manager.get_type(ret_type).name, BRIGHT_BLUE, UNDERLINE);
         
-        error_log.push(ErrorMessage{WARN, ret->expr->pos, current_filename_, err});
+        error_log.push(ErrorMessage{WARN, ret_stmnt->expr->pos, current_filename_, err});
     }
 }
 
