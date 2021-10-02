@@ -1,9 +1,10 @@
 #include "BytecodeGen.h"
 
-void BytecodeGen::gen_project(Project* project) {
+arcvm::Arcvm BytecodeGen::gen_project(Project* project) {
     for(auto* file: project->files) {
         gen_file(file);
     }
+    return arcvm::Arcvm{};
 }
 
 void BytecodeGen::gen_file(File* file) {

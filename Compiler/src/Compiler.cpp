@@ -8,7 +8,7 @@ Compiler::Compiler() {
     /* Nothing to see here */
 }
 
-std::vector<u8, arena_allocator<u8>> Compiler::compile() {
+arcvm::Arcvm Compiler::compile() {
     PROFILE();
     std::vector<RawFile, arena_allocator<RawFile>> projectFiles = get_project_files();
     //TODO do some heuristics to pick a size for the arena
@@ -23,7 +23,7 @@ std::vector<u8, arena_allocator<u8>> Compiler::compile() {
     
     //TODO convert to another IR for easier optimization and optimize step
 
-    BytecodeGen gen();
+    BytecodeGen gen;
     return gen.gen_project(ast);
 }
 

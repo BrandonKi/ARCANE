@@ -8,13 +8,13 @@
 
 #include "TypeInference.h"
 
-// #include <Arcvm.h>
+#include <Arcvm.h>
 
 class BytecodeGen {
   public:
     BytecodeGen();
 
-    void gen_project(Project*);
+    arcvm::Arcvm gen_project(Project*);
     void gen_file(File*);
   private:
     void gen_import(Import*);

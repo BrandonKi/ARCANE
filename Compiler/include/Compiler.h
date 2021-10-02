@@ -3,12 +3,14 @@
 
 #include "Parser.h"
 
+#include <Arcvm.h>
+
 class Compiler final {
 
     public:
         Compiler();
         ~Compiler() = default;
-        std::vector<u8, arena_allocator<u8>> compile();
+        arcvm::Arcvm compile();
 
     private:
         std::string read_file(const std::string&);

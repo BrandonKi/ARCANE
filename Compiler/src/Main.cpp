@@ -3,6 +3,8 @@
 
 #include "Compiler.h"
 
+#include <Arcvm.h>
+
 void parse_args(const int, const char* argv[]);
 
 int main(const int argc, const char* argv[]) {
@@ -10,16 +12,8 @@ int main(const int argc, const char* argv[]) {
     parse_args(argc, argv);
 
     Compiler compiler;
-    auto code = compiler.compile();
+    auto vm = compiler.compile();
 
-    auto* raw_binary = std::bit_cast<char*> (code.data());
-    std::ofstream bin(args.output_path, std::ios::out | std::ios::binary);
-    bin.write(raw_binary, static_cast<i64>(code.size()));
-    bin.close();
-
-    Arcvm vm;
-    if(!vm.load_program(raw_binary, code.size()))
-        return -1;
     std::cout << "Exited with code: " << vm.run() << '\n';
 }
 

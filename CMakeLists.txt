@@ -9,11 +9,12 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ARCVM)
 
-set(arcvm_include 
+set(arcvm_include
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/include
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/lib
 )
 set(arcvm_source
+    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/Arcvm.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRGenerator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRInterpreter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRPrinter.cpp
