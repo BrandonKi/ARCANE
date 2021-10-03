@@ -17,6 +17,8 @@ class BytecodeGen {
     arcvm::Arcvm gen_project(Project*);
     void gen_file(File*, arcvm::Module*);
   private:
+    std::vector<std::unordered_map<std::string, arcvm::Value>> variable_table_;
+
     void gen_import(Import*);
     void gen_function(Function*, arcvm::Function*);
     void gen_statement(Statement*, arcvm::Function*);
@@ -31,7 +33,7 @@ class BytecodeGen {
     arcvm::Value gen_immediate(f64, arcvm::Function*);
     arcvm::Value gen_immediate(std::string*, arcvm::Function*);
 
-    arcvm::Value gen_id(std::string*, arcvm::Function*);
+    arcvm::Value gen_rvalue_var(std::string*, arcvm::Function*);
     arcvm::Value gen_fn_call(Expr*, arcvm::Function*);
     arcvm::Value gen_bin(Expr*, arcvm::Function*);
     arcvm::Value gen_unary(Expr*, arcvm::Function*);

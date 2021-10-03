@@ -1,6 +1,6 @@
 #include "BytecodeGen.h"
 
-BytecodeGen::BytecodeGen() {}
+BytecodeGen::BytecodeGen(): variable_table_{} {}
 
 arcvm::Arcvm BytecodeGen::gen_project(Project* project) {
     arcvm::Arcvm vm;
@@ -32,9 +32,11 @@ void BytecodeGen::gen_file(File* file, arcvm::Module* module) {
         auto ir_function = module->gen_function_def(function->id, args, ret_type);
         if(function->is_main)
             ir_function->add_attribute(arcvm::Attribute::entrypoint);
+        // push and pop scope before and after function gen
+        variable_table_.emplace_back();
         gen_function(function, ir_function);
+        variable_table_.pop_back();
     }
-
 }
 
 // TODO
@@ -92,8 +94,14 @@ void BytecodeGen::gen_ret(RetStmnt* ret_stmnt, arcvm::Function* ir_gen) {
     ir_gen->gen_inst(arcvm::Instruction::ret, {expr_result});
 }
 
+// TODO allocate based on size of type
+// TODO add reference to decl in symbol table for later use
 void BytecodeGen::gen_decl(Decl* decl, arcvm::Function* ir_gen) {
-
+    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, arcvm::Type::ir_i32}});
+    auto expr_result = gen_expr(decl->val, ir_gen);
+    ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, expr_result});
+    auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
+    variable_table_.back()[*(decl->id)] = val;
 }
 
 arcvm::Value BytecodeGen::gen_expr(Expr* expr, arcvm::Function* ir_gen) {
@@ -108,7 +116,7 @@ arcvm::Value BytecodeGen::gen_expr(Expr* expr, arcvm::Function* ir_gen) {
             return gen_immediate(expr->string_literal.val, ir_gen);
             break;
         case EXPR_ID:
-            return gen_id(expr->id.val, ir_gen);
+            return gen_rvalue_var(expr->id.val, ir_gen);
             break;
         case EXPR_FN_CALL:
             return gen_fn_call(expr, ir_gen);
@@ -141,9 +149,10 @@ arcvm::Value BytecodeGen::gen_immediate(std::string* immediate, arcvm::Function*
     return {};
 }
 
-// TODO
-arcvm::Value BytecodeGen::gen_id(std::string* id, arcvm::Function* ir_gen) {
-    return {};
+// TODO need to load from symbol table
+arcvm::Value BytecodeGen::gen_rvalue_var(std::string* id, arcvm::Function* ir_gen) {
+    auto var_ref = variable_table_.back().at(*id);
+    return var_ref;
 }
 
 // TODO

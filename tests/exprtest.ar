@@ -1,6 +1,7 @@
 
 fn main() int {
-    ret 10000;
+    i := 10;
+    ret i;
 }
 
 // fn add(a : int, b : int) int {
