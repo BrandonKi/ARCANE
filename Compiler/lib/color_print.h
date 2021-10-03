@@ -1,5 +1,5 @@
 /**
- * @file plog.h
+ * @file cprint.h
  * @author Brandon Kirincich
  * @brief single header library for printing text to the 
  * console with the specified format (color, underline, bold, etc.)
@@ -8,7 +8,7 @@
  * 
  * @example 
  * 
- * // check the value of pLog_err to see if the current terminal/console supports virtual terminal processing
+ * // check the value of cprint_err to see if the current terminal/console supports virtual terminal processing
  * // This is only needed on Windows, but should be checked just in case
  * 
  * println("test", UNDERLINE, BOLD, RED);
@@ -50,8 +50,8 @@
  * 
  */
 
-#ifndef PLOG_HEADER_H
-#define PLOG_HEADER_H
+#ifndef cprint_HEADER_H
+#define cprint_HEADER_H
 #include <string>
 #include <iostream>
 #include <cstdint>
@@ -65,61 +65,61 @@
 #endif
 
 
-namespace pLog{
+namespace cprint {
 
-    static const std::string _pLog_preamble_("\033[");
+    static const std::string _cprint_preamble_("\033[");
 
     // Some macros share values with others
     // this is to give them more common names for ex. "gray/grey" instead of "bright black"
 
-    #ifdef PLOG_PREFIX
-    constexpr auto PL_CLEAR = "\033[0m";
-    constexpr auto PL_BOLD = "1;";
-    constexpr auto PL_FAINT = "2;";
-    constexpr auto PL_ITALICIZE = "3;";
-    constexpr auto PL_UNDERLINE = "4;";
-    constexpr auto PL_SLOW_BLINK = "5;";
-    constexpr auto PL_FAST_BLINK = "6;";
-    constexpr auto PL_REVERSE = "7;";
-    constexpr auto PL_CONCEAL = "8;";
-    constexpr auto PL_STRIKETHROUGH = "9;";
-    constexpr auto PL_DEFAULT_FONT = "10;";
-    constexpr auto PL_ALT_FONT_1 = "11;";
-    constexpr auto PL_ALT_FONT_2 = "12;";
-    constexpr auto PL_ALT_FONT_3 = "13;";
-    constexpr auto PL_ALT_FONT_4 = "14;";
-    constexpr auto PL_ALT_FONT_5 = "15;";
-    constexpr auto PL_ALT_FONT_6 = "16;";
-    constexpr auto PL_ALT_FONT_7 = "17;";
-    constexpr auto PL_ALT_FONT_8 = "18;";
-    constexpr auto PL_ALT_FONT_9 = "19;";
-    constexpr auto PL_FRAKTUR = "20;";
+    #ifdef CPRINT_PREFIX
+    constexpr auto CP_CLEAR = "\033[0m";
+    constexpr auto CP_BOLD = "1;";
+    constexpr auto CP_FAINT = "2;";
+    constexpr auto CP_ITALICIZE = "3;";
+    constexpr auto CP_UNDERLINE = "4;";
+    constexpr auto CP_SLOW_BLINK = "5;";
+    constexpr auto CP_FAST_BLINK = "6;";
+    constexpr auto CP_REVERSE = "7;";
+    constexpr auto CP_CONCEAL = "8;";
+    constexpr auto CP_STRIKETHROUGH = "9;";
+    constexpr auto CP_DEFAULT_FONT = "10;";
+    constexpr auto CP_ALT_FONT_1 = "11;";
+    constexpr auto CP_ALT_FONT_2 = "12;";
+    constexpr auto CP_ALT_FONT_3 = "13;";
+    constexpr auto CP_ALT_FONT_4 = "14;";
+    constexpr auto CP_ALT_FONT_5 = "15;";
+    constexpr auto CP_ALT_FONT_6 = "16;";
+    constexpr auto CP_ALT_FONT_7 = "17;";
+    constexpr auto CP_ALT_FONT_8 = "18;";
+    constexpr auto CP_ALT_FONT_9 = "19;";
+    constexpr auto CP_FRAKTUR = "20;";
 
-    constexpr auto PL_BLACK = "30;";
-    constexpr auto PL_RED = "31;";
-    constexpr auto PL_GREEN = "32;";
-    constexpr auto PL_YELLOW = "33;";
-    constexpr auto PL_BLUE = "34;";
-    constexpr auto PL_PINK = "35;";
-    constexpr auto PL_MAGENTA = "35;";
-    constexpr auto PL_CYAN = "36;";
-    constexpr auto PL_WHITE = "37";
+    constexpr auto CP_BLACK = "30;";
+    constexpr auto CP_RED = "31;";
+    constexpr auto CP_GREEN = "32;";
+    constexpr auto CP_YELLOW = "33;";
+    constexpr auto CP_BLUE = "34;";
+    constexpr auto CP_PINK = "35;";
+    constexpr auto CP_MAGENTA = "35;";
+    constexpr auto CP_CYAN = "36;";
+    constexpr auto CP_WHITE = "37";
 
-    constexpr auto PL_FRAME = "51;";
-    constexpr auto PL_ENCIRCLE = "52;";
-    constexpr auto PL_OVERLINE = "53;";
+    constexpr auto CP_FRAME = "51;";
+    constexpr auto CP_ENCIRCLE = "52;";
+    constexpr auto CP_OVERLINE = "53;";
 
-    constexpr auto PL_BRIGHT_BLACK = "90;";
-    constexpr auto PL_GRAY = "90;";
-    constexpr auto PL_GREY = "90;";
-    constexpr auto PL_BRIGHT_RED = "91;";
-    constexpr auto PL_BRIGHT_GREEN = "92;";
-    constexpr auto PL_BRIGHT_YELLOW = "93;";
-    constexpr auto PL_BRIGHT_BLUE = "94;";
-    constexpr auto PL_BRIGHT_PINK = "95;";
-    constexpr auto PL_BRIGHT_MAGENTA = "95;";
-    constexpr auto PL_BRIGHT_CYAN = "96;";
-    constexpr auto PL_BRIGHT_WHITE = "97;";
+    constexpr auto CP_BRIGHT_BLACK = "90;";
+    constexpr auto CP_GRAY = "90;";
+    constexpr auto CP_GREY = "90;";
+    constexpr auto CP_BRIGHT_RED = "91;";
+    constexpr auto CP_BRIGHT_GREEN = "92;";
+    constexpr auto CP_BRIGHT_YELLOW = "93;";
+    constexpr auto CP_BRIGHT_BLUE = "94;";
+    constexpr auto CP_BRIGHT_PINK = "95;";
+    constexpr auto CP_BRIGHT_MAGENTA = "95;";
+    constexpr auto CP_BRIGHT_CYAN = "96;";
+    constexpr auto CP_BRIGHT_WHITE = "97;";
     #else
     constexpr auto CLEAR = "\033[0m";
     constexpr auto BOLD = "1;";
@@ -171,11 +171,11 @@ namespace pLog{
     #endif
 
     /**
-     * @brief Initializes pLog. This is mostly for windows platforms but should be called anyway.
+     * @brief Initializes cprint. This is mostly for windows platforms but should be called anyway.
      *
-     * @return a bool representing whether or not pLog could be initialized
+     * @return a bool representing whether or not cprint could be initialized
      */
-    inline bool init_pLog(){
+    inline bool init_cprint(){
         #ifdef _WIN32
             HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
             if (hOut == INVALID_HANDLE_VALUE)
@@ -264,11 +264,11 @@ namespace pLog{
     inline std::string fmt(T str, Types... modifiers){
         std::string&& color = fstring(modifiers...);
         if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, char>)
-            return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR;
+            return _cprint_preamble_ + color.substr(0,color.length()-1) + 'm' + str + CLEAR;
         else if constexpr(std::is_const_v<std::remove_pointer_t<T>>)
-            return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::string(str) + CLEAR;
+            return _cprint_preamble_ + color.substr(0,color.length()-1) + 'm' + std::string(str) + CLEAR;
         else
-            return _pLog_preamble_ + color.substr(0,color.length()-1) + 'm' + std::to_string(str) + CLEAR;
+            return _cprint_preamble_ + color.substr(0,color.length()-1) + 'm' + std::to_string(str) + CLEAR;
     }
 
 
@@ -300,7 +300,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str;
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
@@ -314,7 +314,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str;
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
@@ -328,7 +328,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str;
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
@@ -342,7 +342,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str;
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
@@ -391,7 +391,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str;
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
@@ -406,7 +406,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str;
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR;
         }
     }
 
@@ -420,7 +420,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str << '\n';
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR << '\n';
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR << '\n';
         }
     }
 
@@ -434,7 +434,7 @@ namespace pLog{
         if(fmt.empty())
             std::cout << str << '\n';
         else {
-            std::cout << _pLog_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR << '\n';
+            std::cout << _cprint_preamble_ << fmt.substr(0, fmt.length()-1) << 'm' << str << CLEAR << '\n';
         }
     }
 
@@ -455,6 +455,6 @@ namespace pLog{
     }
 }
 
-inline auto pLog_err = pLog::init_pLog();
+inline auto cprint_err = cprint::init_cprint();
 
 #endif

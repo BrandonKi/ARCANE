@@ -14,10 +14,10 @@
 #include <string_view>
 
 #include <small_profiler.h>
-#include <pLog.h>
+#include <color_print.h>
 #include <arena_alloc.h>
 
-using namespace pLog;
+using namespace cprint;
 using namespace std::literals::string_view_literals;
 
 using i8  = int8_t;
