@@ -162,7 +162,87 @@ arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::Function* ir_gen) {
 
 // TODO
 arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::Function* ir_gen) {
-    return {};
+    PROFILE();
+    auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
+    auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
+    switch(expr->binary_expr.op) {
+        case ARC_ADD_EQUAL:
+            break;
+        case ARC_SUB_EQUAL:
+            break;
+        case ARC_DIV_EQUAL:
+            break;
+        case ARC_MUL_EQUAL:
+            break;
+        case ARC_MOD_EQUAL:
+            break;
+        case ARC_OR_EQUAL:
+            break;
+        case ARC_AND_EQUAL:
+            break;
+        case ARC_NOT_EQUAL:
+            break;
+        case ARC_LEFT_SHIFT_EQUAL:
+            break;
+        case ARC_RIGHT_SHIFT_EQUAL:
+            break;
+        case ARC_XOR_EQUAL:
+            break;
+        case ARC_LESSER_EQUAL:
+            break;
+        case ARC_GREATER_EQUAL:
+            break;
+        case ARC_EQUAL:
+            break;
+        case ARC_ASSIGN:
+            break;
+        case ARC_INFER:
+            break;
+        case ARC_ADD:   // TODO fix all the types plz
+        {
+            auto val = ir_gen->gen_inst(arcvm::Instruction::add, {lhs, rhs});
+            return val;
+        }
+        case ARC_SUB:
+        {
+            auto val = ir_gen->gen_inst(arcvm::Instruction::sub, {lhs, rhs});
+            return val;
+        }
+        case ARC_DIV:
+        {
+            auto val = ir_gen->gen_inst(arcvm::Instruction::div, {lhs, rhs});
+            return val;
+        }
+        case ARC_MUL:
+        {
+            auto val = ir_gen->gen_inst(arcvm::Instruction::mul, {lhs, rhs});
+            return val;
+        }
+        case ARC_MOD:
+            break;
+        case ARC_BIN_OR:
+            break;
+        case ARC_BIN_AND:
+            break;
+        case ARC_LEFT_SHIFT:
+            break;
+        case ARC_RIGHT_SHIFT:
+            break;
+        case ARC_XOR:
+            break;
+        case ARC_LESSER:
+            break;
+        case ARC_GREATER:
+            break;
+        case ARC_LOGICAL_OR:
+            break;
+        case ARC_LOGICAL_AND:
+            break;
+        default:
+            // not binary op
+            break;
+    }
+    return {0xffffffff};
 }
 
 // TODO
