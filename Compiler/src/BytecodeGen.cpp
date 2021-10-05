@@ -166,8 +166,8 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::Function* ir_gen) {
     auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
     auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
     switch(expr->binary_expr.op) {
-        case ARC_ADD_EQUAL:
-            break;
+        case ARC_ADD_EQUAL: // TODO lhs has to be an lvalue
+            break;          // for ARC_XXX_EQUAL stuff
         case ARC_SUB_EQUAL:
             break;
         case ARC_DIV_EQUAL:
@@ -196,9 +196,9 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::Function* ir_gen) {
             break;
         case ARC_ASSIGN:
             break;
-        case ARC_INFER:
+        case ARC_INFER: // TODO should this be a valid expr???
             break;
-        case ARC_ADD:   // TODO fix all the types plz
+        case ARC_ADD:
         {
             auto val = ir_gen->gen_inst(arcvm::Instruction::add, {lhs, rhs});
             return val;
@@ -218,7 +218,7 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::Function* ir_gen) {
             auto val = ir_gen->gen_inst(arcvm::Instruction::mul, {lhs, rhs});
             return val;
         }
-        case ARC_MOD:
+        case ARC_MOD:   // TODO add support for these in the backend
             break;
         case ARC_BIN_OR:
             break;
