@@ -1,4 +1,4 @@
-repository links for 
+repository links for libs
 
 no libs are third party
 
