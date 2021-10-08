@@ -39,6 +39,7 @@
 #include <sstream>
 #include <vector>
 #include <array>
+#include <mutex>
 
 #if defined(__linux__)
 #include <sys/types.h>
@@ -55,24 +56,26 @@
 #define CONCAT_(a, b) a##b
 
 #ifdef NO_PROFILE
-    #define PROFILE() (static_cast<void>(0))
-    #define PROFILE_SCOPE(x) PROFILE()
+#define PROFILE() (static_cast<void>(0))
+#define PROFILE_SCOPE(x) PROFILE()
 #else
-    #define PROFILE() \
-        small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__) { __FUNCTION__ }
-    #define PROFILE_SCOPE(x) \
-        small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__) { x }
+#define PROFILE() \
+small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__) { __FUNCTION__ }
+#define PROFILE_SCOPE(x) \
+small_profiler::internal_scoped_profiler CONCAT(_small_profiler_temp_, __COUNTER__) { x }
 
 namespace small_profiler {
 
+    inline std::mutex scope_table_mutex;
+
     inline unsigned long long get_pid() {
-        #if defined(__linux__)
+#if defined(__linux__)
         return getpid();
-        #elif defined(_WIN32)
+#elif defined(_WIN32)
         return GetCurrentProcessId();
-        #else
+#else
         return static_cast<unsigned long long>(-1);
-        #endif
+#endif
     }
 
     struct scope_info {
@@ -81,7 +84,7 @@ namespace small_profiler {
     };
 
     class internal_stream_wrapper {
-    public:
+        public:
         std::stringstream stream{PROFILE_OUTPUT_FILE};
         std::vector<scope_info> scope_table{};
 
@@ -93,11 +96,11 @@ namespace small_profiler {
 
             for (const auto &entry : scope_table) {
                 const auto line = std::string(
-                                      R"({ "pid":)") +
-                                  std::to_string(entry.data[0]) + std::string(R"(, "tid":)") + std::to_string(entry.data[1]) +
-                                  std::string(R"(, "ts":)") + std::to_string(entry.data[2]) + std::string(R"(, "dur":)") + std::to_string(entry.data[3]) +
-                                  std::string(R"(, "ph":"X", "name":")") + entry.name +
-                                  std::string(R"(", "args":{ "ms":)") + std::to_string(entry.data[4]) + std::string("} },");
+                                              R"({ "pid":)") +
+                    std::to_string(entry.data[0]) + std::string(R"(, "tid":)") + std::to_string(entry.data[1]) +
+                    std::string(R"(, "ts":)") + std::to_string(entry.data[2]) + std::string(R"(, "dur":)") + std::to_string(entry.data[3]) +
+                    std::string(R"(, "ph":"X", "name":")") + entry.name +
+                    std::string(R"(", "args":{ "ms":)") + std::to_string(entry.data[4]) + std::string("} },");
                 stream << line;
             }
 
@@ -117,9 +120,9 @@ namespace small_profiler {
     inline auto program_start = std::chrono::high_resolution_clock::now();
 
     class internal_scoped_profiler {
-    public:
+        public:
         explicit internal_scoped_profiler(std::string name_p):
-            name_(std::move(name_p)), begin_(std::move(std::chrono::high_resolution_clock::now()))
+        name_(std::move(name_p)), begin_(std::move(std::chrono::high_resolution_clock::now()))
         {
 
         }
@@ -135,6 +138,7 @@ namespace small_profiler {
             const auto dur = std::chrono::duration_cast<std::chrono::microseconds>(end - begin_).count();
             const auto args = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin_).count();
 
+            std::unique_lock<std::mutex> lock(scope_table_mutex);
             file.scope_table.emplace_back(std::move(scope_info{std::move(name_), std::move(std::array<long long, 5>{pid, tid, ts, dur, args})}));
         }
 
@@ -143,7 +147,7 @@ namespace small_profiler {
         internal_scoped_profiler(internal_scoped_profiler &&) = default;
         internal_scoped_profiler &operator=(internal_scoped_profiler &&) = default;
 
-    private:
+        private:
         std::string name_;
         std::chrono::time_point<std::chrono::high_resolution_clock> begin_;
     };
