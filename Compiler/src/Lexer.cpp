@@ -401,6 +401,10 @@ Token Lexer::lex_lesser() {
         next_char_noreturn();
         return create_token(ARC_LESSER_EQUAL, start_col, start_pos);
     }
+    else if(peek_next_char() == '<') {
+        next_char_noreturn();
+        return create_token(ARC_LEFT_SHIFT, start_col, start_pos);
+    }
     else
         return create_token(ARC_LESSER, start_pos);
 }
@@ -414,6 +418,10 @@ Token Lexer::lex_greater() {
     if(peek_next_char() == '=') {
         next_char_noreturn();
         return create_token(ARC_GREATER_EQUAL, start_col, start_pos);
+    }
+    else if(peek_next_char() == '>') {
+        next_char_noreturn();
+        return create_token(ARC_RIGHT_SHIFT, start_col, start_pos);
     }
     else
         return create_token(ARC_GREATER, start_pos);
