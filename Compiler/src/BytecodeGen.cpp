@@ -35,7 +35,7 @@ void BytecodeGen::gen_file(File* file, arcvm::Module* module) {
         // push and pop scope before and after function gen
         variable_table_.emplace_back();
         // FIXME temporary fix. update the backend instead
-        gen_function(function, &(ir_function->block));
+        gen_function(function, ir_function->block);
         variable_table_.pop_back();
     }
 }
