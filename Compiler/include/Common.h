@@ -15,7 +15,7 @@
 
 #include <small_profiler.h>
 #include <color_print.h>
-#include <arena_alloc.h>
+// #include <arena_alloc.h>
 
 using namespace cprint;
 using namespace std::literals::string_view_literals;
