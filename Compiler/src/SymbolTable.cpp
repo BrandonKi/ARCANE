@@ -10,7 +10,7 @@ using hash_map =
         Symbol,
         std::hash<std::string>,
         std::equal_to<std::string>,
-        arena_allocator<
+        std::allocator<
             std::pair<
                 const std::string,
                 Symbol
@@ -29,7 +29,7 @@ void SymbolTable::add_symbol(const std::string id, const SymbolType kind, const 
     current_scope().insert(pair(std::move(id), Symbol{kind, arc_type}));
 }
 
-void SymbolTable::add_function(const std::string id, const std::vector<Arg, arena_allocator<Arg>> fn_args, const SymbolType kind, const type_handle arc_type) {
+void SymbolTable::add_function(const std::string id, const std::vector<Arg> fn_args, const SymbolType kind, const type_handle arc_type) {
     PROFILE();
     current_scope().insert(pair(std::move(id), Symbol{kind, arc_type, fn_args}));
 }

@@ -17,7 +17,7 @@ class Lexer {
 
     public:
         Lexer(const std::string&, const char*, size_t);
-        [[nodiscard]] std::vector<Token, arena_allocator<Token>> lex();
+        [[nodiscard]] std::vector<Token> lex();
         [[nodiscard]] char current_char() const;
         [[nodiscard]] char next_char();
         [[nodiscard]] char prev_char();
@@ -30,7 +30,7 @@ class Lexer {
         const std::string filename_;
         const char * data_;
         size_t data_size;
-        std::vector<Token, arena_allocator<Token>> tokens_;
+        std::vector<Token> tokens_;
         u32 index_;
         u32 line_;
         u32 col_;

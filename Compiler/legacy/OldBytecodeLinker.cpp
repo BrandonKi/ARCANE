@@ -14,7 +14,7 @@ BytecodeLinker::BytecodeLinker() {
 
 // FIXME honestly this whole thing is a mess
 // TODO rewrite the whole linker and possibly move it into it's own project
-code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_allocator<linkable_function>>& functions) {
+code_block BytecodeLinker::link_file(std::vector<linkable_function>& functions) {
     PROFILE();
     update_function_table(functions);
     auto code = code_block{};
@@ -42,7 +42,7 @@ code_block BytecodeLinker::link_file(std::vector<linkable_function, arena_alloca
     return code;
 }
 
-void BytecodeLinker::update_function_table(std::vector<linkable_function, arena_allocator<linkable_function>>& functions) {
+void BytecodeLinker::update_function_table(std::vector<linkable_function>& functions) {
     PROFILE();
     u64 location = 0;
     for(auto& function : functions) {

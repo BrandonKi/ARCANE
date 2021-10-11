@@ -25,7 +25,7 @@ code_block BytecodeGen::gen_code() {
 
 code_block BytecodeGen::gen_project(Project *project) {
     PROFILE();
-    std::vector<std::vector<linkable_function, arena_allocator<linkable_function>>> segmented_files;
+    std::vector<std::vector<linkable_function>> segmented_files;
     for(auto* file : project->files) {
         segmented_files.push_back(gen_file(file));
     }
@@ -34,7 +34,7 @@ code_block BytecodeGen::gen_project(Project *project) {
     linker.link_file(segmented_files.back());
 
     // right now only one file is supported or else everything breaks
-    std::vector<code_block, arena_allocator<code_block>> generated_files;
+    std::vector<code_block> generated_files;
     for(const auto& file : segmented_files) {
         generated_files.push_back(code_block{});
         for(const auto& function : file)
@@ -47,9 +47,9 @@ code_block BytecodeGen::gen_project(Project *project) {
 // the function_table_ and result of this function 
 // both have their own copies of every function in every file
 // kinda urgent that this is fixed
-std::vector<linkable_function, arena_allocator<linkable_function>> BytecodeGen::gen_file(File *file) {
+std::vector<linkable_function> BytecodeGen::gen_file(File *file) {
     PROFILE();
-    std::vector<linkable_function, arena_allocator<linkable_function>> file_blocks;
+    std::vector<linkable_function> file_blocks;
     if(file->is_main) {
         function_table_.insert_or_assign("0__BOOTSTRAP__0", code_block{});
         code_block bootstrap_code = function_table_.at("0__BOOTSTRAP__0");
@@ -489,7 +489,7 @@ void BytecodeGen::push_string(code_block& code, const std::string& str) {
 void BytecodeGen::generate_bootstrap(code_block& code) {
     PROFILE();
 
-    const std::vector<u8, arena_allocator<u8>> vec = {
+    const std::vector<u8> vec = {
         0xfa,
         0xca,
         0xde,

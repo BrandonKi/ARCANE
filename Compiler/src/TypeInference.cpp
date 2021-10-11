@@ -33,7 +33,7 @@ void TypeInference::analyze_file(File* file) {
     }
 }
 
-void TypeInference::update_symbol_table(std::vector<Arg, arena_allocator<Arg>>& fn_args) {
+void TypeInference::update_symbol_table(std::vector<Arg>& fn_args) {
     for(const auto& arg : fn_args)
         s_table_.add_symbol(arg.id, VARIABLE, arg.type);
 }

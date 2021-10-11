@@ -18,14 +18,14 @@ struct Node {
 };
 
 struct Project : Node {
-    std::vector<File*, arena_allocator<File*>> files;
+    std::vector<File*> files;
 };
 
 struct File : Node {
     std::string name;
-    std::vector<Import*, arena_allocator<Import*>> imports;
-    std::vector<Decl*, arena_allocator<Decl*>> decls;
-    std::vector<Function*, arena_allocator<Function*>> functions;
+    std::vector<Import*> imports;
+    std::vector<Decl*> decls;
+    std::vector<Function*> functions;
     bool is_main;
 };
 
@@ -43,14 +43,14 @@ struct Arg : Node {
 
 struct Function : Node {
     std::string id;
-    std::vector<Arg, arena_allocator<Arg>> args;
+    std::vector<Arg> args;
     type_handle return_type;
     Block* body;
     bool is_main;
 };
 
 struct Block : Node {
-    std::vector<Statement*, arena_allocator<Statement*>> statements;
+    std::vector<Statement*> statements;
 };
 
 struct WhileStmnt : Node {
@@ -152,18 +152,18 @@ class AST {
         //TODO this would be a good use case for a polymorphic allocator
         // everything that needs to be allocated is of different types
         // for now we emulate a polymorphic allocator by manually allocating bytes for each type
-        arena_allocator<u8> allocator_;
+        std::allocator<u8> allocator_;
 
 
     public:
         AST();
         ~AST();
 
-        [[nodiscard]] Project* new_project_node(SourcePos, std::vector<File*, arena_allocator<File*>>&);
-        [[nodiscard]] File* new_file_node(SourcePos, std::string, std::vector<Import*, arena_allocator<Import*>>&, std::vector<Decl*, arena_allocator<Decl*>>&, std::vector<Function*, arena_allocator<Function*>>&, const bool);
+        [[nodiscard]] Project* new_project_node(SourcePos, std::vector<File*>&);
+        [[nodiscard]] File* new_file_node(SourcePos, std::string, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&, const bool);
         [[nodiscard]] Import* new_import_node(SourcePos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
-        [[nodiscard]] Function* new_function_node(SourcePos, std::string&, std::vector<Arg, arena_allocator<Arg>>&, type_handle, Block*, const bool);
-        [[nodiscard]] Block* new_block_node(SourcePos, std::vector<Statement*, arena_allocator<Statement*>>&);
+        [[nodiscard]] Function* new_function_node(SourcePos, std::string&, std::vector<Arg>&, type_handle, Block*, const bool);
+        [[nodiscard]] Block* new_block_node(SourcePos, std::vector<Statement*>&);
         [[nodiscard]] WhileStmnt* new_while_node(SourcePos, Expr*, Block*);
         [[nodiscard]] ForStmnt* new_for_node(SourcePos, Decl*, Expr*, Expr*, Block*);
         [[nodiscard]] IfStmnt* new_if_node(SourcePos, Expr*, Block*);

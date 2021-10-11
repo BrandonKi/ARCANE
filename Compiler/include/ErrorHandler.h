@@ -30,7 +30,7 @@ class ErrorHandler {
         std::string make_preamble(ErrorMessage& error);
         std::string create_graphic(ErrorMessage& error);
 
-        std::vector<std::string, arena_allocator<std::string>> read_file_by_line(const std::string& filepath);
+        std::vector<std::string> read_file_by_line(const std::string& filepath);
 
     };
 

@@ -10,7 +10,7 @@ Compiler::Compiler() {
 
 arcvm::Arcvm Compiler::compile() {
     PROFILE();
-    std::vector<RawFile, arena_allocator<RawFile>> projectFiles = get_project_files();
+    std::vector<RawFile> projectFiles = get_project_files();
     //TODO do some heuristics to pick a size for the arena
     auto size = projectFiles[0].filedata.size() * 100;
     set_arena_alloc_size(size);
@@ -27,10 +27,10 @@ arcvm::Arcvm Compiler::compile() {
     return gen.gen_project(ast);
 }
 
-std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {   // TODO refactor big time
+std::vector<RawFile> Compiler::get_project_files() {   // TODO refactor big time
     PROFILE();
-    std::vector<RawFile, arena_allocator<RawFile>> result;
-    std::vector<std::string, arena_allocator<std::string>> projectFileNames;
+    std::vector<RawFile> result;
+    std::vector<std::string> projectFileNames;
     if(!args.project) {
         //TODO find an easy way to get file name
         result.push_back(RawFile{args.path, args.path, read_file(args.path)});
@@ -59,9 +59,9 @@ std::vector<RawFile, arena_allocator<RawFile>> Compiler::get_project_files() {  
     return result;
 }
 
-std::vector<std::string, arena_allocator<std::string>> Compiler::parse_project_spec_file(const std::string& filepath) {
+std::vector<std::string> Compiler::parse_project_spec_file(const std::string& filepath) {
     PROFILE();
-    std::vector<std::string, arena_allocator<std::string>> result;
+    std::vector<std::string> result;
     std::ifstream file(filepath);
     std::string line;
     while(std::getline(file, line)){

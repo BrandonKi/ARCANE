@@ -9,12 +9,12 @@
 // include this to get the instructions
 #include "Arcvm.h" 
 
-using code_block = std::vector<u8, arena_allocator<u8>>;
+using code_block = std::vector<u8>;
 
 struct fn_info {
     u64 local_var_index;
     u32 local_var_count;
-    const std::vector<Arg, arena_allocator<Arg>>& function_args;
+    const std::vector<Arg>& function_args;
 };
 
 class BytecodeGen final {
@@ -35,10 +35,10 @@ class BytecodeGen final {
         // use arena allocator for these
         std::unordered_map<std::string, u32> variable_table_;
         std::unordered_map<std::string, code_block> function_table_;
-        std::vector<fn_info, arena_allocator<fn_info>> fn_info_stack_;        
+        std::vector<fn_info> fn_info_stack_;        
         
         code_block gen_project(Project*);
-        std::vector<linkable_function, arena_allocator<linkable_function>> gen_file(File*);
+        std::vector<linkable_function> gen_file(File*);
         void gen_import(code_block&, const Import*);
         void gen_function(code_block&, const Function*);
         void gen_block(code_block&, const Block*);

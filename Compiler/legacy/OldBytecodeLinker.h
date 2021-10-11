@@ -6,11 +6,11 @@
 // include to get access to instructions
 #include "Arcvm.h"
 
-using code_block = std::vector<u8, arena_allocator<u8>>;
+using code_block = std::vector<u8>;
 
 struct linkable_function {
     const std::string* name;
-    std::vector<Arg, arena_allocator<Arg>> args;
+    std::vector<Arg> args;
     code_block code;
 };
 
@@ -22,9 +22,9 @@ struct linkable_file {
 class BytecodeLinker final {
     public:
         BytecodeLinker();
-        code_block link(std::vector<linkable_file, arena_allocator<linkable_file>>&);
-        code_block link_file(std::vector<linkable_function, arena_allocator<linkable_function>>&);
-        void update_function_table(std::vector<linkable_function, arena_allocator<linkable_function>>&);
+        code_block link(std::vector<linkable_file>&);
+        code_block link_file(std::vector<linkable_function>&);
+        void update_function_table(std::vector<linkable_function>&);
 
     private:
         std::unordered_map<std::string, u64> function_table_;

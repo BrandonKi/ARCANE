@@ -104,11 +104,11 @@ void ErrorHandler::flush() {
     buffer.clear();
 }
 
-[[nodiscard]] std::vector<std::string, arena_allocator<std::string>> ErrorHandler::read_file_by_line(const std::string& filepath) {
+[[nodiscard]] std::vector<std::string> ErrorHandler::read_file_by_line(const std::string& filepath) {
     PROFILE();
     std::ifstream file;
     file.open(filepath);
-    std::vector<std::string, arena_allocator<std::string>> result;
+    std::vector<std::string> result;
     std::string line;
     while (std::getline(file, line)) {
         result.push_back(line);

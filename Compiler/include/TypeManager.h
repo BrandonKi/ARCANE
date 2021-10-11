@@ -82,7 +82,7 @@ public:
 private:
 
     // initialized with language primitives
-    std::vector<Type, arena_allocator<Type>> type_table = {
+    std::vector<Type> type_table = {
         {"__UNKNOWN__", 0},
         {"i8", 1},
         {"i16", 2},

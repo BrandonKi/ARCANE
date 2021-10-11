@@ -4,14 +4,14 @@ extern ErrorHandler error_log;
 extern TypeManager type_manager;
 
 Lexer::Lexer(const std::string& filename, const char* filedata, size_t filedata_size):
-    filename_(filename), data_(filedata), data_size(filedata_size), tokens_(arena_allocator<Token>{}),
+    filename_(filename), data_(filedata), data_size(filedata_size), tokens_(),
     index_(0), line_(1), col_(1)
 {
     PROFILE();
     tokens_.reserve(100);
 }
 
-std::vector<Token, arena_allocator<Token>> Lexer::lex() {
+std::vector<Token> Lexer::lex() {
     PROFILE();
 
     while(index_ < data_size) {

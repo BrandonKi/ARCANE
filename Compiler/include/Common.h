@@ -174,7 +174,7 @@ struct RawFile {
 struct LexedFile {
     std::string filepath;
     std::string filename;
-    std::vector<Token, arena_allocator<Token>> filedata;
+    std::vector<Token> filedata;
 };
 
 const inline std::unordered_map<std::string_view, TokenKind> keywords( { 

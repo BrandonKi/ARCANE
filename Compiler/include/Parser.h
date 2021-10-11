@@ -9,12 +9,12 @@ using namespace std::string_literals;
 
 class Parser {
     public:
-        explicit Parser(std::vector<RawFile, arena_allocator<RawFile>>&);
+        explicit Parser(std::vector<RawFile>&);
         Project* parse();
 
     private:
         std::vector<LexedFile> data_;
-        std::vector<Token, arena_allocator<Token>> tokens_;
+        std::vector<Token> tokens_;
         u64 index_ = 0;
         AST ast_;
         SymbolTable s_table_;
@@ -24,13 +24,13 @@ class Parser {
         File* parse_file();
         Import* parse_import();
         Function* parse_function();
-        std::vector<Arg, arena_allocator<Arg>> parse_fn_args();
+        std::vector<Arg> parse_fn_args();
         Block* parse_block();
         Statement* parse_statement();
         Decl* parse_decl();
         Expr* parse_expr(bool stop_at_paren = false);
-        std::vector<Token*, arena_allocator<Token*>> parse_expr_0(bool stop_at_paren = false);
-        Expr* parse_expr_1(std::vector<Token*, arena_allocator<Token*>>);
+        std::vector<Token*> parse_expr_0(bool stop_at_paren = false);
+        Expr* parse_expr_1(std::vector<Token*>);
 
 
         [[nodiscard]] Token* current_token();

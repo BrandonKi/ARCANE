@@ -3,7 +3,7 @@
 extern ErrorHandler error_log;
 extern TypeManager type_manager;
 
-Parser::Parser(std::vector<RawFile, arena_allocator<RawFile>>& project_files) {
+Parser::Parser(std::vector<RawFile>& project_files) {
     //TODO good candidate for multithreading
     PROFILE();
     // std::thread worker([](){});
@@ -23,7 +23,7 @@ Project* Parser::parse() {
 
 Project* Parser::parse_project() {    //TODO another good candidate for multithreading
     PROFILE();
-    std::vector<File*, arena_allocator<File*>> files;
+    std::vector<File*> files;
     for(const auto& lf : data_) {
         // update/reset member variables for each file
         tokens_ = lf.filedata;
@@ -36,9 +36,9 @@ Project* Parser::parse_project() {    //TODO another good candidate for multithr
 File* Parser::parse_file() {
     PROFILE();
     const SourcePos start_pos = current_token()->pos;
-    std::vector<Import*, arena_allocator<Import*>> imports;
-    std::vector<Decl*, arena_allocator<Decl*>> decls;
-    std::vector<Function*, arena_allocator<Function*>> functions;
+    std::vector<Import*> imports;
+    std::vector<Decl*> decls;
+    std::vector<Function*> functions;
     for(index_ = 0; index_ < tokens_.size(); ++index_) {
         switch(current_token()->kind) {
             case ARC_IMPORT:
@@ -90,8 +90,8 @@ Function* Parser::parse_function() {
 }
 
 // TODO improve syntax error messages for this function
-std::vector<Arg, arena_allocator<Arg>> Parser::parse_fn_args() {
-    std::vector<Arg, arena_allocator<Arg>> result;
+std::vector<Arg> Parser::parse_fn_args() {
+    std::vector<Arg> result;
     for(int i = 0; current_token()->kind == ARC_ID; ++i) {
         auto id = std::string(current_token()->data);
         auto pos = current_token()->pos;
@@ -113,7 +113,7 @@ Block* Parser::parse_block() {
     PROFILE();
     s_table_.push_scope();
     const SourcePos start_pos = current_token()->pos;
-    std::vector<Statement*, arena_allocator<Statement*>> statements;
+    std::vector<Statement*> statements;
     // cases
     // statement
     verify_token(ARC_OPEN_BRACE);
@@ -264,10 +264,10 @@ Expr* Parser::parse_expr(bool stop_at_paren) {
     return parse_expr_1(result);
 }
 
-std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0(bool stop_at_paren) {
+std::vector<Token*> Parser::parse_expr_0(bool stop_at_paren) {
     PROFILE();
-    std::vector<Token*, arena_allocator<Token*>> result;
-    std::vector<Token*, arena_allocator<Token*>> stack;
+    std::vector<Token*> result;
+    std::vector<Token*> stack;
 
     /**
      * shunting yard algorithm
@@ -344,8 +344,8 @@ std::vector<Token*, arena_allocator<Token*>> Parser::parse_expr_0(bool stop_at_p
 /**
  * convert the vector of Tokens into a Expr tree
  */
-Expr* Parser::parse_expr_1(std::vector<Token*, arena_allocator<Token*>> result) {
-    std::vector<Expr*, arena_allocator<Expr*>> conversion_stack;
+Expr* Parser::parse_expr_1(std::vector<Token*> result) {
+    std::vector<Expr*> conversion_stack;
     for(auto *tkn : result) {
         if(is_operator(tkn->kind)) {
             if(is_unary_operator(tkn->kind)) {
