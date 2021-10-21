@@ -46,7 +46,11 @@ void BytecodeGen::gen_import(Import* import) {
 }
 
 void BytecodeGen::gen_function(Function* function, arcvm::Block* ir_gen) {
-    for(auto* stmnt: function->body->statements) {
+    gen_block(function->body, ir_gen);
+}
+
+void BytecodeGen::gen_block(Block* block, arcvm::Block* ir_gen) {
+    for(auto* stmnt: block->statements) {
         gen_statement(stmnt, ir_gen);
     }
 }
@@ -92,7 +96,13 @@ void BytecodeGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
 
 // TODO
 void BytecodeGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
-    static_cast<void>(if_stmnt);
+    auto bblock = ir_gen->get_bblock();
+    auto expr_result = gen_expr(if_stmnt->expr, bblock);
+    auto if_block = ir_gen->new_basic_block("if_block");
+    gen_block(if_stmnt->block, ir_gen);
+    auto then_block = ir_gen->new_basic_block("then_block");
+    ir_gen->set_insertion_point(bblock);
+    ir_gen->gen_if(expr_result, if_block, then_block, then_block);
 }
 
 // TODO

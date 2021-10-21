@@ -21,6 +21,7 @@ class BytecodeGen {
 
     void gen_import(Import*);
     void gen_function(Function*, arcvm::Block*);
+    void gen_block(Block*, arcvm::Block*);
     void gen_statement(Statement*, arcvm::Block*);
     void gen_while(WhileStmnt*, arcvm::Block*);
     void gen_for(ForStmnt*, arcvm::Block*);
