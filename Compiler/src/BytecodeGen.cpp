@@ -251,33 +251,27 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
             auto val = ir_gen->gen_inst(arcvm::Instruction::lshift, {lhs, rhs});
             return val;
         }
-        case ARC_RIGHT_SHIFT:
-        {
+        case ARC_RIGHT_SHIFT: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::rshift, {lhs, rhs});
             return val;
         }
-        case ARC_XOR:
-        {
+        case ARC_XOR: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::bin_xor, {lhs, rhs});
             return val;
         }
-        case ARC_LESSER:
-        {
+        case ARC_LESSER: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::lt, {lhs, rhs});
             return val;
         }
-        case ARC_GREATER:
-        {
+        case ARC_GREATER: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::gt, {lhs, rhs});
             return val;
         }
-        case ARC_LOGICAL_OR:
-        {
+        case ARC_LOGICAL_OR: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::log_or, {lhs, rhs});
             return val;
         }
-        case ARC_LOGICAL_AND:
-        {
+        case ARC_LOGICAL_AND: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::log_and, {lhs, rhs});
             return val;
         }
