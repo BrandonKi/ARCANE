@@ -1,5 +1,7 @@
 #include "BytecodeGen.h"
 
+#include <IRPrinter.h>
+
 BytecodeGen::BytecodeGen(): variable_table_{} {}
 
 arcvm::Arcvm BytecodeGen::gen_project(Project* project) {
@@ -8,6 +10,7 @@ arcvm::Arcvm BytecodeGen::gen_project(Project* project) {
         arcvm::IRGenerator ir_gen;
         auto* mod = ir_gen.create_module();
         gen_file(file, mod);
+        arcvm::IRPrinter::print(mod);
         vm.load_module(mod);
     }
     return vm;
@@ -98,11 +101,14 @@ void BytecodeGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
 void BytecodeGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
     auto bblock = ir_gen->get_bblock();
     auto expr_result = gen_expr(if_stmnt->expr, bblock);
-    auto if_block = ir_gen->new_basic_block("if_block");
+    auto if_block = ir_gen->new_basic_block();
     gen_block(if_stmnt->block, ir_gen);
-    auto then_block = ir_gen->new_basic_block("then_block");
+    auto else_block = ir_gen->new_basic_block(); // FIXME only works if there are no else if statements
+    //if(if_stmnt)
+    auto then_block = ir_gen->new_basic_block();
     ir_gen->set_insertion_point(bblock);
-    ir_gen->gen_if(expr_result, if_block, then_block, then_block);
+    ir_gen->gen_if(expr_result, if_block, else_block, then_block);
+    ir_gen->set_insertion_point(then_block);
 }
 
 // TODO

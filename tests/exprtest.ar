@@ -1,6 +1,7 @@
 
 fn main() int{
-    if(0) {
+    if true {
         ret 2;
     }
+    ret 3;
 }

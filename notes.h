@@ -1,4 +1,4 @@
-// file for random syntax testing
+// file for random stuff
 // not meant to be included
 #if 0
 
@@ -12,7 +12,10 @@
 
 // ? multiple assignment ?
 
-//
+// DONE
+// true/false literals
+
+// support elif chains
 
 
 #endif

@@ -107,7 +107,7 @@ std::vector<Arg> Parser::parse_fn_args() {
 }
 
 /**
- *  expect first token to be opening brace '{' 
+ *  expect first token to be opening brace '{'
  */
 Block* Parser::parse_block() {
     PROFILE();
@@ -167,7 +167,7 @@ Statement* Parser::parse_statement() {
             auto *result = ast_.new_statement_node_if(start_pos, ast_.new_if_node(start_pos, expr, block));
             return result;
             break;
-        }    
+        }
         case ARC_RET:
         {
             expect_token(ARC_RET);
@@ -276,7 +276,10 @@ std::vector<Token*> Parser::parse_expr_0(bool stop_at_paren) {
     while(current_token()->kind != ARC_SEMICOLON &&
             current_token()->kind != ARC_OPEN_BRACE &&
             current_token()->kind != ARC_COMMA) {
-        if(current_token()->kind == ARC_INT_LIT || current_token()->kind == ARC_FLOAT_LIT) {
+        if(current_token()->kind == ARC_TRUE ||
+           current_token()->kind == ARC_FALSE ||
+           current_token()->kind == ARC_INT_LIT ||
+           current_token()->kind == ARC_FLOAT_LIT) {
             result.push_back(current_token());
         }
         else if(current_token()->kind == ARC_ID) {
@@ -302,9 +305,9 @@ std::vector<Token*> Parser::parse_expr_0(bool stop_at_paren) {
             }
         }
         else if(is_operator(current_token()->kind)) {  //TODO support unary operators also
-                while ((!stack.empty()) && (is_operator(stack.back()->kind)) && 
-                        ((precedence(stack.back()->kind) > precedence(current_token()->kind)) || 
-                        (precedence(stack.back()->kind) == precedence(current_token()->kind))) && 
+                while ((!stack.empty()) && (is_operator(stack.back()->kind)) &&
+                        ((precedence(stack.back()->kind) > precedence(current_token()->kind)) ||
+                        (precedence(stack.back()->kind) == precedence(current_token()->kind))) &&
                         (stack.back()->kind != ARC_OPEN_PAREN)) {
                     result.push_back(stack.back());
                     stack.pop_back();
@@ -363,6 +366,12 @@ Expr* Parser::parse_expr_1(std::vector<Token*> result) {
         else {
             auto tkn_data = std::string(tkn->data);
             switch(tkn->kind) {
+                case ARC_TRUE:
+                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, 0)); // TODO make bool literal node or something
+                    break;
+                case ARC_FALSE:
+                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, 1)); // TODO make bool literal node or something
+                    break;
                 case ARC_INT_LIT:
                     conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, std::stoll(tkn_data)));
                     break;
@@ -387,7 +396,7 @@ Expr* Parser::parse_expr_1(std::vector<Token*> result) {
                     }
                     break;
             }
-            
+
         }
     }
     return conversion_stack.back();
