@@ -1,7 +1,15 @@
 
-fn main() int{
-    if true {
+fn main() int {
+    if false {
         ret 2;
     }
-    ret 3;
+    elif false {
+        ret 3;
+    }
+    elif true {
+        ret 4;
+    }
+    else {
+        ret 5;
+    }
 }

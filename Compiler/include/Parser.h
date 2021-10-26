@@ -26,6 +26,7 @@ class Parser {
         Function* parse_function();
         std::vector<Arg> parse_fn_args();
         Block* parse_block();
+        Block* parse_bare_block();
         Statement* parse_statement();
         std::vector<IfStmnt*> parse_elif_stmnts();
         Block* parse_else();

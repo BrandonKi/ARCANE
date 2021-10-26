@@ -112,14 +112,20 @@ std::vector<Arg> Parser::parse_fn_args() {
 Block* Parser::parse_block() {
     PROFILE();
     s_table_.push_scope();
-    const SourcePos start_pos = current_token()->pos;
-    std::vector<Statement*> statements;
     // cases
     // statement
     verify_token(ARC_OPEN_BRACE);
-    while(next_token()->kind != ARC_CLOSE_BRACE)
-        statements.push_back(parse_statement());
     // nextToken(); // go past the closed brace
+    return parse_bare_block();
+}
+
+Block* Parser::parse_bare_block() {
+    const SourcePos start_pos = current_token()->pos;
+    std::vector<Statement*> statements;
+    while(peek_next_token()->kind != ARC_CLOSE_BRACE) {
+        next_token_noreturn();
+        statements.push_back(parse_statement());
+    }
     return new Block{ {start_pos}, statements };
 }
 
@@ -159,13 +165,14 @@ Statement* Parser::parse_statement() {
             return result;
         }
         case ARC_IF:
+        case ARC_ELIF:    // FIXME seperate these
         {
-            expect_token(ARC_IF);
+            //expect_token(ARC_IF);
+            next_token_noreturn();
             auto *expr = parse_expr();
             auto *block = parse_block();
-            auto elif_stmnts = parse_elif_stmnts();
             auto *else_stmnt = parse_else();
-            auto *result = ast_.new_statement_node_if(start_pos, ast_.new_if_node(start_pos, expr, block, elif_stmnts, else_stmnt));
+            auto *result = ast_.new_statement_node_if(start_pos, ast_.new_if_node(start_pos, expr, block, else_stmnt));
             return result;
         }
         case ARC_RET:
@@ -196,26 +203,20 @@ Statement* Parser::parse_statement() {
     return new Statement{};
 }
 
-std::vector<IfStmnt*> Parser::parse_elif_stmnts() {
-    const SourcePos start_pos = current_token()->pos;
-    std::vector<IfStmnt*> stmnts;
-    while(check_token(ARC_ELIF)) {
-        next_token_noreturn();
-        auto *expr = parse_expr();
-        auto *block = parse_block();
-        auto *result = ast_.new_if_node(start_pos, expr, block);
-        stmnts.push_back(result);
-    }
-    return stmnts;
-}
-
 Block* Parser::parse_else() {
-    if(next_token()->kind == ARC_ELSE) {
+    if(peek_next_token()->kind == ARC_ELSE) {
+        next_token_noreturn();
         next_token_noreturn();
         return parse_block();
     }
-    else
+    else if(peek_next_token()->kind == ARC_ELIF) {
+        next_token_noreturn();
+        return parse_bare_block();
+    }
+    else {
+        next_token_noreturn();
         return nullptr;
+    }
 }
 
 Decl* Parser::parse_decl() {

@@ -56,9 +56,9 @@ AST::~AST() {
     return new ForStmnt{{pos}, decl, expr1, expr2, block};
 }
 
-[[nodiscard]] IfStmnt* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block, std::vector<IfStmnt*> elif_stmnts, Block* else_stmnt) {
+[[nodiscard]] IfStmnt* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block, Block* else_stmnt) {
     PROFILE();
-    return new IfStmnt{{pos}, expr, block, elif_stmnts, else_stmnt};
+    return new IfStmnt{{pos}, expr, block, else_stmnt};
 }
 
 
