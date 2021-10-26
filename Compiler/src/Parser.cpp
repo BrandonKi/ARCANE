@@ -164,8 +164,8 @@ Statement* Parser::parse_statement() {
             auto *result = ast_.new_statement_node_for(start_pos, ast_.new_for_node(start_pos, decl, expr1, expr2, block));
             return result;
         }
-        case ARC_IF:
-        case ARC_ELIF:    // FIXME seperate these
+        case ARC_IF:      // FIXME must have an if before an elif statement
+        case ARC_ELIF:    // probably need a to maintain a stack to verify this, also seperate these switch cases
         {
             //expect_token(ARC_IF);
             next_token_noreturn();

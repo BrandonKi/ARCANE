@@ -15,7 +15,11 @@
 // DONE
 // true/false literals
 
+// DONE
 // support elif chains
 
+// clean up generated IR for conditionals; there is a lot of redundant IR
+
+// constants/literals result in redundant IR
 
 #endif
