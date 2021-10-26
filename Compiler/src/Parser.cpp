@@ -157,25 +157,25 @@ Statement* Parser::parse_statement() {
             auto *block = parse_block();
             auto *result = ast_.new_statement_node_for(start_pos, ast_.new_for_node(start_pos, decl, expr1, expr2, block));
             return result;
-            break;
         }
         case ARC_IF:
         {
             expect_token(ARC_IF);
             auto *expr = parse_expr();
             auto *block = parse_block();
-            auto *result = ast_.new_statement_node_if(start_pos, ast_.new_if_node(start_pos, expr, block));
+            auto elif_stmnts = parse_elif_stmnts();
+            auto *else_stmnt = parse_else();
+            auto *result = ast_.new_statement_node_if(start_pos, ast_.new_if_node(start_pos, expr, block, elif_stmnts, else_stmnt));
             return result;
-            break;
         }
         case ARC_RET:
         {
             expect_token(ARC_RET);
             auto *result = ast_.new_statement_node_ret(start_pos, ast_.new_ret_node(start_pos, parse_expr()));
-            if(current_token()->kind != ARC_SEMICOLON)
+            if(current_token()->kind != ARC_SEMICOLON)    // FIXME this error is never reached
                 error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Expected semicolon"});
             return result;
-            break;
+
         }
         case ARC_ID:
             // can be decl or expr
@@ -194,6 +194,28 @@ Statement* Parser::parse_statement() {
             break;
     }
     return new Statement{};
+}
+
+std::vector<IfStmnt*> Parser::parse_elif_stmnts() {
+    const SourcePos start_pos = current_token()->pos;
+    std::vector<IfStmnt*> stmnts;
+    while(check_token(ARC_ELIF)) {
+        next_token_noreturn();
+        auto *expr = parse_expr();
+        auto *block = parse_block();
+        auto *result = ast_.new_if_node(start_pos, expr, block);
+        stmnts.push_back(result);
+    }
+    return stmnts;
+}
+
+Block* Parser::parse_else() {
+    if(next_token()->kind == ARC_ELSE) {
+        next_token_noreturn();
+        return parse_block();
+    }
+    else
+        return nullptr;
 }
 
 Decl* Parser::parse_decl() {

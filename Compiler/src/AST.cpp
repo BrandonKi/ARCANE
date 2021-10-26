@@ -3,9 +3,7 @@
 extern ErrorHandler error_log;
 extern TypeManager type_manager;
 
-AST::AST():
-    allocator_() // arena allocator size is defined above
-{
+AST::AST() {
     PROFILE();
 }
 
@@ -58,9 +56,9 @@ AST::~AST() {
     return new ForStmnt{{pos}, decl, expr1, expr2, block};
 }
 
-[[nodiscard]] IfStmnt* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block) {
+[[nodiscard]] IfStmnt* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block, std::vector<IfStmnt*> elif_stmnts, Block* else_stmnt) {
     PROFILE();
-    return new IfStmnt{{pos}, expr, block};
+    return new IfStmnt{{pos}, expr, block, elif_stmnts, else_stmnt};
 }
 
 

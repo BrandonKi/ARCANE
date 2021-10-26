@@ -27,6 +27,8 @@ class Parser {
         std::vector<Arg> parse_fn_args();
         Block* parse_block();
         Statement* parse_statement();
+        std::vector<IfStmnt*> parse_elif_stmnts();
+        Block* parse_else();
         Decl* parse_decl();
         Expr* parse_expr(bool stop_at_paren = false);
         std::vector<Token*> parse_expr_0(bool stop_at_paren = false);

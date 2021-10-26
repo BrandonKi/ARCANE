@@ -103,8 +103,10 @@ void BytecodeGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
     auto expr_result = gen_expr(if_stmnt->expr, bblock);
     auto if_block = ir_gen->new_basic_block();
     gen_block(if_stmnt->block, ir_gen);
-    auto else_block = ir_gen->new_basic_block(); // FIXME only works if there are no else if statements
-    //if(if_stmnt)
+    auto else_block = ir_gen->new_basic_block();
+    ir_gen->set_insertion_point(else_block);
+    if(if_stmnt->else_stmnt) // if there is an else stmnt
+        gen_block(if_stmnt->else_stmnt, ir_gen);
     auto then_block = ir_gen->new_basic_block();
     ir_gen->set_insertion_point(bblock);
     ir_gen->gen_if(expr_result, if_block, else_block, then_block);
