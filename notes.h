@@ -25,6 +25,8 @@
 // maybe run a small cleanup pass before printing IR for debug
 // just removing the useless br instruction and merging bblocks with only a br
 // otherwise IR like below is generated
+
+/*
 [entrypoint]
 define function main() -> i32 {
 #main
@@ -72,6 +74,36 @@ define function main() -> i32 {
     %13 = load %12
     ret %13
 }
+*/
+
+// that can be trivially cleaned up/optimized to be the IR below
+// the question is whether this should be done by the front or back end
+// I'm leaning torwards a canonicalization pass or a clean up pass that can be used by the front end also for debugging
+//
+//
+// list of stuff to include or put in different passes
+// * remove dead control flow instructions
+// * inline constants
+// * rename auto-generated label/variable names
+/*
+[entrypoint]
+define function main() -> i32 {
+#main
+    brz 1, #0, #1
+#0
+    ret 2
+#1
+    brz 1, #2, #3
+#2
+    ret 3
+#3
+    brz 1, #5, #6
+#5
+    ret 4
+#6
+    ret 5
+}
+*/
 
 
 #endif
