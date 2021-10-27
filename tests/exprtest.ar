@@ -6,10 +6,8 @@ fn main() int {
     elif false {
         ret 3;
     }
-    elif true {
+    elif false {
         ret 4;
     }
-    else {
-        ret 5;
-    }
+    ret 5;
 }

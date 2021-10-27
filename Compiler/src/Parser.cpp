@@ -390,10 +390,10 @@ Expr* Parser::parse_expr_1(std::vector<Token*> result) {
             auto tkn_data = std::string(tkn->data);
             switch(tkn->kind) {
                 case ARC_TRUE:
-                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, 0)); // TODO make bool literal node or something
+                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, 1)); // TODO make bool literal node or something
                     break;
                 case ARC_FALSE:
-                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, 1)); // TODO make bool literal node or something
+                    conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, 0)); // TODO make bool literal node or something
                     break;
                 case ARC_INT_LIT:
                     conversion_stack.push_back(ast_.new_expr_node_int_literal(tkn->pos, std::stoll(tkn_data)));
