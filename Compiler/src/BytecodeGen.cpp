@@ -182,7 +182,17 @@ arcvm::Value BytecodeGen::gen_rvalue_var(std::string* id, arcvm::BasicBlock* ir_
 
 // TODO
 arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
-    return {};
+    auto val = expr->fn_call.val;
+    auto argc = expr->fn_call.argc;
+    auto argv = expr->fn_call.args;
+
+    for(u32 i = 0; i < argc; ++i) {
+        gen_expr(argv[i], ir_gen);
+    }
+
+    auto ret = ir_gen->gen_inst(arcvm::Instruction::call, {arcvm::Value{val}, arcvm::Value{arcvm::Type::ir_i32}});
+
+    return ret;
 }
 
 // TODO
@@ -226,7 +236,11 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
         case ARC_EQUAL:
             break;
         case ARC_ASSIGN:
+        {
+            //variable_table_.back()[*(decl->id)] = val;
+            //return val;
             break;
+        }
         case ARC_INFER: // TODO should this be a valid expr???
             break;
         case ARC_ADD:
