@@ -1,6 +1,6 @@
 version(1);
 
-project_name = "ARCVM";
+project_name = "ARCANE";
 
 patterns = {
 "*.cpp",

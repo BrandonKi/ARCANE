@@ -1,13 +1,8 @@
 
+fn add(i: int) int {
+    ret 2;
+}
+
 fn main() int {
-    if false {
-        ret 2;
-    }
-    elif false {
-        ret 3;
-    }
-    elif false {
-        ret 4;
-    }
-    ret 5;
+    ret add();
 }

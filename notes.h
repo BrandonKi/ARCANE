@@ -2,6 +2,16 @@
 // not meant to be included
 #if 0
 
+// add error for multiple declaration
+
+// unary expression generation
+
+// distinguish between rvalues and lvalues
+
+// fix variables in code gen
+
+// function calling
+
 // var args
 
 // default args
