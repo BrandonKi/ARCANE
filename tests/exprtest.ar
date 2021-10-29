@@ -4,5 +4,5 @@ fn add(i: int) int {
 }
 
 fn main() int {
-    ret add();
+    ret add(1);
 }

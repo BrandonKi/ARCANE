@@ -190,7 +190,7 @@ arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
         gen_expr(argv[i], ir_gen);
     }
 
-    auto ret = ir_gen->gen_inst(arcvm::Instruction::call, {arcvm::Value{val}, arcvm::Value{arcvm::Type::ir_i32}});
+    auto ret = ir_gen->gen_inst(arcvm::Instruction::call, {arcvm::Value{arcvm::ValueType::fn_name, val}, arcvm::Value{arcvm::Type::ir_i32}});
 
     return ret;
 }
