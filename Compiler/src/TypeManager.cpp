@@ -97,3 +97,35 @@ type_handle TypeManager::get_conversion_result_type(type_handle, type_handle) {
     PROFILE();
     return TYPE_I64;
 }
+
+
+arcvm::Type TypeManager::to_ir_type(type_handle type) {
+    switch(type) {
+        case TYPE_UNKNOWN:
+            return arcvm::Type::none;
+        case TYPE_I8:
+            return arcvm::Type::ir_i8;
+        case TYPE_I16:
+            return arcvm::Type::ir_i16;
+        case TYPE_I32:
+            return arcvm::Type::ir_i32;
+        case TYPE_I64:
+            return arcvm::Type::ir_i64;
+        case TYPE_U8:
+            return arcvm::Type::ir_u8;
+        case TYPE_U16:
+            return arcvm::Type::ir_u16;
+        case TYPE_U32:
+            return arcvm::Type::ir_u32;
+        case TYPE_U64:
+            return arcvm::Type::ir_u64;
+        //case TYPE_BOOL:
+            //return arcvm::Type::ir_b1;
+        //case TYPE_BOOL:
+            //return arcvm::Type::ir_b8;
+        // TODO returning aggregate types etc. etc.
+        default:
+            // FIXME this is just for debugging
+            return static_cast<arcvm::Type>(-1);
+    }
+}

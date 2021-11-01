@@ -79,6 +79,8 @@ public:
     Function* get_conversion_impl(type_handle, type_handle);
     type_handle get_conversion_result_type(type_handle, type_handle);
 
+    arcvm::Type to_ir_type(type_handle);
+
 private:
 
     // initialized with language primitives

@@ -8,8 +8,6 @@
 
 #include "TypeInference.h"
 
-#include <Arcvm.h>
-
 class BytecodeGen {
   public:
     BytecodeGen();

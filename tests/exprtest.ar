@@ -1,8 +1,8 @@
 
-fn add(i: int) int {
-    ret 2;
+fn add(i: int, x: int) int {
+    ret i + x;
 }
 
 fn main() int {
-    ret add(1);
+    ret add(1, 5);
 }

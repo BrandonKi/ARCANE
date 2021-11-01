@@ -2,6 +2,9 @@
 
 #include <IRPrinter.h>
 
+extern ErrorHandler error_log;
+extern TypeManager type_manager;
+
 BytecodeGen::BytecodeGen(): variable_table_{} {}
 
 arcvm::Arcvm BytecodeGen::gen_project(Project* project) {
@@ -27,17 +30,16 @@ void BytecodeGen::gen_file(File* file, arcvm::Module* module) {
 
     for(auto* function: file->functions) {
         auto name = function->id;
-        // TODO convert arg types to std::vector<arcvm::Type>
         auto args = std::vector<arcvm::Type>{};
-        // TODO convert type_handle to arcvm::Type
-        // auto ret_type = function->return_type;
-        auto ret_type = arcvm::Type::ir_i32;
+        variable_table_.emplace_back();
+        for(size_t i = 0; i < function->args.size(); ++i) {
+            args.push_back(type_manager.to_ir_type(function->args[i].type));
+            variable_table_.back()[function->args[i].id] = arcvm::Value{arcvm::ValueType::reference, i};
+        }
+        auto ret_type = type_manager.to_ir_type(function->return_type);
         auto* ir_function = module->gen_function_def(function->id, args, ret_type);
         if(function->is_main)
             ir_function->add_attribute(arcvm::Attribute::entrypoint);
-        // push and pop scope before and after function gen
-        variable_table_.emplace_back();
-        // FIXME temporary fix. update the backend instead
         gen_function(function, ir_function->block);
         variable_table_.pop_back();
     }
@@ -186,11 +188,14 @@ arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
     auto argc = expr->fn_call.argc;
     auto argv = expr->fn_call.args;
 
+    std::vector<arcvm::Value> ir_args{};
+    ir_args.emplace_back(arcvm::ValueType::fn_name, val);
     for(u32 i = 0; i < argc; ++i) {
-        gen_expr(argv[i], ir_gen);
+        ir_args.push_back(gen_expr(argv[i], ir_gen));
     }
+    ir_args.emplace_back(arcvm::Type::ir_i32);
 
-    auto ret = ir_gen->gen_inst(arcvm::Instruction::call, {arcvm::Value{arcvm::ValueType::fn_name, val}, arcvm::Value{arcvm::Type::ir_i32}});
+    auto ret = ir_gen->gen_inst(arcvm::Instruction::call, ir_args);
 
     return ret;
 }
