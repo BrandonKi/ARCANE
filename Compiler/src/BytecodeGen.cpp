@@ -220,71 +220,64 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
             break;
         case ARC_AND_EQUAL:
             break;
-        case ARC_NOT_EQUAL:
-            break;
         case ARC_LEFT_SHIFT_EQUAL:
             break;
         case ARC_RIGHT_SHIFT_EQUAL:
             break;
         case ARC_XOR_EQUAL:
             break;
-        case ARC_LESSER_EQUAL:
-        {
+        case ARC_LESSER_EQUAL: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::lte, {lhs, rhs});
             return val;
         }
-        case ARC_GREATER_EQUAL:
-        {
+        case ARC_GREATER_EQUAL: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::gte, {lhs, rhs});
             return val;
         }
-        case ARC_EQUAL:
-            break;
-        case ARC_ASSIGN:
-        {
+        case ARC_EQUAL: {
+            auto val = ir_gen->gen_inst(arcvm::Instruction::eq, {lhs, rhs});
+            return val;
+        }
+        case ARC_NOT_EQUAL: {
+            auto val = ir_gen->gen_inst(arcvm::Instruction::neq, {lhs, rhs});
+            return val;
+        }
+        case ARC_ASSIGN: {
             //variable_table_.back()[*(decl->id)] = val;
             //return val;
             break;
         }
         case ARC_INFER: // TODO should this be a valid expr???
             break;
-        case ARC_ADD:
-        {
+        case ARC_ADD: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::add, {lhs, rhs});
             return val;
         }
-        case ARC_SUB:
-        {
+        case ARC_SUB: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::sub, {lhs, rhs});
             return val;
         }
-        case ARC_DIV:
-        {
+        case ARC_DIV: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::div, {lhs, rhs});
             return val;
         }
-        case ARC_MUL:
-        {
+        case ARC_MUL: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::mul, {lhs, rhs});
             return val;
         }
-        case ARC_MOD:
-        {
+        case ARC_MOD: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::mod, {lhs, rhs});
             return val;
         }
-        case ARC_BIN_OR:
-        {
+        case ARC_BIN_OR: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::bin_or, {lhs, rhs});
             return val;
         }
-        case ARC_BIN_AND:
-        {
+        case ARC_BIN_AND: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::bin_and, {lhs, rhs});
             return val;
         }
-        case ARC_LEFT_SHIFT:
-        {
+        case ARC_LEFT_SHIFT: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::lshift, {lhs, rhs});
             return val;
         }
