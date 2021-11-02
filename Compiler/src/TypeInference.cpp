@@ -41,16 +41,21 @@ void TypeInference::update_symbol_table(std::vector<Arg>& fn_args) {
 void TypeInference::analyze_function(Function* function) {
     PROFILE();
     update_symbol_table(function->args);
-    for (auto* stmnt : function->body->statements) {
+    analyze_block(function->body, function->return_type);
+}
+
+void TypeInference::analyze_block(Block* block, type_handle ret_type /*= 0*/) {
+    for (auto* stmnt : block->statements) {
         switch(stmnt->type) {
             case WHILE:
                 break;
             case FOR:
                 break;
             case IF:
+                analyze_if(stmnt->if_stmnt, ret_type);
                 break;
             case RET:
-                analyze_ret(stmnt->ret_stmnt, function->return_type);
+                analyze_ret(stmnt->ret_stmnt, ret_type);
                 break;
             case EXPRESSION:
                 analyze_expr(stmnt->expr);
@@ -64,23 +69,31 @@ void TypeInference::analyze_function(Function* function) {
     }
 }
 
+void TypeInference::analyze_if(IfStmnt* if_stmnt, type_handle ret_type) {
+    PROFILE();
+    analyze_expr(if_stmnt->expr);
+    analyze_block(if_stmnt->block, ret_type);
+    if(if_stmnt->else_stmnt)
+        analyze_block(if_stmnt->else_stmnt, ret_type);
+}
+
 void TypeInference::analyze_ret(RetStmnt* ret_stmnt, type_handle ret_type) {
     PROFILE();
     analyze_expr(ret_stmnt->expr);
 
     if(ret_stmnt->expr->result_type != ret_type && !type_manager.conversion_exists(ret_stmnt->expr->result_type, ret_type)) {
-        auto err = 
+        auto err =
             "type of expression does not match function return type and could not find a valid conversion\n"
             "expected:    " + fmt(type_manager.get_type(ret_type).name, BRIGHT_BLUE, UNDERLINE) + "\n"
             "instead got: " + fmt(type_manager.get_type(ret_stmnt->expr->result_type).name, BRIGHT_BLUE, UNDERLINE);
         error_log.exit(ErrorMessage{FATAL, ret_stmnt->expr->pos, current_filename_, err});
     }
     else if(ret_stmnt->expr->result_type != ret_type && type_manager.conversion_exists(ret_stmnt->expr->result_type, ret_type)) {
-        auto err = 
+        auto err =
             "implicit conversion from " + fmt(type_manager.get_type(ret_stmnt->expr->result_type).name, BRIGHT_BLUE, UNDERLINE) +
             " to " +
             fmt(type_manager.get_type(ret_type).name, BRIGHT_BLUE, UNDERLINE);
-        
+
         error_log.push(ErrorMessage{WARN, ret_stmnt->expr->pos, current_filename_, err});
     }
 }
@@ -120,9 +133,9 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
         {
             auto type = s_table_.get_type(*(expr->id.val));
 
-            if(type == TYPE_UNKNOWN) 
+            if(type == TYPE_UNKNOWN)
                 error_log.exit(ErrorMessage{FATAL, expr->pos, current_filename_, "cannot infer type of expression"});
-            
+
             expr->result_type = type;
             break;
         }
@@ -133,8 +146,8 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
 
             if(!type_manager.operator_exists(expr->binary_expr.op, lhs_type, rhs_type)) {
                 // construct error message
-                auto err = 
-                    "operator does not exist between these types (" + 
+                auto err =
+                    "operator does not exist between these types (" +
                     fmt(type_manager.get_type(lhs_type).name, BRIGHT_BLUE, UNDERLINE) + " " +
                     get_string(expr->binary_expr.op) + " " +
                     fmt(type_manager.get_type(rhs_type).name, BRIGHT_BLUE, UNDERLINE) + ")";

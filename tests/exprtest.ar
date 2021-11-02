@@ -1,12 +1,12 @@
 
-fn fact(i: int) int {
-    if i {
-        ret i * fact(i-1);
+fn fib(n : int) int {
+    if n <= 1 {
+        ret n;
     }
-    ret 1;
+    ret fib(n-1) + fib(n-2);
 }
 
 fn main() int {
-    x := 5;
-    ret fact(x);
+    n := 10;
+    ret fib(n);
 }
