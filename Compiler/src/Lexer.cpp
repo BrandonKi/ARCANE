@@ -24,7 +24,7 @@ std::vector<Token> Lexer::lex() {
                 tokens_.push_back(lex_identifier());
                 break;
             case '\'':
-            case '"': 
+            case '"':
                 tokens_.push_back(lex_string());
                 break;
             case '`':   //TODO interpolated string literal is not trivial to tokenize
@@ -134,7 +134,7 @@ void Lexer::consume_comment() {
         next_char_noreturn();
         while(index_ < data_size && !(current_char() == '*' && peek_next_char() == '/')){
             if(current_char() == '\n')
-                line_++;
+                ++line_;
             next_char_noreturn();
         }
         next_char_noreturn();
@@ -143,6 +143,7 @@ void Lexer::consume_comment() {
         while(index_ < data_size &&  current_char() != '\n'){
             next_char_noreturn();
         }
+        ++line_;
     }
 }
 
@@ -232,7 +233,7 @@ Token Lexer::lex_colon() {
 
     const auto start_pos = index_;
     const auto start_col = col_;
-    
+
     if(peek_next_char() == '=') {
         next_char_noreturn();
         return create_token(ARC_INFER, start_col, start_pos);
@@ -264,7 +265,7 @@ inline Token Lexer::lex_add() {
 
 Token Lexer::lex_sub() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -287,7 +288,7 @@ Token Lexer::lex_sub() {
 
 Token Lexer::lex_div() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -301,7 +302,7 @@ Token Lexer::lex_div() {
 
 Token Lexer::lex_mul() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -315,7 +316,7 @@ Token Lexer::lex_mul() {
 
 Token Lexer::lex_mod() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -329,7 +330,7 @@ Token Lexer::lex_mod() {
 
 Token Lexer::lex_or() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -347,7 +348,7 @@ Token Lexer::lex_or() {
 
 Token Lexer::lex_and() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -365,7 +366,7 @@ Token Lexer::lex_and() {
 
 Token Lexer::lex_not() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -393,7 +394,7 @@ Token Lexer::lex_xor(){
 
 Token Lexer::lex_lesser() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -411,7 +412,7 @@ Token Lexer::lex_lesser() {
 
 Token Lexer::lex_greater() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
 
@@ -429,10 +430,10 @@ Token Lexer::lex_greater() {
 
 Token Lexer::lex_equal() {
     PROFILE();
-    
+
     const auto start_pos = index_;
     const auto start_col = col_;
-    
+
     if(peek_next_char() == '=') {
         next_char_noreturn();
         return create_token(ARC_EQUAL, start_col, start_pos);
@@ -477,7 +478,7 @@ inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos) cons
     PROFILE();
     return Token {kind, SourcePos{line_, col_, start_pos, index_}, std::string_view{}};
 }
- 
+
 inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos) const {
     PROFILE();
     return Token {kind, SourcePos{line_, current_col, start_pos, index_}, std::string_view{}};
