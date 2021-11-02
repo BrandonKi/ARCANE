@@ -10,7 +10,7 @@ enum SymbolType {
 };
 
 struct Symbol {
-    SymbolType type; 
+    SymbolType type;
     type_handle result_type;
     std::vector<Arg> args;
 };
@@ -34,10 +34,12 @@ class SymbolTable {
                     >
                 >
             >;
-        
+
         SymbolTable();
         void add_symbol(const std::string, const SymbolType, const type_handle);
-        void add_function(const std::string, const std::vector<Arg>, const SymbolType, const type_handle); 
+        void add_symbol_to_parent_scope(const std::string, const SymbolType, const type_handle);
+        void add_function(const std::string, const std::vector<Arg>, const SymbolType, const type_handle);
+        void add_function_to_parent_scope(const std::string, const std::vector<Arg>, const SymbolType, const type_handle);
         bool has(const std::string&);
         bool scope_has(const std::string&);
         SymbolType get_kind(const std::string&);
@@ -48,12 +50,14 @@ class SymbolTable {
         void push_scope();
         void pop_scope();
 
+
     private:
 
         hash_map global_;
         std::vector<hash_map> table_;
-        
+
         pair get(std::string&);
+        hash_map& parent_scope();
         hash_map& current_scope();
 };
 

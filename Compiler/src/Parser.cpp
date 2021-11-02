@@ -76,14 +76,19 @@ Function* Parser::parse_function() {
     auto id = std::string(current_token()->data);
     next_token_noreturn();
     expect_token(ARC_OPEN_PAREN);
+    s_table_.push_scope();
     auto fn_args = parse_fn_args();
     expect_token(ARC_CLOSE_PAREN);
     type_handle ret = token_kind_to_type(current_token()->kind);
     if(ret == -1)
         error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown return type"});
     next_token_noreturn();
-    s_table_.add_function(id, fn_args, FUNCTION, ret);
-    Block* block = parse_block();
+    s_table_.add_function_to_parent_scope(id, fn_args, FUNCTION, ret);
+
+    verify_token(ARC_OPEN_BRACE);
+    Block* block = parse_bare_block(); // doesn't use parse_block because it controls it's scope
+
+    s_table_.pop_scope();
     if(id == "main" && ret == TYPE_I32)
         return ast_.new_function_node(start_pos, id, fn_args, ret, block, true);
     return ast_.new_function_node(start_pos, id, fn_args, ret, block, false);

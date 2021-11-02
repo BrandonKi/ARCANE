@@ -29,9 +29,19 @@ void SymbolTable::add_symbol(const std::string id, const SymbolType kind, const 
     current_scope().insert(pair(std::move(id), Symbol{kind, arc_type}));
 }
 
+void SymbolTable::add_symbol_to_parent_scope(const std::string id, const SymbolType kind, const type_handle arc_type) {
+    PROFILE();
+    parent_scope().insert(pair(std::move(id), Symbol{kind, arc_type}));
+}
+
 void SymbolTable::add_function(const std::string id, const std::vector<Arg> fn_args, const SymbolType kind, const type_handle arc_type) {
     PROFILE();
     current_scope().insert(pair(std::move(id), Symbol{kind, arc_type, fn_args}));
+}
+
+void SymbolTable::add_function_to_parent_scope(const std::string id, const std::vector<Arg> fn_args, const SymbolType kind, const type_handle arc_type) {
+    PROFILE();
+    parent_scope().insert(pair(std::move(id), Symbol{kind, arc_type, fn_args}));
 }
 
 bool SymbolTable::has(const std::string& id) {
@@ -89,6 +99,11 @@ bool SymbolTable::is_function(const std::string& id) {
 bool SymbolTable::is_variable(const std::string& id) {
     PROFILE();
     return get_kind(id) == VARIABLE;
+}
+
+hash_map& SymbolTable::parent_scope() {
+    PROFILE();
+    return table_.end()[-2];
 }
 
 hash_map& SymbolTable::current_scope() {
