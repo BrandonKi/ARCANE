@@ -116,7 +116,9 @@ Block* Parser::parse_block() {
     // statement
     verify_token(ARC_OPEN_BRACE);
     // nextToken(); // go past the closed brace
-    return parse_bare_block();
+    auto* result = parse_bare_block();
+    s_table_.pop_scope();
+    return result;
 }
 
 Block* Parser::parse_bare_block() {
@@ -223,6 +225,9 @@ Decl* Parser::parse_decl() {
     PROFILE();
     const SourcePos start_pos = current_token()->pos;
     std::string id = std::string(current_token()->data);
+    if(s_table_.has(id)) {
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "redeclared identifier"});
+    }
     if(peek_next_token()->kind == ARC_INFER) {
         next_token_noreturn();
         next_token_noreturn();
