@@ -1,8 +1,20 @@
 
-fn add(i: int, x: int) int {
-    ret i + x;
+// fn add(i: int, x: int) int {
+//     ret i + x;
+// }
+
+// fn main() int {
+//     ret add(1, 5);
+// }
+
+fn fact(i: int) int {
+    if i {
+        ret i * fact(i-1);
+    }
+    ret 1;
 }
 
 fn main() int {
-    ret add(1, 5);
+    x := 5;
+    ret fact(x);
 }
