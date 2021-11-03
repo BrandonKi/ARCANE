@@ -269,7 +269,12 @@ arcvm::Value IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     auto lhs = *(expr->binary_expr.left->id.val);
     auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
     switch(expr->binary_expr.op) {
-        case ARC_ADD_EQUAL: // lhs has to be an lvalue
+        case ARC_ADD_EQUAL: { // lhs has to be an lvalue
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::add, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
         case ARC_SUB_EQUAL:
         case ARC_DIV_EQUAL:
         case ARC_MUL_EQUAL:

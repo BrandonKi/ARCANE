@@ -195,7 +195,7 @@ Statement* Parser::parse_statement() {
             // can be decl or expr
             if(peek_next_token()->kind == ARC_COLON || peek_next_token()->kind == ARC_INFER)
                 return ast_.new_statement_node_decl(start_pos, parse_decl());
-            else if(peek_next_token()->kind == ARC_ASSIGN)
+            else
                 return ast_.new_statement_node_expr(start_pos, parse_expr());
             break;
         case ARC_INT_LIT:
