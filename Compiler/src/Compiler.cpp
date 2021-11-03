@@ -18,8 +18,6 @@ arcvm::Arcvm Compiler::compile() {
     TypeInference ti(ast);
     ti.start();
 
-    //TODO convert to another IR for easier optimization and optimize step
-
     BytecodeGen gen;
     return gen.gen_project(ast);
 }

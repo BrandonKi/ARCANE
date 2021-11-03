@@ -489,7 +489,7 @@ inline Token Lexer::create_token(const TokenKind kind, const u32 start_pos, std:
     return create_token(kind, col_, start_pos, val);
 }
 
-inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, std::string_view val) const  {   //FIXME no reason to pass a string here
+inline Token Lexer::create_token(const TokenKind kind, const u32 current_col, const u32 start_pos, std::string_view val) const  {
     PROFILE();
     return Token {kind, SourcePos{line_, current_col, start_pos, index_}, val};
 }

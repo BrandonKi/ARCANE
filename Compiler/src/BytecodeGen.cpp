@@ -107,7 +107,6 @@ void BytecodeGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     static_cast<void>(for_stmnt);
 }
 
-// TODO
 void BytecodeGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
     PROFILE();
     auto bblock = ir_gen->get_bblock();
@@ -124,7 +123,6 @@ void BytecodeGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
     ir_gen->set_insertion_point(then_block);
 }
 
-// TODO
 void BytecodeGen::gen_ret(RetStmnt* ret_stmnt, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto expr_result = gen_expr(ret_stmnt->expr, ir_gen);
@@ -132,7 +130,6 @@ void BytecodeGen::gen_ret(RetStmnt* ret_stmnt, arcvm::BasicBlock* ir_gen) {
 }
 
 // TODO allocate based on size of type
-// TODO add reference to decl in symbol table for later use
 void BytecodeGen::gen_decl(Decl* decl, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, arcvm::Type::ir_i32}});
@@ -191,14 +188,12 @@ arcvm::Value BytecodeGen::gen_immediate(std::string* immediate, arcvm::BasicBloc
     return {};
 }
 
-// TODO need to load from symbol table
 arcvm::Value BytecodeGen::gen_var(std::string* id, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto var_ref = variable_table_.back().at(*id);
     return var_ref;
 }
 
-// TODO
 arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto val = expr->fn_call.val;
@@ -217,7 +212,6 @@ arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
     return ret;
 }
 
-// TODO
 arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     if(is_lrvalue_expr(expr->binary_expr.op)) {
@@ -269,8 +263,7 @@ bool BytecodeGen::is_lrvalue_expr(TokenKind bin_op) {
 
 arcvm::Value BytecodeGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    // TODO assumes lhs is an id
-    // could be an array or member access
+    // TODO assumes lhs is an id, but could be an array or member access
     // TODO gen lvalue_expression maybe????
     // auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
     auto lhs = *(expr->binary_expr.left->id.val);
