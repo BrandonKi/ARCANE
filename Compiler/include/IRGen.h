@@ -1,16 +1,16 @@
 /**
  * provides a thin layer of abstraction
- * over the IRGenerator in ARCVM
+ * over the IRGen in ARCVM
  */
 
-#ifndef ARCANE_BYTECODEGEN_H
-#define ARCANE_BYTECODEGEN_H
+#ifndef ARCANE_IRGen_H
+#define ARCANE_IRGen_H
 
 #include "TypeInference.h"
 
-class BytecodeGen {
+class IRGen {
   public:
-    BytecodeGen();
+    IRGen();
 
     arcvm::Arcvm gen_project(Project*);
     void gen_file(File*, arcvm::Module*);

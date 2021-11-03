@@ -28,7 +28,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Lexer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/ErrorHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/SymbolTable.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/BytecodeGen.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/IRGen.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/TypeManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/TypeInference.cpp
     ${arcvm_source}

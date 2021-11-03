@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include "BytecodeGen.h"
+#include "IRGen.h"
 
 using namespace std::string_literals;
 

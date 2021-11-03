@@ -18,7 +18,7 @@ arcvm::Arcvm Compiler::compile() {
     TypeInference ti(ast);
     ti.start();
 
-    BytecodeGen gen;
+    IRGen gen;
     return gen.gen_project(ast);
 }
 
