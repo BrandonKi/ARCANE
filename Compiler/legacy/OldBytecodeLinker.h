@@ -1,4 +1,5 @@
 // keeping this around as a reference for now
+/*
 //TODO remove me in the future
 
 #include "TypeInference.h"
@@ -29,3 +30,4 @@ class BytecodeLinker final {
     private:
         std::unordered_map<std::string, u64> function_table_;
 };
+*/

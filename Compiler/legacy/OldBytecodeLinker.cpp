@@ -1,4 +1,5 @@
 // keeping this around as a reference for now
+/*
 //TODO remove me in the future
 
 #include "BytecodeLinker.h"
@@ -50,3 +51,4 @@ void BytecodeLinker::update_function_table(std::vector<linkable_function>& funct
         location += function.code.size();
     }
 }
+*/

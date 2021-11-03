@@ -1,6 +1,7 @@
 // keeping this around as a reference for now
 //TODO remove me in the future
 
+/*
 #include "BytecodeGen.h"
 
 extern ErrorHandler error_log;
@@ -44,7 +45,7 @@ code_block BytecodeGen::gen_project(Project *project) {
     return generated_files[0];
 }
 // FIXME a good amount of data is being duplicated here
-// the function_table_ and result of this function 
+// the function_table_ and result of this function
 // both have their own copies of every function in every file
 // kinda urgent that this is fixed
 std::vector<linkable_function> BytecodeGen::gen_file(File *file) {
@@ -61,12 +62,12 @@ std::vector<linkable_function> BytecodeGen::gen_file(File *file) {
         static_cast<void>(import);
         // gen_import(ctx, import);
     }
-    
+
     for (const auto *decl : file->decls) {
         static_cast<void>(decl);
         // gen_decl(ctx, decl);
     }
-    
+
 
 
     for (const auto *function : file->functions) {
@@ -342,7 +343,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
             }
             break;
         case ARC_SUB:   // TODO all these types are just plain incorrect :(
-            if(expr->result_type == TYPE_F64) { 
+            if(expr->result_type == TYPE_F64) {
                 gen_expr(code, expr->binary_expr.left);
                 gen_expr(code, expr->binary_expr.right);
                 push(code, vm::subf);
@@ -354,7 +355,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
             }
             break;
         case ARC_DIV:
-            if(expr->result_type == TYPE_F64) { 
+            if(expr->result_type == TYPE_F64) {
                 gen_expr(code, expr->binary_expr.left);
                 gen_expr(code, expr->binary_expr.right);
                 push(code, vm::divf);
@@ -366,7 +367,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
             }
             break;
         case ARC_MUL:
-            if(expr->result_type == TYPE_F64) { 
+            if(expr->result_type == TYPE_F64) {
                 gen_expr(code, expr->binary_expr.left);
                 gen_expr(code, expr->binary_expr.right);
                 push(code, vm::mulf);
@@ -378,7 +379,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
             }
             break;
         case ARC_MOD:
-            if(expr->result_type == TYPE_F64) { 
+            if(expr->result_type == TYPE_F64) {
                 // no mod for floats :(
             }
             else if(expr->result_type == TYPE_I64) {
@@ -388,7 +389,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
             }
             break;
         case ARC_BIN_OR:
-            if(expr->result_type == TYPE_F64) { 
+            if(expr->result_type == TYPE_F64) {
                 gen_expr(code, expr->binary_expr.left);
                 gen_expr(code, expr->binary_expr.right);
                 push(code, vm::oru);    // FIXME I feel like this will break
@@ -400,7 +401,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
             }
             break;
         case ARC_BIN_AND:
-            if(expr->result_type == TYPE_F64) { 
+            if(expr->result_type == TYPE_F64) {
                 gen_expr(code, expr->binary_expr.left);
                 gen_expr(code, expr->binary_expr.right);
                 push(code, vm::andu);    // FIXME I feel like this will break
@@ -444,7 +445,7 @@ void BytecodeGen::gen_bin(code_block& code, const Expr *expr) {
         default:
             // not binary op
             break;
-        
+
     }
 }
 
@@ -500,7 +501,7 @@ void BytecodeGen::generate_bootstrap(code_block& code) {
         0x06,
         vm::exit,
     };
-    
+
     push_block(code, vec);
 }
 
@@ -516,7 +517,7 @@ bool BytecodeGen::is_function(const std::string& id) {
 
 bool BytecodeGen::is_function_arg(const std::string& id) {
     PROFILE();
-    const auto& fn_args = fn_info_stack_.back().function_args; 
+    const auto& fn_args = fn_info_stack_.back().function_args;
     auto result = std::find_if(fn_args.cbegin(), fn_args.cend(), [&](auto& arg){
         return arg.id == id;
     });
@@ -525,7 +526,7 @@ bool BytecodeGen::is_function_arg(const std::string& id) {
 
 i64 BytecodeGen::get_function_arg_index(const std::string& id) {
     PROFILE();
-    const auto& fn_args = fn_info_stack_.back().function_args; 
+    const auto& fn_args = fn_info_stack_.back().function_args;
     return std::distance(fn_args.cbegin(), std::find_if(fn_args.cbegin(), fn_args.cend(), [&](auto& arg){
         return arg.id == id;
     }));
@@ -539,3 +540,4 @@ void BytecodeGen::deallocate_local_vars(code_block& code, u64 index) {
     // replace the placeholder value
     code[index] = static_cast<u8>(var_counter);
 }
+*/
