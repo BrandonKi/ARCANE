@@ -8,6 +8,7 @@ extern TypeManager type_manager;
 BytecodeGen::BytecodeGen(): variable_table_{} {}
 
 arcvm::Arcvm BytecodeGen::gen_project(Project* project) {
+    PROFILE();
     arcvm::Arcvm vm;
     for(auto* file: project->files) {
         arcvm::IRGenerator ir_gen;
@@ -20,6 +21,7 @@ arcvm::Arcvm BytecodeGen::gen_project(Project* project) {
 }
 
 void BytecodeGen::gen_file(File* file, arcvm::Module* module) {
+    PROFILE();
     for(auto* import: file->imports){
         // TODO
     }
@@ -47,20 +49,24 @@ void BytecodeGen::gen_file(File* file, arcvm::Module* module) {
 
 // TODO
 void BytecodeGen::gen_import(Import* import) {
+    PROFILE();
     static_cast<void>(import);
 }
 
 void BytecodeGen::gen_function(Function* function, arcvm::Block* ir_gen) {
+    PROFILE();
     gen_block(function->body, ir_gen);
 }
 
 void BytecodeGen::gen_block(Block* block, arcvm::Block* ir_gen) {
+    PROFILE();
     for(auto* stmnt: block->statements) {
         gen_statement(stmnt, ir_gen);
     }
 }
 
 void BytecodeGen::gen_statement(Statement* statement, arcvm::Block* ir_gen) {
+    PROFILE();
     switch(statement->type) {
         case WHILE:
             gen_while(statement->while_stmnt, ir_gen);
@@ -91,16 +97,19 @@ void BytecodeGen::gen_statement(Statement* statement, arcvm::Block* ir_gen) {
 
 // TODO
 void BytecodeGen::gen_while(WhileStmnt* while_stmnt, arcvm::Block* ir_gen) {
+    PROFILE();
     static_cast<void>(while_stmnt);
 }
 
 // TODO
 void BytecodeGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
+    PROFILE();
     static_cast<void>(for_stmnt);
 }
 
 // TODO
 void BytecodeGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
+    PROFILE();
     auto bblock = ir_gen->get_bblock();
     auto expr_result = gen_expr(if_stmnt->expr, bblock);
     auto if_block = ir_gen->new_basic_block();
@@ -117,6 +126,7 @@ void BytecodeGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
 
 // TODO
 void BytecodeGen::gen_ret(RetStmnt* ret_stmnt, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     auto expr_result = gen_expr(ret_stmnt->expr, ir_gen);
     ir_gen->gen_inst(arcvm::Instruction::ret, {expr_result});
 }
@@ -124,6 +134,7 @@ void BytecodeGen::gen_ret(RetStmnt* ret_stmnt, arcvm::BasicBlock* ir_gen) {
 // TODO allocate based on size of type
 // TODO add reference to decl in symbol table for later use
 void BytecodeGen::gen_decl(Decl* decl, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, arcvm::Type::ir_i32}});
     auto expr_result = gen_expr(decl->val, ir_gen);
     ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, expr_result});
@@ -132,6 +143,7 @@ void BytecodeGen::gen_decl(Decl* decl, arcvm::BasicBlock* ir_gen) {
 }
 
 arcvm::Value BytecodeGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     switch(expr->type) {
         case EXPR_INT_LIT:
             return gen_immediate(expr->int_literal.val, ir_gen);
@@ -143,7 +155,7 @@ arcvm::Value BytecodeGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
             return gen_immediate(expr->string_literal.val, ir_gen);
             break;
         case EXPR_ID:
-            return gen_rvalue_var(expr->id.val, ir_gen);
+            return gen_var(expr->id.val, ir_gen);
             break;
         case EXPR_FN_CALL:
             return gen_fn_call(expr, ir_gen);
@@ -161,6 +173,7 @@ arcvm::Value BytecodeGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
 }
 
 arcvm::Value BytecodeGen::gen_immediate(i64 immediate, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, arcvm::Type::ir_i32}});
     ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, arcvm::Value{arcvm::ValueType::immediate, immediate}});
     auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
@@ -168,22 +181,26 @@ arcvm::Value BytecodeGen::gen_immediate(i64 immediate, arcvm::BasicBlock* ir_gen
 }
 // TODO
 arcvm::Value BytecodeGen::gen_immediate(f64 immediate, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     return {};
 }
 
 // TODO
 arcvm::Value BytecodeGen::gen_immediate(std::string* immediate, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     return {};
 }
 
 // TODO need to load from symbol table
-arcvm::Value BytecodeGen::gen_rvalue_var(std::string* id, arcvm::BasicBlock* ir_gen) {
+arcvm::Value BytecodeGen::gen_var(std::string* id, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     auto var_ref = variable_table_.back().at(*id);
     return var_ref;
 }
 
 // TODO
 arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     auto val = expr->fn_call.val;
     auto argc = expr->fn_call.argc;
     auto argv = expr->fn_call.args;
@@ -203,29 +220,92 @@ arcvm::Value BytecodeGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
 // TODO
 arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
+    if(is_lrvalue_expr(expr->binary_expr.op)) {
+        return gen_lrvalue_expr(expr, ir_gen);
+    }
+    else { // if is_rrvalue_expr
+        return gen_rrvalue_expr(expr, ir_gen);
+    }
+}
+
+bool BytecodeGen::is_lrvalue_expr(TokenKind bin_op) {
+    PROFILE();
+    switch(bin_op) {
+        case ARC_ADD_EQUAL: // lhs has to be an lvalue
+        case ARC_SUB_EQUAL:
+        case ARC_DIV_EQUAL:
+        case ARC_MUL_EQUAL:
+        case ARC_MOD_EQUAL:
+        case ARC_OR_EQUAL:
+        case ARC_AND_EQUAL:
+        case ARC_LEFT_SHIFT_EQUAL:
+        case ARC_RIGHT_SHIFT_EQUAL:
+        case ARC_XOR_EQUAL:
+        case ARC_ASSIGN:
+            return true;
+        case ARC_INFER:    // TODO should this be a valid lrvalue_expr?
+        case ARC_LESSER_EQUAL:
+        case ARC_GREATER_EQUAL:
+        case ARC_EQUAL:
+        case ARC_NOT_EQUAL:
+        case ARC_ADD:
+        case ARC_SUB:
+        case ARC_DIV:
+        case ARC_MUL:
+        case ARC_MOD:
+        case ARC_BIN_OR:
+        case ARC_BIN_AND:
+        case ARC_LEFT_SHIFT:
+        case ARC_RIGHT_SHIFT:
+        case ARC_XOR:
+        case ARC_LESSER:
+        case ARC_GREATER:
+        case ARC_LOGICAL_OR:
+        case ARC_LOGICAL_AND:
+        default:
+            return false;
+    }
+}
+
+arcvm::Value BytecodeGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
+    // TODO assumes lhs is an id
+    // could be an array or member access
+    // TODO gen lvalue_expression maybe????
+    // auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
+    auto lhs = *(expr->binary_expr.left->id.val);
+    auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
+    switch(expr->binary_expr.op) {
+        case ARC_ADD_EQUAL: // lhs has to be an lvalue
+        case ARC_SUB_EQUAL:
+        case ARC_DIV_EQUAL:
+        case ARC_MUL_EQUAL:
+        case ARC_MOD_EQUAL:
+        case ARC_OR_EQUAL:
+        case ARC_AND_EQUAL:
+        case ARC_LEFT_SHIFT_EQUAL:
+        case ARC_RIGHT_SHIFT_EQUAL:
+        case ARC_XOR_EQUAL: {
+            break;
+        }
+        case ARC_ASSIGN: {
+            variable_table_.back()[lhs] = rhs;
+            return rhs;
+        }
+        case ARC_INFER: { // TODO should this be a valid lrvalue expression?
+            break;
+        }
+        default:
+            assert(false); // not binary op
+    }
+    return {0xffffffff};
+}
+
+arcvm::Value BytecodeGen::gen_rrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
     auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
     switch(expr->binary_expr.op) {
-        case ARC_ADD_EQUAL: // TODO lhs has to be an lvalue
-            break;          // for ARC_XXX_EQUAL stuff
-        case ARC_SUB_EQUAL:
-            break;
-        case ARC_DIV_EQUAL:
-            break;
-        case ARC_MUL_EQUAL:
-            break;
-        case ARC_MOD_EQUAL:
-            break;
-        case ARC_OR_EQUAL:
-            break;
-        case ARC_AND_EQUAL:
-            break;
-        case ARC_LEFT_SHIFT_EQUAL:
-            break;
-        case ARC_RIGHT_SHIFT_EQUAL:
-            break;
-        case ARC_XOR_EQUAL:
-            break;
         case ARC_LESSER_EQUAL: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::lte, {lhs, rhs});
             return val;
@@ -242,13 +322,6 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
             auto val = ir_gen->gen_inst(arcvm::Instruction::neq, {lhs, rhs});
             return val;
         }
-        case ARC_ASSIGN: {
-            //variable_table_.back()[*(decl->id)] = val;
-            //return val;
-            break;
-        }
-        case ARC_INFER: // TODO should this be a valid expr???
-            break;
         case ARC_ADD: {
             auto val = ir_gen->gen_inst(arcvm::Instruction::add, {lhs, rhs});
             return val;
@@ -306,13 +379,13 @@ arcvm::Value BytecodeGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
             return val;
         }
         default:
-            // not binary op
-            break;
+            assert(false); // not binary op
     }
     return {0xffffffff};
 }
 
 // TODO
 arcvm::Value BytecodeGen::gen_unary(Expr* expr, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
     return {};
 }

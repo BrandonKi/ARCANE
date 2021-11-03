@@ -1,12 +1,28 @@
 
-fn fib(n : int) int {
-    if n <= 1 {
-        ret n;
-    }
-    ret fib(n-1) + fib(n-2);
-}
 
 fn main() int {
-    n : int = 10;
-    ret fib(n);
+    i := 10;
+    i = i + i;
+    ret i;
 }
+
+// fn main() int {
+//     result: int = 10;
+//     for i := 1, 10 {
+//         result = result + i;
+//     }
+//     ret result;
+// }
+
+
+// fn fib(n : int) int {
+//     if n <= 1 {
+//         ret n;
+//     }
+//     ret fib(n-1) + fib(n-2);
+// }
+
+// fn main() int {
+//     n : int = 10;
+//     ret fib(n);
+// }

@@ -27,12 +27,15 @@ class BytecodeGen {
     void gen_ret(RetStmnt*, arcvm::BasicBlock*);
     void gen_decl(Decl*, arcvm::BasicBlock*);
     arcvm::Value gen_expr(Expr*, arcvm::BasicBlock*);
+    arcvm::Value gen_lrvalue_expr(Expr*, arcvm::BasicBlock*);
+    arcvm::Value gen_rrvalue_expr(Expr*, arcvm::BasicBlock*);
+    bool is_lrvalue_expr(TokenKind);
 
     arcvm::Value gen_immediate(i64, arcvm::BasicBlock*);
     arcvm::Value gen_immediate(f64, arcvm::BasicBlock*);
     arcvm::Value gen_immediate(std::string*, arcvm::BasicBlock*);
 
-    arcvm::Value gen_rvalue_var(std::string*, arcvm::BasicBlock*);
+    arcvm::Value gen_var(std::string*, arcvm::BasicBlock*);
     arcvm::Value gen_fn_call(Expr*, arcvm::BasicBlock*);
     arcvm::Value gen_bin(Expr*, arcvm::BasicBlock*);
     arcvm::Value gen_unary(Expr*, arcvm::BasicBlock*);
