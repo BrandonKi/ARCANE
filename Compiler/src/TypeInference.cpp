@@ -44,7 +44,7 @@ void TypeInference::analyze_function(Function* function) {
     analyze_block(function->body, function->return_type);
 }
 
-void TypeInference::analyze_block(Block* block, type_handle ret_type /*= 0*/) {
+void TypeInference::analyze_block(Block* block, type_handle ret_type) {
     for (auto* stmnt : block->statements) {
         switch(stmnt->type) {
             case WHILE:
@@ -88,7 +88,9 @@ void TypeInference::analyze_ret(RetStmnt* ret_stmnt, type_handle ret_type) {
             "instead got: " + fmt(type_manager.get_type(ret_stmnt->expr->result_type).name, BRIGHT_BLUE, UNDERLINE);
         error_log.exit(ErrorMessage{FATAL, ret_stmnt->expr->pos, current_filename_, err});
     }
-    else if(ret_stmnt->expr->result_type != ret_type && type_manager.conversion_exists(ret_stmnt->expr->result_type, ret_type)) {
+    else if(args.warning.implicitConversion &&
+            ret_stmnt->expr->result_type != ret_type &&
+            type_manager.conversion_exists(ret_stmnt->expr->result_type, ret_type)) {
         auto err =
             "implicit conversion from " + fmt(type_manager.get_type(ret_stmnt->expr->result_type).name, BRIGHT_BLUE, UNDERLINE) +
             " to " +
@@ -110,7 +112,7 @@ void TypeInference::analyze_decl(Decl* decl) {
         decl->type = decl->val->result_type;
     }
     // types don't match
-    if (decl->type != decl->val->result_type) {
+    if (decl->type != decl->val->result_type && !type_manager.conversion_exists(decl->type, decl->val->result_type)) {
         error_log.exit(ErrorMessage{FATAL, decl->val->pos, current_filename_, "type of expression does not match type of declaration"});
     }
 

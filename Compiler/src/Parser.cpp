@@ -86,7 +86,7 @@ Function* Parser::parse_function() {
     s_table_.add_function_to_parent_scope(id, fn_args, FUNCTION, ret);
 
     verify_token(ARC_OPEN_BRACE);
-    Block* block = parse_bare_block(); // doesn't use parse_block because it controls it's scope
+    Block* block = parse_bare_block(); // doesn't use parse_block because it controls its scope
 
     s_table_.pop_scope();
     if(id == "main" && ret == TYPE_I32)

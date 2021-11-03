@@ -40,6 +40,9 @@ inline struct ARGS {
     bool verbose_lex_out = false;
     bool project = false;
     bool optimize = false;
+    struct {
+        bool implicitConversion = false;
+    } warning;
 } args;
 
 enum TokenKind {    // It's named TokenKind instead of TokenType because windows.h stole TokenType from me :(

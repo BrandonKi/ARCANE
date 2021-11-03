@@ -125,7 +125,7 @@ arcvm::Type TypeManager::to_ir_type(type_handle type) {
             //return arcvm::Type::ir_b8;
         // TODO returning aggregate types etc. etc.
         default:
-            // FIXME this is just for debugging
-            return static_cast<arcvm::Type>(-1);
+            assert(false); // unable to convert to ir type
+            return arcvm::Type::none; // just to disable the warning
     }
 }
