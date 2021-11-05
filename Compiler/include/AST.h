@@ -60,8 +60,7 @@ struct WhileStmnt : Node {
 
 struct ForStmnt : Node {
     Decl* decl;
-    Expr* expr1;
-    Expr* expr2;
+    Expr* expr;
     Block* block;
 };
 
@@ -158,7 +157,7 @@ class AST {
         [[nodiscard]] Function* new_function_node(SourcePos, std::string&, std::vector<Arg>&, type_handle, Block*, const bool);
         [[nodiscard]] Block* new_block_node(SourcePos, std::vector<Statement*>&);
         [[nodiscard]] WhileStmnt* new_while_node(SourcePos, Expr*, Block*);
-        [[nodiscard]] ForStmnt* new_for_node(SourcePos, Decl*, Expr*, Expr*, Block*);
+        [[nodiscard]] ForStmnt* new_for_node(SourcePos, Decl*, Expr*, Block*);
         [[nodiscard]] IfStmnt* new_if_node(SourcePos, Expr*, Block*, Block* = nullptr);
         [[nodiscard]] RetStmnt* new_ret_node(SourcePos, Expr*);
         [[nodiscard]] Statement* new_statement_node_while(SourcePos, WhileStmnt*);

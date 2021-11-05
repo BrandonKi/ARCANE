@@ -104,7 +104,14 @@ void IRGen::gen_while(WhileStmnt* while_stmnt, arcvm::Block* ir_gen) {
 // TODO
 void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     PROFILE();
-    static_cast<void>(for_stmnt);
+    //auto* init = ir_gen->new_basic_block("loop init");
+    //gen_decl(for_stmnt->decl, bblock);
+    //auto* header = ir_gen.set_insertion_point("loop header");
+    //auto* id = for_stmnt->decl->id);
+    //gen_expr(for_stmnt->expr, bblock);
+    //auto* body = ir_gen->new_basic_block("loop body");
+    //gen_block(for_stmnt->block, ir_gen);
+
 }
 
 void IRGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
@@ -275,16 +282,59 @@ arcvm::Value IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
             variable_table_.back()[lhs] = result;
             return result;
         }
-        case ARC_SUB_EQUAL:
-        case ARC_DIV_EQUAL:
-        case ARC_MUL_EQUAL:
-        case ARC_MOD_EQUAL:
-        case ARC_OR_EQUAL:
-        case ARC_AND_EQUAL:
-        case ARC_LEFT_SHIFT_EQUAL:
-        case ARC_RIGHT_SHIFT_EQUAL:
+        case ARC_SUB_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::sub, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
+        case ARC_DIV_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::div, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
+        case ARC_MUL_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::mul, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
+        case ARC_MOD_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::mod, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
+        case ARC_OR_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_or, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
+        case ARC_AND_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_and, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
+        case ARC_LEFT_SHIFT_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::lshift, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
+        case ARC_RIGHT_SHIFT_EQUAL: {
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::rshift, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
+        }
         case ARC_XOR_EQUAL: {
-            break;
+            auto temp = variable_table_.back()[lhs];
+            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_xor, {temp, rhs});
+            variable_table_.back()[lhs] = result;
+            return result;
         }
         case ARC_ASSIGN: {
             variable_table_.back()[lhs] = rhs;

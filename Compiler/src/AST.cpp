@@ -51,9 +51,9 @@ AST::~AST() {
     return new WhileStmnt{{pos}, expr, block};
 }
 
-[[nodiscard]] ForStmnt* AST::new_for_node(const SourcePos pos, Decl* decl, Expr* expr1, Expr* expr2, Block* block) {
+[[nodiscard]] ForStmnt* AST::new_for_node(const SourcePos pos, Decl* decl, Expr* expr, Block* block) {
     PROFILE();
-    return new ForStmnt{{pos}, decl, expr1, expr2, block};
+    return new ForStmnt{{pos}, decl, expr, block};
 }
 
 [[nodiscard]] IfStmnt* AST::new_if_node(const SourcePos pos, Expr* expr, Block* block, Block* else_stmnt) {

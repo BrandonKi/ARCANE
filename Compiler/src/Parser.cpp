@@ -159,16 +159,19 @@ Statement* Parser::parse_statement() {
         case ARC_FOR:
         {
             expect_token(ARC_FOR);
-            expect_token(ARC_OPEN_PAREN);
-            auto *decl = parse_decl();
-            expect_token(ARC_SEMICOLON);
-            auto *expr1 = parse_expr();
-            expect_token(ARC_SEMICOLON);
-            auto *expr2 = parse_expr();
-            expect_token(ARC_SEMICOLON);
-            expect_token(ARC_CLOSE_PAREN);
+            verify_token(ARC_ID);
+            auto id = std::string(current_token()->data);
+            next_token_noreturn();
+            expect_token(ARC_COLON);
+            auto *decl_expr = parse_expr();
+            expect_token(ARC_COMMA);
+            auto *expr = parse_expr();
+            // TODO infer type here
+            auto *decl = ast_.new_decl_node(start_pos, id, TYPE_I32, decl_expr);
+            s_table_.add_symbol(id, VARIABLE, token_kind_to_type(current_token()->kind));
+
             auto *block = parse_block();
-            auto *result = ast_.new_statement_node_for(start_pos, ast_.new_for_node(start_pos, decl, expr1, expr2, block));
+            auto *result = ast_.new_statement_node_for(start_pos, ast_.new_for_node(start_pos, decl, expr, block));
             return result;
         }
         case ARC_IF:      // FIXME must have an if before an elif statement
