@@ -324,10 +324,18 @@ std::vector<Token*> Parser::parse_expr_0(bool stop_at_paren) {
             if(!s_table_.has(id)) {
                 error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown identifier"});
             }
+
             // if not function call
-            if(peek_next_token()->kind != ARC_OPEN_PAREN && s_table_.get_kind(id) == VARIABLE)
+            if(peek_next_token()->kind != ARC_OPEN_PAREN &&
+               peek_next_token()->kind != ARC_DOT &&
+               s_table_.get_kind(id) == VARIABLE)
                 result.push_back(current_token());
             else {
+                if(peek_next_token()->kind == ARC_DOT) {
+                    result.push_back(current_token());
+                    next_token_noreturn();
+                    expect_token(ARC_DOT);
+                }
                 auto* fn_call = current_token();
                 next_token_noreturn();
                 expect_token(ARC_OPEN_PAREN);
