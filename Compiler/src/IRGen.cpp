@@ -36,12 +36,13 @@ void IRGen::gen_file(File* file, arcvm::Module* module) {
         variable_table_.emplace_back();
         for(size_t i = 0; i < function->args.size(); ++i) {
             args.push_back(type_manager.to_ir_type(function->args[i].type));
-            variable_table_.back()[function->args[i].id] = arcvm::Value{arcvm::ValueType::reference, i};
+
         }
         auto ret_type = type_manager.to_ir_type(function->return_type);
         auto* ir_function = module->gen_function_def(function->id, args, ret_type);
         if(function->is_main)
             ir_function->add_attribute(arcvm::Attribute::entrypoint);
+
         gen_function(function, ir_function->block);
         variable_table_.pop_back();
     }
@@ -55,7 +56,20 @@ void IRGen::gen_import(Import* import) {
 
 void IRGen::gen_function(Function* function, arcvm::Block* ir_gen) {
     PROFILE();
+    gen_function_args(function->args, ir_gen->get_bblock());
     gen_block(function->body, ir_gen);
+}
+
+void IRGen::gen_function_args(std::vector<Arg> args, arcvm::BasicBlock* ir_gen) {
+
+    for(size_t i = 0; i < args.size(); ++i) {
+        // TODO use correct type for now i32 is default
+        auto type = type_manager.to_ir_type(args[i].type);
+        auto var_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, type}});
+        ir_gen->gen_inst(arcvm::Instruction::store, {var_ptr, arcvm::Value{arcvm::ValueType::reference, i}});
+        auto var_data = ir_var{arcvm::Value{arcvm::ValueType::reference, i}, var_ptr};
+        variable_table_.back()[args[i].id] = var_data;
+    }
 }
 
 void IRGen::gen_block(Block* block, arcvm::Block* ir_gen) {
@@ -101,17 +115,63 @@ void IRGen::gen_while(WhileStmnt* while_stmnt, arcvm::Block* ir_gen) {
     static_cast<void>(while_stmnt);
 }
 
-// TODO
+// TODO move this logic out of code gen
 void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     PROFILE();
-    //auto* init = ir_gen->new_basic_block("loop init");
-    //gen_decl(for_stmnt->decl, bblock);
-    //auto* header = ir_gen.set_insertion_point("loop header");
-    //auto* id = for_stmnt->decl->id);
-    //gen_expr(for_stmnt->expr, bblock);
-    //auto* body = ir_gen->new_basic_block("loop body");
-    //gen_block(for_stmnt->block, ir_gen);
 
+    // for i: 1, 10 {}
+
+    // for_stmnt->decl  -- i := 1;
+    // for_stmnt->block -- {}
+    // for_stmnt->expr  -- i += 1;
+
+    // init
+    // alloc
+
+    auto* loop_init = ir_gen->new_basic_block("loop init");
+    auto* loop_cmp = ir_gen->new_basic_block("loop_cmp");
+    auto* loop_body = ir_gen->new_basic_block("loop body");
+    auto* loop_inc = ir_gen->new_basic_block("loop inc");
+    auto* post_loop = ir_gen->new_basic_block("post loop");
+
+    auto* loop_init_name = new std::string(loop_init->label.name);
+    auto* loop_cmp_name = new std::string(loop_cmp->label.name);
+    auto* loop_body_name = new std::string(loop_body->label.name);
+    auto* loop_inc_name = new std::string(loop_inc->label.name);
+    auto* post_loop_name = new std::string(post_loop->label.name);
+
+    ir_gen->set_insertion_point(loop_init);    // init
+    gen_decl(for_stmnt->decl, loop_init);
+    auto* id = for_stmnt->decl->id;
+
+    ir_gen->set_insertion_point(loop_cmp);    // cmp
+    auto op1 = gen_var_load(id, loop_cmp);
+    auto op2 = gen_expr(for_stmnt->expr, loop_cmp);
+    auto expr_result = loop_cmp->gen_inst(arcvm::Instruction::lt, {op1, op2});
+    loop_cmp->gen_inst(arcvm::Instruction::brnz, {expr_result,{arcvm::Value{arcvm::ValueType::label, loop_body_name}},{arcvm::Value{arcvm::ValueType::label, post_loop_name}}});
+
+
+    ir_gen->set_insertion_point(loop_body);    // body
+    gen_block(for_stmnt->block, ir_gen);
+
+    ir_gen->set_insertion_point(loop_inc);    // inc
+    // TODO could be any lvalue
+    // also this is identical to ARC_ADD_EQUAL
+    auto ind_ptr = variable_table_.back()[*id].pointer;
+    auto ind_val = gen_var_load(id, loop_inc);
+    auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, arcvm::Value{1}});
+    loop_inc->gen_inst(arcvm::Instruction::store, {ind_ptr, result});
+    variable_table_.back()[*id].value = result;
+    loop_inc->gen_inst(arcvm::Instruction::br, {arcvm::Value{arcvm::ValueType::label, loop_cmp_name}});
+
+
+    ir_gen->set_insertion_point(post_loop);    // post
+
+/*
+    ir_gen->set_insertion_point(loop_expr);
+    ir_gen->gen_if(expr_result, loop_body, loop_expr, post_loop);
+    ir_gen->set_insertion_point(post_loop);
+*/
 }
 
 void IRGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
@@ -142,8 +202,9 @@ void IRGen::gen_decl(Decl* decl, arcvm::BasicBlock* ir_gen) {
     auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, arcvm::Type::ir_i32}});
     auto expr_result = gen_expr(decl->val, ir_gen);
     ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, expr_result});
-    auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
-    variable_table_.back()[*(decl->id)] = val;
+    //auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
+    //variable_table_.back()[*(decl->id)].value = val;
+    variable_table_.back()[*(decl->id)].pointer = val_ptr;
 }
 
 arcvm::Value IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
@@ -159,7 +220,7 @@ arcvm::Value IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
             return gen_immediate(expr->string_literal.val, ir_gen);
             break;
         case EXPR_ID:
-            return gen_var(expr->id.val, ir_gen);
+            return gen_var_load(expr->id.val, ir_gen);
             break;
         case EXPR_FN_CALL:
             return gen_fn_call(expr, ir_gen);
@@ -197,8 +258,16 @@ arcvm::Value IRGen::gen_immediate(std::string* immediate, arcvm::BasicBlock* ir_
 
 arcvm::Value IRGen::gen_var(std::string* id, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    auto var_ref = variable_table_.back().at(*id);
+    auto var_ref = variable_table_.back()[*id].value;
     return var_ref;
+}
+
+
+arcvm::Value IRGen::gen_var_load(std::string* id, arcvm::BasicBlock* ir_gen) {
+    PROFILE();
+    auto var_ptr = variable_table_.back()[*id].pointer;
+    auto var = ir_gen->gen_inst(arcvm::Instruction::load, {var_ptr});
+    return var;
 }
 
 arcvm::Value IRGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
@@ -268,76 +337,89 @@ bool IRGen::is_lrvalue_expr(TokenKind bin_op) {
     }
 }
 
+/*
+auto ind_val = variable_table_.back()[*id].value;
+auto ind_ptr = variable_table_.back()[*id].pointer;
+auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, arcvm::Value{1}});
+loop_inc->gen_inst(arcvm::Instruction::store, {ind_ptr, result});
+variable_table_.back()[*id].value = result;
+*/
 arcvm::Value IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     // TODO assumes lhs is an id, but could be an array or member access
     // TODO gen lvalue_expression maybe????
     // auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
-    auto lhs = *(expr->binary_expr.left->id.val);
+    auto lhs_id_ptr = expr->binary_expr.left->id.val;
+    auto lhs_id = *lhs_id_ptr;
+    //auto lhs = gen_var_load(lhs_id_ptr, ir_gen);
     auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
+
+    auto lhs_ptr = variable_table_.back()[lhs_id ].pointer;
+    auto lhs_val = gen_var_load(lhs_id_ptr, ir_gen);
     switch(expr->binary_expr.op) {
         case ARC_ADD_EQUAL: { // lhs has to be an lvalue
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::add, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::add, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_SUB_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::sub, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::sub, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_DIV_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::div, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::div, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_MUL_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::mul, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::mul, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_MOD_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::mod, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::mod, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_OR_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_or, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_or, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_AND_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_and, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_and, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_LEFT_SHIFT_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::lshift, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::lshift, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_RIGHT_SHIFT_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::rshift, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::rshift, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_XOR_EQUAL: {
-            auto temp = variable_table_.back()[lhs];
-            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_xor, {temp, rhs});
-            variable_table_.back()[lhs] = result;
+            auto result = ir_gen->gen_inst(arcvm::Instruction::bin_xor, {lhs_val, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_ASSIGN: {
-            variable_table_.back()[lhs] = rhs;
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, rhs});
+            variable_table_.back()[lhs_id].value = rhs;
             return rhs;
         }
         case ARC_INFER: { // TODO should this be a valid lrvalue expression?

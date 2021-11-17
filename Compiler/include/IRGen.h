@@ -8,6 +8,11 @@
 
 #include "TypeInference.h"
 
+struct ir_var {
+    arcvm::Value value;
+    arcvm::Value pointer;
+};
+
 class IRGen {
   public:
     IRGen();
@@ -15,10 +20,11 @@ class IRGen {
     arcvm::Arcvm gen_project(Project*);
     void gen_file(File*, arcvm::Module*);
   private:
-    std::vector<std::unordered_map<std::string, arcvm::Value>> variable_table_;
+    std::vector<std::unordered_map<std::string, ir_var>> variable_table_;
 
     void gen_import(Import*);
     void gen_function(Function*, arcvm::Block*);
+    void gen_function_args(std::vector<Arg>, arcvm::BasicBlock*);
     void gen_block(Block*, arcvm::Block*);
     void gen_statement(Statement*, arcvm::Block*);
     void gen_while(WhileStmnt*, arcvm::Block*);
@@ -36,6 +42,7 @@ class IRGen {
     arcvm::Value gen_immediate(std::string*, arcvm::BasicBlock*);
 
     arcvm::Value gen_var(std::string*, arcvm::BasicBlock*);
+    arcvm::Value gen_var_load(std::string*, arcvm::BasicBlock*);
     arcvm::Value gen_fn_call(Expr*, arcvm::BasicBlock*);
     arcvm::Value gen_bin(Expr*, arcvm::BasicBlock*);
     arcvm::Value gen_unary(Expr*, arcvm::BasicBlock*);

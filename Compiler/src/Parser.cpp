@@ -133,6 +133,8 @@ Block* Parser::parse_bare_block() {
         next_token_noreturn();
         statements.push_back(parse_statement());
     }
+    next_token_noreturn();
+    //expect_token(ARC_CLOSE_BRACE);
     return new Block{ {start_pos}, statements };
 }
 
@@ -224,7 +226,9 @@ Block* Parser::parse_else() {
         return parse_bare_block();
     }
     else {
-        next_token_noreturn();
+        // this breaks everything
+        // I don't remember what this was for
+        // next_token_noreturn();
         return nullptr;
     }
 }
