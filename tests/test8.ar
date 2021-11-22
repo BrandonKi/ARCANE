@@ -1,9 +1,0 @@
-
-fn main() int{
-    if(3 < 2){
-        ret 1;
-    }
-    if(1 > 0){
-        ret 2;
-    }
-}

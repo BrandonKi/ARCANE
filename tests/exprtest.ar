@@ -15,8 +15,6 @@ fn fib(n : int) int {
 }
 
 fn main() int {
-    n : int = 10;
-    res := fib(n);
-    ret res;
+    ret fib(10);
 }
 

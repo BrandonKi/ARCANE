@@ -1,8 +1,0 @@
-
-fn main() int {
-    sum : int = 0;
-    for(i : int = 0; i < 10; i++){
-        sum += i;
-    }
-    ret sum;
-}
