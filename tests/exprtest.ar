@@ -1,20 +1,20 @@
 
-// fn main() i32 {
-//     x := 0;
-//     for i: 1, 6 {
-//         x += i;
+fn main() i32 {
+    x := 0;
+    for i: 1, 6 {
+        x += i;
+    }
+    ret x;
+}
+
+// fn fib(n : int) int {
+//     if n <= 1 {
+//         ret n;
 //     }
-//     ret x;
+//     ret fib(n-1) + fib(n-2);
 // }
 
-fn fib(n : int) int {
-    if n <= 1 {
-        ret n;
-    }
-    ret fib(n-1) + fib(n-2);
-}
-
-fn main() int {
-    ret fib(10);
-}
+// fn main() int {
+//     ret fib(10);
+// }
 

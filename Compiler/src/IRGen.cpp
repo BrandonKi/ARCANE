@@ -165,7 +165,8 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     // also this is identical to ARC_ADD_EQUAL
     auto ind_ptr = variable_table_.back()[*id].pointer;
     auto ind_val = gen_var_load(id, loop_inc);
-    auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, arcvm::Value{1}});
+    auto one_immediate = gen_immediate((i64)1, ir_gen->get_bblock());
+    auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, one_immediate});
     loop_inc->gen_inst(arcvm::Instruction::store, {ind_ptr, result});
     variable_table_.back()[*id].value = result;
     loop_inc->gen_inst(arcvm::Instruction::br, {arcvm::Value{arcvm::ValueType::label, loop_cmp_name}});
