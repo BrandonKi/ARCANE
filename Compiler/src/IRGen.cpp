@@ -134,11 +134,11 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     // init
     // alloc
 
-    auto* loop_init = ir_gen->new_basic_block("loop init");
-    auto* loop_cmp = ir_gen->new_basic_block("loop_cmp");
-    auto* loop_body = ir_gen->new_basic_block("loop body");
-    auto* loop_inc = ir_gen->new_basic_block("loop inc");
-    auto* post_loop = ir_gen->new_basic_block("post loop");
+    auto* loop_init = ir_gen->new_basic_block();
+    auto* loop_cmp = ir_gen->new_basic_block();
+    auto* loop_body = ir_gen->new_basic_block();
+    auto* loop_inc = ir_gen->new_basic_block();
+    auto* post_loop = ir_gen->new_basic_block();
 
     auto* loop_init_name = new std::string(loop_init->label.name);
     auto* loop_cmp_name = new std::string(loop_cmp->label.name);
@@ -171,14 +171,7 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     variable_table_.back()[*id].value = result;
     loop_inc->gen_inst(arcvm::Instruction::br, {arcvm::Value{arcvm::ValueType::label, loop_cmp_name}});
 
-
     ir_gen->set_insertion_point(post_loop);    // post
-
-/*
-    ir_gen->set_insertion_point(loop_expr);
-    ir_gen->gen_if(expr_result, loop_body, loop_expr, post_loop);
-    ir_gen->set_insertion_point(post_loop);
-*/
 }
 
 void IRGen::gen_if(IfStmnt* if_stmnt, arcvm::Block* ir_gen) {
