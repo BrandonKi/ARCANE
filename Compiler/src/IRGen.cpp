@@ -13,9 +13,15 @@ arcvm::Arcvm IRGen::gen_project(Project* project) {
     for(auto* file: project->files) {
         arcvm::IRGenerator ir_gen;
         auto* mod = ir_gen.create_module();
+
         gen_file(file, mod);
-        arcvm::IRPrinter::print(mod);
+
         vm.load_module(mod);
+
+        if(args.optimize)
+            vm.optimize_module(mod);
+
+        arcvm::IRPrinter::print(mod);
     }
     return vm;
 }

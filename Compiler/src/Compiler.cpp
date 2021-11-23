@@ -19,7 +19,9 @@ arcvm::Arcvm Compiler::compile() {
     ti.start();
 
     IRGen gen;
-    return gen.gen_project(ast);
+    auto vm = gen.gen_project(ast);
+
+    return vm;
 }
 
 std::vector<RawFile> Compiler::get_project_files() {   // TODO refactor big time
