@@ -38,6 +38,10 @@ void parse_args(const int argc, const char* argv[]) {         //TODO implement t
             }
             args.output_path = arg_list[++i];
         }
+        else if(str == "--emit-ir")
+            args.emit_ir = true;
+        else if(str == "--no-cleanup")
+            args.no_cleanup = true;
     }
     if(args.output_path.empty())
         args.output_path = "out.arcb";

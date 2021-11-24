@@ -38,6 +38,8 @@ inline struct ARGS {
     std::string output_path;
     bool lex_out = false;
     bool verbose_lex_out = false;
+    bool emit_ir = false;
+    bool no_cleanup = false;
     bool project = false;
     bool optimize = false;
     struct {

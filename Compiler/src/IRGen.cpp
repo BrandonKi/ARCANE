@@ -2,6 +2,8 @@
 
 #include <IRPrinter.h>
 
+#include <CFResolutionPass.h>
+
 extern ErrorHandler error_log;
 extern TypeManager type_manager;
 
@@ -18,10 +20,13 @@ arcvm::Arcvm IRGen::gen_project(Project* project) {
 
         vm.load_module(mod);
 
+        if(!args.no_cleanup && !args.optimize)
+            vm.run_pass_on_module<arcvm::CFResolutionPass>(mod);
+
         if(args.optimize)
             vm.optimize_module(mod);
-
-        arcvm::IRPrinter::print(mod);
+        if(args.emit_ir)
+             arcvm::IRPrinter::print(mod);
     }
     return vm;
 }
@@ -125,15 +130,6 @@ void IRGen::gen_while(WhileStmnt* while_stmnt, arcvm::Block* ir_gen) {
 void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     PROFILE();
 
-    // for i: 1, 10 {}
-
-    // for_stmnt->decl  -- i := 1;
-    // for_stmnt->block -- {}
-    // for_stmnt->expr  -- i += 1;
-
-    // init
-    // alloc
-
     auto* loop_init = ir_gen->new_basic_block();
     auto* loop_cmp = ir_gen->new_basic_block();
     auto* loop_body = ir_gen->new_basic_block();
@@ -155,7 +151,6 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     auto op2 = gen_expr(for_stmnt->expr, loop_cmp);
     auto expr_result = loop_cmp->gen_inst(arcvm::Instruction::lt, {op1, op2});
     loop_cmp->gen_inst(arcvm::Instruction::brnz, {expr_result,{arcvm::Value{arcvm::ValueType::label, loop_body_name}},{arcvm::Value{arcvm::ValueType::label, post_loop_name}}});
-
 
     ir_gen->set_insertion_point(loop_body);    // body
     gen_block(for_stmnt->block, ir_gen);

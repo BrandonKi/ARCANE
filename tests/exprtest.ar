@@ -3,6 +3,11 @@ fn main() i32 {
     x := 0;
     for i: 1, 6 {
         x += i;
+        i += 1;
+    }
+    for i: 1, 6 {
+        i += 1;
+        x += i;
     }
     ret x;
 }
