@@ -163,6 +163,8 @@ Statement* Parser::parse_statement() {
             expect_token(ARC_FOR);
             verify_token(ARC_ID);
             auto id = std::string(current_token()->data);
+            if(s_table_.has(id))
+                error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "redeclared identifier"});
             next_token_noreturn();
             expect_token(ARC_COLON);
             auto *decl_expr = parse_expr();
