@@ -14,7 +14,8 @@ int main(const int argc, const char* argv[]) {
     Compiler compiler;
     auto vm = compiler.compile();
 
-    std::cout << "Exited with code: " << vm.run() << '\n';
+    if(args.run)
+        std::cout << "Exited with code: " << vm.run() << '\n';
 }
 
 void parse_args(const int argc, const char* argv[]) {         //TODO implement the rest of the available flags
@@ -37,6 +38,9 @@ void parse_args(const int argc, const char* argv[]) {         //TODO implement t
                 // TODO invalid command line arguments
             }
             args.output_path = arg_list[++i];
+        }
+        else if(str == "-run") {
+            args.run = true;
         }
         else if(str == "--emit-ir")
             args.emit_ir = true;

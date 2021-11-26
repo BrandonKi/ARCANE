@@ -38,7 +38,7 @@ void IRGen::gen_file(File* file, arcvm::Module* module) {
     }
 
     for(auto* decl: file->decls) {
-        // TODO
+        //gen_decl(decl, );
     }
 
     for(auto* function: file->functions) {
