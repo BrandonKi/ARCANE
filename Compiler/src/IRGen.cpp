@@ -194,9 +194,10 @@ void IRGen::gen_ret(RetStmnt* ret_stmnt, arcvm::BasicBlock* ir_gen) {
 // TODO allocate based on size of type
 void IRGen::gen_decl(Decl* decl, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i32}});
-    auto expr_result = gen_expr(decl->val, ir_gen);
-    ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, expr_result});
+    auto type = type_manager.to_ir_type(decl->type);
+    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, type}});
+    auto expr_result = gen_expr(decl->val, ir_gen);    // assumes types match
+    ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, expr_result, type});
     //auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
     //variable_table_.back()[*(decl->id)].value = val;
     variable_table_.back()[*(decl->id)].pointer = val_ptr;
@@ -234,7 +235,7 @@ arcvm::IRValue IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
 
 arcvm::IRValue IRGen::gen_immediate(i64 immediate, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i32}});
+    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i64}});
     ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, arcvm::IRValue{arcvm::IRValueType::immediate, immediate}});
     auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
     return val;
@@ -349,71 +350,74 @@ arcvm::IRValue IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     //auto lhs = gen_var_load(lhs_id_ptr, ir_gen);
     auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
 
-    auto lhs_ptr = variable_table_.back()[lhs_id ].pointer;
+    auto lhs_ptr = variable_table_.back()[lhs_id].pointer;
     auto lhs_val = gen_var_load(lhs_id_ptr, ir_gen);
+
+    // TODO pass type to arithmetic instructions also
+    auto type = type_manager.to_ir_type(expr->type);
     switch(expr->binary_expr.op) {
         case ARC_ADD_EQUAL: { // lhs has to be an lvalue
             auto result = ir_gen->gen_inst(arcvm::Instruction::add, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_SUB_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::sub, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_DIV_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::div, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_MUL_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::mul, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_MOD_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::mod, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_OR_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::bin_or, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_AND_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::bin_and, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_LEFT_SHIFT_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::lshift, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_RIGHT_SHIFT_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::rshift, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_XOR_EQUAL: {
             auto result = ir_gen->gen_inst(arcvm::Instruction::bin_xor, {lhs_val, rhs});
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, result, type});
             variable_table_.back()[lhs_id].value = result;
             return result;
         }
         case ARC_ASSIGN: {
-            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, rhs});
+            ir_gen->gen_inst(arcvm::Instruction::store, {lhs_ptr, rhs, type});
             variable_table_.back()[lhs_id].value = rhs;
             return rhs;
         }

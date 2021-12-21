@@ -39,6 +39,7 @@ inline struct ARGS {
     bool lex_out = false;
     bool verbose_lex_out = false;
     bool emit_ir = false;
+    bool emit_machine_code = false;
     bool run = false;
     bool no_cleanup = false;
     bool project = false;

@@ -14,6 +14,8 @@ int main(const int argc, const char* argv[]) {
     Compiler compiler;
     auto vm = compiler.compile();
 
+    if(args.emit_machine_code)
+        vm.compile();
     if(args.run)
         std::cout << "Exited with code: " << vm.run() << '\n';
 }
@@ -42,6 +44,8 @@ void parse_args(const int argc, const char* argv[]) {         //TODO implement t
         else if(str == "-run") {
             args.run = true;
         }
+        else if(str == "-emc" || str == "-emit-machine-code")
+            args.emit_machine_code = true;
         else if(str == "--emit-ir")
             args.emit_ir = true;
         else if(str == "--no-cleanup")
