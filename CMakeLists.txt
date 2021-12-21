@@ -14,13 +14,13 @@ set(arcvm_include
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/lib
 )
 # package this into a library
-set(arcvm_source
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/Arcvm.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRGenerator.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRInterpreter.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRPrinter.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/CFResolutionPass.cpp
-)
+# set(arcvm_source
+#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/Arcvm.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRGenerator.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRInterpreter.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRPrinter.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/CFResolutionPass.cpp
+# )
 
 set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Main.cpp
@@ -33,10 +33,10 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/IRGen.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/TypeManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/TypeInference.cpp
-    ${arcvm_source}
 )
 
 add_executable(ARCC ${SRC})
+target_link_libraries(ARCC arcvm_lib)
 
 target_compile_definitions(ARCC PRIVATE DEBUG_BUILD)
 

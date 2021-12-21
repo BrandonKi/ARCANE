@@ -1,4 +1,10 @@
 
+
+fn main() i32 {
+    i := 10;
+    ret i;
+}
+
 // fn main() i32 {
 //     x := 0;
 //     if x == 0 {
@@ -10,14 +16,14 @@
 //     // ret 2;
 // }
 
-fn fib(n : int) int {
-    if n <= 1 {
-        ret n;
-    }
-    ret fib(n-1) + fib(n-2);
-}
+// fn fib(n : int) int {
+//     if n <= 1 {
+//         ret n;
+//     }
+//     ret fib(n-1) + fib(n-2);
+// }
 
-fn main() int {
-    ret fib(10);
-}
+// fn main() int {
+//     ret fib(10);
+// }
 

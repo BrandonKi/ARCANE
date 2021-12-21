@@ -2,7 +2,7 @@
 
 #include <IRPrinter.h>
 
-#include <CFResolutionPass.h>
+#include <Passes/CFResolutionPass.h>
 
 extern ErrorHandler error_log;
 extern TypeManager type_manager;
@@ -76,9 +76,9 @@ void IRGen::gen_function_args(std::vector<Arg> args, arcvm::BasicBlock* ir_gen) 
     for(size_t i = 0; i < args.size(); ++i) {
         // TODO use correct type for now i32 is default
         auto type = type_manager.to_ir_type(args[i].type);
-        auto var_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, type}});
-        ir_gen->gen_inst(arcvm::Instruction::store, {var_ptr, arcvm::Value{arcvm::ValueType::reference, i}});
-        auto var_data = ir_var{arcvm::Value{arcvm::ValueType::reference, i}, var_ptr};
+        auto var_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, type}});
+        ir_gen->gen_inst(arcvm::Instruction::store, {var_ptr, arcvm::IRValue{arcvm::IRValueType::reference, i}});
+        auto var_data = ir_var{arcvm::IRValue{arcvm::IRValueType::reference, i}, var_ptr};
         variable_table_.back()[args[i].id] = var_data;
     }
 }
@@ -150,7 +150,7 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     auto op1 = gen_var_load(id, loop_cmp);
     auto op2 = gen_expr(for_stmnt->expr, loop_cmp);
     auto expr_result = loop_cmp->gen_inst(arcvm::Instruction::lt, {op1, op2});
-    loop_cmp->gen_inst(arcvm::Instruction::brnz, {expr_result,{arcvm::Value{arcvm::ValueType::label, loop_body_name}},{arcvm::Value{arcvm::ValueType::label, post_loop_name}}});
+    loop_cmp->gen_inst(arcvm::Instruction::brnz, {expr_result,{arcvm::IRValue{arcvm::IRValueType::label, loop_body_name}},{arcvm::IRValue{arcvm::IRValueType::label, post_loop_name}}});
 
     ir_gen->set_insertion_point(loop_body);    // body
     gen_block(for_stmnt->block, ir_gen);
@@ -164,7 +164,7 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, one_immediate});
     loop_inc->gen_inst(arcvm::Instruction::store, {ind_ptr, result});
     variable_table_.back()[*id].value = result;
-    loop_inc->gen_inst(arcvm::Instruction::br, {arcvm::Value{arcvm::ValueType::label, loop_cmp_name}});
+    loop_inc->gen_inst(arcvm::Instruction::br, {arcvm::IRValue{arcvm::IRValueType::label, loop_cmp_name}});
 
     ir_gen->set_insertion_point(post_loop);    // post
 }
@@ -194,7 +194,7 @@ void IRGen::gen_ret(RetStmnt* ret_stmnt, arcvm::BasicBlock* ir_gen) {
 // TODO allocate based on size of type
 void IRGen::gen_decl(Decl* decl, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, arcvm::Type::ir_i32}});
+    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i32}});
     auto expr_result = gen_expr(decl->val, ir_gen);
     ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, expr_result});
     //auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
@@ -202,7 +202,7 @@ void IRGen::gen_decl(Decl* decl, arcvm::BasicBlock* ir_gen) {
     variable_table_.back()[*(decl->id)].pointer = val_ptr;
 }
 
-arcvm::Value IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     switch(expr->type) {
         case EXPR_INT_LIT:
@@ -232,47 +232,47 @@ arcvm::Value IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     }
 }
 
-arcvm::Value IRGen::gen_immediate(i64 immediate, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_immediate(i64 immediate, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::Value{arcvm::ValueType::type, arcvm::Type::ir_i32}});
-    ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, arcvm::Value{arcvm::ValueType::immediate, immediate}});
+    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i32}});
+    ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, arcvm::IRValue{arcvm::IRValueType::immediate, immediate}});
     auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
     return val;
 }
 // TODO
-arcvm::Value IRGen::gen_immediate(f64 immediate, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_immediate(f64 immediate, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     return {};
 }
 
 // TODO
-arcvm::Value IRGen::gen_immediate(std::string* immediate, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_immediate(std::string* immediate, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     return {};
 }
 
-arcvm::Value IRGen::gen_var(std::string* id, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_var(std::string* id, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto var_ref = variable_table_.back()[*id].value;
     return var_ref;
 }
 
 
-arcvm::Value IRGen::gen_var_load(std::string* id, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_var_load(std::string* id, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto var_ptr = variable_table_.back()[*id].pointer;
     auto var = ir_gen->gen_inst(arcvm::Instruction::load, {var_ptr});
     return var;
 }
 
-arcvm::Value IRGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto val = expr->fn_call.val;
     auto argc = expr->fn_call.argc;
     auto argv = expr->fn_call.args;
 
-    std::vector<arcvm::Value> ir_args{};
-    ir_args.emplace_back(arcvm::ValueType::fn_name, val);
+    std::vector<arcvm::IRValue> ir_args{};
+    ir_args.emplace_back(arcvm::IRValueType::fn_name, val);
     for(u32 i = 0; i < argc; ++i) {
         ir_args.push_back(gen_expr(argv[i], ir_gen));
     }
@@ -283,7 +283,7 @@ arcvm::Value IRGen::gen_fn_call(Expr* expr, arcvm::BasicBlock* ir_gen) {
     return ret;
 }
 
-arcvm::Value IRGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_bin(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     if(is_lrvalue_expr(expr->binary_expr.op)) {
         return gen_lrvalue_expr(expr, ir_gen);
@@ -335,11 +335,11 @@ bool IRGen::is_lrvalue_expr(TokenKind bin_op) {
 /*
 auto ind_val = variable_table_.back()[*id].value;
 auto ind_ptr = variable_table_.back()[*id].pointer;
-auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, arcvm::Value{1}});
+auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, arcvm::IRValue{1}});
 loop_inc->gen_inst(arcvm::Instruction::store, {ind_ptr, result});
 variable_table_.back()[*id].value = result;
 */
-arcvm::Value IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     // TODO assumes lhs is an id, but could be an array or member access
     // TODO gen lvalue_expression maybe????
@@ -426,7 +426,7 @@ arcvm::Value IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     return {0xffffffff};
 }
 
-arcvm::Value IRGen::gen_rrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_rrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
     auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
@@ -510,7 +510,7 @@ arcvm::Value IRGen::gen_rrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
 }
 
 // TODO
-arcvm::Value IRGen::gen_unary(Expr* expr, arcvm::BasicBlock* ir_gen) {
+arcvm::IRValue IRGen::gen_unary(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     return {};
 }
