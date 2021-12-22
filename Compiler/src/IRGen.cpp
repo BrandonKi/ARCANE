@@ -233,12 +233,15 @@ arcvm::IRValue IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     }
 }
 
+// maybe change how this works in the future
+// there's a chance some instructions can't take an immediate
 arcvm::IRValue IRGen::gen_immediate(i64 immediate, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i64}});
-    ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, arcvm::IRValue{arcvm::IRValueType::immediate, immediate}});
-    auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
-    return val;
+    // auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i64}});
+    // ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, arcvm::IRValue{arcvm::IRValueType::immediate, immediate}});
+    // auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
+    // return val;
+    return arcvm::IRValue{arcvm::IRValueType::immediate, immediate};
 }
 // TODO
 arcvm::IRValue IRGen::gen_immediate(f64 immediate, arcvm::BasicBlock* ir_gen) {
