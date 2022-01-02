@@ -355,6 +355,7 @@ std::vector<Token*> Parser::parse_expr_0(bool stop_at_paren) {
             }
         }
         else if(is_operator(current_token()->kind)) {  //TODO support unary operators also
+            if(!is_unary_operator(current_token()->kind)) {
                 while ((!stack.empty()) && (is_operator(stack.back()->kind)) &&
                         ((precedence(stack.back()->kind) > precedence(current_token()->kind)) ||
                         (precedence(stack.back()->kind) == precedence(current_token()->kind))) &&
@@ -362,8 +363,9 @@ std::vector<Token*> Parser::parse_expr_0(bool stop_at_paren) {
                     result.push_back(stack.back());
                     stack.pop_back();
                 }
-                stack.push_back(current_token());
             }
+            stack.push_back(current_token());
+        }
         else if(current_token()->kind == ARC_OPEN_PAREN) {
             ++paren_count;
             stack.push_back(current_token());
@@ -378,7 +380,7 @@ std::vector<Token*> Parser::parse_expr_0(bool stop_at_paren) {
             while(stack.back()->kind != ARC_OPEN_PAREN) {
                 result.push_back(stack.back());
                 stack.pop_back();
-                if(stack.empty()){
+                if(stack.empty()) {
                     error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Extra closing parentheses"});
                 }
             }
@@ -402,8 +404,9 @@ Expr* Parser::parse_expr_1(std::vector<Token*> result) {
     for(auto *tkn : result) {
         if(is_operator(tkn->kind)) {
             if(is_unary_operator(tkn->kind)) {
-                conversion_stack.push_back(ast_.new_expr_node_unary_expr(tkn->pos, tkn->kind, conversion_stack.back()));
+                Expr* operand = conversion_stack.back();
                 conversion_stack.pop_back();
+                conversion_stack.push_back(ast_.new_expr_node_unary_expr(tkn->pos, tkn->kind, operand));
             }
             else {
                 Expr* operand1 = conversion_stack.back();

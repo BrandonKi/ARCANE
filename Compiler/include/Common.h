@@ -1,6 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define NOMINMAX
+
 #include <string>
 #include <cstdint>
 #include <fstream>

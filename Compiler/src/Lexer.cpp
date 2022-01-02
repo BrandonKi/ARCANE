@@ -501,7 +501,7 @@ inline void Lexer::print_tokens(const bool verbose) const {
             println_token(&tkn);
     else {
         for(const auto& tkn : tokens_)
-            if(tkn.data == nullptr)
+            if(tkn.data.empty())
                 println(TokenKind2String(tkn.kind) + ": " + get_string(tkn.kind));
             else
                 println(TokenKind2String(tkn.kind) + ": " + std::string(tkn.data));

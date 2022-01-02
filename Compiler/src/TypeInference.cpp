@@ -163,7 +163,12 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
             break;
         }
         case EXPR_UNARY:
+        {
+            const auto expr_type = analyze_expr(expr->unary_expr.expr);
+            //TODO error message
+            expr->result_type = expr_type;    // TODO get the correct result type see above ^^
             break;
+        }
         default:
             break;
     }

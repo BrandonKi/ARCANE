@@ -357,7 +357,7 @@ arcvm::IRValue IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     auto lhs_val = gen_var_load(lhs_id_ptr, ir_gen);
 
     // TODO pass type to arithmetic instructions also
-    auto type = type_manager.to_ir_type(expr->type);
+    auto type = type_manager.to_ir_type(expr->result_type);
     switch(expr->binary_expr.op) {
         case ARC_ADD_EQUAL: { // lhs has to be an lvalue
             auto result = ir_gen->gen_inst(arcvm::Instruction::add, {lhs_val, rhs});
@@ -503,21 +503,30 @@ arcvm::IRValue IRGen::gen_rrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
             return val;
         }
         case ARC_LOGICAL_OR: {
-            auto val = ir_gen->gen_inst(arcvm::Instruction::log_or, {lhs, rhs});
-            return val;
+            assert(false);
         }
         case ARC_LOGICAL_AND: {
-            auto val = ir_gen->gen_inst(arcvm::Instruction::log_and, {lhs, rhs});
-            return val;
+            assert(false);
         }
         default:
             assert(false); // not binary op
     }
+    assert(false);
     return {0xffffffff};
 }
 
 // TODO
 arcvm::IRValue IRGen::gen_unary(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
+    auto result = gen_expr(expr->binary_expr.left, ir_gen);
+    switch(expr->binary_expr.op) {
+        case ARC_NEGATE: {
+            auto val = ir_gen->gen_inst(arcvm::Instruction::neg, {result});
+            return val;
+        }
+        default:
+            assert(false);
+    }
+    assert(false);
     return {};
 }
