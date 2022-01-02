@@ -43,6 +43,7 @@ inline struct ARGS {
     bool emit_ir = false;
     bool emit_machine_code = false;
     bool run = false;
+    bool jit = false;
     bool no_cleanup = false;
     bool project = false;
     bool optimize = false;

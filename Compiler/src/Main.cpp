@@ -16,6 +16,8 @@ int main(const int argc, const char* argv[]) {
 
     if(args.emit_machine_code)
         vm.compile();
+    if(args.jit)
+        std::cout << "Exited with code: " << vm.jit() << '\n';
     if(args.run)
         std::cout << "Exited with code: " << vm.run() << '\n';
 }
@@ -41,9 +43,10 @@ void parse_args(const int argc, const char* argv[]) {         //TODO implement t
             }
             args.output_path = arg_list[++i];
         }
-        else if(str == "-run") {
+        else if(str == "-run")
             args.run = true;
-        }
+        else if(str == "-run")
+            args.jit = true;
         else if(str == "-emc" || str == "-emit-machine-code")
             args.emit_machine_code = true;
         else if(str == "--emit-ir")
