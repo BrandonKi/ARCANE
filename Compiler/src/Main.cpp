@@ -45,7 +45,7 @@ void parse_args(const int argc, const char* argv[]) {         //TODO implement t
         }
         else if(str == "-run")
             args.run = true;
-        else if(str == "-run")
+        else if(str == "-jit")
             args.jit = true;
         else if(str == "-emc" || str == "-emit-machine-code")
             args.emit_machine_code = true;
