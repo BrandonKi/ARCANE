@@ -48,7 +48,7 @@ inline struct ARGS {
     bool project = false;
     bool optimize = false;
     struct {
-        bool implicitConversion = false;
+        bool implicitConversion = true;
     } warning;
 } args;
 

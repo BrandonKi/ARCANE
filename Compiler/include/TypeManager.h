@@ -83,6 +83,14 @@ public:
 
 private:
 
+    bool is_primitive(type_handle);
+    bool is_float(type_handle);
+    bool is_int(type_handle);
+
+    // the following has been simplified and now just needs to be implemented
+    // now primitive types are builtin instead of being provided the same way as non-primitive types
+    // because of this 90% of the complexity is gone :)
+
     // initialized with language primitives
     std::vector<Type> type_table = {
         {"__UNKNOWN__", 0},
@@ -104,114 +112,13 @@ private:
         Function* operator_impl = nullptr;
     };
 
-    // TODO maybe implement something like type classes??
-    // then we can have categories of types like
-    // TYPE_INTEGRAL, TYPE_SIGNED, TYPE_UNSIGNED, TYPE_FLOAT
-    // it would make this whole process way less painful
-    // on top of that it would be a pretty powerful language feature
-    // possible names {type classes, constrained generics, ...}
-    // maybe constrained generics could even be built on top of type classes
-    //
-    // TODO maybe find a different solution for primitive types
-    // then I can use this purely for user-defined stuff
-    // the obvious thing would just be to
-    // have all primitive stuff built in like it used to be
-    // indexed by type_handle
-    //
-    // TODO this definetely needs to change
-    // to what? idk, figure it out
-
-#define PRIMITIVE {ARC_ADD, TYPE_I8}, {ARC_ADD, TYPE_I16}, {ARC_ADD, TYPE_I32}, {ARC_ADD, TYPE_I64}, \
-    {ARC_SUB, TYPE_I8}, {ARC_SUB, TYPE_I16}, {ARC_SUB, TYPE_I32}, {ARC_SUB, TYPE_I64}, \
-    {ARC_MUL, TYPE_I8}, {ARC_MUL, TYPE_I16}, {ARC_MUL, TYPE_I32}, {ARC_MUL, TYPE_I64}, \
-    {ARC_DIV, TYPE_I8}, {ARC_DIV, TYPE_I16}, {ARC_DIV, TYPE_I32}, {ARC_DIV, TYPE_I64}, \
-    {ARC_MOD, TYPE_I8}, {ARC_MOD, TYPE_I16}, {ARC_MOD, TYPE_I32}, {ARC_MOD, TYPE_I64}, \
-    {ARC_BIN_OR, TYPE_I8}, {ARC_BIN_OR, TYPE_I16}, {ARC_BIN_OR, TYPE_I32}, {ARC_BIN_OR, TYPE_I64}, \
-    {ARC_BIN_AND, TYPE_I8}, {ARC_BIN_AND, TYPE_I16}, {ARC_BIN_AND, TYPE_I32}, {ARC_BIN_AND, TYPE_I64}, \
-    {ARC_LEFT_SHIFT, TYPE_I8}, {ARC_LEFT_SHIFT, TYPE_I16}, {ARC_LEFT_SHIFT, TYPE_I32}, {ARC_LEFT_SHIFT, TYPE_I64}, \
-    {ARC_RIGHT_SHIFT, TYPE_I8}, {ARC_RIGHT_SHIFT, TYPE_I16}, {ARC_RIGHT_SHIFT, TYPE_I32}, {ARC_RIGHT_SHIFT, TYPE_I64}, \
-    {ARC_EQUAL, TYPE_I8}, {ARC_EQUAL, TYPE_I16}, {ARC_EQUAL, TYPE_I32}, {ARC_EQUAL, TYPE_I64}, \
-    {ARC_NOT_EQUAL, TYPE_I8}, {ARC_NOT_EQUAL, TYPE_I16}, {ARC_NOT_EQUAL, TYPE_I32}, {ARC_NOT_EQUAL, TYPE_I64}, \
-    {ARC_LESSER_EQUAL, TYPE_I8}, {ARC_LESSER_EQUAL, TYPE_I16}, {ARC_LESSER_EQUAL, TYPE_I32}, {ARC_LESSER_EQUAL, TYPE_I64}, \
-    {ARC_GREATER_EQUAL, TYPE_I8}, {ARC_GREATER_EQUAL, TYPE_I16}, {ARC_GREATER_EQUAL, TYPE_I32}, {ARC_GREATER_EQUAL, TYPE_I64},\
-    {ARC_LESSER, TYPE_I8}, {ARC_LESSER, TYPE_I16}, {ARC_LESSER, TYPE_I32}, {ARC_LESSER, TYPE_I64}, \
-    {ARC_GREATER, TYPE_I8}, {ARC_GREATER, TYPE_I16}, {ARC_GREATER, TYPE_I32}, {ARC_GREATER, TYPE_I64}, \
-    {ARC_ADD_EQUAL, TYPE_I8}, {ARC_ADD_EQUAL, TYPE_I16}, {ARC_ADD_EQUAL, TYPE_I32}, {ARC_ADD_EQUAL, TYPE_I64}, \
-    {ARC_SUB_EQUAL, TYPE_I8}, {ARC_SUB_EQUAL, TYPE_I16}, {ARC_SUB_EQUAL, TYPE_I32}, {ARC_SUB_EQUAL, TYPE_I64}, \
-    {ARC_MUL_EQUAL, TYPE_I8}, {ARC_MUL_EQUAL, TYPE_I16}, {ARC_MUL_EQUAL, TYPE_I32}, {ARC_MUL_EQUAL, TYPE_I64}, \
-    {ARC_DIV_EQUAL, TYPE_I8}, {ARC_DIV_EQUAL, TYPE_I16}, {ARC_DIV_EQUAL, TYPE_I32}, {ARC_DIV_EQUAL, TYPE_I64}, \
-    {ARC_MOD_EQUAL, TYPE_I8}, {ARC_MOD_EQUAL, TYPE_I16}, {ARC_MOD_EQUAL, TYPE_I32}, {ARC_MOD_EQUAL, TYPE_I64}, \
-    {ARC_OR_EQUAL, TYPE_I8}, {ARC_OR_EQUAL, TYPE_I16}, {ARC_OR_EQUAL, TYPE_I32}, {ARC_OR_EQUAL, TYPE_I64}, \
-    {ARC_AND_EQUAL, TYPE_I8}, {ARC_AND_EQUAL, TYPE_I16}, {ARC_AND_EQUAL, TYPE_I32}, {ARC_AND_EQUAL, TYPE_I64}, \
-    {ARC_LEFT_SHIFT_EQUAL, TYPE_I8}, {ARC_LEFT_SHIFT_EQUAL, TYPE_I16}, {ARC_LEFT_SHIFT_EQUAL, TYPE_I32}, {ARC_LEFT_SHIFT_EQUAL, TYPE_I64}, \
-    {ARC_RIGHT_SHIFT_EQUAL, TYPE_I8}, {ARC_RIGHT_SHIFT_EQUAL, TYPE_I16}, {ARC_RIGHT_SHIFT_EQUAL, TYPE_I32},     {ARC_RIGHT_SHIFT_EQUAL, TYPE_I64}, \
-    {ARC_XOR_EQUAL, TYPE_I8}, {ARC_XOR_EQUAL, TYPE_I16}, {ARC_XOR_EQUAL, TYPE_I32}, {ARC_XOR_EQUAL, TYPE_I64}, \
-    {ARC_ASSIGN, TYPE_I8}, {ARC_ASSIGN, TYPE_I16}, {ARC_ASSIGN, TYPE_I32}, {ARC_ASSIGN, TYPE_I64} \
-
-    std::vector<std::vector<Operator>> operator_table = {
-        // TYPE_UNKNOWN
-        {},
-        // TYPE_I8
-        {PRIMITIVE},
-        // TYPE_I16
-        {PRIMITIVE},
-        // TYPE_I32
-        {PRIMITIVE},
-        // TYPE_I64
-        {PRIMITIVE},
-        // TYPE_U8
-        {PRIMITIVE},
-        // TYPE_U16
-        {PRIMITIVE},
-        // TYPE_U32
-        {PRIMITIVE},
-        // TYPE_U64
-        {PRIMITIVE},
-        // TYPE_F32
-        {{ARC_ADD, TYPE_F32}, {ARC_ADD, TYPE_F64}},
-        // TYPE_F64
-        {{ARC_ADD, TYPE_F32}, {ARC_ADD, TYPE_F64}},
-    };
+    std::vector<std::vector<Operator>> operator_table = {};
 
     struct Conversion {
         type_handle target_type;
         Function* conversion_impl = nullptr;
     };
 
-    std::vector<std::vector<Conversion>> conversion_table = {
-        {},
-        // TYPE_I8
-        {{TYPE_I16}, {TYPE_I32}, {TYPE_I64}},
-        // TYPE_I16
-        {{TYPE_I8}, {TYPE_I32}, {TYPE_I64}},
-        // TYPE_I32
-        {{TYPE_I8}, {TYPE_I16}, {TYPE_I64}},
-        // TYPE_I64
-        {{TYPE_I8}, {TYPE_I16}, {TYPE_I32}},
-        // TYPE_U8
-        {{TYPE_U16}, {TYPE_U32}, {TYPE_U64}},
-        // TYPE_U16
-        {{TYPE_U8}, {TYPE_U32}, {TYPE_U64}},
-        // TYPE_U32
-        {{TYPE_U8}, {TYPE_U16}, {TYPE_U64}},
-        // TYPE_U64
-        {{TYPE_U8}, {TYPE_U16}, {TYPE_U32}},
-        // TYPE_F32
-        {{TYPE_F64}},
-        // TYPE_F64
-        {{TYPE_F32}}
-    };
+    std::vector<std::vector<Conversion>> conversion_table = {};
 
 };
-
-    // TYPE_UNKNOWN,
-    // TYPE_I8,
-    // TYPE_I16,
-    // TYPE_I32,
-    // TYPE_I64,
-    // TYPE_U8,
-    // TYPE_U16,
-    // TYPE_U32,
-    // TYPE_U64,
-    // TYPE_F32,
-    // TYPE_F64,

@@ -33,71 +33,69 @@ Type TypeManager::get_type(const type_handle handle) {
 
 void TypeManager::add_alias(const std::string& alias, const std::string& original) {
     PROFILE();
-    static_cast<void>(alias);
-    static_cast<void>(original);
+    // TODO implement this
+    assert(false);
 }
 
 void TypeManager::define_operator(TokenKind op, type_handle lhs, type_handle rhs, Function* impl) {
     PROFILE();
-    static_cast<void>(op);
-    static_cast<void>(lhs);
-    static_cast<void>(rhs);
-    static_cast<void>(impl);
-    // the Function type needs to be forward declared
-    // otherwise we run into the circular dependency mess :(
+    // TODO
+    assert(false);
 }
 
 bool TypeManager::operator_exists(TokenKind op, type_handle lhs, type_handle rhs) {
     PROFILE();
-    auto sub_table = operator_table[static_cast<size_t>(lhs)];
-    auto result = std::find_if(sub_table.cbegin(), sub_table.cend(), [=](const auto& element) {
-        return element.op == op && element.rhs == rhs;
-    });
-    if(result == sub_table.end())
-        return false;
-    return true;
+    if(is_primitive(lhs) && is_primitive(rhs))
+        return true;
+    assert(false);
+    return false;
 }
 
 Function* TypeManager::get_operator_impl(TokenKind op, type_handle lhs, type_handle rhs) {
     PROFILE();
-    static_cast<void>(op);
-    static_cast<void>(lhs);
-    static_cast<void>(rhs);
-    return nullptr;    // TODO actually implement this
+    assert(false);
+    return nullptr;    // TODO implement this
 }
 
 type_handle TypeManager::get_operator_result_type(TokenKind op, type_handle lhs, type_handle rhs) {
     PROFILE();
-    static_cast<void>(op);
-    static_cast<void>(lhs);
-    static_cast<void>(rhs);
-    return TYPE_I64;    // TODO actually implement this
+    if(is_float(lhs) || is_float(rhs)) {
+        return std::max(lhs, rhs);
+    }
+    else if(is_int(lhs) && is_int(rhs)) {
+        return std::max(lhs, rhs);
+    }
+    // TODO handle unsigned stuff and bool too I guess
+    assert(false);
+    return TYPE_I64;
 }
 
 void TypeManager::define_conversion(type_handle, type_handle, Function*) {
     PROFILE();
+    assert(false);
 }
 
-bool TypeManager::conversion_exists(type_handle lhs, type_handle rhs) {
+bool TypeManager::conversion_exists(type_handle src, type_handle result) {
     PROFILE();
-    auto sub_table = conversion_table[static_cast<size_t>(lhs)];
-    auto result = std::find_if(sub_table.cbegin(), sub_table.cend(), [=](const auto& element) {
-        return element.target_type == rhs;
-    });
-    if(result == sub_table.end())
-        return false;
-    return true;
+    if(is_primitive(src) && is_primitive(result))
+        return true;
+    assert(false);
+    return false;
 }
 
-Function* get_conversion_impl(type_handle, type_handle) {
+Function* TypeManager::get_conversion_impl(type_handle, type_handle) {
+    assert(false);
     return nullptr;
 }
 
-type_handle TypeManager::get_conversion_result_type(type_handle, type_handle) {
+type_handle TypeManager::get_conversion_result_type(type_handle src, type_handle result) {
     PROFILE();
-    return TYPE_I64;
+    if(!is_primitive(src) || !is_primitive(result))
+        assert(false);
+    else {
+        return result;
+    }
 }
-
 
 arcvm::Type TypeManager::to_ir_type(type_handle type) {
     switch(type) {
@@ -128,4 +126,22 @@ arcvm::Type TypeManager::to_ir_type(type_handle type) {
             assert(false); // unable to convert to ir type
             return arcvm::Type::none; // just to disable the warning
     }
+}
+
+bool TypeManager::is_primitive(type_handle type) {
+    if(type > TYPE_UNKNOWN && type <= TYPE_F64)
+        return true;
+    return false;
+}
+
+bool TypeManager::is_float(type_handle type) {
+    if(type == TYPE_F32 || type == TYPE_F64)
+        return true;
+    return false;
+}
+
+bool TypeManager::is_int(type_handle type) {
+    if(type >= TYPE_I8 && type <= TYPE_I64)
+        return true;
+    return false;
 }
