@@ -233,16 +233,13 @@ arcvm::IRValue IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     }
 }
 
-// maybe change how this works in the future
-// there's a chance some instructions can't take an immediate
+// TODO needs a special case for 64-bit immediates
+// also needs to include type info with immediates in general
 arcvm::IRValue IRGen::gen_immediate(i64 immediate, arcvm::BasicBlock* ir_gen) {
     PROFILE();
-    // auto val_ptr = ir_gen->gen_inst(arcvm::Instruction::alloc, {arcvm::IRValue{arcvm::IRValueType::type, arcvm::Type::ir_i64}});
-    // ir_gen->gen_inst(arcvm::Instruction::store, {val_ptr, arcvm::IRValue{arcvm::IRValueType::immediate, immediate}});
-    // auto val = ir_gen->gen_inst(arcvm::Instruction::load, {val_ptr});
-    // return val;
     return arcvm::IRValue{arcvm::IRValueType::immediate, immediate};
 }
+
 // TODO
 arcvm::IRValue IRGen::gen_immediate(f64 immediate, arcvm::BasicBlock* ir_gen) {
     PROFILE();
@@ -336,13 +333,6 @@ bool IRGen::is_lrvalue_expr(TokenKind bin_op) {
     }
 }
 
-/*
-auto ind_val = variable_table_.back()[*id].value;
-auto ind_ptr = variable_table_.back()[*id].pointer;
-auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, arcvm::IRValue{1}});
-loop_inc->gen_inst(arcvm::Instruction::store, {ind_ptr, result});
-variable_table_.back()[*id].value = result;
-*/
 arcvm::IRValue IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     // TODO assumes lhs is an id, but could be an array or member access

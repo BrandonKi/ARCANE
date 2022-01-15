@@ -117,14 +117,13 @@ void TypeInference::analyze_decl(Decl* decl) {
     }
 
     s_table_.add_symbol(*(decl->id), VARIABLE, decl->type);
-
 }
 
 type_handle TypeInference::analyze_expr(Expr* expr) {
     PROFILE();
     switch(expr->type) {
         case EXPR_INT_LIT:
-            expr->result_type = TYPE_I64;
+            expr->result_type = TYPE_I64;    // TODO calculate min size of literal
             break;
         case EXPR_FLOAT_LIT:
             expr->result_type = TYPE_F64;
