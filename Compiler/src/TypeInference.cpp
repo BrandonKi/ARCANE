@@ -123,7 +123,8 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
     PROFILE();
     switch(expr->type) {
         case EXPR_INT_LIT:
-            expr->result_type = TYPE_I64;    // TODO calculate min size of literal
+            expr->result_type = calc_literal_size(expr->int_literal.val);
+            //expr->result_type = TYPE_I64;    // TODO calculate min size of literal
             break;
         case EXPR_FLOAT_LIT:
             expr->result_type = TYPE_F64;
@@ -172,4 +173,20 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
             break;
     }
     return expr->result_type;
+}
+
+// TODO fix issues with compatibility between unsigned and signed types
+// specifically, the top bit is not taken into acount at the moment
+type_handle TypeInference::calc_literal_size(u64 literal) {
+    auto needed_space = sizeof(u64) * 8 - std::countl_zero(literal);
+    if(needed_space <= 7) // disregard top bit for now
+        return TYPE_I8;
+    else if(needed_space <= 15)
+        return TYPE_I16;
+    else if(needed_space <= 31)
+        return TYPE_I32;
+    else if(needed_space <= 63)
+        return TYPE_I64;
+    else
+        assert(false);    // literals that require unsigned are not implemented yet
 }

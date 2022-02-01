@@ -24,4 +24,6 @@ private:
     void analyze_ret(RetStmnt*, type_handle);
     void analyze_decl(Decl*);
     type_handle analyze_expr(Expr*);
+
+    type_handle calc_literal_size(u64);
 };

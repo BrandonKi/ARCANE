@@ -110,7 +110,7 @@ struct Expr : Node {
     type_handle result_type;
     union {
         struct {
-            i64 val;
+            u64 val;
         } int_literal;
         struct {
             f64 val;
