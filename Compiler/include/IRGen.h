@@ -42,7 +42,7 @@ class IRGen {
     arcvm::IRValue gen_immediate(std::string*, arcvm::BasicBlock*);
 
     arcvm::IRValue gen_var(std::string*, arcvm::BasicBlock*);
-    arcvm::IRValue gen_var_load(std::string*, arcvm::BasicBlock*, arcvm::Type);
+    arcvm::IRValue gen_var_load(std::string*, arcvm::Type, arcvm::BasicBlock*);
     arcvm::IRValue gen_fn_call(Expr*, arcvm::BasicBlock*);
     arcvm::IRValue gen_bin(Expr*, arcvm::BasicBlock*);
     arcvm::IRValue gen_unary(Expr*, arcvm::BasicBlock*);

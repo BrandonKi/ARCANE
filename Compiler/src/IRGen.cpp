@@ -148,7 +148,7 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
 
     auto ind_var_type = type_manager.to_ir_type(for_stmnt->decl->type);
     ir_gen->set_insertion_point(loop_cmp);    // cmp
-    auto op1 = gen_var_load(id, loop_cmp, ind_var_type);
+    auto op1 = gen_var_load(id, ind_var_type, loop_cmp);
     auto op2 = gen_expr(for_stmnt->expr, loop_cmp);
     auto expr_result = loop_cmp->gen_inst(arcvm::Instruction::lt, {op1, op2});
     loop_cmp->gen_inst(arcvm::Instruction::brnz, {expr_result,{arcvm::IRValue{arcvm::IRValueType::label, loop_body_name}},{arcvm::IRValue{arcvm::IRValueType::label, post_loop_name}}});
@@ -160,7 +160,7 @@ void IRGen::gen_for(ForStmnt* for_stmnt, arcvm::Block* ir_gen) {
     // TODO could be any lvalue
     // also this is identical to ARC_ADD_EQUAL
     auto ind_ptr = variable_table_.back()[*id].pointer;
-    auto ind_val = gen_var_load(id, loop_inc, ind_var_type);
+    auto ind_val = gen_var_load(id, ind_var_type, loop_inc);
     auto one_immediate = gen_immediate((u64)1, ir_gen->get_bblock());
     auto result = loop_inc->gen_inst(arcvm::Instruction::add, {ind_val, one_immediate});
     loop_inc->gen_inst(arcvm::Instruction::store, {ind_ptr, result});
@@ -218,7 +218,7 @@ arcvm::IRValue IRGen::gen_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
             return gen_immediate(expr->string_literal.val, ir_gen);
             break;
         case EXPR_ID:
-            return gen_var_load(expr->id.val, ir_gen, type);
+            return gen_var_load(expr->id.val, type, ir_gen);
             break;
         case EXPR_FN_CALL:
             return gen_fn_call(expr, ir_gen);
@@ -261,7 +261,7 @@ arcvm::IRValue IRGen::gen_var(std::string* id, arcvm::BasicBlock* ir_gen) {
 }
 
 
-arcvm::IRValue IRGen::gen_var_load(std::string* id, arcvm::BasicBlock* ir_gen, arcvm::Type type) {
+arcvm::IRValue IRGen::gen_var_load(std::string* id, arcvm::Type type, arcvm::BasicBlock* ir_gen) {
     PROFILE();
     auto var_ptr = variable_table_.back()[*id].pointer;
     auto var = ir_gen->gen_inst(arcvm::Instruction::load, {var_ptr, type});
@@ -349,7 +349,7 @@ arcvm::IRValue IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     auto type = type_manager.to_ir_type(expr->result_type);
 
     auto lhs_ptr = variable_table_.back()[lhs_id].pointer;
-    auto lhs_val = gen_var_load(lhs_id_ptr, ir_gen, type); // TODO make sure this is the right type to pass
+    auto lhs_val = gen_var_load(lhs_id_ptr, type, ir_gen); // TODO make sure this is the right type to pass
 
     switch(expr->binary_expr.op) {
         case ARC_ADD_EQUAL: { // lhs has to be an lvalue
