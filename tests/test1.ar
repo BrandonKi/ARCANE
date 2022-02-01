@@ -1,0 +1,7 @@
+
+// repro for a case that broke the x86_64 backend
+fn main() int {
+    temp := 20;
+    temp2 := 10;
+    ret -temp2 * temp;
+}
