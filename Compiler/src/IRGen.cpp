@@ -342,7 +342,7 @@ arcvm::IRValue IRGen::gen_lrvalue_expr(Expr* expr, arcvm::BasicBlock* ir_gen) {
     // auto lhs = gen_expr(expr->binary_expr.left, ir_gen);
     auto lhs_id_ptr = expr->binary_expr.left->id.val;
     auto lhs_id = *lhs_id_ptr;
-    //auto lhs = gen_var_load(lhs_id_ptr, ir_gen);
+
     auto rhs = gen_expr(expr->binary_expr.right, ir_gen);
 
     // TODO pass type to arithmetic instructions also
