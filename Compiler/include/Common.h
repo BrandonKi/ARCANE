@@ -779,11 +779,11 @@ inline bool is_keyword(const TokenKind kind) {
 }
 
 inline void print_token(const Token* t){
-    print("'" + (t->data == nullptr ? "" : std::string(t->data)) + "' " + get_string(t->kind) + " [" + std::to_string(t->pos.src_line) + ", " + std::to_string(t->pos.src_char) + "] " + "[" + std::to_string(t->pos.start_pos) + ", " + std::to_string(t->pos.end_pos) + "]");
+    print("'" + (t->data.data() == nullptr ? "" : std::string(t->data)) + "' " + get_string(t->kind) + " [" + std::to_string(t->pos.src_line) + ", " + std::to_string(t->pos.src_char) + "] " + "[" + std::to_string(t->pos.start_pos) + ", " + std::to_string(t->pos.end_pos) + "]");
 }
 
 inline void println_token(const Token* t){
-    println("'" + std::string(t->data == nullptr ? "" : std::string(t->data)) + "' " + get_string(t->kind) + " [" + std::to_string(t->pos.src_line) + ", " + std::to_string(t->pos.src_char) + "] " + "[" + std::to_string(t->pos.start_pos) + ", " + std::to_string(t->pos.end_pos) + "]");
+    println("'" + std::string(t->data.data() == nullptr ? "" : std::string(t->data)) + "' " + get_string(t->kind) + " [" + std::to_string(t->pos.src_line) + ", " + std::to_string(t->pos.src_char) + "] " + "[" + std::to_string(t->pos.start_pos) + ", " + std::to_string(t->pos.end_pos) + "]");
 }
 
 [[nodiscard]] constexpr inline bool is_digit(const char c) noexcept {

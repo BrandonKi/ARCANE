@@ -13,14 +13,6 @@ set(arcvm_include
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/include
     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/lib
 )
-# package this into a library
-# set(arcvm_source
-#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/Arcvm.cpp
-#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRGenerator.cpp
-#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRInterpreter.cpp
-#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/IRPrinter.cpp
-#     ${CMAKE_CURRENT_SOURCE_DIR}/ARCVM/src/CFResolutionPass.cpp
-# )
 
 set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Compiler/src/Main.cpp
