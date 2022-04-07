@@ -7,6 +7,7 @@ struct Node;
 struct Project;
 struct File;
 struct Import;
+struct PolyFunction;
 struct Function;
 struct Block;
 struct Statement;
@@ -25,6 +26,7 @@ struct File : Node {
     std::string name;
     std::vector<Import*> imports;
     std::vector<Decl*> decls;
+    std::vector<PolyFunction*> poly_functions;
     std::vector<Function*> functions;
     bool is_main;
 };
@@ -43,6 +45,16 @@ struct Arg : Node {
 
 struct Function : Node {
     std::string id;
+    std::vector<Arg> args;
+    type_handle return_type;
+    Block* body;
+    bool is_main;
+};
+
+// doesn't inherit from Function because of padding
+struct PolyFunction : Node {
+    std::string id;
+    std::vector<Arg> poly_args; 
     std::vector<Arg> args;
     type_handle return_type;
     Block* body;
@@ -152,8 +164,9 @@ class AST {
         ~AST();
 
         [[nodiscard]] Project* new_project_node(SourcePos, std::vector<File*>&);
-        [[nodiscard]] File* new_file_node(SourcePos, std::string, std::vector<Import*>&, std::vector<Decl*>&, std::vector<Function*>&, const bool);
+        [[nodiscard]] File* new_file_node(SourcePos, std::string, std::vector<Import*>&, std::vector<Decl*>&, std::vector<PolyFunction*>&, std::vector<Function*>&, const bool);
         [[nodiscard]] Import* new_import_node(SourcePos, std::string&, std::string&);    // TODO add a way to keep track of imported symbols
+        [[nodiscard]] PolyFunction* new_poly_function_node(SourcePos, std::string&, std::vector<Arg>&, std::vector<Arg>&, type_handle, Block*);
         [[nodiscard]] Function* new_function_node(SourcePos, std::string&, std::vector<Arg>&, type_handle, Block*, const bool);
         [[nodiscard]] Block* new_block_node(SourcePos, std::vector<Statement*>&);
         [[nodiscard]] WhileStmnt* new_while_node(SourcePos, Expr*, Block*);
@@ -166,13 +179,13 @@ class AST {
         [[nodiscard]] Statement* new_statement_node_ret(SourcePos, RetStmnt*);
         [[nodiscard]] Statement* new_statement_node_decl(SourcePos, Decl*);
         [[nodiscard]] Statement* new_statement_node_expr(SourcePos, Expr*);
-        [[nodiscard]] Expr* new_expr_node_int_literal(SourcePos, i64, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_float_literal(SourcePos, f64, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_string_literal(SourcePos, std::string&,  type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_variable(SourcePos, std::string&, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_fn_call(SourcePos, std::string&, u32, Expr**, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_bin_expr(SourcePos, TokenKind, Expr*, Expr*, type_handle type = TYPE_UNKNOWN);
-        [[nodiscard]] Expr* new_expr_node_unary_expr(SourcePos, TokenKind, Expr*, type_handle type = TYPE_UNKNOWN);
+        [[nodiscard]] Expr* new_expr_node_int_literal(SourcePos, i64, type_handle type = TYPE_unknown);
+        [[nodiscard]] Expr* new_expr_node_float_literal(SourcePos, f64, type_handle type = TYPE_unknown);
+        [[nodiscard]] Expr* new_expr_node_string_literal(SourcePos, std::string&,  type_handle type = TYPE_unknown);
+        [[nodiscard]] Expr* new_expr_node_variable(SourcePos, std::string&, type_handle type = TYPE_unknown);
+        [[nodiscard]] Expr* new_expr_node_fn_call(SourcePos, std::string&, u32, Expr**, type_handle type = TYPE_unknown);
+        [[nodiscard]] Expr* new_expr_node_bin_expr(SourcePos, TokenKind, Expr*, Expr*, type_handle type = TYPE_unknown);
+        [[nodiscard]] Expr* new_expr_node_unary_expr(SourcePos, TokenKind, Expr*, type_handle type = TYPE_unknown);
         [[nodiscard]] Decl* new_decl_node(SourcePos, std::string&, type_handle, Expr*);
 
 

@@ -105,8 +105,8 @@ void TypeInference::analyze_decl(Decl* decl) {
     analyze_expr(decl->val);
 
     // if we have to infer the type
-    if(decl->type == TYPE_UNKNOWN) {
-        if(decl->val->result_type == TYPE_UNKNOWN) {
+    if(decl->type == TYPE_unknown) {
+        if(decl->val->result_type == TYPE_unknown) {
             error_log.exit(ErrorMessage{FATAL, decl->val->pos, current_filename_, "cannot infer type of expression"});
         }
         decl->type = decl->val->result_type;
@@ -127,7 +127,7 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
             //expr->result_type = TYPE_I64;    // TODO calculate min size of literal
             break;
         case EXPR_FLOAT_LIT:
-            expr->result_type = TYPE_F64;
+            expr->result_type = TYPE_f64;
             break;
         case EXPR_STRING_LIT:
             break;
@@ -135,7 +135,7 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
         {
             auto type = s_table_.get_type(*(expr->id.val));
 
-            if(type == TYPE_UNKNOWN)
+            if(type == TYPE_unknown)
                 error_log.exit(ErrorMessage{FATAL, expr->pos, current_filename_, "cannot infer type of expression"});
 
             expr->result_type = type;
@@ -180,13 +180,13 @@ type_handle TypeInference::analyze_expr(Expr* expr) {
 type_handle TypeInference::calc_literal_size(u64 literal) {
     auto needed_space = sizeof(u64) * 8 - std::countl_zero(literal);
     if(needed_space <= 7) // disregard top bit for now
-        return TYPE_I8;
+        return TYPE_i8;
     else if(needed_space <= 15)
-        return TYPE_I16;
+        return TYPE_i16;
     else if(needed_space <= 31)
-        return TYPE_I32;
+        return TYPE_i32;
     else if(needed_space <= 63)
-        return TYPE_I64;
+        return TYPE_i64;
     else
         assert(false);    // literals that require unsigned are not implemented yet
 }

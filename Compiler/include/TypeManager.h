@@ -39,17 +39,18 @@ struct Type {
 };
 
 enum PrimitiveTypeHandles : int {
-    TYPE_UNKNOWN,
-    TYPE_I8,
-    TYPE_I16,
-    TYPE_I32,
-    TYPE_I64,
-    TYPE_U8,
-    TYPE_U16,
-    TYPE_U32,
-    TYPE_U64,
-    TYPE_F32,
-    TYPE_F64,
+    TYPE_unknown,
+    TYPE_type,
+    TYPE_i8,
+    TYPE_i16,
+    TYPE_i32,
+    TYPE_i64,
+    TYPE_u8,
+    TYPE_u16,
+    TYPE_u32,
+    TYPE_u64,
+    TYPE_f32,
+    TYPE_f64,
 };
 
 struct Function;

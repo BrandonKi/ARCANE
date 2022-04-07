@@ -24,16 +24,22 @@ AST::~AST() {
         const std::string name,
         std::vector<Import*>& imports,
         std::vector<Decl*>& decls,
+        std::vector<PolyFunction*>& poly_functions,
         std::vector<Function*>& functions,
         const bool is_main
     ) {
     PROFILE();
-    return new File{{pos}, name, std::move(imports), std::move(decls), std::move(functions), is_main};
+    return new File{{pos}, name, std::move(imports), std::move(decls), std::move(poly_functions), std::move(functions), is_main};
 }
 
 [[nodiscard]] Import* AST::new_import_node(const SourcePos pos, std::string& id, std::string& filename) {
     PROFILE();
     return new Import{{pos}, id, filename};
+}
+
+[[nodiscard]] PolyFunction* AST::new_poly_function_node(const SourcePos pos, std::string& id, std::vector<Arg>& poly_args, std::vector<Arg>& fn_args, type_handle type, Block* body) {
+    PROFILE();
+    return new PolyFunction{{pos}, id, poly_args, fn_args, type, body};
 }
 
 [[nodiscard]] Function* AST::new_function_node(const SourcePos pos, std::string& id, std::vector<Arg>& fn_args, type_handle type, Block* body, const bool is_main) {

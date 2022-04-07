@@ -41,6 +41,7 @@ class Lexer {
         [[nodiscard]] Token lex_identifier();
         [[nodiscard]] Token lex_string();
         [[nodiscard]] Token lex_interpolated_string();
+        [[nodiscard]] Token lex_hash();
         [[nodiscard]] Token lex_colon();
         [[nodiscard]] Token lex_add();
         [[nodiscard]] Token lex_sub();

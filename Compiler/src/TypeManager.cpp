@@ -67,7 +67,7 @@ type_handle TypeManager::get_operator_result_type(TokenKind op, type_handle lhs,
     }
     // TODO handle unsigned stuff and bool too I guess
     assert(false);
-    return TYPE_I64;
+    return TYPE_i64;
 }
 
 void TypeManager::define_conversion(type_handle, type_handle, Function*) {
@@ -99,24 +99,34 @@ type_handle TypeManager::get_conversion_result_type(type_handle src, type_handle
 
 arcvm::Type TypeManager::to_ir_type(type_handle type) {
     switch(type) {
-        case TYPE_UNKNOWN:
+        case TYPE_unknown:
             return arcvm::Type::none;
-        case TYPE_I8:
+        case TYPE_type:
+            assert(false);
+            return arcvm::Type::none;
+        case TYPE_i8:
             return arcvm::Type::ir_i8;
-        case TYPE_I16:
+        case TYPE_i16:
             return arcvm::Type::ir_i16;
-        case TYPE_I32:
+        case TYPE_i32:
             return arcvm::Type::ir_i32;
-        case TYPE_I64:
+        case TYPE_i64:
             return arcvm::Type::ir_i64;
-        case TYPE_U8:
+        case TYPE_u8:
             return arcvm::Type::ir_u8;
-        case TYPE_U16:
+        case TYPE_u16:
             return arcvm::Type::ir_u16;
-        case TYPE_U32:
+        case TYPE_u32:
             return arcvm::Type::ir_u32;
-        case TYPE_U64:
+        case TYPE_u64:
             return arcvm::Type::ir_u64;
+        case TYPE_f32:
+            assert(false);
+            return arcvm::Type::none;
+        case TYPE_f64:
+            assert(false);
+            return arcvm::Type::none;
+
         //case TYPE_BOOL:
             //return arcvm::Type::ir_b1;
         //case TYPE_BOOL:
@@ -129,19 +139,19 @@ arcvm::Type TypeManager::to_ir_type(type_handle type) {
 }
 
 bool TypeManager::is_primitive(type_handle type) {
-    if(type > TYPE_UNKNOWN && type <= TYPE_F64)
+    if(type > TYPE_unknown && type <= TYPE_f64)
         return true;
     return false;
 }
 
 bool TypeManager::is_float(type_handle type) {
-    if(type == TYPE_F32 || type == TYPE_F64)
+    if(type == TYPE_f32 || type == TYPE_f64)
         return true;
     return false;
 }
 
 bool TypeManager::is_int(type_handle type) {
-    if(type >= TYPE_I8 && type <= TYPE_I64)
+    if(type >= TYPE_i8 && type <= TYPE_i64)
         return true;
     return false;
 }

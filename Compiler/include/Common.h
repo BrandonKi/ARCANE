@@ -65,6 +65,8 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_STRING_LIT,
     ARC_ARR_LIT,
 
+    ARC_TYPE,
+
     ARC_I8,
     ARC_I16,
     ARC_I32,
@@ -119,6 +121,7 @@ enum TokenKind {    // It's named TokenKind instead of TokenType because windows
     ARC_AT,     //TODO implement AT, HASH, and DOLLAR
     ARC_HASH,   //
     ARC_DOLLAR, //
+    ARC_POLY_START,
 
     /* Operators */
 
@@ -191,6 +194,7 @@ struct LexedFile {
 
 const inline std::unordered_map<std::string_view, TokenKind> keywords( {
 
+    {"type", ARC_TYPE},
     {"i8", ARC_I8}, {"i16", ARC_I16}, {"i32", ARC_I32}, {"i64", ARC_I64},
     {"u8", ARC_U8}, {"u16", ARC_U16}, {"u32", ARC_U32}, {"u64", ARC_U64},
     {"f32", ARC_F32}, {"f64", ARC_F64}, {"string", ARC_STR}, {"arr", ARC_ARR},
@@ -227,6 +231,9 @@ inline std::string TokenKind2String(const TokenKind kind){
 
     case ARC_ARR_LIT:
         return "ARR_LIT";
+
+    case ARC_TYPE:
+        return "ARC_TYPE";
 
     case ARC_I8:
         return "I8";
@@ -505,6 +512,9 @@ inline std::string get_string(const TokenKind kind){
 
     case ARC_ARR_LIT:
         return "[]";
+    
+    case ARC_TYPE:
+        return "type";
 
     case ARC_I8:
         return "i8";

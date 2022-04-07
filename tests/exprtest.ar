@@ -1,7 +1,17 @@
 
-fn main() int {
-    ret ((((10 + 20) * ((10 + 20) + 20)) / 10) << 4) % 7;
+#<T: type>
+fn to_int(arg: T): int {
+    ret arg + arg;
 }
+
+fn main(): int {
+    a: int = to_int(10);
+    ret a;
+}
+
+// fn main() int {
+//     ret ((((10 + 20) * ((10 + 20) + 20)) / 10) << 4) % 7;
+// }
 
 // breaks the x86_64 backend
 // needs support for movsx

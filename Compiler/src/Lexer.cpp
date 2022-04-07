@@ -67,7 +67,7 @@ std::vector<Token> Lexer::lex() {
                 tokens_.push_back(create_token(ARC_AT, index_));
                 break;
             case '#':
-                tokens_.push_back(create_token(ARC_HASH, index_));
+                tokens_.push_back(lex_hash());
                 break;
             case '$':
                 tokens_.push_back(create_token(ARC_DOLLAR, index_));
@@ -241,6 +241,20 @@ Token Lexer::lex_colon() {
     else
         return create_token(ARC_COLON, start_pos);
 
+}
+
+Token Lexer::lex_hash() {
+    PROFILE();
+
+    const auto start_pos = index_;
+    const auto start_col = col_;
+
+    if(peek_next_char() == '<') {
+        next_char_noreturn();
+        return create_token(ARC_POLY_START, start_col, start_pos);
+    }
+    else
+        return create_token(ARC_HASH, start_col, start_pos);
 }
 
 inline Token Lexer::lex_add() {

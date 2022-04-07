@@ -71,7 +71,7 @@ type_handle SymbolTable::get_type(const std::string& id) {
         if(result != map.end())
             return result->second.result_type;
     }
-    return TYPE_UNKNOWN;
+    return TYPE_unknown;
 }
 
 // assumes id is a function

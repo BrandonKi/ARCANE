@@ -39,11 +39,15 @@ File* Parser::parse_file() {
     std::vector<Import*> imports;
     std::vector<Decl*> decls;
     std::vector<Function*> functions;
+    std::vector<PolyFunction*> poly_functions;
     for(index_ = 0; index_ < tokens_.size(); ++index_) {
         switch(current_token()->kind) {
             case ARC_IMPORT:
                 println("import statement");
                 imports.push_back(parse_import());
+                break;
+            case ARC_POLY_START:
+                poly_functions.push_back(parse_poly_function());
                 break;
             case ARC_FN:
                 functions.push_back(parse_function());
@@ -52,14 +56,14 @@ File* Parser::parse_file() {
                 decls.push_back(parse_decl());
                 break;
             case ARC_EOF:   // placed at the end of each file by the lexer
-                return ast_.new_file_node(start_pos, current_filename_, imports, decls, functions, true);
+                return ast_.new_file_node(start_pos, current_filename_, imports, decls, poly_functions, functions, true);
                 break;
             default:
                 break;
         }
     }
     // should never reach this point but return just in case
-    return ast_.new_file_node(start_pos, current_filename_, imports, decls, functions, true);
+    return ast_.new_file_node(start_pos, current_filename_, imports, decls, poly_functions, functions, true);
 }
 
 Import* Parser::parse_import() {
@@ -67,35 +71,18 @@ Import* Parser::parse_import() {
     return new Import{};
 }
 
-
-Function* Parser::parse_function() {
+PolyFunction* Parser::parse_poly_function() {
     PROFILE();
     const SourcePos start_pos = current_token()->pos;
-    expect_token(ARC_FN);
-    verify_token(ARC_ID);
-    auto id = std::string(current_token()->data);
-    next_token_noreturn();
-    expect_token(ARC_OPEN_PAREN);
-    s_table_.push_scope();
-    auto fn_args = parse_fn_args();
-    expect_token(ARC_CLOSE_PAREN);
-    type_handle ret = token_kind_to_type(current_token()->kind);
-    if(ret == -1)
-        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown return type"});
-    next_token_noreturn();
-    s_table_.add_function_to_parent_scope(id, fn_args, FUNCTION, ret);
+    auto poly_args = parse_poly_fn_args();
+    auto fn = parse_function_base();
 
-    verify_token(ARC_OPEN_BRACE);
-    Block* block = parse_bare_block(); // doesn't use parse_block because it controls its scope
-
-    s_table_.pop_scope();
-    if(id == "main" && ret == TYPE_I32)
-        return ast_.new_function_node(start_pos, id, fn_args, ret, block, true);
-    return ast_.new_function_node(start_pos, id, fn_args, ret, block, false);
+    return ast_.new_poly_function_node(start_pos, fn.id, poly_args, fn.args, fn.return_type, fn.body);
 }
 
-// TODO improve syntax error messages for this function
-std::vector<Arg> Parser::parse_fn_args() {
+std::vector<Arg> Parser::parse_poly_fn_args() {
+    PROFILE();
+    expect_token(ARC_POLY_START);
     std::vector<Arg> result;
     for(int i = 0; current_token()->kind == ARC_ID; ++i) {
         auto id = std::string(current_token()->data);
@@ -108,7 +95,60 @@ std::vector<Arg> Parser::parse_fn_args() {
         if(check_token(ARC_COMMA))
            next_token_noreturn();
     }
+    expect_token(ARC_GREATER);
     return result;
+}
+
+Function* Parser::parse_function() {
+    PROFILE();
+    auto fn = parse_function_base();
+    
+    if(fn.id == "main" && fn.return_type == TYPE_i32)
+        return ast_.new_function_node(fn.pos, fn.id, fn.args, fn.return_type, fn.body, true);
+    return ast_.new_function_node(fn.pos, fn.id, fn.args, fn.return_type, fn.body, false);
+}
+
+// TODO improve syntax error messages for this function
+std::vector<Arg> Parser::parse_fn_args() {
+    PROFILE();
+    expect_token(ARC_OPEN_PAREN);
+    std::vector<Arg> result;
+    for(int i = 0; current_token()->kind == ARC_ID; ++i) {
+        auto id = std::string(current_token()->data);
+        auto pos = current_token()->pos;
+        next_token_noreturn();
+        expect_token(ARC_COLON);
+        result.push_back(Arg{{pos}, id, token_kind_to_type(current_token()->kind)});
+        s_table_.add_symbol(id, VARIABLE, result.back().type);
+        next_token_noreturn();
+        if(check_token(ARC_COMMA))
+           next_token_noreturn();
+    }
+    expect_token(ARC_CLOSE_PAREN);
+    return result;
+}
+
+Function Parser::parse_function_base() {
+    PROFILE();
+    const SourcePos start_pos = current_token()->pos;
+    expect_token(ARC_FN);
+    verify_token(ARC_ID);
+    auto id = std::string(current_token()->data);
+    next_token_noreturn();
+    s_table_.push_scope();
+    auto fn_args = parse_fn_args();
+    expect_token(ARC_COLON);
+    type_handle ret = token_kind_to_type(current_token()->kind);
+    if(ret == -1)
+        error_log.exit(ErrorMessage{FATAL, current_token()->pos, current_filename_, "Unknown return type"});
+    next_token_noreturn();
+    s_table_.add_function_to_parent_scope(id, fn_args, FUNCTION, ret);
+
+    verify_token(ARC_OPEN_BRACE);
+    Block* block = parse_bare_block(); // doesn't use parse_block because it controls its scope
+
+    s_table_.pop_scope();
+    return Function{start_pos, id, fn_args, ret, block, false};
 }
 
 /**
@@ -171,7 +211,7 @@ Statement* Parser::parse_statement() {
             expect_token(ARC_COMMA);
             auto *expr = parse_expr();
             // TODO infer type here
-            auto *decl = ast_.new_decl_node(start_pos, id, TYPE_I32, decl_expr);
+            auto *decl = ast_.new_decl_node(start_pos, id, TYPE_i32, decl_expr);
             s_table_.add_symbol(id, VARIABLE, token_kind_to_type(current_token()->kind));
 
             auto *block = parse_block();
@@ -245,8 +285,8 @@ Decl* Parser::parse_decl() {
     if(peek_next_token()->kind == ARC_INFER) {
         next_token_noreturn();
         next_token_noreturn();
-        auto *result = ast_.new_decl_node(start_pos, id, TYPE_UNKNOWN, parse_expr());
-        s_table_.add_symbol(id, VARIABLE, TYPE_UNKNOWN);
+        auto *result = ast_.new_decl_node(start_pos, id, TYPE_unknown, parse_expr());
+        s_table_.add_symbol(id, VARIABLE, TYPE_unknown);
         return result;
     }
     else if(next_token()->kind == ARC_COLON) {
@@ -536,27 +576,29 @@ inline type_handle Parser::token_kind_to_type(const TokenKind tkn) {
     PROFILE();
     switch(tkn){
         case ARC_INFER:
-            return TYPE_UNKNOWN;
+            return TYPE_unknown;
+        case ARC_TYPE:
+            return TYPE_type;
         case ARC_I8:
-            return TYPE_I8;
+            return TYPE_i8;
         case ARC_I16:
-            return TYPE_I16;
+            return TYPE_i16;
         case ARC_I32:
-            return TYPE_I32;
+            return TYPE_i32;
         case ARC_I64:
-            return TYPE_I64;
+            return TYPE_i64;
         case ARC_U8:
-            return TYPE_U8;
+            return TYPE_u8;
         case ARC_U16:
-            return TYPE_U16;
+            return TYPE_u16;
         case ARC_U32:
-            return TYPE_U32;
+            return TYPE_u32;
         case ARC_U64:
-            return TYPE_U64;
+            return TYPE_u64;
         case ARC_F32:
-            return TYPE_F32;
+            return TYPE_f32;
         case ARC_F64:
-            return TYPE_F64;
+            return TYPE_f64;
     }
     return static_cast<type_handle>(-1);   // invalid value
 }

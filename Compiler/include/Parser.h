@@ -23,8 +23,11 @@ class Parser {
         Project* parse_project();
         File* parse_file();
         Import* parse_import();
+        PolyFunction* parse_poly_function();
+        std::vector<Arg> parse_poly_fn_args();
         Function* parse_function();
         std::vector<Arg> parse_fn_args();
+        Function parse_function_base();
         Block* parse_block();
         Block* parse_bare_block();
         Statement* parse_statement();
