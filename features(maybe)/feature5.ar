@@ -1,0 +1,16 @@
+
+// parametric polymorphic functions
+#<T: type>
+fn int(arg: T): int {
+    ret arg: int;
+}
+
+// shown with and without UFCS
+fn main(): int {
+    i: u64 = 10;
+    // show explicit vs. implicit
+    // once syntax is finalized
+    ret 
+        int(i) + i.int +
+        int(i) + i.int;
+}

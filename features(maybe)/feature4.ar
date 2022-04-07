@@ -1,0 +1,6 @@
+
+// example casting syntax
+fn main(): int {
+    i: u64 = 900;
+    ret i: int;
+}
