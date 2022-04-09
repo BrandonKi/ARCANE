@@ -102,7 +102,7 @@ std::vector<Arg> Parser::parse_poly_fn_args() {
 Function* Parser::parse_function() {
     PROFILE();
     auto fn = parse_function_base();
-    
+
     if(fn.id == "main" && fn.return_type == TYPE_i32)
         return ast_.new_function_node(fn.pos, fn.id, fn.args, fn.return_type, fn.body, true);
     return ast_.new_function_node(fn.pos, fn.id, fn.args, fn.return_type, fn.body, false);
@@ -477,7 +477,7 @@ Expr* Parser::parse_expr_1(std::vector<Token*> result) {
                         auto num_args = s_table_.get_num_args(tkn_data);
                         auto fn_args = new Expr*[num_args];
                         for(u32 i = 0; i < num_args; ++i) {
-                            fn_args[i] = conversion_stack.back();
+                            fn_args[num_args - i - 1] = conversion_stack.back();
                             conversion_stack.pop_back();
                         }
                         auto node = ast_.new_expr_node_fn_call(tkn->pos, tkn_data, num_args, fn_args, ret_type);
