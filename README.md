@@ -1,6 +1,4 @@
 # ARCANE
-ARCANE is an acronym for
-ARCANE Runs, Compiles, And Never Explodes
 
 A programming language built on a custom backend. (ARCVM)
 https://github.com/BrandonKi/ARCVM
